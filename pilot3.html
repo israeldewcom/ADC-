@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RFPilot — AI-Powered Proposal Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+:root{
+  --in:#6366F1;--inl:#818CF8;--ind:rgba(99,102,241,.14);--ing:rgba(99,102,241,.35);
+  --gn:#22C55E;--gnd:rgba(34,197,94,.12);
+  --am:#F59E0B;--amd:rgba(245,158,11,.12);
+  --rd:#EF4444;--rdd:rgba(239,68,68,.12);
+  --pu:#A855F7;--cy:#06B6D4;
+  --bg:#070B14;--bg2:#0C1120;--bg3:#0F1829;
+  --sf:#111827;--sf2:#162032;--sf3:#1C2B40;
+  --br:rgba(255,255,255,.055);--br2:rgba(99,102,241,.28);--br3:rgba(255,255,255,.1);
+  --tx:#F1F5F9;--mu:#94A3B8;--fa:#64748B;--fa2:#3E5068;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+  --r:10px;--rl:16px;--rx:22px;
+  --sh:0 0 0 1px var(--br),0 24px 80px rgba(0,0,0,.65);
+  --gl:0 0 0 1px var(--br2),0 8px 48px rgba(99,102,241,.2);
+  --sw:248px;--th:60px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);font-size:15px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--ind);color:var(--inl)}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--sf3);border-radius:3px}
+a{text-decoration:none;color:inherit}input,select,textarea,button{font-family:var(--fb)}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.pi{background:var(--ind);color:var(--inl);border:1px solid rgba(99,102,241,.25)}
+.pg{background:var(--gnd);color:var(--gn);border:1px solid rgba(34,197,94,.2)}
+.pa{background:var(--amd);color:var(--am);border:1px solid rgba(245,158,11,.2)}
+.pr{background:var(--rdd);color:var(--rd);border:1px solid rgba(239,68,68,.2)}
+.pf{background:var(--sf2);color:var(--fa);border:1px solid var(--br)}
+.pp{background:rgba(168,85,247,.12);color:var(--pu);border:1px solid rgba(168,85,247,.2)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;cursor:pointer;font-weight:600;transition:all .18s;white-space:nowrap;position:relative;overflow:hidden}
+.btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.11),transparent);opacity:0;transition:opacity .18s}
+.btn:hover::after{opacity:1}
+.bp{background:var(--in);color:#fff;border-radius:var(--r);padding:10px 22px;font-size:14px;font-family:var(--fd);font-weight:700}
+.bp:hover{transform:translateY(-1px);box-shadow:0 8px 28px var(--ing)}
+.bp:active{transform:translateY(0)}
+.bg{background:transparent;color:var(--mu);border:1px solid var(--br);border-radius:var(--r);padding:9px 18px;font-size:14px}
+.bg:hover{border-color:var(--br2);color:var(--tx);background:var(--ind)}
+.bi{width:34px;height:34px;border-radius:8px;border:1px solid var(--br);background:transparent;color:var(--fa);flex-shrink:0}
+.bi:hover{border-color:var(--br2);color:var(--inl);background:var(--ind)}
+.bs{background:var(--gnd);color:var(--gn);border:1px solid rgba(34,197,94,.2);border-radius:var(--r);padding:8px 16px;font-size:13px;font-weight:600}
+.bs:hover{background:rgba(34,197,94,.2)}
+.bd{background:var(--rdd);color:var(--rd);border:1px solid rgba(239,68,68,.2);border-radius:var(--r);padding:8px 16px;font-size:13px;font-weight:600}
+.bd:hover{background:rgba(239,68,68,.22)}
+.bst{background:linear-gradient(135deg,#635BFF,#5046e4);color:#fff;border-radius:var(--r);padding:12px 28px;font-size:15px;font-family:var(--fd);font-weight:700;border:none}
+.bst:hover{transform:translateY(-1px);box-shadow:0 10px 32px rgba(99,91,255,.45)}
+.blg{padding:14px 32px;font-size:16px;border-radius:14px}
+.bsm{padding:6px 14px;font-size:12px;border-radius:8px}
+.bfw{width:100%}
+
+/* INPUTS */
+.inp{width:100%;padding:10px 14px;border-radius:var(--r);border:1px solid var(--br);background:var(--bg2);color:var(--tx);font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}
+.inp::placeholder{color:var(--fa2)}.inp:focus{border-color:var(--in);box-shadow:0 0 0 3px var(--ind)}
+select.inp option{background:var(--sf)}
+.lbl{display:block;font-size:11px;font-weight:700;color:var(--mu);margin-bottom:6px;letter-spacing:.05em;text-transform:uppercase}
+.ig{margin-bottom:18px}.ir{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hint{font-size:12px;color:var(--fa);margin-top:5px}
+
+/* TOGGLE */
+.trow{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--br)}
+.trow:last-child{border-bottom:none}
+.tinfo{flex:1;padding-right:20px}.tlbl{font-weight:500;font-size:14px;margin-bottom:2px}.tdsc{font-size:12px;color:var(--fa)}
+.tog{width:44px;height:24px;border-radius:100px;background:var(--sf3);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.tog.on{background:var(--in)}.tog::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .22s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.tog.on::after{transform:translateX(20px)}
+
+/* CARDS */
+.card{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);transition:border-color .22s,box-shadow .22s}
+.card:hover{border-color:var(--br2)}.cglow:hover{box-shadow:var(--gl)}.cp{padding:22px}
+.cst{background:linear-gradient(135deg,var(--sf),rgba(99,102,241,.06));border:1px solid var(--br2);border-radius:var(--rx);box-shadow:var(--gl)}
+
+/* TOOLTIPS */
+[data-tip]{position:relative}
+[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--sf3);color:var(--tx);font-size:11px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;border:1px solid var(--br3);z-index:999;font-family:var(--fb)}
+[data-tip]:hover::after{opacity:1}
+
+/* APP SHELL */
+.shell{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:var(--sw);flex-shrink:0;background:var(--bg2);border-right:1px solid var(--br);display:flex;flex-direction:column;transition:width .3s cubic-bezier(.4,0,.2,1),transform .3s;z-index:200;overflow:hidden}
+.sidebar.col{width:64px}
+.sidebar.mop{transform:translateX(0)!important;box-shadow:0 0 80px rgba(0,0,0,.8)}
+.slogo{padding:18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--br);flex-shrink:0}
+.lm{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--in),#8B5CF6);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:800;font-size:16px;color:#fff;flex-shrink:0;box-shadow:0 4px 16px rgba(99,102,241,.4)}
+.lt{font-family:var(--fd);font-weight:800;font-size:17px;background:linear-gradient(135deg,#fff 40%,var(--inl));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;transition:opacity .2s}
+.sidebar.col .lt,.sidebar.col .nt,.sidebar.col .ns,.sidebar.col .nb{opacity:0;pointer-events:none;width:0;overflow:hidden}
+.snav{flex:1;padding:10px 8px;overflow-y:auto;overflow-x:hidden}
+.ns{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fa2);padding:12px 10px 5px;white-space:nowrap;transition:opacity .2s}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;color:var(--mu);font-size:13.5px;font-weight:500;transition:all .18s;position:relative;margin-bottom:1px;overflow:hidden}
+.ni:hover{background:var(--ind);color:var(--tx)}.ni.act{background:var(--ind);color:var(--inl)}
+.ni.act::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2.5px;border-radius:0 2px 2px 0;background:var(--in)}
+.ni i{font-size:16px;flex-shrink:0}.nt{white-space:nowrap;transition:opacity .2s;flex:1}
+.nb{background:var(--in);color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;flex-shrink:0;transition:opacity .2s}
+.nb.red{background:var(--rd)}
+.sfoot{padding:10px 8px;border-top:1px solid var(--br);flex-shrink:0}
+.uav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,var(--in),#8B5CF6)}
+.sov{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:199;opacity:0;pointer-events:none;transition:opacity .3s}
+.sov.vis{opacity:1;pointer-events:all}
+
+/* MAIN + TOPBAR */
+.main{flex:1;overflow-y:auto;background:var(--bg);min-width:0;position:relative}
+.topbar{height:var(--th);padding:0 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--br);background:rgba(7,11,20,.92);position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);transition:transform .3s;gap:12px}
+.topbar.hid{transform:translateY(-100%)}
+.tsearch{display:flex;align-items:center;gap:9px;background:var(--bg2);border:1px solid var(--br);border-radius:var(--r);padding:7px 13px;width:260px;transition:border-color .2s,width .25s;cursor:pointer}
+.tsearch:focus-within{border-color:var(--in);width:320px}
+.tsearch input{background:none;border:none;outline:none;color:var(--tx);font-size:13px;width:100%}
+.tsearch input::placeholder{color:var(--fa2)}
+
+/* PAGE TRANSITIONS */
+.pv{display:none}.pv.act{display:block;animation:pgin .2s ease-out}
+@keyframes pgin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.lw{display:none}.lw.act{display:block}
+
+/* PAGE HEADER */
+.ph{padding:26px 28px 0}.pt{font-family:var(--fd);font-weight:800;font-size:24px;margin-bottom:4px}.ps{font-size:14px;color:var(--mu)}
+
+/* STATS */
+.sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:14px;padding:22px 28px}
+.sc{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);padding:18px;transition:all .2s}.sc:hover{border-color:var(--br2);transform:translateY(-1px)}
+.sn{font-family:var(--fd);font-weight:800;font-size:30px;background:linear-gradient(135deg,#fff,var(--inl));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1}
+.sl{font-size:11px;color:var(--fa);text-transform:uppercase;letter-spacing:.05em;margin-top:5px}
+.st{font-size:12px;margin-top:8px;display:flex;align-items:center;gap:4px}
+.st.up{color:var(--gn)}.st.dn{color:var(--rd)}.st.wn{color:var(--am)}
+
+/* PROJECTS */
+.sec{padding:0 28px 28px}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.stl{font-family:var(--fd);font-weight:700;font-size:16px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:14px}
+.pc{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);padding:18px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
+.pc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--in);transform:scaleY(0);transition:transform .2s;transform-origin:center}
+.pc:hover{border-color:var(--br2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.35)}.pc:hover::before{transform:scaleY(1)}
+.pcl{font-size:10px;font-weight:700;color:var(--fa);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.pn{font-family:var(--fd);font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3}
+.pm{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.pb{height:3px;background:var(--sf3);border-radius:2px;margin-bottom:11px}
+.pf{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--in),var(--gn));transition:width .6s}
+.pfoot{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--fa)}
+.avs{display:flex}.avm{width:22px;height:22px;border-radius:50%;border:2px solid var(--sf);background:linear-gradient(135deg,var(--in),#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;margin-left:-5px;flex-shrink:0}
+.avm:first-child{margin-left:0}
+.es{display:flex;flex-direction:column;align-items:center;padding:60px 20px;text-align:center;grid-column:1/-1}
+.ei{width:72px;height:72px;border-radius:18px;background:var(--ind);border:1px solid var(--br2);display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--inl);margin:0 auto 18px;animation:flt 3s ease-in-out infinite}
+.etl{font-family:var(--fd);font-weight:700;font-size:18px;margin-bottom:8px}.eds{font-size:14px;color:var(--mu);max-width:300px;margin:0 auto 22px;line-height:1.6}
+
+/* PAGINATION */
+.pagbar{display:flex;align-items:center;padding:14px 28px;gap:6px;border-top:1px solid var(--br)}
+.pbtn{width:32px;height:32px;border-radius:7px;border:1px solid var(--br);background:transparent;color:var(--mu);cursor:pointer;font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;transition:all .18s}
+.pbtn:hover{border-color:var(--br2);color:var(--inl);background:var(--ind)}.pbtn.act{border-color:var(--in);color:#fff;background:var(--in)}
+.pinf{font-size:12px;color:var(--fa);margin-left:auto}
+
+/* SKELETON */
+.sk{background:linear-gradient(90deg,var(--sf) 25%,var(--sf2) 50%,var(--sf) 75%);background-size:200% 100%;animation:sk 1.4s infinite;border-radius:7px}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ACTIVITY */
+.ai{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid var(--br)}.ai:last-child{border-bottom:none}
+.aic{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px}
+.aact{font-size:14px;font-weight:500}.aact span{color:var(--inl)}.atm{font-size:12px;color:var(--fa);margin-top:2px}
+
+/* WAR ROOM */
+.wrt{padding:9px 16px;border-bottom:1px solid var(--br);background:var(--bg2);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;flex-shrink:0}
+.wrl{display:flex;height:calc(100vh - var(--th) - 54px);overflow:hidden}
+.op{width:230px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--br);display:flex;flex-direction:column}
+.ph2{padding:14px 14px 10px;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ptl{font-family:var(--fd);font-weight:700;font-size:12px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em}
+.ol{flex:1;overflow-y:auto;padding:8px}
+.oi{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--mu);transition:all .18s;margin-bottom:1px}
+.oi:hover{background:var(--ind);color:var(--tx)}.oi.act{background:var(--ind);color:var(--inl)}
+.on{font-family:var(--fm);font-size:9px;color:var(--fa2);flex-shrink:0;width:16px}
+.ep{flex:1;display:flex;flex-direction:column;min-width:0}
+.etb{padding:9px 14px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--bg2);flex-shrink:0}
+.tsx{width:1px;height:22px;background:var(--br);margin:0 3px}
+.ea{flex:1;overflow-y:auto;padding:28px 36px}
+.ec{max-width:700px;margin:0 auto}
+.est{font-family:var(--fd);font-weight:800;font-size:21px;margin:30px 0 11px;color:#fff}.est:first-child{margin-top:0}
+.ep2{margin-bottom:15px;color:#CBD5E1;line-height:1.8}
+.ehl{background:rgba(99,102,241,.12);border-left:3px solid var(--in);padding:11px 15px;border-radius:0 8px 8px 0;margin:14px 0;font-size:14px;color:var(--mu)}
+.cr{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--fa);margin:-8px 0 18px;flex-wrap:wrap}
+.ct{width:70px;height:3px;background:var(--sf3);border-radius:2px;flex-shrink:0}
+.cf{height:100%;border-radius:2px;background:var(--gn)}
+.aig{display:flex;align-items:center;gap:8px;padding:11px 14px;background:var(--ind);border-radius:9px;margin:14px 0;font-size:13px;color:var(--inl)}
+.adt span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--inl);margin:0 2px;animation:bnc 1s infinite}
+.adt span:nth-child(2){animation-delay:.18s}.adt span:nth-child(3){animation-delay:.36s}
+@keyframes bnc{0%,80%,100%{transform:scale(.7);opacity:.4}40%{transform:scale(1.2);opacity:1}}
+.edst{padding:7px 14px;border-top:1px solid var(--br);display:flex;align-items:center;gap:14px;background:var(--bg2);font-size:12px;color:var(--fa);flex-shrink:0;flex-wrap:wrap}
+.sind{display:flex;align-items:center;gap:5px;color:var(--gn)}
+.evp{width:270px;flex-shrink:0;background:var(--bg2);border-left:1px solid var(--br);display:flex;flex-direction:column}
+.evl{flex:1;overflow-y:auto;padding:10px}
+.evc{background:var(--sf);border:1px solid var(--br);border-radius:9px;padding:12px;margin-bottom:9px;cursor:pointer;transition:all .18s}
+.evc:hover{border-color:var(--br2)}.evc.hi{border-color:var(--in);background:var(--ind)}
+.evs{font-size:10px;font-weight:700;color:var(--inl);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:flex;align-items:center;gap:4px}
+.evt{font-size:12px;color:var(--mu);line-height:1.5}
+.evsco{display:flex;align-items:center;justify-content:space-between;margin-top:7px;font-size:10px;color:var(--fa)}
+.scb{width:44px;height:3px;background:var(--sf3);border-radius:2px}.scf{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--am),var(--gn))}
+.amp{background:var(--sf);border:1px solid var(--br);border-radius:11px;margin:10px;padding:14px;flex-shrink:0}
+.amt{font-family:var(--fd);font-weight:700;font-size:12px;margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.ata{width:100%;background:var(--bg2);border:1px solid var(--br);border-radius:8px;padding:9px 11px;color:var(--tx);font-size:12px;outline:none;resize:none;min-height:65px;transition:border-color .2s}
+.ata:focus{border-color:var(--in)}
+.wr2{display:flex;flex-direction:column;align-items:center;padding:14px 0}
+.wrs{transform:rotate(-90deg)}.wrl2{font-family:var(--fd);font-weight:800;font-size:26px;margin-top:-46px}.wrsb{font-size:11px;color:var(--mu);margin-top:3px}
+.evdr{position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--sf);border-top:1px solid var(--br);border-radius:20px 20px 0 0;max-height:75vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.evdr.open{transform:translateY(0)}
+.drh{width:36px;height:4px;border-radius:2px;background:var(--sf3);margin:11px auto 4px}
+.drhd{padding:6px 16px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--br);flex-shrink:0}
+.drb{overflow-y:auto;flex:1;padding:12px}
+.drov{position:fixed;inset:0;z-index:299;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .3s}
+.drov.open{opacity:1;pointer-events:all}
+.bc{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--fa)}.bc span{cursor:pointer}.bc span:hover{color:var(--tx)}.bcs{color:var(--fa2)}.bcc{color:var(--tx);font-weight:500;cursor:default!important}
+.kbd{display:inline-flex;align-items:center;font-family:var(--fm);font-size:10px;background:var(--sf2);border:1px solid var(--br);border-radius:4px;padding:1px 6px;color:var(--mu)}
+
+/* UPLOAD */
+.dz{border:2px dashed var(--br2);border-radius:var(--rx);padding:52px 36px;text-align:center;cursor:pointer;transition:all .28s;background:var(--ind)}
+.dz:hover,.dz.dov{border-color:var(--in);background:rgba(99,102,241,.1);box-shadow:0 0 0 4px rgba(99,102,241,.07)}
+.dic{width:68px;height:68px;border-radius:17px;background:var(--ind);border:1px solid var(--br2);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--inl);margin:0 auto 18px;animation:flt 3s ease-in-out infinite}
+.dtt{font-family:var(--fd);font-weight:700;font-size:18px;margin-bottom:7px}.dsb{font-size:14px;color:var(--mu)}
+.uli{background:var(--sf);border:1px solid var(--br);border-radius:11px;padding:13px 15px;margin-bottom:9px;display:flex;align-items:center;gap:13px;animation:slin .28s ease}
+@keyframes slin{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:translateX(0)}}
+.ufi{width:38px;height:38px;border-radius:9px;background:var(--rdd);color:var(--rd);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.ufn{font-weight:500;font-size:13px;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}
+.ufs{font-size:11px;color:var(--fa)}
+.pb2{height:3px;background:var(--sf3);border-radius:2px;overflow:hidden;margin-top:7px}
+.pf2{height:100%;background:linear-gradient(90deg,var(--in),var(--gn));transition:width .3s;position:relative}
+.pf2::after{content:'';position:absolute;top:0;bottom:0;right:0;width:36px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3));animation:shim 1.2s infinite}
+@keyframes shim{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+
+/* LIBRARY */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px}
+.dc{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);padding:18px;transition:all .22s;cursor:pointer}
+.dc:hover{border-color:var(--br2);transform:translateY(-2px);box-shadow:var(--gl)}
+.di{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+.dn{font-family:var(--fd);font-weight:700;font-size:13px;margin-bottom:5px;line-height:1.3}
+.dm{font-size:11px;color:var(--fa);margin-bottom:10px}
+.dst{display:flex;gap:10px;font-size:11px;color:var(--mu)}.dsti{display:flex;align-items:center;gap:4px}
+.dac{display:flex;gap:5px;margin-top:12px;opacity:0;transition:opacity .18s}.dc:hover .dac{opacity:1}
+.eb{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;margin-top:7px}
+.ebo{background:var(--gnd);color:var(--gn);border:1px solid rgba(34,197,94,.18)}
+.ebp{background:var(--amd);color:var(--am);border:1px solid rgba(245,158,11,.18)}
+.ebn{background:var(--sf2);color:var(--fa);border:1px solid var(--br)}
+
+/* ANALYTICS */
+.chc{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);padding:22px}
+.cht{font-family:var(--fd);font-weight:700;font-size:15px;margin-bottom:4px}
+.chs{font-size:12px;color:var(--fa);margin-bottom:18px}
+.bch{display:flex;align-items:flex-end;gap:8px;height:120px}
+.bcol{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1}
+.bfil{width:100%;border-radius:5px 5px 0 0;background:linear-gradient(180deg,var(--in),rgba(99,102,241,.5));transition:height .6s;min-height:4px}
+.blbl{font-size:10px;color:var(--fa);text-align:center}.bval{font-size:10px;color:var(--mu);font-weight:600}
+
+/* NOTIFICATIONS */
+.nti{display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:11px;cursor:pointer;transition:background .18s;margin-bottom:5px;position:relative}
+.nti:hover{background:var(--sf2)}.nti.unr{background:var(--ind)}
+.nti.unr::before{content:'';position:absolute;left:12px;top:18px;width:6px;height:6px;border-radius:50%;background:var(--in)}
+.ntic{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ntit{font-size:13px;font-weight:600;margin-bottom:2px}.ntid{font-size:12px;color:var(--mu);line-height:1.4}.ntitm{font-size:11px;color:var(--fa);margin-top:4px}
+
+/* ONBOARDING */
+.obw{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden}
+.obbg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(99,102,241,.08),transparent)}
+.obc{background:var(--sf);border:1px solid var(--br);border-radius:var(--rx);padding:44px;width:100%;max-width:560px;position:relative;box-shadow:var(--sh);animation:pgin .4s ease}
+.obs{display:none}.obs.act{display:block;animation:pgin .25s ease}
+.obprog{display:flex;gap:6px;margin-bottom:32px}
+.obdot{height:3px;flex:1;border-radius:2px;background:var(--sf3);transition:background .3s}.obdot.dn{background:var(--in)}
+.obn{font-family:var(--fm);font-size:11px;color:var(--fa);margin-bottom:8px}
+.obt{font-family:var(--fd);font-weight:800;font-size:26px;margin-bottom:8px}
+.obsu{font-size:14px;color:var(--mu);margin-bottom:28px;line-height:1.6}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.cc{background:var(--bg2);border:2px solid var(--br);border-radius:12px;padding:16px;cursor:pointer;transition:all .18s;text-align:center}
+.cc:hover{border-color:var(--br2)}.cc.sel{border-color:var(--in);background:var(--ind)}
+.ccic{font-size:26px;margin-bottom:8px}.cclb{font-weight:600;font-size:13px}
+
+/* COMMAND PALETTE */
+.cmp{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);display:flex;align-items:flex-start;justify-content:center;padding-top:100px;opacity:0;pointer-events:none;transition:opacity .2s}
+.cmp.open{opacity:1;pointer-events:all}
+.cmb{background:var(--sf);border:1px solid var(--br2);border-radius:var(--rx);width:100%;max-width:560px;box-shadow:var(--sh);overflow:hidden;transform:scale(.95);transition:transform .2s}
+.cmp.open .cmb{transform:scale(1)}
+.cms{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--br)}
+.cms input{background:none;border:none;outline:none;color:var(--tx);font-size:16px;width:100%}
+.cms input::placeholder{color:var(--fa)}
+.cmr{max-height:380px;overflow-y:auto;padding:8px}
+.cmg{font-size:10px;font-weight:700;color:var(--fa);text-transform:uppercase;letter-spacing:.08em;padding:10px 12px 5px}
+.cmi{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;cursor:pointer;transition:background .15s;font-size:14px}
+.cmi:hover,.cmi.foc{background:var(--ind);color:var(--inl)}.cmi i{font-size:16px;color:var(--mu);flex-shrink:0;width:20px}
+.cmi:hover i,.cmi.foc i{color:var(--inl)}.cmi .ck{margin-left:auto;display:flex;gap:4px}
+.cmf{padding:10px 20px;border-top:1px solid var(--br);display:flex;align-items:center;gap:16px;font-size:11px;color:var(--fa)}
+
+/* COMPETITOR */
+.comc{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);padding:20px;margin-bottom:14px;transition:all .2s}.comc:hover{border-color:var(--br2)}
+.comh{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.coml{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:800;font-size:16px;color:#fff;flex-shrink:0}
+.comn{font-family:var(--fd);font-weight:700;font-size:15px}.comt{font-size:12px;color:var(--mu)}
+.coms{display:flex;align-items:center;gap:8px;font-size:12px;padding:7px 0;border-bottom:1px solid var(--br)}.coms:last-child{border-bottom:none}
+.coms i.str{color:var(--rd)}.coms i.wk{color:var(--gn)}
+
+/* COMPLIANCE */
+.creq{display:flex;align-items:flex-start;gap:12px;padding:11px;background:var(--bg2);border-radius:9px;margin-bottom:7px;transition:background .18s;cursor:pointer}
+.creq:hover{background:var(--sf2)}.crqi{font-size:17px;flex-shrink:0;margin-top:1px}
+.crql{font-size:13px;font-weight:600;margin-bottom:2px}.crqd{font-size:12px;color:var(--fa)}
+
+/* ARCHIVE */
+.arcr{display:flex;align-items:center;gap:12px;padding:14px;background:var(--sf);border:1px solid var(--br);border-radius:11px;margin-bottom:9px;transition:all .2s;opacity:.75}
+.arcr:hover{opacity:1;border-color:var(--br2)}.arcn{font-weight:600;font-size:14px}.arcm{font-size:12px;color:var(--fa)}
+
+/* BILLING */
+.blayout{display:grid;grid-template-columns:1fr 360px;gap:20px;padding:22px 28px}
+.planc{border-radius:var(--rx);padding:28px;position:relative;overflow:hidden;transition:all .25s}
+.planc.cur{background:linear-gradient(135deg,var(--sf),rgba(99,102,241,.07));border:1px solid var(--br2);box-shadow:var(--gl)}
+.plang{position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.18),transparent 70%);pointer-events:none}
+.plnm{font-family:var(--fd);font-weight:700;font-size:13px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.plpr{font-family:var(--fd);font-weight:800;font-size:42px;line-height:1;margin-bottom:4px}
+.plpe{font-size:13px;color:var(--fa);margin-bottom:20px}
+.plft{display:flex;align-items:center;gap:9px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--br)}.plft:last-of-type{border-bottom:none}
+.plft i.ok{color:var(--gn)}.plft i.no{color:var(--fa2)}
+.ugrid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:20px}
+.uc{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);padding:17px}
+.ul{font-size:11px;color:var(--fa);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px}
+.uv{font-family:var(--fd);font-weight:700;font-size:22px;margin-bottom:9px}
+.ub{height:5px;background:var(--sf3);border-radius:3px}.uf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--in),var(--gn));transition:width .6s}
+.uf.dng{background:linear-gradient(90deg,var(--am),var(--rd))}.uft{display:flex;justify-content:space-between;font-size:11px;color:var(--fa);margin-top:5px}
+.payf{background:var(--sf);border:1px solid var(--br);border-radius:var(--rx);padding:28px}
+.stlk{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--fa);margin-bottom:20px;padding:10px 14px;background:var(--bg2);border-radius:9px;border:1px solid var(--br)}
+.clgs{display:flex;gap:8px;margin-bottom:18px}
+.clg{width:40px;height:26px;border-radius:5px;border:1px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:var(--bg2)}
+.pstep{display:none}.pstep.act{display:block;animation:pgin .25s ease}
+.psuc{text-align:center;padding:20px 0}
+.psic{width:70px;height:70px;border-radius:50%;background:var(--gnd);border:2px solid var(--gn);display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--gn);margin:0 auto 20px;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.ciwp{position:relative}.cibr{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--mu)}
+
+/* SETTINGS */
+.slayout{display:grid;grid-template-columns:200px 1fr;gap:0}
+.snv{border-right:1px solid var(--br);padding:22px 10px;min-height:calc(100vh - var(--th))}
+.sni{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;cursor:pointer;font-size:13.5px;color:var(--mu);transition:all .18s;margin-bottom:3px}
+.sni:hover{background:var(--ind);color:var(--tx)}.sni.act{background:var(--ind);color:var(--inl)}
+.scont{padding:26px;max-width:640px}
+.ssec{margin-bottom:34px}
+.sstl{font-family:var(--fd);font-weight:700;font-size:17px;margin-bottom:3px}
+.ssds{font-size:14px;color:var(--mu);margin-bottom:18px}
+.scard{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);padding:22px;margin-bottom:13px}
+
+/* MODAL */
+.mov{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.78);backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s}
+.mov.open{opacity:1;pointer-events:all}
+.mob{background:var(--sf);border:1px solid var(--br);border-radius:var(--rx);padding:30px;width:100%;max-width:520px;box-shadow:var(--sh);transform:scale(.94) translateY(10px);transition:transform .22s}
+.mov.open .mob{transform:scale(1) translateY(0)}.mob.wide{max-width:760px}
+.mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.mtl{font-family:var(--fd);font-weight:700;font-size:19px}
+
+/* TOAST */
+.tc{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:9px;pointer-events:none}
+.tst{background:var(--sf);border:1px solid var(--br);border-radius:11px;padding:13px 16px;display:flex;align-items:center;gap:11px;min-width:270px;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.5);animation:tin .28s ease;pointer-events:all}
+.tst.success{border-left:3px solid var(--gn)}.tst.error{border-left:3px solid var(--rd)}.tst.info{border-left:3px solid var(--in)}.tst.warn{border-left:3px solid var(--am)}
+@keyframes tin{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:translateX(0)}}
+.tic{font-size:17px;flex-shrink:0}.tst.success .tic{color:var(--gn)}.tst.error .tic{color:var(--rd)}.tst.info .tic{color:var(--inl)}.tst.warn .tic{color:var(--am)}
+.tm{font-size:13px;font-weight:500;flex:1}.tcl{color:var(--fa);cursor:pointer;font-size:15px;flex-shrink:0}
+
+/* AUTH */
+.aph{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden}
+.apb{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(99,102,241,.08),transparent)}
+.apc{background:var(--sf);border:1px solid var(--br);border-radius:var(--rx);padding:38px;width:100%;max-width:410px;position:relative;box-shadow:var(--sh);animation:pgin .4s ease}
+.att{font-family:var(--fd);font-weight:800;font-size:22px;text-align:center;margin-bottom:5px}
+.ats{font-size:14px;color:var(--mu);text-align:center;margin-bottom:26px}
+.adiv{display:flex;align-items:center;gap:13px;margin:18px 0;font-size:12px;color:var(--fa)}
+.adiv::before,.adiv::after{content:'';flex:1;height:1px;background:var(--br)}
+.boa{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:10px;border-radius:var(--r);border:1px solid var(--br);background:var(--bg2);color:var(--tx);font-size:14px;font-weight:500;cursor:pointer;transition:all .18s;margin-bottom:9px}
+.boa:hover{border-color:var(--br2);background:var(--ind)}
+
+/* LANDING */
+.lnav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 40px;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,11,20,.88);border-bottom:1px solid var(--br);backdrop-filter:blur(18px)}
+.hs{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 20px 80px;position:relative;overflow:hidden}
+.hbg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(99,102,241,.17),transparent),radial-gradient(ellipse 50% 40% at 80% 80%,rgba(34,197,94,.05),transparent)}
+.hgd{position:absolute;inset:0;background-image:linear-gradient(var(--br) 1px,transparent 1px),linear-gradient(90deg,var(--br) 1px,transparent 1px);background-size:38px 38px;opacity:.45;mask-image:radial-gradient(ellipse at center,black 30%,transparent 78%)}
+.heb{display:inline-flex;align-items:center;gap:8px;padding:5px 15px;border-radius:100px;background:var(--ind);border:1px solid rgba(99,102,241,.28);font-size:11px;font-weight:700;color:var(--inl);letter-spacing:.06em;text-transform:uppercase;margin-bottom:26px;animation:fdu .6s ease both}
+.hh1{font-family:var(--fd);font-weight:800;font-size:clamp(38px,6.5vw,82px);line-height:1.04;letter-spacing:-.03em;margin-bottom:22px;animation:fdu .6s .1s ease both}
+.hh1 span{background:linear-gradient(135deg,var(--inl),#A78BFA,var(--gn));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hsu{font-size:clamp(15px,2vw,19px);color:var(--mu);max-width:520px;margin:0 auto 36px;line-height:1.65;font-weight:300;animation:fdu .6s .2s ease both}
+.hctas{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;animation:fdu .6s .3s ease both}
+.bhr{display:inline-flex;align-items:center;gap:9px;padding:13px 30px;border-radius:13px;border:none;cursor:pointer;font-family:var(--fd);font-weight:700;font-size:15px;transition:all .22s}
+.bhrp{background:linear-gradient(135deg,var(--in),#8B5CF6);color:#fff;box-shadow:0 8px 30px rgba(99,102,241,.35)}
+.bhrp:hover{transform:translateY(-2px);box-shadow:0 16px 44px rgba(99,102,241,.45)}
+.bhrg{background:var(--sf);color:var(--tx);border:1px solid var(--br)}.bhrg:hover{border-color:var(--br2);background:var(--ind)}
+.hsts{display:flex;gap:36px;justify-content:center;margin-top:52px;animation:fdu .6s .4s ease both;flex-wrap:wrap}
+.hsi{text-align:center}
+.hsn{font-family:var(--fd);font-weight:800;font-size:30px;background:linear-gradient(135deg,#fff,var(--inl));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hsl{font-size:11px;color:var(--fa);letter-spacing:.04em;text-transform:uppercase}
+.lgs{padding:36px 0;border-top:1px solid var(--br);border-bottom:1px solid var(--br);overflow:hidden}
+.lgt{display:flex;gap:44px;align-items:center;animation:mq 20s linear infinite;width:max-content}
+.lgit{font-family:var(--fd);font-weight:700;font-size:17px;color:var(--fa2);white-space:nowrap}
+@keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;padding:36px}
+.fcard{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);padding:26px;transition:all .28s;position:relative;overflow:hidden}
+.fcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--in),transparent);opacity:0;transition:opacity .28s}
+.fcard:hover{border-color:var(--br2);transform:translateY(-3px);box-shadow:var(--gl)}.fcard:hover::before{opacity:1}
+.fic{width:44px;height:44px;border-radius:11px;background:var(--ind);color:var(--inl);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+.ftl{font-family:var(--fd);font-weight:700;font-size:16px;margin-bottom:7px}.fds{font-size:13px;color:var(--mu);line-height:1.6}
+.pgrid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:18px;max-width:900px;margin:0 auto}
+.pcard{background:var(--sf);border:1px solid var(--br);border-radius:var(--rx);padding:30px;position:relative;transition:all .28s}
+.pcard.feat{border-color:var(--in);background:linear-gradient(135deg,var(--sf),rgba(99,102,241,.07));box-shadow:var(--gl)}
+.ppop{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--in);color:#fff;font-size:10px;font-weight:700;padding:3px 13px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase}
+.ppl{font-family:var(--fd);font-weight:700;font-size:13px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+.ppr{font-family:var(--fd);font-weight:800;font-size:44px;line-height:1;margin-bottom:3px}
+.ppe{font-size:13px;color:var(--fa);margin-bottom:22px}
+.pft{display:flex;align-items:center;gap:9px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--br)}.pft:last-of-type{border-bottom:none}
+.pft i.ok{color:var(--gn)}.pft i.no{color:var(--fa2)}
+.dw{background:var(--sf);border:1px solid var(--br);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);max-width:760px;margin:52px auto;animation:fdu .8s .5s ease both}
+.dtb{background:var(--bg2);padding:11px 15px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--br)}
+.dd{width:11px;height:11px;border-radius:50%}
+.dtyp{font-family:var(--fm);font-size:12px;color:var(--gn);min-height:130px;white-space:pre-wrap;padding:20px 22px}
+.tabbar{display:flex;gap:3px;background:var(--bg2);padding:4px;border-radius:var(--r);border:1px solid var(--br)}
+.tabb{flex:1;padding:6px 13px;border-radius:7px;border:none;background:none;color:var(--mu);font-size:13px;font-weight:500;cursor:pointer;transition:all .18s;white-space:nowrap}
+.tabb.act{background:var(--sf);color:var(--tx);box-shadow:0 2px 8px rgba(0,0,0,.28)}
+
+/* PLAN MODAL GRID */
+.pmg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.po{background:var(--bg2);border:2px solid var(--br);border-radius:14px;padding:20px;cursor:pointer;transition:all .2s;position:relative}
+.po:hover,.po.sel{border-color:var(--in);background:var(--ind)}
+.po.pop::after{content:'Popular';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--in);color:#fff;font-size:10px;font-weight:700;padding:2px 10px;border-radius:100px;letter-spacing:.05em;text-transform:uppercase}
+
+/* SPINNER */
+.spin{width:18px;height:18px;border:2px solid var(--br2);border-top-color:var(--in);border-radius:50%;animation:spn .65s linear infinite}
+@keyframes spn{to{transform:rotate(360deg)}}
+
+/* ANIMATIONS */
+@keyframes fdu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes pls{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* RESPONSIVE */
+@media(max-width:1200px){.evp{display:none}.sevb{display:inline-flex!important}.blayout{grid-template-columns:1fr}}
+@media(max-width:900px){.pmg{grid-template-columns:1fr}}
+@media(max-width:768px){
+  .sidebar{position:fixed;left:0;height:100%;transform:translateX(-100%)}
+  .op{display:none}.slayout{grid-template-columns:1fr}.snv{display:none}
+  .tsearch{display:none}.sr{grid-template-columns:1fr 1fr;padding:14px}
+  .fgrid{padding:18px;grid-template-columns:1fr}.ir{grid-template-columns:1fr}
+  .lnav{padding:0 18px}.hsts{gap:20px}.blayout{padding:14px}
+  .ugrid{grid-template-columns:1fr}.ea{padding:20px 16px}
+}
+@media(max-width:480px){
+  .sr{grid-template-columns:1fr}.pgrid{grid-template-columns:1fr}.dgrid{grid-template-columns:1fr}
+  .ph{padding:18px 16px 0}.sec{padding-left:16px;padding-right:16px}
+  .apc{padding:24px 18px}.kbd{display:none}
+}
+@media(hover:none){.dac{opacity:1}}
+</style>
+</head>
+<body>
+
+<!-- ══ LANDING ══ -->
+<div id="LW" class="lw act">
+  <nav class="lnav">
+    <div style="display:flex;align-items:center;gap:10px"><div class="lm">R</div><span style="font-family:var(--fd);font-weight:800;font-size:17px;background:linear-gradient(135deg,#fff,var(--inl));-webkit-background-clip:text;-webkit-text-fill-color:transparent">RFPilot</span></div>
+    <div style="display:flex;align-items:center;gap:26px" class="d-none d-md-flex">
+      <a href="#feat" style="color:var(--mu);font-size:14px;font-weight:500" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--mu)'">Features</a>
+      <a href="#price" style="color:var(--mu);font-size:14px;font-weight:500" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--mu)'">Pricing</a>
+      <a href="#" style="color:var(--mu);font-size:14px;font-weight:500" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--mu)'">Docs</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="btn bg bsm" onclick="showApp('auth')">Log in</button>
+      <button class="btn bp bsm" onclick="showApp('onboard')"><i class="bi bi-lightning-fill"></i> Start Free</button>
+    </div>
+  </nav>
+  <section class="hs"><div class="hbg"></div><div class="hgd"></div>
+    <div style="position:relative;z-index:1;width:100%">
+      <div class="heb"><span style="width:6px;height:6px;background:var(--gn);border-radius:50%;animation:pls 2s infinite"></span>AI-Powered RFP Response Engine</div>
+      <h1 class="hh1">Win More Contracts.<br><span>40 Hours → 4 Minutes.</span></h1>
+      <p class="hsu">RFPilot uses AI to instantly generate winning proposals from your past work — so your team spends time closing, not writing.</p>
+      <div class="hctas">
+        <button class="bhr bhrp" onclick="showApp('onboard')"><i class="bi bi-lightning-fill"></i> Generate My First Proposal</button>
+        <button class="bhr bhrg" onclick="scrollToDemo()"><i class="bi bi-play-circle"></i> Watch Demo</button>
+      </div>
+      <div class="hsts">
+        <div class="hsi"><div class="hsn">94%</div><div class="hsl">Win Rate Lift</div></div>
+        <div class="hsi"><div class="hsn">3,800+</div><div class="hsl">Proposals Generated</div></div>
+        <div class="hsi"><div class="hsn">$2.4B</div><div class="hsl">Contracts Won</div></div>
+        <div class="hsi"><div class="hsn">4 min</div><div class="hsl">Avg Draft Time</div></div>
+      </div>
+    </div>
+  </section>
+  <div class="lgs"><div class="lgt"><span class="lgit">Deloitte</span><span class="lgit">Booz Allen</span><span class="lgit">Leidos</span><span class="lgit">SAIC</span><span class="lgit">ManTech</span><span class="lgit">Accenture Federal</span><span class="lgit">ICF International</span><span class="lgit">CACI</span><span class="lgit">Deloitte</span><span class="lgit">Booz Allen</span><span class="lgit">Leidos</span><span class="lgit">SAIC</span><span class="lgit">ManTech</span><span class="lgit">Accenture Federal</span><span class="lgit">ICF International</span><span class="lgit">CACI</span></div></div>
+  <div id="demoSec" style="padding:52px 36px;max-width:880px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:36px"><div class="pill pi" style="margin-bottom:14px">Live Demo</div><h2 style="font-family:var(--fd);font-weight:800;font-size:34px;margin-bottom:10px">Watch AI Build Your Proposal</h2><p style="color:var(--mu)">Real-time AI generation, evidence-backed, streamed token by token.</p></div>
+    <div class="dw"><div class="dtb"><div class="dd" style="background:#EF4444"></div><div class="dd" style="background:#F59E0B"></div><div class="dd" style="background:#22C55E"></div><span style="margin-left:12px;font-family:var(--fm);font-size:11px;color:var(--fa)">rfpilot — War Room: USAF Cloud Migration RFP</span></div>
+    <div class="dtyp" id="demoTxt">Initializing AI engine…</div>
+    <div style="padding:0 22px 20px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn bp bsm" onclick="runDemo()"><i class="bi bi-lightning-fill"></i> Generate Draft</button><button class="btn bg bsm" onclick="showApp('dashboard')"><i class="bi bi-arrow-right"></i> Open App</button></div></div>
+  </div>
+  <section id="feat" style="padding:52px 0">
+    <div style="text-align:center;padding:0 20px;margin-bottom:36px"><div class="pill pi" style="margin-bottom:14px">Core Features</div><h2 style="font-family:var(--fd);font-weight:800;font-size:34px;margin-bottom:10px">Everything You Need to Win</h2></div>
+    <div class="fgrid">
+      <div class="fcard"><div class="fic"><i class="bi bi-robot"></i></div><div class="ftl">AI Co-Pilot Mode</div><div class="fds">Get live suggestions, rewrites, and improvements as you draft — like having a senior proposal writer on demand.</div></div>
+      <div class="fcard"><div class="fic"><i class="bi bi-graph-up-arrow"></i></div><div class="ftl">Win Probability Score</div><div class="fds">ML model predicts your win likelihood and shows exactly what to improve to maximize your chances.</div></div>
+      <div class="fcard"><div class="fic"><i class="bi bi-shield-check"></i></div><div class="ftl">Compliance Scanner</div><div class="fds">Automatically checks every PWS/SOW requirement and flags missing sections before submission.</div></div>
+      <div class="fcard"><div class="fic"><i class="bi bi-database"></i></div><div class="ftl">Evidence Library</div><div class="fds">Vector-indexed past proposals surface the most relevant paragraphs with confidence scores.</div></div>
+      <div class="fcard"><div class="fic"><i class="bi bi-lightning-charge"></i></div><div class="ftl">Token Streaming</div><div class="fds">AI responses stream directly into the editor — no waiting, no copy-paste, no latency.</div></div>
+      <div class="fcard"><div class="fic"><i class="bi bi-binoculars-fill"></i></div><div class="ftl">Competitor Intelligence</div><div class="fds">AI-analyzed competitor strengths and weaknesses with auto-generated counter-narratives.</div></div>
+    </div>
+  </section>
+  <section id="price" style="padding:52px 36px">
+    <div style="text-align:center;margin-bottom:36px"><div class="pill pi" style="margin-bottom:14px">Pricing</div><h2 style="font-family:var(--fd);font-weight:800;font-size:34px;margin-bottom:10px">Simple, Transparent Pricing</h2></div>
+    <div class="pgrid2">
+      <div class="pcard"><div class="ppl">Starter</div><div class="ppr">$499</div><div class="ppe">/month</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>5 RFPs/month</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>10GB storage</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>2 team members</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>Compliance Scanner</div><div class="pft"><i class="bi bi-x-circle no"></i>Win Score</div><button class="btn bg bfw" style="margin-top:20px;justify-content:center" onclick="showPayFlow('Starter','499')">Get Started</button></div>
+      <div class="pcard feat"><div class="ppop">Most Popular</div><div class="ppl">Pro</div><div class="ppr" style="background:linear-gradient(135deg,#fff,var(--inl));-webkit-background-clip:text;-webkit-text-fill-color:transparent">$1,499</div><div class="ppe">/month</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>Unlimited RFPs</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>100GB storage</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>10 team members</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>Win Probability Score</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>Competitor Intel</div><button class="btn bp bfw" style="margin-top:20px;justify-content:center" onclick="showPayFlow('Pro','1,499')"><i class="bi bi-lightning-fill"></i> Start Free Trial</button></div>
+      <div class="pcard"><div class="ppl">Enterprise</div><div class="ppr">Custom</div><div class="ppe">tailored</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>Everything in Pro</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>SSO/SAML</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>On-prem/FedRAMP</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>Dedicated CSM</div><div class="pft"><i class="bi bi-check-circle-fill ok"></i>CMMC/IL5 support</div><button class="btn bg bfw" style="margin-top:20px;justify-content:center" onclick="openM('salesM')">Contact Sales</button></div>
+    </div>
+  </section>
+  <footer style="border-top:1px solid var(--br);padding:28px 36px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+    <div style="display:flex;align-items:center;gap:9px"><div class="lm" style="width:28px;height:28px;font-size:13px">R</div><span style="font-family:var(--fd);font-weight:700;font-size:14px">RFPilot</span><span style="color:var(--fa);font-size:12px;margin-left:6px">© 2025 RFPilot Inc.</span></div>
+    <div style="display:flex;gap:22px"><a href="#" style="color:var(--fa);font-size:12px">Privacy</a><a href="#" style="color:var(--fa);font-size:12px">Terms</a><a href="#" style="color:var(--fa);font-size:12px">Security</a><a href="#" style="color:var(--fa);font-size:12px">Status</a></div>
+  </footer>
+</div>
+
+<!-- ══ ONBOARDING ══ -->
+<div id="OBW" style="display:none">
+  <div class="obw"><div class="obbg"></div>
+    <div class="obc">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px"><div style="display:flex;align-items:center;gap:9px"><div class="lm" style="width:30px;height:30px;font-size:14px">R</div><span style="font-family:var(--fd);font-weight:800;font-size:15px">RFPilot</span></div><button class="btn bg bsm" onclick="showApp('landing')">Skip</button></div>
+      <div class="obprog" id="obProg"><div class="obdot dn"></div><div class="obdot"></div><div class="obdot"></div><div class="obdot"></div></div>
+      <div class="obs act" id="obs1"><div class="obn">Step 1 of 4</div><div class="obt">Welcome to RFPilot 👋</div><div class="obsu">Set up your account in 2 minutes. Tell us about your company so AI can write in your voice.</div>
+        <div class="ig"><label class="lbl">Company Name</label><input class="inp" type="text" placeholder="Apex Federal Solutions" id="ob_co"></div>
+        <div class="ir"><div class="ig"><label class="lbl">CAGE Code</label><input class="inp" type="text" placeholder="8K4Z1"></div><div class="ig"><label class="lbl">NAICS</label><input class="inp" type="text" placeholder="541512"></div></div>
+        <button class="btn bp bfw" style="justify-content:center" onclick="obGo(2)">Continue <i class="bi bi-arrow-right"></i></button>
+      </div>
+      <div class="obs" id="obs2"><div class="obn">Step 2 of 4</div><div class="obt">What's your role?</div><div class="obsu">This helps us tailor the AI's suggestions and default workflows.</div>
+        <div class="cg">
+          <div class="cc sel" onclick="selChoice(this)"><div class="ccic">✍️</div><div class="cclb">Proposal Manager</div></div>
+          <div class="cc" onclick="selChoice(this)"><div class="ccic">💼</div><div class="cclb">BD Director</div></div>
+          <div class="cc" onclick="selChoice(this)"><div class="ccic">🏛️</div><div class="cclb">Capture Manager</div></div>
+          <div class="cc" onclick="selChoice(this)"><div class="ccic">👔</div><div class="cclb">Executive/Owner</div></div>
+        </div>
+        <div style="display:flex;gap:10px"><button class="btn bg" onclick="obGo(1)"><i class="bi bi-arrow-left"></i> Back</button><button class="btn bp" style="flex:1;justify-content:center" onclick="obGo(3)">Continue <i class="bi bi-arrow-right"></i></button></div>
+      </div>
+      <div class="obs" id="obs3"><div class="obn">Step 3 of 4</div><div class="obt">Choose your plan</div><div class="obsu">Start free for 14 days. No credit card required.</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
+          <div class="cc" onclick="selSingle(this,'ps')" style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px"><div style="font-size:22px">🚀</div><div style="flex:1"><div style="font-weight:700;font-size:14px">Starter — $499/mo</div><div style="font-size:12px;color:var(--mu)">5 RFPs/month · 2 team members</div></div></div>
+          <div class="cc sel" onclick="selSingle(this,'ps')" id="obProPlan" style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px"><div style="font-size:22px">⚡</div><div style="flex:1"><div style="font-weight:700;font-size:14px">Pro — $1,499/mo <span class="pill pi" style="font-size:9px;vertical-align:middle">Popular</span></div><div style="font-size:12px;color:var(--mu)">Unlimited RFPs · Win Score · Competitor Intel</div></div></div>
+          <div class="cc" onclick="selSingle(this,'ps')" style="display:flex;align-items:center;gap:14px;text-align:left;padding:14px 18px"><div style="font-size:22px">🏢</div><div style="flex:1"><div style="font-weight:700;font-size:14px">Enterprise — Custom</div><div style="font-size:12px;color:var(--mu)">On-prem · SSO · FedRAMP · Dedicated CSM</div></div></div>
+        </div>
+        <div style="display:flex;gap:10px"><button class="btn bg" onclick="obGo(2)"><i class="bi bi-arrow-left"></i> Back</button><button class="btn bp" style="flex:1;justify-content:center" onclick="obGo(4)">Continue <i class="bi bi-arrow-right"></i></button></div>
+      </div>
+      <div class="obs" id="obs4"><div class="obn">Step 4 of 4</div><div class="obt">Create your account</div><div class="obsu">14-day free trial — cancel anytime. No charge today.</div>
+        <button class="boa"><i class="bi bi-google" style="color:#4285F4"></i> Continue with Google</button>
+        <button class="boa"><i class="bi bi-microsoft" style="color:#00A4EF"></i> Continue with Microsoft</button>
+        <div class="adiv">or create with email</div>
+        <div class="ig"><label class="lbl">Work Email</label><input class="inp" type="email" placeholder="you@company.com" id="ob_em"></div>
+        <div class="ig"><label class="lbl">Password</label><input class="inp" type="password" placeholder="••••••••••••"></div>
+        <button class="btn bp bfw" style="justify-content:center;padding:12px;margin-top:4px" onclick="finishOnboard()"><i class="bi bi-rocket-takeoff-fill"></i> Launch RFPilot Free</button>
+        <div style="text-align:center;font-size:12px;color:var(--fa);margin-top:14px">By signing up you agree to our <a style="color:var(--inl)">Terms</a> and <a style="color:var(--inl)">Privacy Policy</a></div>
+        <div style="margin-top:10px"><button class="btn bg bsm" onclick="obGo(3)"><i class="bi bi-arrow-left"></i> Back</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP SHELL ══ -->
+<div id="APP" class="shell" style="display:none">
+  <div class="sov" id="SOV" onclick="closeMobSB()"></div>
+  <div class="sidebar" id="SB">
+    <div class="slogo"><div class="lm">R</div><div class="lt">RFPilot</div></div>
+    <nav class="snav">
+      <div class="ns">Main</div>
+      <div class="ni" id="nv-dashboard"     onclick="goPage('dashboard')"    ><i class="bi bi-grid-1x2-fill"></i><span class="nt">Dashboard</span></div>
+      <div class="ni" id="nv-upload"        onclick="goPage('upload')"       ><i class="bi bi-cloud-upload-fill"></i><span class="nt">Upload RFP</span></div>
+      <div class="ni" id="nv-warroom"       onclick="goPage('warroom')"      ><i class="bi bi-fire"></i><span class="nt">War Room</span><span class="nb">3</span></div>
+      <div class="ni" id="nv-library"       onclick="goPage('library')"      ><i class="bi bi-database-fill"></i><span class="nt">Library</span></div>
+      <div class="ns" style="margin-top:8px">Insights</div>
+      <div class="ni" id="nv-analytics"     onclick="goPage('analytics')"    ><i class="bi bi-bar-chart-fill"></i><span class="nt">Analytics</span></div>
+      <div class="ni" id="nv-competitor"    onclick="goPage('competitor')"   ><i class="bi bi-binoculars-fill"></i><span class="nt">Competitor Intel</span></div>
+      <div class="ni" id="nv-notifications" onclick="goPage('notifications')" ><i class="bi bi-bell-fill"></i><span class="nt">Notifications</span><span class="nb red" id="NB">4</span></div>
+      <div class="ns" style="margin-top:8px">Tools</div>
+      <div class="ni" id="nv-compliance"    onclick="goPage('compliance')"   ><i class="bi bi-shield-check"></i><span class="nt">Compliance</span></div>
+      <div class="ni" id="nv-archive"       onclick="goPage('archive')"      ><i class="bi bi-archive-fill"></i><span class="nt">Archive</span></div>
+      <div class="ni" id="nv-billing"       onclick="goPage('billing')"      ><i class="bi bi-credit-card-fill"></i><span class="nt">Billing</span></div>
+      <div class="ns" style="margin-top:8px">Account</div>
+      <div class="ni" id="nv-settings"      onclick="goPage('settings')"     ><i class="bi bi-gear-fill"></i><span class="nt">Settings</span></div>
+    </nav>
+    <div class="sfoot">
+      <div class="ni" onclick="showApp('landing')"><div class="uav">JD</div><div class="nt"><div style="font-size:13px;font-weight:600;color:var(--tx)">John Doe</div><div style="font-size:10px;color:var(--fa)">Pro Plan</div></div></div>
+    </div>
+  </div>
+
+  <div class="main" id="MAIN">
+    <!-- TOPBAR -->
+    <div class="topbar" id="TB">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn bi d-md-none" onclick="openMobSB()"><i class="bi bi-list"></i></button>
+        <button class="btn bi d-none d-md-flex" onclick="toggleSB()" data-tip="Toggle sidebar (⌘B)"><i class="bi bi-layout-sidebar-inset"></i></button>
+        <div class="tsearch" onclick="openCmd()">
+          <i class="bi bi-search" style="color:var(--fa);font-size:13px;flex-shrink:0"></i>
+          <input type="text" placeholder="Search or run command… (⌘K)" id="GS" readonly>
+          <span class="kbd">⌘K</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:7px">
+        <button class="btn bi" data-tip="Notifications" onclick="goPage('notifications')" style="position:relative"><i class="bi bi-bell"></i><span style="position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--rd);border-radius:50%;border:2px solid var(--bg)"></span></button>
+        <button class="btn bi" data-tip="Command palette" onclick="openCmd()"><i class="bi bi-command"></i></button>
+        <button class="btn bp bsm" onclick="openM('NPM')"><i class="bi bi-plus"></i> <span class="d-none d-sm-inline">New Project</span></button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="pg-dashboard" class="pv act">
+      <div class="ph" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div><h1 class="pt">Good morning, John 👋</h1><p class="ps">Here's your proposal pipeline for today</p></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bg bsm" onclick="goPage('analytics')"><i class="bi bi-bar-chart"></i> Reports</button><button class="btn bp bsm" onclick="openM('NPM')"><i class="bi bi-plus"></i> New Project</button></div>
+      </div>
+      <div class="sr">
+        <div class="sc"><div class="sn">24</div><div class="sl">Active Projects</div><div class="st up"><i class="bi bi-arrow-up-right"></i> +3 this week</div></div>
+        <div class="sc"><div class="sn">$18.4M</div><div class="sl">Pipeline Value</div><div class="st up"><i class="bi bi-arrow-up-right"></i> +12% MoM</div></div>
+        <div class="sc"><div class="sn">87%</div><div class="sl">Avg Win Score</div><div class="st up"><i class="bi bi-arrow-up-right"></i> +4pts</div></div>
+        <div class="sc"><div class="sn">142</div><div class="sl">Drafts Generated</div><div class="st dn"><i class="bi bi-arrow-down-right"></i> -2 today</div></div>
+        <div class="sc"><div class="sn">7</div><div class="sl">Due This Week</div><div class="st wn"><i class="bi bi-exclamation-triangle"></i> Urgent</div></div>
+      </div>
+      <div style="margin:0 28px 16px;padding:12px 16px;background:var(--amd);border:1px solid rgba(245,158,11,.25);border-radius:11px;display:flex;align-items:center;gap:12px;font-size:13px" id="UBanner">
+        <i class="bi bi-exclamation-triangle-fill" style="color:var(--am);font-size:16px;flex-shrink:0"></i>
+        <div style="flex:1"><strong>Storage at 47%</strong> — 52.7 GB remaining. <a style="color:var(--am);cursor:pointer;font-weight:600" onclick="goPage('billing')">View usage →</a></div>
+        <button class="btn bi" style="width:26px;height:26px;border:none;color:var(--am)" onclick="this.parentElement.remove()"><i class="bi bi-x-lg" style="font-size:12px"></i></button>
+      </div>
+      <div class="sec">
+        <div class="sh">
+          <div class="stl">Active Projects</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <div class="tabbar"><button class="tabb act" onclick="fltPrj('all',this)">All</button><button class="tabb" onclick="fltPrj('In Progress',this)">In Progress</button><button class="tabb" onclick="fltPrj('Draft',this)">Draft</button><button class="tabb" onclick="fltPrj('Review',this)">Review</button></div>
+            <button class="btn bi bsm" data-tip="Filter" onclick="toast('Filter panel','info')"><i class="bi bi-funnel"></i></button>
+          </div>
+        </div>
+        <div class="pgrid" id="PG"></div>
+        <div class="pagbar" id="PAG">
+          <button class="pbtn" id="PRP" onclick="chPg(-1)"><i class="bi bi-chevron-left"></i></button>
+          <div id="PBs" style="display:flex;gap:5px"></div>
+          <button class="pbtn" id="PNP" onclick="chPg(1)"><i class="bi bi-chevron-right"></i></button>
+          <span class="pinf" id="PIN"></span>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sh"><div class="stl">Recent Activity</div><button class="btn bg bsm" onclick="goPage('notifications')">View All</button></div>
+        <div class="card cp">
+          <div class="ai"><div class="aic" style="background:var(--ind);color:var(--inl)"><i class="bi bi-robot"></i></div><div style="flex:1"><div class="aact">AI generated draft for <span>USAF Cloud Migration RFP</span></div><div class="atm">2 min ago</div></div><span class="pill pg">Complete</span></div>
+          <div class="ai"><div class="aic" style="background:var(--gnd);color:var(--gn)"><i class="bi bi-cloud-upload-fill"></i></div><div style="flex:1"><div class="aact"><span>Sarah K.</span> uploaded 3 documents to DHS Border Tech</div><div class="atm">18 min ago</div></div></div>
+          <div class="ai"><div class="aic" style="background:var(--amd);color:var(--am)"><i class="bi bi-exclamation-triangle-fill"></i></div><div style="flex:1"><div class="aact">Compliance check flagged 2 issues in <span>VA Health IT RFP</span></div><div class="atm">1 hour ago</div></div><span class="pill pa">Review</span></div>
+          <div class="ai"><div class="aic" style="background:var(--ind);color:var(--inl)"><i class="bi bi-credit-card-fill"></i></div><div style="flex:1"><div class="aact">Payment of <span>$1,499</span> processed for April subscription</div><div class="atm">3 hours ago</div></div><span class="pill pg">Paid</span></div>
+          <div class="ai"><div class="aic" style="background:var(--ind);color:var(--inl)"><i class="bi bi-person-plus-fill"></i></div><div style="flex:1"><div class="aact">Invited <span>Marcus T.</span> to Army Logistics project</div><div class="atm">5 hours ago</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div id="pg-upload" class="pv">
+      <div class="ph"><h1 class="pt">Upload RFP Documents</h1><p class="ps">PDF, DOCX, TXT up to 200MB. Files are chunked, auto-retried, and vector-indexed.</p></div>
+      <div style="padding:22px 28px">
+        <div class="dz" id="DZ" onclick="document.getElementById('FI').click()" ondragover="drgOv(event)" ondragleave="drgLv(event)" ondrop="drgDp(event)">
+          <input type="file" id="FI" multiple accept=".pdf,.docx,.doc,.txt" style="display:none" onchange="fileSel(event)">
+          <div class="dic"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+          <div class="dtt">Drag & Drop Files Here</div><div class="dsb">or click to browse</div>
+          <div style="margin-top:18px;display:flex;gap:7px;justify-content:center;flex-wrap:wrap"><span class="pill pi"><i class="bi bi-file-earmark-pdf"></i> PDF</span><span class="pill pi"><i class="bi bi-file-earmark-word"></i> DOCX</span><span class="pill pi"><i class="bi bi-file-earmark-text"></i> TXT</span></div>
+        </div>
+        <div id="UL"></div>
+        <div style="display:flex;gap:14px;margin-top:22px;flex-wrap:wrap">
+          <div class="card cp" style="flex:1;min-width:170px"><div style="font-size:11px;color:var(--fa);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;font-weight:700">Chunked Upload</div><div style="font-size:13px;color:var(--mu)">Files split into 5MB chunks — zero data loss, auto-retry × 3.</div></div>
+          <div class="card cp" style="flex:1;min-width:170px"><div style="font-size:11px;color:var(--fa);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;font-weight:700">Smart Parsing</div><div style="font-size:13px;color:var(--mu)">AI extracts sections, requirements, and attachments automatically.</div></div>
+          <div class="card cp" style="flex:1;min-width:170px"><div style="font-size:11px;color:var(--fa);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;font-weight:700">Vector Indexing</div><div style="font-size:13px;color:var(--mu)">Embedded into pgvector immediately for evidence retrieval.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WAR ROOM -->
+    <div id="pg-warroom" class="pv" style="padding:0">
+      <div class="wrt">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="bc"><span onclick="goPage('dashboard')">Projects</span><span class="bcs">/</span><span>USAF Cloud Migration</span><span class="bcs">/</span><span class="bcc">War Room</span></div>
+          <span class="pill pa">Due Apr 18</span><span class="pill pg" id="SPill"><i class="bi bi-cloud-check"></i> Saved</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+          <div class="avs"><div class="avm" data-tip="John D.">JD</div><div class="avm" data-tip="Sarah K.">SK</div><div class="avm" data-tip="Marcus T.">MT</div></div>
+          <button class="btn bg bsm sevb" style="display:none" onclick="openEvDr()"><i class="bi bi-archive"></i> Evidence</button>
+          <button class="btn bg bsm" onclick="toast('Version history opened','info')"><i class="bi bi-clock-history"></i> <span class="d-none d-sm-inline">History</span></button>
+          <button class="btn bg bsm" onclick="openM('SHM')"><i class="bi bi-share"></i> <span class="d-none d-sm-inline">Share</span></button>
+          <button class="btn bp bsm" onclick="toast('Exporting PDF…','success')"><i class="bi bi-download"></i> <span class="d-none d-sm-inline">Export</span></button>
+        </div>
+      </div>
+      <div class="wrl">
+        <div class="op">
+          <div class="ph2"><div class="ptl">Outline</div><button class="btn bi" style="width:26px;height:26px" onclick="toast('Outline regenerated!','success')"><i class="bi bi-arrow-clockwise" style="font-size:12px"></i></button></div>
+          <div class="ol">
+            <div class="oi act" onclick="setOI(this)"><span class="on">01</span>Executive Summary<i class="bi bi-check-circle-fill" style="color:var(--gn);margin-left:auto;font-size:12px"></i></div>
+            <div class="oi" onclick="setOI(this)"><span class="on">02</span>Technical Approach</div>
+            <div class="oi" onclick="setOI(this)"><span class="on">03</span>Management Plan</div>
+            <div class="oi" onclick="setOI(this)"><span class="on">04</span>Past Performance<i class="bi bi-check-circle-fill" style="color:var(--gn);margin-left:auto;font-size:12px"></i></div>
+            <div class="oi" onclick="setOI(this)"><span class="on">05</span>Staffing Plan</div>
+            <div class="oi" onclick="setOI(this)"><span class="on">06</span>Security & Compliance</div>
+            <div class="oi" onclick="setOI(this)"><span class="on">07</span>Pricing Strategy</div>
+            <div class="oi" onclick="setOI(this)"><span class="on">08</span>Transition Plan</div>
+          </div>
+          <div style="padding:11px;border-top:1px solid var(--br)">
+            <div style="font-size:10px;font-weight:700;color:var(--fa);text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px">Win Probability</div>
+            <div class="wr2">
+              <svg class="wrs" width="88" height="88" viewBox="0 0 88 88">
+                <circle cx="44" cy="44" r="35" fill="none" stroke="var(--sf3)" stroke-width="7"/>
+                <circle cx="44" cy="44" r="35" fill="none" stroke="url(#wg)" stroke-width="7" stroke-dasharray="220" stroke-dashoffset="44" stroke-linecap="round"/>
+                <defs><linearGradient id="wg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6366F1"/><stop offset="100%" stop-color="#22C55E"/></linearGradient></defs>
+              </svg>
+              <div class="wrl2" style="margin-top:-46px">82%</div><div class="wrsb">Win Score</div>
+            </div>
+          </div>
+        </div>
+        <div class="ep">
+          <div class="etb">
+            <button class="btn bi" data-tip="Bold"><i class="bi bi-type-bold"></i></button>
+            <button class="btn bi" data-tip="Italic"><i class="bi bi-type-italic"></i></button>
+            <button class="btn bi" data-tip="Underline"><i class="bi bi-type-underline"></i></button>
+            <div class="tsx"></div>
+            <button class="btn bi" data-tip="H1"><i class="bi bi-type-h1"></i></button>
+            <button class="btn bi" data-tip="H2"><i class="bi bi-type-h2"></i></button>
+            <button class="btn bi" data-tip="List"><i class="bi bi-list-ul"></i></button>
+            <div class="tsx"></div>
+            <button class="btn bi" data-tip="Undo"><i class="bi bi-arrow-counterclockwise"></i></button>
+            <button class="btn bi" data-tip="Redo"><i class="bi bi-arrow-clockwise"></i></button>
+            <div class="tsx"></div>
+            <button class="btn bp bsm" onclick="startAI()"><i class="bi bi-stars"></i> Generate AI Draft</button>
+            <button class="btn bg bsm" onclick="toast('Refining…','info')"><i class="bi bi-arrow-repeat"></i> Refine</button>
+            <span class="kbd" style="margin-left:auto">⌘+Enter</span>
+          </div>
+          <div class="ea" id="EA"><div class="ec" id="EC">
+            <div class="est">1. Executive Summary</div>
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:15px;flex-wrap:wrap"><span class="pill pg" style="font-size:10px">AI Generated</span><div class="cr" style="margin:0"><div class="ct"><div class="cf" style="width:88%"></div></div><span>88% confidence</span></div></div>
+            <p class="ep2"><strong style="color:#fff">Apex Federal Solutions (AFS)</strong> is pleased to submit this proposal in response to Solicitation No. FA8771-25-R-0042 for Cloud Infrastructure Migration and Managed Services in support of the United States Air Force (USAF). AFS brings over 15 years of proven federal cloud modernization expertise, having successfully migrated more than 2,400 systems across 18 federal agencies with a 100% on-time delivery record.</p>
+            <div class="ehl"><strong>Value Proposition:</strong> AFS will deliver a fully FedRAMP-authorized, zero-downtime migration framework reducing USAF infrastructure costs by an estimated 34% in Year 1 while achieving ATO within 90 days of contract award.</div>
+            <p class="ep2">Our approach leverages proven Infrastructure-as-Code (IaC) methodology, AWS GovCloud and Azure Government dual-cloud architecture, and our proprietary CloudShield™ zero-trust security wrapper — ensuring uninterrupted mission continuity throughout the 24-month migration lifecycle.</p>
+            <div id="AISt"></div>
+            <div class="est" style="margin-top:36px">2. Technical Approach</div>
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:15px;flex-wrap:wrap"><span class="pill pa" style="font-size:10px">Draft</span><div class="cr" style="margin:0"><div class="ct"><div class="cf" style="width:65%"></div></div><span>65% confidence — click Refine</span></div></div>
+            <p class="ep2">AFS proposes a phased migration strategy aligned to the Digital Modernization Strategy Framework. Phase 1 (Months 1-6) encompasses discovery, dependency mapping, and environment provisioning. Phase 2 (Months 7-18) executes workload migration using our "lift-optimize-shift" approach. Phase 3 (Months 19-24) delivers steady-state operations and continuous optimization.</p>
+          </div></div>
+          <div class="edst">
+            <div class="sind"><i class="bi bi-cloud-check-fill" id="SI"></i><span id="SL">Auto-saved 2s ago</span></div>
+            <span>·</span><span id="WC">412 words</span><span>·</span><span>Section 1 of 8</span>
+            <span style="margin-left:auto;display:flex;gap:9px"><span class="kbd">⌘S</span>save <span class="kbd">⌘Z</span>undo</span>
+          </div>
+        </div>
+        <div class="evp" id="EVP">
+          <div class="ph2"><div class="ptl">Evidence</div><button class="btn bi" style="width:26px;height:26px"><i class="bi bi-search" style="font-size:11px"></i></button></div>
+          <div class="amp">
+            <div class="amt"><i class="bi bi-stars" style="color:var(--inl)"></i>AI Co-Pilot</div>
+            <textarea class="ata" placeholder="Ask AI to improve, expand, or rewrite…" id="AIP"></textarea>
+            <button class="btn bp bfw bsm" style="margin-top:8px;justify-content:center" onclick="startAI()"><i class="bi bi-lightning-fill"></i> Generate</button>
+          </div>
+          <div class="evl">
+            <div style="font-size:10px;font-weight:700;color:var(--fa);text-transform:uppercase;letter-spacing:.06em;padding:0 4px;margin-bottom:7px">Source Chunks (8)</div>
+            <div class="evc hi" onclick="this.classList.toggle('hi')"><div class="evs"><i class="bi bi-file-earmark-text"></i>DHS_Cloud_2023.pdf</div><div class="evt">"Zero-downtime migration of 847 workloads across 6 classified networks without a single SLA breach."</div><div class="evsco"><span>Relevance</span><div class="scb"><div class="scf" style="width:92%"></div></div><span>92%</span></div></div>
+            <div class="evc" onclick="this.classList.toggle('hi')"><div class="evs"><i class="bi bi-file-earmark-text"></i>USAF_IT_2022.pdf</div><div class="evt">FedRAMP High ATO in 78 days, 12 days ahead of the contractual 90-day target.</div><div class="evsco"><span>Relevance</span><div class="scb"><div class="scf" style="width:87%"></div></div><span>87%</span></div></div>
+            <div class="evc" onclick="this.classList.toggle('hi')"><div class="evs"><i class="bi bi-file-earmark-text"></i>Past_Perf.docx</div><div class="evt">IaC framework cut provisioning from 3 weeks to 4 hours — 840% velocity improvement.</div><div class="evsco"><span>Relevance</span><div class="scb"><div class="scf" style="width:79%"></div></div><span>79%</span></div></div>
+            <div class="evc" onclick="this.classList.toggle('hi')"><div class="evs"><i class="bi bi-file-earmark-text"></i>VA_Health_IT.pdf</div><div class="evt">34% cost reduction in Year 1 through right-sizing and Spot Fleet automation.</div><div class="evsco"><span>Relevance</span><div class="scb"><div class="scf" style="width:74%"></div></div><span>74%</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIBRARY -->
+    <div id="pg-library" class="pv">
+      <div class="ph"><h1 class="pt">Knowledge Base Library</h1><p class="ps">All documents, embedding status, chunk counts, and usage history.</p></div>
+      <div style="padding:22px 28px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+          <div class="tabbar"><button class="tabb act" onclick="fltDoc('all',this)">All</button><button class="tabb" onclick="fltDoc('indexed',this)">Indexed</button><button class="tabb" onclick="fltDoc('processing',this)">Processing</button><button class="tabb" onclick="fltDoc('pending',this)">Pending</button></div>
+          <button class="btn bp bsm" onclick="goPage('upload')"><i class="bi bi-cloud-upload-fill"></i> Upload New</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:11px;margin-bottom:18px">
+          <div style="display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--br);border-radius:var(--r);padding:7px 13px;flex:1;max-width:340px">
+            <i class="bi bi-search" style="color:var(--fa);font-size:13px"></i>
+            <input type="text" placeholder="Search documents…" style="background:none;border:none;outline:none;color:var(--tx);font-size:13px;width:100%" oninput="fltDocS(this.value)">
+          </div>
+          <span style="font-size:13px;color:var(--fa)" id="DC">8 documents</span>
+        </div>
+        <div class="dgrid" id="DG"></div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div id="pg-analytics" class="pv">
+      <div class="ph"><h1 class="pt">Analytics & Reports</h1><p class="ps">Performance metrics, win rates, and proposal trends.</p></div>
+      <div style="padding:22px 28px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+          <div class="tabbar"><button class="tabb act" onclick="this.parentElement.querySelectorAll('.tabb').forEach(b=>b.classList.remove('act'));this.classList.add('act')">30 Days</button><button class="tabb" onclick="this.parentElement.querySelectorAll('.tabb').forEach(b=>b.classList.remove('act'));this.classList.add('act')">Quarter</button><button class="tabb" onclick="this.parentElement.querySelectorAll('.tabb').forEach(b=>b.classList.remove('act'));this.classList.add('act')">Year</button></div>
+          <button class="btn bg bsm" onclick="toast('Exporting analytics…','success')"><i class="bi bi-download"></i> Export PDF</button>
+        </div>
+        <div class="sr" style="padding:0;margin-bottom:20px">
+          <div class="sc"><div class="sn">$3.2M</div><div class="sl">Revenue Won (30d)</div><div class="st up"><i class="bi bi-arrow-up-right"></i>+18%</div></div>
+          <div class="sc"><div class="sn">68%</div><div class="sl">Win Rate (30d)</div><div class="st up"><i class="bi bi-arrow-up-right"></i>+7pts</div></div>
+          <div class="sc"><div class="sn">14</div><div class="sl">Proposals Submitted</div><div class="st up"><i class="bi bi-arrow-up-right"></i>+2</div></div>
+          <div class="sc"><div class="sn">3.8d</div><div class="sl">Avg Draft Time</div><div class="st dn"><i class="bi bi-arrow-down-right"></i>-1.2d</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px">
+          <div class="chc"><div class="cht">Proposals per Week</div><div class="chs">Last 8 weeks</div>
+            <div class="bch"><div class="bcol"><div class="bfil" style="height:55%"></div><div class="bval">6</div><div class="blbl">W1</div></div><div class="bcol"><div class="bfil" style="height:70%"></div><div class="bval">8</div><div class="blbl">W2</div></div><div class="bcol"><div class="bfil" style="height:45%"></div><div class="bval">5</div><div class="blbl">W3</div></div><div class="bcol"><div class="bfil" style="height:85%"></div><div class="bval">10</div><div class="blbl">W4</div></div><div class="bcol"><div class="bfil" style="height:60%"></div><div class="bval">7</div><div class="blbl">W5</div></div><div class="bcol"><div class="bfil" style="height:90%"></div><div class="bval">11</div><div class="blbl">W6</div></div><div class="bcol"><div class="bfil" style="height:75%"></div><div class="bval">9</div><div class="blbl">W7</div></div><div class="bcol"><div class="bfil" style="height:95%;background:linear-gradient(180deg,var(--gn),rgba(34,197,94,.5))"></div><div class="bval" style="color:var(--gn)">12</div><div class="blbl">W8</div></div></div>
+          </div>
+          <div class="chc"><div class="cht">Win Rate by Priority</div><div class="chs">Current quarter</div>
+            <div style="margin-top:16px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font-size:13px;display:flex;align-items:center;gap:7px"><span class="pill pr" style="font-size:9px">High</span></span><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:5px;background:var(--sf3);border-radius:3px;overflow:hidden"><div style="height:100%;width:78%;background:var(--rd);border-radius:3px"></div></div><span style="font-size:12px;font-weight:600">78%</span></div></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font-size:13px;display:flex;align-items:center;gap:7px"><span class="pill pa" style="font-size:9px">Med</span></span><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:5px;background:var(--sf3);border-radius:3px;overflow:hidden"><div style="height:100%;width:65%;background:var(--am);border-radius:3px"></div></div><span style="font-size:12px;font-weight:600">65%</span></div></div>
+              <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;display:flex;align-items:center;gap:7px"><span class="pill pg" style="font-size:9px">Low</span></span><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:5px;background:var(--sf3);border-radius:3px;overflow:hidden"><div style="height:100%;width:52%;background:var(--gn);border-radius:3px"></div></div><span style="font-size:12px;font-weight:600">52%</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="chc"><div class="cht">Top Winning Agencies</div><div class="chs">By contract value</div>
+            <div style="margin-top:14px"><div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--br)"><span style="font-size:13px;font-weight:500">USAF AFMC</span><span style="font-size:13px;color:var(--gn);font-weight:600">$12.4M</span></div><div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--br)"><span style="font-size:13px;font-weight:500">DHS CBP</span><span style="font-size:13px;color:var(--gn);font-weight:600">$8.2M</span></div><div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--br)"><span style="font-size:13px;font-weight:500">VA</span><span style="font-size:13px;color:var(--gn);font-weight:600">$6.1M</span></div><div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:13px;font-weight:500">Army PEO EIS</span><span style="font-size:13px;color:var(--gn);font-weight:600">$2.9M</span></div></div>
+          </div>
+          <div class="chc"><div class="cht">AI Token Usage Trend</div><div class="chs">Tokens per day (last 10 days)</div>
+            <svg viewBox="0 0 300 80" style="width:100%;height:100px;margin-top:14px;overflow:visible">
+              <defs><linearGradient id="lg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6366F1" stop-opacity=".3"/><stop offset="100%" stop-color="#6366F1" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0,65 L30,55 L60,45 L90,50 L120,30 L150,35 L180,20 L210,25 L240,15 L270,10 L300,5" stroke="var(--in)" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <path d="M0,65 L30,55 L60,45 L90,50 L120,30 L150,35 L180,20 L210,25 L240,15 L270,10 L300,5 L300,80 L0,80Z" fill="url(#lg2)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPETITOR -->
+    <div id="pg-competitor" class="pv">
+      <div class="ph"><h1 class="pt">Competitor Intelligence</h1><p class="ps">AI-analyzed competitor strengths, weaknesses, and positioning.</p></div>
+      <div style="padding:22px 28px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--br);border-radius:var(--r);padding:7px 13px;flex:1;max-width:360px"><i class="bi bi-search" style="color:var(--fa);font-size:13px"></i><input type="text" placeholder="Search competitor or capability…" style="background:none;border:none;outline:none;color:var(--tx);font-size:13px;width:100%"></div>
+          <button class="btn bg bsm" onclick="toast('Refreshing intel…','info')"><i class="bi bi-arrow-repeat"></i> Refresh</button>
+          <button class="btn bp bsm" onclick="toast('Report exported!','success')"><i class="bi bi-download"></i> Export</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px">
+          <div class="comc"><div class="comh"><div class="coml" style="background:linear-gradient(135deg,#1E3A5F,#2E5EAA)">BA</div><div><div class="comn">Booz Allen Hamilton</div><div class="comt">Gov IT Consulting · $10.3B · 29K employees</div></div><span class="pill pr" style="margin-left:auto;font-size:9px">High Threat</span></div><div style="font-size:11px;font-weight:700;color:var(--fa);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Strengths vs Your Counter</div><div class="coms"><i class="bi bi-dash-circle-fill str"></i><div><div style="font-size:12px;font-weight:600">Deep NSA/IC relationships</div><div style="font-size:11px;color:var(--fa)">Counter: Lead with USAF domain expertise and CloudShield™ ATO speed</div></div></div><div class="coms"><i class="bi bi-check-circle-fill wk"></i><div><div style="font-size:12px;font-weight:600">Weak: Cost competitiveness</div><div style="font-size:11px;color:var(--fa)">Your advantage: 22% lower TCO in RFP scenarios</div></div></div><button class="btn bg bsm" style="margin-top:14px" onclick="toast('Generating counter-narrative for Booz Allen…','info')"><i class="bi bi-magic"></i> Generate Counter-Narrative</button></div>
+          <div class="comc"><div class="comh"><div class="coml" style="background:linear-gradient(135deg,#1B5E20,#388E3C)">LD</div><div><div class="comn">Leidos</div><div class="comt">Defense & Intel · $15.4B · 47K employees</div></div><span class="pill pa" style="margin-left:auto;font-size:9px">Medium Threat</span></div><div style="font-size:11px;font-weight:700;color:var(--fa);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Strengths vs Your Counter</div><div class="coms"><i class="bi bi-dash-circle-fill str"></i><div><div style="font-size:12px;font-weight:600">DoD Zero Trust expertise</div><div style="font-size:11px;color:var(--fa)">Counter: Lead with CMMC Level 3 + CloudShield™ zero-trust story</div></div></div><div class="coms"><i class="bi bi-check-circle-fill wk"></i><div><div style="font-size:12px;font-weight:600">Weak: Cloud migration speed</div><div style="font-size:11px;color:var(--fa)">Your advantage: 78-day ATO vs their 110-day average</div></div></div><button class="btn bg bsm" style="margin-top:14px" onclick="toast('Generating counter-narrative for Leidos…','info')"><i class="bi bi-magic"></i> Generate Counter-Narrative</button></div>
+          <div class="comc"><div class="comh"><div class="coml" style="background:linear-gradient(135deg,#4A148C,#7B1FA2)">SC</div><div><div class="comn">SAIC</div><div class="comt">Gov Technology · $7.4B · 23K employees</div></div><span class="pill pg" style="margin-left:auto;font-size:9px">Low Threat</span></div><div style="font-size:11px;font-weight:700;color:var(--fa);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Positioning Analysis</div><div class="coms"><i class="bi bi-check-circle-fill wk"></i><div><div style="font-size:12px;font-weight:600">Weak: Recent compliance violations</div><div style="font-size:11px;color:var(--fa)">Your advantage: Clean DCAA audit, ISO 27001, CMMC certified</div></div></div><div class="coms"><i class="bi bi-check-circle-fill wk"></i><div><div style="font-size:12px;font-weight:600">Weak: Cloud-native capability</div><div style="font-size:11px;color:var(--fa)">Your advantage: AWS Premier Partner, Azure Government Expert</div></div></div><button class="btn bg bsm" style="margin-top:14px" onclick="toast('Generating counter-narrative for SAIC…','info')"><i class="bi bi-magic"></i> Generate Counter-Narrative</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div id="pg-notifications" class="pv">
+      <div class="ph"><h1 class="pt">Notifications</h1><p class="ps">All alerts, system events, and team activity.</p></div>
+      <div style="padding:22px 28px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+          <div class="tabbar"><button class="tabb act" onclick="this.parentElement.querySelectorAll('.tabb').forEach(b=>b.classList.remove('act'));this.classList.add('act')">All</button><button class="tabb" onclick="this.parentElement.querySelectorAll('.tabb').forEach(b=>b.classList.remove('act'));this.classList.add('act')">Unread</button><button class="tabb" onclick="this.parentElement.querySelectorAll('.tabb').forEach(b=>b.classList.remove('act'));this.classList.add('act')">Mentions</button></div>
+          <button class="btn bg bsm" onclick="markAllRead()"><i class="bi bi-check-all"></i> Mark All Read</button>
+        </div>
+        <div class="card cp" id="NL">
+          <div class="nti unr" onclick="this.classList.remove('unr')"><div class="ntic" style="background:var(--rdd);color:var(--rd)"><i class="bi bi-exclamation-triangle-fill"></i></div><div style="flex:1"><div class="ntit">Critical Compliance Gap Detected</div><div class="ntid">USAF Cloud Migration RFP missing Subcontracting Plan (FAR 52.219-9). Due in 8 days.</div><div class="ntitm">2 minutes ago</div></div><button class="btn bg bsm" onclick="goPage('compliance');event.stopPropagation()">Fix Now</button></div>
+          <div class="nti unr" onclick="this.classList.remove('unr')"><div class="ntic" style="background:var(--gnd);color:var(--gn)"><i class="bi bi-check-circle-fill"></i></div><div style="flex:1"><div class="ntit">AI Draft Complete</div><div class="ntid">Executive Summary for DHS Border Technology generated. 94% confidence.</div><div class="ntitm">18 min ago</div></div><button class="btn bg bsm" onclick="goPage('warroom');event.stopPropagation()">Review</button></div>
+          <div class="nti unr" onclick="this.classList.remove('unr')"><div class="ntic" style="background:var(--amd);color:var(--am)"><i class="bi bi-clock-fill"></i></div><div style="flex:1"><div class="ntit">Deadline Approaching</div><div class="ntid">VA Health IT Modernization due in 19 days. Current completion: 88%. 2 sections remaining.</div><div class="ntitm">1 hour ago</div></div></div>
+          <div class="nti unr" onclick="this.classList.remove('unr');document.getElementById('NB').textContent='0'"><div class="ntic" style="background:var(--ind);color:var(--inl)"><i class="bi bi-credit-card-fill"></i></div><div style="flex:1"><div class="ntit">Payment Processed</div><div class="ntid">$1,499.00 charged successfully for April 2025 Pro plan. Invoice available.</div><div class="ntitm">3 hours ago</div></div><button class="btn bg bsm" onclick="goPage('billing');event.stopPropagation()">View Invoice</button></div>
+          <div class="nti" onclick="this.classList.remove('unr')"><div class="ntic" style="background:var(--gnd);color:var(--gn)"><i class="bi bi-cloud-upload-fill"></i></div><div style="flex:1"><div class="ntit">Documents Indexed</div><div class="ntid">VA_Health_IT_Proposal.docx embedded. 198 chunks added to vector store.</div><div class="ntitm">5 hours ago</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPLIANCE -->
+    <div id="pg-compliance" class="pv">
+      <div class="ph"><h1 class="pt">Compliance Scanner</h1><p class="ps">Automated requirement extraction and gap analysis.</p></div>
+      <div style="padding:22px 28px">
+        <div class="sr" style="padding:0;margin-bottom:22px"><div class="sc"><div class="sn" style="-webkit-text-fill-color:var(--gn)">38</div><div class="sl">Met</div></div><div class="sc"><div class="sn" style="-webkit-text-fill-color:var(--am)">4</div><div class="sl">Needs Review</div></div><div class="sc"><div class="sn" style="-webkit-text-fill-color:var(--rd)">2</div><div class="sl">Critical</div></div><div class="sc"><div class="sn">95%</div><div class="sl">Score</div></div></div>
+        <div class="card cp">
+          <div style="font-family:var(--fd);font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">Requirement Check Results<button class="btn bp bsm" onclick="toast('AI auto-fixing gaps…','info')"><i class="bi bi-magic"></i> Auto-Fix All</button></div>
+          <div class="creq"><div class="crqi" style="color:var(--gn)"><i class="bi bi-check-circle-fill"></i></div><div style="flex:1"><div class="crql">FedRAMP High Authorization</div><div class="crqd">✓ Referenced in Section 3.2 — ATO within 90 days. Evidence linked.</div></div><span class="pill pg">Met</span></div>
+          <div class="creq"><div class="crqi" style="color:var(--gn)"><i class="bi bi-check-circle-fill"></i></div><div style="flex:1"><div class="crql">Zero-Downtime Migration Plan</div><div class="crqd">✓ Fully addressed in Technical Approach, Phase 2.</div></div><span class="pill pg">Met</span></div>
+          <div class="creq"><div class="crqi" style="color:var(--am)"><i class="bi bi-exclamation-triangle-fill"></i></div><div style="flex:1"><div class="crql">ITAR / Export Control Statement</div><div class="crqd">⚠ Required in Section L.4. Not yet drafted.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px"><span class="pill pa">Missing</span><button class="btn bp bsm" onclick="toast('Generating ITAR statement…','info')">Fix with AI</button></div></div>
+          <div class="creq"><div class="crqi" style="color:var(--rd)"><i class="bi bi-x-circle-fill"></i></div><div style="flex:1"><div class="crql">Subcontracting Plan (FAR 52.219-9)</div><div class="crqd">✗ Critical: Required for contracts over $750K.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px"><span class="pill pr">Critical</span><button class="btn bp bsm" onclick="toast('Generating subcontracting plan…','info')">Fix with AI</button></div></div>
+          <div class="creq"><div class="crqi" style="color:var(--rd)"><i class="bi bi-x-circle-fill"></i></div><div style="flex:1"><div class="crql">CMMC Level 3 Documentation</div><div class="crqd">✗ Critical: CUI handling procedures not documented.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px"><span class="pill pr">Critical</span><button class="btn bp bsm" onclick="toast('Generating CMMC procedures…','info')">Fix with AI</button></div></div>
+          <div class="creq"><div class="crqi" style="color:var(--gn)"><i class="bi bi-check-circle-fill"></i></div><div style="flex:1"><div class="crql">Key Personnel Resumes</div><div class="crqd">✓ 5 of 5 required CVs attached in Volume IV.</div></div><span class="pill pg">Met</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARCHIVE -->
+    <div id="pg-archive" class="pv">
+      <div class="ph"><h1 class="pt">Archive</h1><p class="ps">Archived and deleted projects. Restore within 30 days.</p></div>
+      <div style="padding:22px 28px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap"><div class="tabbar"><button class="tabb act" onclick="this.parentElement.querySelectorAll('.tabb').forEach(b=>b.classList.remove('act'));this.classList.add('act')">Archived</button><button class="tabb" onclick="this.parentElement.querySelectorAll('.tabb').forEach(b=>b.classList.remove('act'));this.classList.add('act')">Deleted</button></div><span style="font-size:12px;color:var(--fa);margin-left:auto">5 archived · 2 pending deletion</span></div>
+        <div class="arcr"><div style="width:38px;height:38px;border-radius:9px;background:var(--sf3);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--fa);flex-shrink:0"><i class="bi bi-folder2"></i></div><div style="flex:1"><div class="arcn">USAF Logistics Overhaul 2024</div><div class="arcm">Archived Jan 12, 2025 · $8.2M · 89% complete</div></div><button class="btn bs bsm" onclick="toast('Project restored!','success')"><i class="bi bi-arrow-counterclockwise"></i> Restore</button><button class="btn bd bsm" onclick="toast('Permanently deleted.','error')"><i class="bi bi-trash3"></i></button></div>
+        <div class="arcr"><div style="width:38px;height:38px;border-radius:9px;background:var(--sf3);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--fa);flex-shrink:0"><i class="bi bi-folder2"></i></div><div style="flex:1"><div class="arcn">EPA Water Systems RFP</div><div class="arcm">Archived Feb 4, 2025 · $1.4M · 42% complete</div></div><button class="btn bs bsm" onclick="toast('Project restored!','success')"><i class="bi bi-arrow-counterclockwise"></i> Restore</button><button class="btn bd bsm" onclick="toast('Permanently deleted.','error')"><i class="bi bi-trash3"></i></button></div>
+        <div class="arcr"><div style="width:38px;height:38px;border-radius:9px;background:var(--sf3);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--fa);flex-shrink:0"><i class="bi bi-folder2"></i></div><div style="flex:1"><div class="arcn">DoD Cybersecurity Audit Tool</div><div class="arcm">Archived Mar 22, 2025 · $3.6M · 100% complete · Won ✓</div></div><button class="btn bs bsm" onclick="toast('Project restored!','success')"><i class="bi bi-arrow-counterclockwise"></i> Restore</button><button class="btn bd bsm" onclick="toast('Permanently deleted.','error')"><i class="bi bi-trash3"></i></button></div>
+        <div style="margin-top:20px;padding:14px;background:var(--amd);border:1px solid rgba(245,158,11,.2);border-radius:11px;font-size:13px;color:var(--mu)"><i class="bi bi-info-circle" style="color:var(--am);margin-right:8px"></i>Deleted projects are permanently removed after 30 days.</div>
+      </div>
+    </div>
+
+    <!-- BILLING -->
+    <div id="pg-billing" class="pv">
+      <div class="ph"><h1 class="pt">Billing & Payments</h1><p class="ps">Manage your subscription, payment methods, and invoices.</p></div>
+      <div class="blayout">
+        <div>
+          <div style="font-family:var(--fd);font-weight:700;font-size:15px;margin-bottom:14px">Current Usage</div>
+          <div class="ugrid">
+            <div class="uc"><div class="ul">RFPs This Month</div><div class="uv">23 <span style="font-size:15px;color:var(--fa);font-weight:400">/ ∞</span></div><div class="ub"><div class="uf" style="width:100%"></div></div><div class="uft"><span>Unlimited on Pro</span></div></div>
+            <div class="uc"><div class="ul">Storage</div><div class="uv">47.3 <span style="font-size:15px;color:var(--fa);font-weight:400">GB</span></div><div class="ub"><div class="uf" style="width:47%"></div></div><div class="uft"><span>47%</span><span>52.7 GB free</span></div></div>
+            <div class="uc"><div class="ul">AI Tokens</div><div class="uv">2.1M <span style="font-size:15px;color:var(--fa);font-weight:400">/ 5M</span></div><div class="ub"><div class="uf" style="width:42%"></div></div><div class="uft"><span>42%</span><span>2.9M left</span></div></div>
+            <div class="uc"><div class="ul">Team Members</div><div class="uv">6 <span style="font-size:15px;color:var(--fa);font-weight:400">/ 10</span></div><div class="ub"><div class="uf" style="width:60%"></div></div><div class="uft"><span>60%</span><span>4 seats left</span></div></div>
+          </div>
+          <div style="font-family:var(--fd);font-weight:700;font-size:15px;margin-bottom:14px">Your Plan</div>
+          <div class="planc cur" style="margin-bottom:12px">
+            <div class="plang"></div>
+            <span style="position:absolute;top:20px;right:20px"><span class="pill pi">Active</span></span>
+            <div class="plnm">Pro Plan</div>
+            <div class="plpr" style="background:linear-gradient(135deg,#fff,var(--inl));-webkit-background-clip:text;-webkit-text-fill-color:transparent">$1,499</div>
+            <div class="plpe">/ month · Next bill May 9, 2025</div>
+            <div class="plft"><i class="bi bi-check-circle-fill ok"></i>Unlimited RFPs · 100GB · 10 seats</div>
+            <div class="plft"><i class="bi bi-check-circle-fill ok"></i>Win Score · Competitor Intel</div>
+            <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+              <button class="btn bp bsm" onclick="openM('UPM')"><i class="bi bi-rocket-takeoff"></i> Upgrade Plan</button>
+              <button class="btn bd bsm" onclick="openM('CNM')">Cancel Subscription</button>
+            </div>
+          </div>
+          <div style="font-family:var(--fd);font-weight:700;font-size:15px;margin-bottom:14px">Payment Method</div>
+          <div class="card cp" style="margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+              <div style="width:48px;height:32px;border-radius:6px;background:linear-gradient(135deg,#1A1F71,#2671B2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0">VISA</div>
+              <div style="flex:1"><div style="font-weight:600;font-size:14px">Visa ending in 4242</div><div style="font-size:12px;color:var(--fa)">Expires 12/27 · john@apexfederal.com</div></div>
+              <span class="pill pg">Default</span>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn bg bsm" onclick="openM('ACM')"><i class="bi bi-plus"></i> Add Card</button>
+              <button class="btn bg bsm" onclick="openM('UCM')"><i class="bi bi-pencil"></i> Update Card</button>
+            </div>
+          </div>
+          <div style="font-family:var(--fd);font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">Invoice History<button class="btn bg bsm" onclick="toast('Downloading all invoices…','info')"><i class="bi bi-download"></i> Export All</button></div>
+          <div class="card cp">
+            <table style="width:100%;border-collapse:collapse">
+              <thead><tr><th style="font-size:10px;font-weight:700;color:var(--fa);text-transform:uppercase;padding:9px 12px;text-align:left;border-bottom:1px solid var(--br)">Period</th><th style="font-size:10px;font-weight:700;color:var(--fa);text-transform:uppercase;padding:9px 12px;text-align:left;border-bottom:1px solid var(--br)">Amount</th><th style="font-size:10px;font-weight:700;color:var(--fa);text-transform:uppercase;padding:9px 12px;text-align:left;border-bottom:1px solid var(--br)">Status</th><th style="font-size:10px;font-weight:700;color:var(--fa);text-transform:uppercase;padding:9px 12px;text-align:left;border-bottom:1px solid var(--br)">Invoice</th></tr></thead>
+              <tbody>
+                <tr onmouseover="this.style.background='var(--sf2)'" onmouseout="this.style.background=''"><td style="padding:11px 12px;font-size:13px;border-bottom:1px solid var(--br)">April 2025</td><td style="padding:11px 12px;font-size:13px;font-weight:600;border-bottom:1px solid var(--br)">$1,499.00</td><td style="padding:11px 12px;border-bottom:1px solid var(--br)"><span class="pill pg">Paid</span></td><td style="padding:11px 12px;border-bottom:1px solid var(--br)"><button class="btn bg bsm" onclick="toast('Downloading INV-2025-04.pdf','info')"><i class="bi bi-file-earmark-pdf"></i> PDF</button></td></tr>
+                <tr onmouseover="this.style.background='var(--sf2)'" onmouseout="this.style.background=''"><td style="padding:11px 12px;font-size:13px;border-bottom:1px solid var(--br)">March 2025</td><td style="padding:11px 12px;font-size:13px;font-weight:600;border-bottom:1px solid var(--br)">$1,499.00</td><td style="padding:11px 12px;border-bottom:1px solid var(--br)"><span class="pill pg">Paid</span></td><td style="padding:11px 12px;border-bottom:1px solid var(--br)"><button class="btn bg bsm" onclick="toast('Downloading INV-2025-03.pdf','info')"><i class="bi bi-file-earmark-pdf"></i> PDF</button></td></tr>
+                <tr onmouseover="this.style.background='var(--sf2)'" onmouseout="this.style.background=''"><td style="padding:11px 12px;font-size:13px;border-bottom:1px solid var(--br)">February 2025</td><td style="padding:11px 12px;font-size:13px;font-weight:600;border-bottom:1px solid var(--br)">$1,499.00</td><td style="padding:11px 12px;border-bottom:1px solid var(--br)"><span class="pill pg">Paid</span></td><td style="padding:11px 12px;border-bottom:1px solid var(--br)"><button class="btn bg bsm" onclick="toast('Downloading INV-2025-02.pdf','info')"><i class="bi bi-file-earmark-pdf"></i> PDF</button></td></tr>
+                <tr onmouseover="this.style.background='var(--sf2)'" onmouseout="this.style.background=''"><td style="padding:11px 12px;font-size:13px;border-bottom:1px solid var(--br)">January 2025</td><td style="padding:11px 12px;font-size:13px;font-weight:600;border-bottom:1px solid var(--br)">$999.00</td><td style="padding:11px 12px;border-bottom:1px solid var(--br)"><span class="pill pg">Paid</span></td><td style="padding:11px 12px;border-bottom:1px solid var(--br)"><button class="btn bg bsm" onclick="toast('Downloading INV-2025-01.pdf','info')"><i class="bi bi-file-earmark-pdf"></i> PDF</button></td></tr>
+                <tr onmouseover="this.style.background='var(--sf2)'" onmouseout="this.style.background=''"><td style="padding:11px 12px;font-size:13px">December 2024</td><td style="padding:11px 12px;font-size:13px;font-weight:600">$999.00</td><td style="padding:11px 12px"><span class="pill pf">Refunded</span></td><td style="padding:11px 12px"><button class="btn bg bsm" onclick="toast('Downloading INV-2024-12.pdf','info')"><i class="bi bi-file-earmark-pdf"></i> PDF</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="cst cp" style="margin-bottom:14px">
+            <div style="font-family:var(--fd);font-weight:700;font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px"><i class="bi bi-shield-fill-check" style="color:var(--gn)"></i>Billing Summary</div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px solid var(--br)"><span style="color:var(--mu)">Plan</span><span style="font-weight:600">Pro · Monthly</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px solid var(--br)"><span style="color:var(--mu)">Subtotal</span><span>$1,499.00</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px solid var(--br)"><span style="color:var(--mu)">Tax (0%)</span><span>$0.00</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:14px;padding:10px 0;font-weight:700"><span>Next Charge</span><span style="color:var(--inl)">$1,499.00</span></div>
+            <div style="font-size:12px;color:var(--fa)">Billed May 9, 2025 · Visa ••••4242</div>
+          </div>
+          <div class="card cp" style="margin-bottom:14px">
+            <div style="font-family:var(--fd);font-weight:700;font-size:14px;margin-bottom:12px">Promo Code</div>
+            <div style="display:flex;gap:8px"><input class="inp" type="text" placeholder="Enter promo code…" id="PI" style="flex:1"><button class="btn bg bsm" onclick="applyPromo()">Apply</button></div>
+          </div>
+          <div class="card cp">
+            <div style="font-family:var(--fd);font-weight:700;font-size:14px;margin-bottom:12px">Billing Contact</div>
+            <div class="ig"><label class="lbl">Email for Invoices</label><input class="inp" type="email" value="billing@apexfederal.com"></div>
+            <div class="ig"><label class="lbl">PO Number (optional)</label><input class="inp" type="text" placeholder="For invoice reference…"></div>
+            <button class="btn bp bsm bfw" style="justify-content:center" onclick="toast('Billing info updated!','success')"><i class="bi bi-check-lg"></i> Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="pg-settings" class="pv" style="padding:0">
+      <div class="slayout">
+        <div class="snv">
+          <div class="sni act" onclick="setSnav(this,'co')"><i class="bi bi-building"></i> Company</div>
+          <div class="sni" onclick="setSnav(this,'st')"><i class="bi bi-pen"></i> Writing Style</div>
+          <div class="sni" onclick="setSnav(this,'tm')"><i class="bi bi-people"></i> Team</div>
+          <div class="sni" onclick="setSnav(this,'dev')"><i class="bi bi-code-slash"></i> API Keys</div>
+          <div class="sni" onclick="setSnav(this,'nt')"><i class="bi bi-bell"></i> Notifications</div>
+          <div class="sni" onclick="setSnav(this,'sec')"><i class="bi bi-shield-lock"></i> Security</div>
+        </div>
+        <div class="scont">
+          <div id="sp-co"><div class="ssec"><div class="sstl">Company Profile</div><div class="ssds">Used to pre-populate proposals and establish your AI voice.</div><div class="scard"><div class="ir"><div class="ig"><label class="lbl">Company Name</label><input class="inp" value="Apex Federal Solutions" type="text"></div><div class="ig"><label class="lbl">CAGE Code</label><input class="inp" value="8K4Z1" type="text"></div></div><div class="ir"><div class="ig"><label class="lbl">DUNS / UEI</label><input class="inp" value="P7KL3X9M2Q45" type="text"></div><div class="ig"><label class="lbl">NAICS</label><input class="inp" value="541512" type="text"></div></div><div class="ig"><label class="lbl">Differentiators (AI uses these)</label><textarea class="inp" rows="4" style="resize:vertical">15+ years federal IT, 100% on-time delivery, FedRAMP expertise, ISO 27001, CMMC Level 3</textarea></div><div class="ig"><label class="lbl">Small Business Status</label><select class="inp"><option>Large Business</option><option>Small Business</option><option>WOSB</option><option>8(a) Certified</option><option>HUBZone</option><option>SDVOSB</option></select></div><button class="btn bp bsm" onclick="toast('Profile saved!','success')"><i class="bi bi-check-lg"></i> Save</button></div></div></div>
+          <div id="sp-st" style="display:none"><div class="ssec"><div class="sstl">AI & Tone Preferences</div><div class="ssds">Control how AI writes your proposals.</div><div class="scard"><div class="trow"><div class="tinfo"><div class="tlbl">Formal Government Tone</div><div class="tdsc">Passive voice, no contractions</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div><div class="trow"><div class="tinfo"><div class="tlbl">Auto-Insert Statistics</div><div class="tdsc">Pull metrics from evidence library</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div><div class="trow"><div class="tinfo"><div class="tlbl">Competitor Redline Mode</div><div class="tdsc">Counter likely competitor strengths</div></div><div class="tog" onclick="this.classList.toggle('on')"></div></div><div class="trow"><div class="tinfo"><div class="tlbl">Auto-Save Every 5 Seconds</div><div class="tdsc">Continuously save drafts</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div><div class="trow"><div class="tinfo"><div class="tlbl">Inline AI Suggestions</div><div class="tdsc">Real-time suggestions as you type</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div></div></div></div>
+          <div id="sp-tm" style="display:none"><div class="ssec"><div class="sstl">Team Members</div><div class="ssds">Invite members, assign roles, revoke access.</div><div class="scard"><div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap"><input class="inp" type="email" placeholder="colleague@company.com" style="flex:1;min-width:180px" id="IE"><select class="inp" style="width:120px"><option>Editor</option><option>Viewer</option><option>Admin</option></select><button class="btn bp bsm" onclick="inviteMem()"><i class="bi bi-person-plus"></i> Invite</button></div><div style="display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid var(--br)"><div class="uav">JD</div><div style="flex:1"><div style="font-weight:600;font-size:14px">John Doe <span class="pill pi" style="font-size:9px;vertical-align:middle">You</span></div><div style="font-size:11px;color:var(--fa)">john@apexfederal.com</div></div><select style="background:var(--bg2);border:1px solid var(--br);border-radius:8px;padding:5px 9px;color:var(--tx);font-size:12px;margin-left:auto"><option>Admin</option></select><button class="btn bi bsm" onclick="toast('Cannot remove yourself','error')"><i class="bi bi-person-x" style="font-size:12px"></i></button></div><div style="display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid var(--br)"><div class="uav" style="background:linear-gradient(135deg,#EC4899,#A855F7)">SK</div><div style="flex:1"><div style="font-weight:600;font-size:14px">Sarah Kim</div><div style="font-size:11px;color:var(--fa)">sarah@apexfederal.com</div></div><select style="background:var(--bg2);border:1px solid var(--br);border-radius:8px;padding:5px 9px;color:var(--tx);font-size:12px;margin-left:auto"><option>Editor</option><option>Viewer</option><option>Admin</option></select><button class="btn bi bsm" onclick="toast('Sarah Kim removed','warn')"><i class="bi bi-person-x" style="font-size:12px"></i></button></div><div style="display:flex;align-items:center;gap:11px;padding:13px 0"><div class="uav" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">MT</div><div style="flex:1"><div style="font-weight:600;font-size:14px">Marcus Thompson</div><div style="font-size:11px;color:var(--fa)">marcus@apexfederal.com</div></div><select style="background:var(--bg2);border:1px solid var(--br);border-radius:8px;padding:5px 9px;color:var(--tx);font-size:12px;margin-left:auto"><option>Viewer</option><option>Editor</option><option>Admin</option></select><button class="btn bi bsm" onclick="toast('Marcus removed','warn')"><i class="bi bi-person-x" style="font-size:12px"></i></button></div><div style="margin-top:14px;padding:12px;background:var(--ind);border-radius:9px;font-size:12px;color:var(--mu)"><i class="bi bi-shield-lock" style="color:var(--inl);margin-right:7px"></i>Enterprise plans support SSO/SAML. <a style="color:var(--inl);cursor:pointer" onclick="openM('UPM')">Upgrade →</a></div></div></div></div>
+          <div id="sp-dev" style="display:none"><div class="ssec"><div class="sstl">API Keys</div><div class="ssds">Generate Bearer tokens for programmatic access.</div><div class="scard"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px"><div style="font-size:14px;font-weight:600">Active Keys <span class="pill pi" style="font-size:9px;vertical-align:middle">2/5</span></div><button class="btn bp bsm" onclick="openM('KM')"><i class="bi bi-plus"></i> Generate Key</button></div><div style="display:flex;align-items:center;gap:11px;padding:13px;background:var(--bg2);border:1px solid var(--br);border-radius:9px;margin-bottom:9px"><div style="flex:1"><div style="font-weight:600;font-size:13px;margin-bottom:3px">Production Key</div><div style="font-family:var(--fm);font-size:11px;color:var(--fa)">rfp_live_••••••••••••3a7f</div><div style="font-size:11px;color:var(--fa2);margin-top:2px">Created Jan 3 · Used 2h ago · Scopes: read, write</div></div><button class="btn bi bsm" onclick="toast('Copied!','success')"><i class="bi bi-clipboard" style="font-size:12px"></i></button><button class="btn bi bsm" onclick="toast('Key revoked!','error')"><i class="bi bi-trash3" style="font-size:12px;color:var(--rd)"></i></button></div><div style="display:flex;align-items:center;gap:11px;padding:13px;background:var(--bg2);border:1px solid var(--br);border-radius:9px;margin-bottom:14px"><div style="flex:1"><div style="font-weight:600;font-size:13px;margin-bottom:3px">CI/CD Pipeline</div><div style="font-family:var(--fm);font-size:11px;color:var(--fa)">rfp_live_••••••••••••b12c</div><div style="font-size:11px;color:var(--fa2);margin-top:2px">Created Feb 20 · Used 5d ago · Scopes: read</div></div><button class="btn bi bsm" onclick="toast('Copied!','success')"><i class="bi bi-clipboard" style="font-size:12px"></i></button><button class="btn bi bsm" onclick="toast('Key revoked!','error')"><i class="bi bi-trash3" style="font-size:12px;color:var(--rd)"></i></button></div><div style="padding:13px;background:var(--rdd);border:1px solid rgba(239,68,68,.2);border-radius:9px;font-size:12px;color:var(--mu)"><i class="bi bi-exclamation-triangle" style="color:var(--am);margin-right:7px"></i>Keys shown once on creation. Store in secrets manager.</div></div></div></div>
+          <div id="sp-nt" style="display:none"><div class="ssec"><div class="sstl">Notification Preferences</div><div class="ssds">Control how and when RFPilot notifies you.</div><div class="scard"><div class="trow"><div class="tinfo"><div class="tlbl">Email — AI Draft Complete</div><div class="tdsc">Email when proposal draft finishes</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div><div class="trow"><div class="tinfo"><div class="tlbl">Email — Compliance Alert</div><div class="tdsc">Critical gaps trigger immediate email</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div><div class="trow"><div class="tinfo"><div class="tlbl">Slack Integration</div><div class="tdsc">Post notifications to Slack channel</div></div><div class="tog" onclick="this.classList.toggle('on')"></div></div><div class="trow"><div class="tinfo"><div class="tlbl">Browser Push Notifications</div><div class="tdsc">Desktop push for real-time alerts</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div><div class="trow"><div class="tinfo"><div class="tlbl">Due Date Reminders</div><div class="tdsc">7-day, 3-day, 24-hour deadline reminders</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div><div class="trow"><div class="tinfo"><div class="tlbl">Payment Receipts</div><div class="tdsc">Email receipt for every charge</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div></div></div></div>
+          <div id="sp-sec" style="display:none"><div class="ssec"><div class="sstl">Security Settings</div><div class="ssds">Authentication, sessions, access controls.</div><div class="scard"><div class="trow"><div class="tinfo"><div class="tlbl">Two-Factor Authentication</div><div class="tdsc">Require TOTP for all logins</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div><div class="trow"><div class="tinfo"><div class="tlbl">SSO via Clerk</div><div class="tdsc">Google Workspace / Microsoft Entra</div></div><div class="tog" onclick="this.classList.toggle('on');toast('Enterprise required for SSO','info')"></div></div><div class="trow"><div class="tinfo"><div class="tlbl">Session Timeout (30 min)</div><div class="tdsc">Auto-logout after inactivity</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div></div><div class="scard"><div class="sstl" style="font-size:15px">Change Password</div><div class="ig" style="margin-top:12px"><label class="lbl">Current Password</label><input class="inp" type="password" placeholder="••••••••••••"></div><div class="ir"><div class="ig"><label class="lbl">New Password</label><input class="inp" type="password" placeholder="••••••••••••"></div><div class="ig"><label class="lbl">Confirm</label><input class="inp" type="password" placeholder="••••••••••••"></div></div><button class="btn bp bsm" onclick="toast('Password updated!','success')"><i class="bi bi-shield-check"></i> Update</button></div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app shell -->
+
+<!-- AUTH -->
+<div id="AUP" style="display:none">
+  <div class="aph"><div class="apb"></div>
+    <div class="apc">
+      <div style="text-align:center;margin-bottom:18px"><div class="lm" style="width:44px;height:44px;font-size:20px;margin:0 auto 11px">R</div><div style="font-family:var(--fd);font-weight:800;font-size:20px;background:linear-gradient(135deg,#fff,var(--inl));-webkit-background-clip:text;-webkit-text-fill-color:transparent">RFPilot</div></div>
+      <div class="att">Welcome back</div><div class="ats">Sign in to continue building winning proposals</div>
+      <div class="tabbar" style="margin-bottom:18px"><button class="tabb act" onclick="setAuth('login',this)">Log In</button><button class="tabb" onclick="setAuth('signup',this)">Sign Up</button></div>
+      <button class="boa"><i class="bi bi-google" style="color:#4285F4"></i> Continue with Google</button>
+      <button class="boa"><i class="bi bi-microsoft" style="color:#00A4EF"></i> Continue with Microsoft</button>
+      <div class="adiv">or</div>
+      <div class="ig"><label class="lbl">Email</label><input class="inp" type="email" placeholder="you@company.com"></div>
+      <div class="ig" id="ANg" style="display:none"><label class="lbl">Full Name</label><input class="inp" type="text" placeholder="John Doe"></div>
+      <div class="ig"><label class="lbl">Password</label><input class="inp" type="password" placeholder="••••••••••••"></div>
+      <button class="btn bp bfw" style="justify-content:center;padding:12px" onclick="doAuth()"><i class="bi bi-arrow-right-circle-fill"></i> <span id="ABT">Log In</span></button>
+      <div style="text-align:center;font-size:12px;color:var(--mu);margin-top:16px" id="AFT">Don't have an account? <a style="color:var(--inl);cursor:pointer" onclick="setAuth('signup',document.querySelectorAll('.tabb')[1])">Sign up free</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<!-- New Project -->
+<div class="mov" id="NPM" onclick="if(event.target===this)closeM('NPM')">
+  <div class="mob"><div class="mhd"><div class="mtl">New Project</div><button class="btn bi" onclick="closeM('NPM')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="ig"><label class="lbl">Project Name</label><input class="inp" id="npN" type="text" placeholder="e.g. USAF Cloud Migration RFP"></div>
+    <div class="ir"><div class="ig"><label class="lbl">Client / Agency</label><input class="inp" id="npC" type="text" placeholder="e.g. USAF AFMC"></div><div class="ig"><label class="lbl">Due Date</label><input class="inp" type="date" id="npD"></div></div>
+    <div class="ir"><div class="ig"><label class="lbl">Contract Value</label><input class="inp" id="npV" type="text" placeholder="e.g. $4.2M"></div><div class="ig"><label class="lbl">Priority</label><select class="inp" id="npP"><option value="high">🔴 High — Must Win</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div></div>
+    <div style="display:flex;gap:8px;margin-top:8px"><button class="btn bg" style="flex:1;justify-content:center" onclick="closeM('NPM')">Cancel</button><button class="btn bp" style="flex:1;justify-content:center" onclick="createPrj()"><i class="bi bi-plus-circle-fill"></i> Create</button></div>
+  </div>
+</div>
+
+<!-- Add Card (Payment Processing) -->
+<div class="mov" id="ACM" onclick="if(event.target===this)closeM('ACM')">
+  <div class="mob"><div class="mhd"><div class="mtl">Add Payment Method</div><button class="btn bi" onclick="closeM('ACM')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="payf" style="background:none;border:none;padding:0">
+      <div class="stlk"><i class="bi bi-lock-fill" style="color:var(--gn)"></i>Secured by Stripe · TLS 256-bit · PCI-DSS Level 1</div>
+      <div class="clgs"><div class="clg" style="color:#1A1F71;font-size:10px;font-weight:700">VISA</div><div class="clg" style="background:linear-gradient(135deg,#EB001B,#F79E1B);color:#fff;font-size:9px">MC</div><div class="clg" style="background:#2671B2;color:#fff;font-size:9px">AMEX</div><div class="clg" style="color:#FF6000;font-size:8px">DISC</div></div>
+      <div id="ACS1" class="pstep act">
+        <div class="ig"><label class="lbl">Cardholder Name</label><input class="inp" type="text" placeholder="John Doe" id="cn"></div>
+        <div class="ig ciwp"><label class="lbl">Card Number</label><input class="inp" type="text" placeholder="1234 5678 9012 3456" id="cnum" maxlength="19" oninput="fmtC(this)"><span class="cibr" id="CBR"><i class="bi bi-credit-card-2-front"></i></span></div>
+        <div class="ir"><div class="ig"><label class="lbl">Expiry</label><input class="inp" type="text" placeholder="MM / YY" maxlength="7" id="cexp" oninput="fmtE(this)"></div><div class="ig"><label class="lbl">CVC</label><input class="inp" type="text" placeholder="•••" maxlength="4" id="ccvc"></div></div>
+        <div class="ig"><label class="lbl">Billing ZIP</label><input class="inp" type="text" placeholder="22102" maxlength="10" id="czip"></div>
+        <button class="btn bst bfw" style="justify-content:center;margin-top:8px" onclick="procCard()"><i class="bi bi-lock-fill"></i> Add Card Securely</button>
+        <div style="text-align:center;font-size:11px;color:var(--fa);margin-top:10px">Card info processed by Stripe — never stored on our servers.</div>
+      </div>
+      <div id="ACS2" class="pstep">
+        <div class="psuc"><div class="psic"><i class="bi bi-check-lg"></i></div><div style="font-family:var(--fd);font-weight:800;font-size:20px;margin-bottom:8px">Card Added!</div><div style="font-size:14px;color:var(--mu);margin-bottom:20px">Visa ending in <span id="CL4">4242</span> added and set as default.</div><button class="btn bp bfw" style="justify-content:center" onclick="closeM('ACM');resetCardForm()">Done</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Update Card -->
+<div class="mov" id="UCM" onclick="if(event.target===this)closeM('UCM')">
+  <div class="mob"><div class="mhd"><div class="mtl">Update Payment Method</div><button class="btn bi" onclick="closeM('UCM')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="stlk"><i class="bi bi-lock-fill" style="color:var(--gn)"></i>Secured by Stripe · PCI-DSS Level 1</div>
+    <div class="ig ciwp"><label class="lbl">New Card Number</label><input class="inp" type="text" placeholder="1234 5678 9012 3456" maxlength="19" oninput="fmtC(this)"><span class="cibr"><i class="bi bi-credit-card-2-front"></i></span></div>
+    <div class="ir"><div class="ig"><label class="lbl">Expiry</label><input class="inp" type="text" placeholder="MM / YY" maxlength="7" oninput="fmtE(this)"></div><div class="ig"><label class="lbl">CVC</label><input class="inp" type="text" placeholder="•••" maxlength="4"></div></div>
+    <button class="btn bst bfw" style="justify-content:center;margin-top:8px" onclick="toast('Payment method updated!','success');closeM('UCM')"><i class="bi bi-lock-fill"></i> Update Card</button>
+  </div>
+</div>
+
+<!-- Pay Flow (from landing pricing) -->
+<div class="mov" id="PFM" onclick="if(event.target===this)closeM('PFM')">
+  <div class="mob"><div class="mhd"><div class="mtl" id="PFT">Subscribe to Pro</div><button class="btn bi" onclick="closeM('PFM')"><i class="bi bi-x-lg"></i></button></div>
+    <div id="PFS1" class="pstep act">
+      <div style="padding:14px;background:var(--ind);border:1px solid var(--br2);border-radius:11px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-weight:600;font-size:14px" id="PPNm">Pro Plan</div><div style="font-size:12px;color:var(--mu)">Unlimited RFPs · 14-day free trial</div></div>
+        <div style="font-family:var(--fd);font-weight:800;font-size:22px" id="PPPr">$1,499<span style="font-size:13px;color:var(--fa);font-weight:400">/mo</span></div>
+      </div>
+      <div class="stlk"><i class="bi bi-lock-fill" style="color:var(--gn)"></i>14-day free trial · Cancel anytime · No charge today</div>
+      <div class="ig"><label class="lbl">Email</label><input class="inp" type="email" placeholder="you@company.com" id="pEM"></div>
+      <div class="ig ciwp"><label class="lbl">Card Number</label><input class="inp" type="text" placeholder="1234 5678 9012 3456" maxlength="19" id="pCN" oninput="fmtC(this)"><span class="cibr"><i class="bi bi-credit-card-2-front"></i></span></div>
+      <div class="ir"><div class="ig"><label class="lbl">Expiry</label><input class="inp" type="text" placeholder="MM / YY" maxlength="7" oninput="fmtE(this)"></div><div class="ig"><label class="lbl">CVC</label><input class="inp" type="text" placeholder="•••" maxlength="4"></div></div>
+      <div class="ig"><label class="lbl">Name on Card</label><input class="inp" type="text" placeholder="John Doe"></div>
+      <button class="btn bst bfw" style="justify-content:center;margin-top:4px" onclick="procPayFlow()"><i class="bi bi-lock-fill"></i> Start Free Trial</button>
+      <div style="text-align:center;font-size:11px;color:var(--fa);margin-top:10px">Trial starts today. You'll be charged after 14 days.</div>
+    </div>
+    <div id="PFS2" class="pstep">
+      <div class="psuc"><div class="psic"><i class="bi bi-check-lg"></i></div><div style="font-family:var(--fd);font-weight:800;font-size:22px;margin-bottom:8px">You're in! 🚀</div><div style="font-size:14px;color:var(--mu);margin-bottom:24px;line-height:1.6">Your 14-day free trial has started. Confirmation sent to your email.</div><button class="btn bp bfw" style="justify-content:center" onclick="closeM('PFM');showApp('onboard')">Continue to Setup</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Upgrade Plan -->
+<div class="mov" id="UPM" onclick="if(event.target===this)closeM('UPM')">
+  <div class="mob wide"><div class="mhd"><div class="mtl">Change Plan</div><button class="btn bi" onclick="closeM('UPM')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="pmg" style="margin-bottom:20px">
+      <div class="po" onclick="selPlan(this,'starter')"><div style="font-family:var(--fd);font-weight:700;font-size:14px;margin-bottom:5px">Starter</div><div style="font-family:var(--fd);font-weight:800;font-size:28px">$499</div><div style="font-size:11px;color:var(--fa);margin-bottom:10px">/month</div><div style="font-size:12px;color:var(--mu)">5 RFPs · 2 seats · 10GB</div></div>
+      <div class="po sel pop" onclick="selPlan(this,'pro')"><div style="font-family:var(--fd);font-weight:700;font-size:14px;margin-bottom:5px">Pro</div><div style="font-family:var(--fd);font-weight:800;font-size:28px;color:var(--inl)">$1,499</div><div style="font-size:11px;color:var(--fa);margin-bottom:10px">/month</div><div style="font-size:12px;color:var(--mu)">Unlimited · 10 seats · Win Score</div></div>
+      <div class="po" onclick="selPlan(this,'enterprise')"><div style="font-family:var(--fd);font-weight:700;font-size:14px;margin-bottom:5px">Enterprise</div><div style="font-family:var(--fd);font-weight:800;font-size:28px">Custom</div><div style="font-size:11px;color:var(--fa);margin-bottom:10px">contact us</div><div style="font-size:12px;color:var(--mu)">SSO · On-prem · FedRAMP</div></div>
+    </div>
+    <div style="padding:14px;background:var(--ind);border-radius:10px;font-size:13px;color:var(--mu);margin-bottom:16px" id="PCN"><i class="bi bi-info-circle" style="color:var(--inl);margin-right:7px"></i>You are currently on Pro. Confirm below to change.</div>
+    <div style="display:flex;gap:8px"><button class="btn bg" style="flex:1;justify-content:center" onclick="closeM('UPM')">Cancel</button><button class="btn bp" style="flex:1;justify-content:center" onclick="cnfPlan()"><i class="bi bi-check-circle-fill"></i> Confirm Change</button></div>
+  </div>
+</div>
+
+<!-- Cancel Subscription -->
+<div class="mov" id="CNM" onclick="if(event.target===this)closeM('CNM')">
+  <div class="mob"><div class="mhd"><div class="mtl" style="color:var(--rd)"><i class="bi bi-exclamation-triangle-fill" style="margin-right:8px"></i>Cancel Subscription</div><button class="btn bi" onclick="closeM('CNM')"><i class="bi bi-x-lg"></i></button></div>
+    <div style="padding:14px;background:var(--rdd);border:1px solid rgba(239,68,68,.2);border-radius:10px;margin-bottom:18px;font-size:13px;color:var(--mu)">You will lose access to all Pro features on <strong>May 9, 2025</strong>. Data retained 90 days.</div>
+    <div class="ig"><label class="lbl">Why are you cancelling?</label><select class="inp"><option>Select a reason…</option><option>Too expensive</option><option>Not using it enough</option><option>Missing a feature</option><option>Switching tools</option><option>Project completed</option><option>Other</option></select></div>
+    <div class="ig"><label class="lbl">Feedback (optional)</label><textarea class="inp" rows="3" placeholder="How could we improve?"></textarea></div>
+    <div style="display:flex;gap:8px"><button class="btn bp" style="flex:1;justify-content:center" onclick="closeM('CNM');toast('Glad you\'re staying! 🎉','success')">Keep My Plan</button><button class="btn bd" style="flex:1;justify-content:center" onclick="procCancel()">Cancel Subscription</button></div>
+  </div>
+</div>
+
+<!-- Share -->
+<div class="mov" id="SHM" onclick="if(event.target===this)closeM('SHM')">
+  <div class="mob"><div class="mhd"><div class="mtl">Share Project</div><button class="btn bi" onclick="closeM('SHM')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="ig"><label class="lbl">Invite by Email</label><div style="display:flex;gap:8px"><input class="inp" type="email" placeholder="colleague@company.com" style="flex:1"><select class="inp" style="width:100px"><option>Editor</option><option>Viewer</option></select><button class="btn bp bsm" onclick="toast('Invitation sent!','success')"><i class="bi bi-send"></i></button></div></div>
+    <div class="ig"><label class="lbl">Share Link</label><div style="display:flex;gap:8px"><input class="inp" value="https://app.rfpilot.io/share/usaf-abc123" style="flex:1;font-size:11px;font-family:var(--fm)" readonly><button class="btn bg bsm" onclick="toast('Link copied!','success')"><i class="bi bi-clipboard"></i></button></div></div>
+    <div class="trow"><div class="tinfo"><div class="tlbl">Link Expiry (7 days)</div><div class="tdsc">Link expires for security</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="trow"><div class="tinfo"><div class="tlbl">Require Login</div><div class="tdsc">Viewers must have an RFPilot account</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+  </div>
+</div>
+
+<!-- Contact Sales -->
+<div class="mov" id="salesM" onclick="if(event.target===this)closeM('salesM')">
+  <div class="mob"><div class="mhd"><div class="mtl">Enterprise Sales</div><button class="btn bi" onclick="closeM('salesM')"><i class="bi bi-x-lg"></i></button></div>
+    <div class="ir"><div class="ig"><label class="lbl">First Name</label><input class="inp" type="text" placeholder="John"></div><div class="ig"><label class="lbl">Last Name</label><input class="inp" type="text" placeholder="Doe"></div></div>
+    <div class="ig"><label class="lbl">Work Email</label><input class="inp" type="email" placeholder="john@company.com"></div>
+    <div class="ir"><div class="ig"><label class="lbl">Company</label><input class="inp" type="text" placeholder="Apex Federal Solutions"></div><div class="ig"><label class="lbl">Team Size</label><select class="inp"><option>1–5</option><option>6–20</option><option>21–100</option><option>100+</option></select></div></div>
+    <div class="ig"><label class="lbl">Annual RFP Volume</label><select class="inp"><option>&lt;10/year</option><option>10–50/year</option><option>50–200/year</option><option>200+/year</option></select></div>
+    <div class="ig"><label class="lbl">Special Requirements</label><textarea class="inp" rows="3" placeholder="On-prem, FedRAMP IL5, custom integrations…"></textarea></div>
+    <button class="btn bp bfw" style="justify-content:center" onclick="toast('Sent! Sales will contact you within 24 hours.','success');closeM('salesM')"><i class="bi bi-send-fill"></i> Send to Sales Team</button>
+  </div>
+</div>
+
+<!-- New API Key reveal -->
+<div class="mov" id="KM" onclick="if(event.target===this)closeM('KM')">
+  <div class="mob"><div class="mhd"><div class="mtl">New API Key</div><button class="btn bi" onclick="closeM('KM')"><i class="bi bi-x-lg"></i></button></div>
+    <div style="padding:13px;background:var(--gnd);border:1px solid rgba(34,197,94,.2);border-radius:9px;margin-bottom:14px;font-size:12px;color:var(--gn)"><i class="bi bi-shield-check" style="margin-right:7px"></i>Copy this key now — it will never be shown again.</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px"><input class="inp" style="font-family:var(--fm);font-size:11px;flex:1;color:var(--inl)" id="KV" readonly><button class="btn bg bsm" onclick="toast('Key copied!','success')"><i class="bi bi-clipboard"></i></button></div>
+    <div class="ig"><label class="lbl">Key Name</label><input class="inp" type="text" placeholder="e.g. Staging Integration"></div>
+    <div class="ig"><label class="lbl">Scopes</label><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" checked> read</label><label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" checked> write</label><label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox"> delete</label><label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox"> admin</label></div></div>
+    <button class="btn bp bfw" style="justify-content:center" onclick="closeM('KM')"><i class="bi bi-clipboard-check"></i> I've Copied the Key</button>
+  </div>
+</div>
+
+<!-- Evidence Drawer (Mobile) -->
+<div class="drov" id="DROV" onclick="closeEvDr()"></div>
+<div class="evdr" id="EVDR">
+  <div class="drh"></div>
+  <div class="drhd"><div style="font-family:var(--fd);font-weight:700;font-size:14px">Evidence Sources</div><button class="btn bi" style="width:28px;height:28px" onclick="closeEvDr()"><i class="bi bi-x-lg" style="font-size:13px"></i></button></div>
+  <div class="drb">
+    <div class="amp" style="margin:0 0 11px"><div class="amt"><i class="bi bi-stars" style="color:var(--inl)"></i>AI Co-Pilot</div><textarea class="ata" placeholder="Ask AI to improve, expand, or rewrite…"></textarea><button class="btn bp bfw bsm" style="margin-top:8px;justify-content:center" onclick="startAI();closeEvDr()"><i class="bi bi-lightning-fill"></i> Generate</button></div>
+    <div style="font-size:10px;font-weight:700;color:var(--fa);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Source Chunks</div>
+    <div class="evc hi"><div class="evs"><i class="bi bi-file-earmark-text"></i>DHS_Cloud_2023.pdf</div><div class="evt">"Zero-downtime migration of 847 workloads without a single SLA breach."</div><div class="evsco"><span>Relevance</span><div class="scb"><div class="scf" style="width:92%"></div></div><span>92%</span></div></div>
+    <div class="evc"><div class="evs"><i class="bi bi-file-earmark-text"></i>USAF_IT_2022.pdf</div><div class="evt">FedRAMP High ATO in 78 days, 12 days ahead of target.</div><div class="evsco"><span>Relevance</span><div class="scb"><div class="scf" style="width:87%"></div></div><span>87%</span></div></div>
+  </div>
+</div>
+
+<!-- Command Palette -->
+<div class="cmp" id="CMP" onclick="if(event.target===this)closeCmd()">
+  <div class="cmb">
+    <div class="cms"><i class="bi bi-search" style="color:var(--fa);font-size:16px;flex-shrink:0"></i><input type="text" placeholder="Search pages, actions, projects…" id="CMI" oninput="filterCmd(this.value)"><span class="kbd">ESC</span></div>
+    <div class="cmr" id="CMR">
+      <div class="cmg">Navigation</div>
+      <div class="cmi" onclick="cmdGo('dashboard')"><i class="bi bi-grid-1x2-fill"></i>Dashboard<div class="ck"><span class="kbd">G</span><span class="kbd">D</span></div></div>
+      <div class="cmi" onclick="cmdGo('warroom')"><i class="bi bi-fire"></i>War Room<div class="ck"><span class="kbd">G</span><span class="kbd">W</span></div></div>
+      <div class="cmi" onclick="cmdGo('upload')"><i class="bi bi-cloud-upload-fill"></i>Upload RFP</div>
+      <div class="cmi" onclick="cmdGo('library')"><i class="bi bi-database-fill"></i>Library</div>
+      <div class="cmi" onclick="cmdGo('analytics')"><i class="bi bi-bar-chart-fill"></i>Analytics</div>
+      <div class="cmi" onclick="cmdGo('competitor')"><i class="bi bi-binoculars-fill"></i>Competitor Intel</div>
+      <div class="cmi" onclick="cmdGo('compliance')"><i class="bi bi-shield-check"></i>Compliance</div>
+      <div class="cmi" onclick="cmdGo('billing')"><i class="bi bi-credit-card-fill"></i>Billing</div>
+      <div class="cmi" onclick="cmdGo('settings')"><i class="bi bi-gear-fill"></i>Settings</div>
+      <div class="cmg">Actions</div>
+      <div class="cmi" onclick="closeCmd();openM('NPM')"><i class="bi bi-plus-circle-fill"></i>New Project<div class="ck"><span class="kbd">⌘</span><span class="kbd">N</span></div></div>
+      <div class="cmi" onclick="closeCmd();startAI()"><i class="bi bi-stars"></i>Generate AI Draft<div class="ck"><span class="kbd">⌘</span><span class="kbd">↵</span></div></div>
+      <div class="cmi" onclick="closeCmd();toast('Exporting PDF…','success')"><i class="bi bi-download"></i>Export PDF</div>
+      <div class="cmi" onclick="closeCmd();doAutosave()"><i class="bi bi-cloud-check-fill"></i>Save Draft<div class="ck"><span class="kbd">⌘</span><span class="kbd">S</span></div></div>
+      <div class="cmi" onclick="closeCmd();toast('Running compliance check…','info')"><i class="bi bi-shield-check"></i>Run Compliance Check</div>
+      <div class="cmi" onclick="closeCmd();openM('ACM')"><i class="bi bi-credit-card-fill"></i>Add Payment Method</div>
+      <div class="cmi" onclick="closeCmd();goPage('notifications')"><i class="bi bi-bell-fill"></i>View Notifications</div>
+    </div>
+    <div class="cmf"><span><span class="kbd">↑↓</span> navigate</span><span><span class="kbd">↵</span> select</span><span><span class="kbd">ESC</span> close</span></div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="tc" id="TC"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ══ STATE ══ */
+const S={
+  pg:'dashboard',sbCol:false,flt:'all',curPg:1,pgSz:6,aiStream:false,selPlan:'pro',
+  projs:[
+    {id:1,n:'USAF Cloud Migration RFP',cl:'USAF AFMC',st:'In Progress',pr:'high',pct:72,due:'Apr 18',val:'$4.2M',mb:['JD','SK','MT']},
+    {id:2,n:'DHS Border Technology Platform',cl:'DHS CBP',st:'Draft',pr:'high',pct:35,due:'Apr 24',val:'$12.8M',mb:['JD','RB']},
+    {id:3,n:'VA Health IT Modernization',cl:'VA',st:'Review',pr:'medium',pct:88,due:'Apr 29',val:'$6.1M',mb:['SK','MT','JL']},
+    {id:4,n:'Army Logistics Support System',cl:'Army PEO EIS',st:'In Progress',pr:'medium',pct:51,due:'May 3',val:'$2.9M',mb:['JD']},
+    {id:5,n:'NSA Data Analytics Platform',cl:'NSA',st:'Draft',pr:'high',pct:12,due:'May 10',val:'$18.5M',mb:['JD','SK']},
+    {id:6,n:'HHS Telehealth Infrastructure',cl:'HHS ASPA',st:'In Progress',pr:'low',pct:64,due:'May 15',val:'$3.4M',mb:['MT','RB']},
+    {id:7,n:'DoD Zero Trust Implementation',cl:'DoD CDAO',st:'Draft',pr:'high',pct:5,due:'May 20',val:'$22.1M',mb:['JD','SK','MT','RB']},
+    {id:8,n:'GSA IT Modernization Support',cl:'GSA PBS',st:'In Progress',pr:'medium',pct:78,due:'Jun 2',val:'$1.8M',mb:['SK']},
+    {id:9,n:'FAA Air Traffic Control AI',cl:'FAA ATO',st:'Review',pr:'high',pct:95,due:'Jun 10',val:'$9.4M',mb:['JD','MT']},
+  ],
+  docs:[
+    {id:1,n:'USAF_Cloud_Migration_RFP.pdf',t:'pdf',sz:'4.2 MB',ch:342,st:'indexed',u:23,dt:'Apr 2, 2025'},
+    {id:2,n:'DHS_Border_Tech_SOW.docx',t:'docx',sz:'1.8 MB',ch:187,st:'indexed',u:11,dt:'Apr 1, 2025'},
+    {id:3,n:'Past_Performance_Library.pdf',t:'pdf',sz:'12.4 MB',ch:847,st:'indexed',u:67,dt:'Mar 28, 2025'},
+    {id:4,n:'USAF_IT_Win_2022.pdf',t:'pdf',sz:'3.1 MB',ch:214,st:'indexed',u:38,dt:'Mar 20, 2025'},
+    {id:5,n:'VA_Health_IT_Proposal.docx',t:'docx',sz:'2.7 MB',ch:198,st:'processing',u:0,dt:'Apr 8, 2025'},
+    {id:6,n:'NSA_Data_Analytics.pdf',t:'pdf',sz:'0.9 MB',ch:0,st:'pending',u:0,dt:'Apr 9, 2025'},
+    {id:7,n:'Corporate_Capabilities.pdf',t:'pdf',sz:'0.5 MB',ch:42,st:'indexed',u:89,dt:'Jan 15, 2025'},
+    {id:8,n:'Key_Personnel_CVs.pdf',t:'pdf',sz:'6.2 MB',ch:124,st:'indexed',u:14,dt:'Feb 10, 2025'},
+  ],
+};
+const origP=[...S.projs];
+
+/* ══ VIEW MANAGEMENT ══ */
+function showApp(v){
+  ['LW','APP','AUP','OBW'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.display='none';el.classList&&el.classList.remove('act')}});
+  if(v==='landing'){const e=document.getElementById('LW');e.style.display='block';e.classList.add('act')}
+  else if(v==='auth'){document.getElementById('AUP').style.display='block'}
+  else if(v==='onboard'){document.getElementById('OBW').style.display='block'}
+  else{document.getElementById('APP').style.display='flex';goPage(v)}
+}
+
+function goPage(pg){
+  document.querySelectorAll('.pv').forEach(p=>p.classList.remove('act'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('act'));
+  const t=document.getElementById('pg-'+pg);if(t)t.classList.add('act');
+  const n=document.getElementById('nv-'+pg);if(n)n.classList.add('act');
+  S.pg=pg;S.curPg=1;closeMobSB();
+  const evb=document.querySelector('.sevb');
+  if(evb)evb.style.display=(pg==='warroom'&&window.innerWidth<=1200)?'inline-flex':'none';
+  if(pg==='dashboard'){showSk();setTimeout(renderProjs,680)}
+  if(pg==='library')renderDocs();
+  if(pg==='settings')showSP('co');
+  if(pg==='notifications'){const nb=document.getElementById('NB');if(nb)nb.textContent='0'}
+}
+
+/* ══ SIDEBAR ══ */
+function toggleSB(){S.sbCol=!S.sbCol;document.getElementById('SB').classList.toggle('col',S.sbCol)}
+function openMobSB(){document.getElementById('SB').classList.add('mop');document.getElementById('SOV').classList.add('vis')}
+function closeMobSB(){document.getElementById('SB').classList.remove('mop');document.getElementById('SOV').classList.remove('vis')}
+
+/* ══ TOPBAR HIDE ON SCROLL ══ */
+let lsy=0,sbt;
+document.getElementById('MAIN')?.addEventListener('scroll',function(){
+  const tb=document.getElementById('TB'),cy=this.scrollTop;
+  clearTimeout(sbt);
+  if(cy>lsy&&cy>80)tb.classList.add('hid');else tb.classList.remove('hid');
+  lsy=cy;sbt=setTimeout(()=>tb.classList.remove('hid'),2200);
+});
+
+/* ══ SKELETONS ══ */
+function showSk(){const g=document.getElementById('PG');if(g)g.innerHTML=Array(6).fill(0).map(()=>`<div class="sk" style="height:170px;border-radius:14px"></div>`).join('')}
+
+/* ══ PROJECTS ══ */
+const pC={high:'pr',medium:'pa',low:'pg'};const sC={'In Progress':'pi','Draft':'pa','Review':'pg'};
+function getFlt(){return S.flt==='all'?S.projs:S.projs.filter(p=>p.st===S.flt)}
+function renderProjs(){
+  const g=document.getElementById('PG');if(!g)return;
+  const all=getFlt(),tot=all.length,st=(S.curPg-1)*S.pgSz;const pg=all.slice(st,st+S.pgSz);
+  if(!all.length){g.innerHTML=`<div class="es"><div class="ei"><i class="bi bi-folder-x"></i></div><div class="etl">No projects found</div><div class="eds">Upload your first RFP to get started.</div><button class="btn bp" onclick="goPage('upload')"><i class="bi bi-cloud-upload-fill"></i> Upload First RFP</button></div>`;document.getElementById('PAG').style.display='none';return}
+  g.innerHTML=pg.map(p=>`<div class="pc" onclick="goPage('warroom')"><div class="pcl">${p.cl}</div><div class="pn">${p.n}</div><div class="pm"><span class="pill ${sC[p.st]||'pi'}" style="font-size:10px">${p.st}</span><span class="pill ${pC[p.pr]}" style="font-size:10px">${p.pr.charAt(0).toUpperCase()+p.pr.slice(1)}</span><span style="font-size:11px;color:var(--fa);margin-left:auto">${p.val}</span></div><div class="pb"><div class="pf" style="width:${p.pct}%"></div></div><div class="pfoot"><div class="avs">${p.mb.map(m=>`<div class="avm">${m}</div>`).join('')}</div><span>${p.pct}% done</span><span><i class="bi bi-calendar3"></i> ${p.due}</span></div></div>`).join('');
+  renderPag(tot);
+}
+function renderPag(tot){
+  const bar=document.getElementById('PAG'),tp=Math.ceil(tot/S.pgSz);
+  if(tp<=1){bar.style.display='none';return}bar.style.display='flex';
+  const bc=document.getElementById('PBs');bc.innerHTML='';
+  for(let i=1;i<=tp;i++){const b=document.createElement('button');b.className='pbtn'+(i===S.curPg?' act':'');b.textContent=i;b.onclick=()=>{S.curPg=i;renderProjs()};bc.appendChild(b)}
+  document.getElementById('PRP').disabled=S.curPg===1;document.getElementById('PNP').disabled=S.curPg===tp;
+  document.getElementById('PIN').textContent=`${(S.curPg-1)*S.pgSz+1}–${Math.min(S.curPg*S.pgSz,tot)} of ${tot}`;
+}
+function chPg(d){const t=Math.ceil(getFlt().length/S.pgSz);S.curPg=Math.max(1,Math.min(t,S.curPg+d));renderProjs()}
+function fltPrj(st,btn){btn.parentElement.querySelectorAll('.tabb').forEach(b=>b.classList.remove('act'));btn.classList.add('act');S.flt=st;S.curPg=1;renderProjs()}
+function createPrj(){
+  const n=document.getElementById('npN').value.trim()||'New Project';
+  const c=document.getElementById('npC').value.trim()||'Pending';
+  const v=document.getElementById('npV').value.trim()||'—';
+  const pr=document.getElementById('npP').value;
+  const np={id:Date.now(),n,cl:c,st:'Draft',pr,pct:0,due:'TBD',val:v,mb:['JD']};
+  S.projs.unshift(np);origP.unshift(np);closeM('NPM');document.getElementById('npN').value='';
+  toast(`Project "${n}" created!`,'success');if(S.pg==='dashboard')renderProjs();
+}
+
+/* ══ DOCS ══ */
+const dC={pdf:'rgba(239,68,68,.1)',docx:'rgba(99,102,241,.1)',txt:'rgba(34,197,94,.08)'};
+const dIC={pdf:'var(--rd)',docx:'var(--inl)',txt:'var(--gn)'};
+const dI={pdf:'bi-file-earmark-pdf-fill',docx:'bi-file-earmark-word-fill',txt:'bi-file-earmark-text-fill'};
+let docFlt='all',docSrch='';
+function renderDocs(f,s){
+  if(f!==undefined)docFlt=f;if(s!==undefined)docSrch=s;
+  const g=document.getElementById('DG');if(!g)return;
+  let docs=S.docs;if(docFlt!=='all')docs=docs.filter(d=>d.st===docFlt);
+  if(docSrch)docs=docs.filter(d=>d.n.toLowerCase().includes(docSrch.toLowerCase()));
+  const dc=document.getElementById('DC');if(dc)dc.textContent=`${docs.length} document${docs.length!==1?'s':''}`;
+  if(!docs.length){g.innerHTML=`<div class="es"><div class="ei"><i class="bi bi-database-x"></i></div><div class="etl">No documents found</div><div class="eds">Upload documents to build your library.</div><button class="btn bp" onclick="goPage('upload')"><i class="bi bi-cloud-upload-fill"></i> Upload</button></div>`;return}
+  g.innerHTML=docs.map(d=>`<div class="dc"><div class="di" style="background:${dC[d.t]||'var(--sf2)'}"><i class="bi ${dI[d.t]||'bi-file-earmark'}" style="color:${dIC[d.t]||'var(--mu)'}"></i></div><div class="dn">${d.n}</div><div class="dm">${d.sz} · ${d.dt}</div><div class="dst"><div class="dsti"><i class="bi bi-puzzle"></i>${d.ch} chunks</div><div class="dsti"><i class="bi bi-arrow-repeat"></i>Used ${d.u}×</div></div><div><span class="eb ${d.st==='indexed'?'ebo':d.st==='processing'?'ebp':'ebn'}">${d.st==='indexed'?'<i class="bi bi-check-circle-fill"></i> Indexed':d.st==='processing'?'<i class="bi bi-hourglass-split"></i> Processing…':'<i class="bi bi-clock"></i> Pending'}</span></div><div class="dac"><button class="btn bg bsm" onclick="toast('Opening preview…','info');event.stopPropagation()"><i class="bi bi-eye"></i> Preview</button><button class="btn bg bsm" onclick="toast('Downloaded!','success');event.stopPropagation()"><i class="bi bi-download"></i></button><button class="btn bi bsm" onclick="toast('Document deleted','error');event.stopPropagation()"><i class="bi bi-trash3" style="color:var(--rd);font-size:12px"></i></button></div></div>`).join('');
+}
+function fltDoc(f,btn){btn.parentElement.querySelectorAll('.tabb').forEach(b=>b.classList.remove('act'));btn.classList.add('act');renderDocs(f,docSrch)}
+function fltDocS(v){renderDocs(docFlt,v)}
+
+/* ══ UPLOAD ══ */
+function drgOv(e){e.preventDefault();document.getElementById('DZ').classList.add('dov')}
+function drgLv(){document.getElementById('DZ').classList.remove('dov')}
+function drgDp(e){e.preventDefault();document.getElementById('DZ').classList.remove('dov');procFiles(Array.from(e.dataTransfer.files))}
+function fileSel(e){procFiles(Array.from(e.target.files))}
+function procFiles(files){
+  const ul=document.getElementById('UL');
+  files.forEach(f=>{
+    const id='u_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+    const sz=(f.size/1024/1024).toFixed(1);
+    const d=document.createElement('div');d.className='uli';d.id=id;
+    d.innerHTML=`<div class="ufi"><i class="bi bi-file-earmark-pdf-fill"></i></div><div style="flex:1;min-width:0"><div class="ufn">${f.name}</div><div class="ufs">${sz} MB</div><div class="pb2"><div class="pf2" id="pf_${id}" style="width:0%"></div></div></div><span class="pill pi" id="ps_${id}">Uploading…</span><button class="btn bi bsm" onclick="document.getElementById('${id}').remove()"><i class="bi bi-x-lg" style="font-size:11px"></i></button>`;
+    ul.appendChild(d);simUpload(id);
+  });
+  toast(`${files.length} file${files.length>1?'s':''} queued`,'info');
+}
+function simUpload(id){
+  const fill=document.getElementById('pf_'+id),stat=document.getElementById('ps_'+id);
+  if(!fill)return;let p=0;
+  const iv=setInterval(()=>{p=Math.min(100,p+(8+Math.random()*18));if(fill)fill.style.width=p+'%';
+    if(p>=100){clearInterval(iv);if(stat){stat.className='pill pg';stat.innerHTML='<i class="bi bi-check-lg"></i> Done'}if(fill)fill.style.animation='none';toast('File indexed in vector DB!','success')}
+  },220);
+}
+
+/* ══ AI STREAMING ══ */
+const AIC=['\n\n**AI-Suggested Addition:**\n\n','AFS\'s proprietary CloudShield™ Zero-Trust Architecture has been validated across ','14 federal agencies and provides FIPS 140-2 validated encryption for data at rest ','and in transit. Our approach achieves an RMF Step 6 ATO in an average of 78 days ','— 14% faster than industry benchmark. The integrated Security Operations Center ','(SOC) provides 24/7/365 monitoring with MTTD under 4 minutes, exceeding USAF ','cybersecurity SLA requirements and NIST 800-53 High baseline controls.'];
+let aiCI=0;
+function startAI(){
+  if(S.aiStream)return;S.aiStream=true;aiCI=0;
+  const c=document.getElementById('AISt');if(!c)return;
+  c.innerHTML=`<div class="aig"><i class="bi bi-stars" style="animation:pls 1s infinite"></i><span>AI generating draft…</span><div class="adt"><span></span><span></span><span></span></div></div><div id="AIT" style="font-size:15px;line-height:1.8;color:#CBD5E1;margin-top:12px"></div>`;
+  toast('AI generation started — streaming…','info');streamAI();
+}
+function streamAI(){
+  const el=document.getElementById('AIT');if(!el){S.aiStream=false;return}
+  const all=AIC.join('');
+  if(aiCI<all.length){
+    aiCI++;
+    el.innerHTML=all.slice(0,aiCI).replace(/\*\*(.*?)\*\*/g,'<strong style="color:#fff">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>')+'<span style="border-right:2px solid var(--inl);animation:pls .7s infinite">&nbsp;</span>';
+    const wc=document.getElementById('WC');if(wc)wc.textContent=(412+Math.floor(aiCI/6))+' words';
+    setTimeout(streamAI,/[.,!?]/.test(all[aiCI-1])?55:15);
+  }else{
+    S.aiStream=false;
+    const el2=document.getElementById('AIT');
+    if(el2)el2.innerHTML=all.replace(/\*\*(.*?)\*\*/g,'<strong style="color:#fff">$1</strong>').replace(/\n\n/g,'<br><br>');
+    document.querySelector('.aig')?.remove();
+    toast('AI draft complete — 4 evidence sources linked!','success');doAutosave();
+  }
+}
+
+/* ══ AUTOSAVE ══ */
+function doAutosave(){
+  const si=document.getElementById('SI'),sl=document.getElementById('SL'),sp=document.getElementById('SPill');
+  if(si)si.className='bi bi-cloud-upload';if(sl)sl.textContent='Saving…';if(sp)sp.innerHTML='<i class="bi bi-cloud-upload"></i> Saving…';
+  setTimeout(()=>{if(si)si.className='bi bi-cloud-check-fill';if(sl)sl.textContent='Auto-saved just now';if(sp)sp.innerHTML='<i class="bi bi-cloud-check"></i> Saved'},1100);
+}
+setInterval(()=>{if(S.pg==='warroom')doAutosave()},5000);
+
+/* ══ EVIDENCE DRAWER ══ */
+function openEvDr(){document.getElementById('EVDR').classList.add('open');document.getElementById('DROV').classList.add('open')}
+function closeEvDr(){document.getElementById('EVDR').classList.remove('open');document.getElementById('DROV').classList.remove('open')}
+
+/* ══ WAR ROOM OUTLINE ══ */
+function setOI(el){document.querySelectorAll('.oi').forEach(i=>i.classList.remove('act'));el.classList.add('act')}
+
+/* ══ SETTINGS ══ */
+function showSP(id){document.querySelectorAll('[id^="sp-"]').forEach(p=>p.style.display='none');const t=document.getElementById('sp-'+id);if(t)t.style.display='block'}
+function setSnav(el,id){document.querySelectorAll('.sni').forEach(i=>i.classList.remove('act'));el.classList.add('act');showSP(id)}
+
+/* ══ MODALS ══ */
+function openM(id){document.getElementById(id)?.classList.add('open')}
+function closeM(id){document.getElementById(id)?.classList.remove('open')}
+
+/* ══ PAYMENT PROCESSING ══ */
+function fmtC(inp){
+  let v=inp.value.replace(/\D/g,'').slice(0,16);
+  inp.value=v.match(/.{1,4}/g)?.join(' ')||v;
+  const br=document.getElementById('CBR');
+  if(br){if(v.startsWith('4'))br.innerHTML='<span style="color:#1A1F71;font-weight:700;font-size:11px">VISA</span>';
+    else if(v.startsWith('5'))br.innerHTML='<i class="bi bi-credit-card-2-front" style="color:var(--rd)"></i>';
+    else if(v.startsWith('3'))br.innerHTML='<span style="color:#2671B2;font-weight:700;font-size:11px">AMEX</span>';
+    else br.innerHTML='<i class="bi bi-credit-card-2-front"></i>';}
+}
+function fmtE(inp){let v=inp.value.replace(/\D/g,'');if(v.length>2)v=v.slice(0,2)+' / '+v.slice(2,4);inp.value=v}
+function procCard(){
+  const cn=document.getElementById('cnum')?.value.replace(/\s/g,'');
+  if(!cn||cn.length<16){toast('Please enter a valid card number','error');return}
+  const s1=document.getElementById('ACS1'),s2=document.getElementById('ACS2');
+  if(s1)s1.classList.remove('act');
+  setTimeout(()=>{
+    const l4=cn.slice(-4);const cl=document.getElementById('CL4');if(cl)cl.textContent=l4;
+    if(s2)s2.classList.add('act');
+    toast('Card added successfully!','success');
+  },1400);
+  const btn=event.currentTarget||event.target;
+  if(btn){const origTxt=btn.innerHTML;btn.innerHTML='<div class="spin"></div> Processing…';btn.disabled=true;setTimeout(()=>{btn.innerHTML=origTxt;btn.disabled=false},1400)}
+}
+function resetCardForm(){
+  const s1=document.getElementById('ACS1'),s2=document.getElementById('ACS2');
+  if(s1)s1.classList.add('act');if(s2)s2.classList.remove('act');
+  ['cn','cnum','cexp','ccvc','czip'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+}
+function procPayFlow(){
+  const em=document.getElementById('pEM')?.value;
+  const cn=document.getElementById('pCN')?.value.replace(/\s/g,'');
+  if(!em||!em.includes('@')){toast('Please enter a valid email','error');return}
+  if(!cn||cn.length<16){toast('Please enter a valid card number','error');return}
+  const s1=document.getElementById('PFS1'),s2=document.getElementById('PFS2');
+  if(s1)s1.classList.remove('act');
+  setTimeout(()=>{if(s2)s2.classList.add('act');toast('Trial started! Check your email.','success');},1600);
+}
+function showPayFlow(plan,price){
+  const t=document.getElementById('PFT'),pn=document.getElementById('PPNm'),pp=document.getElementById('PPPr');
+  if(t)t.textContent=`Subscribe to ${plan}`;if(pn)pn.textContent=`${plan} Plan`;
+  if(pp)pp.innerHTML=`$${price}<span style="font-size:13px;color:var(--fa);font-weight:400">/mo</span>`;
+  const s1=document.getElementById('PFS1'),s2=document.getElementById('PFS2');
+  if(s1)s1.classList.add('act');if(s2)s2.classList.remove('act');
+  openM('PFM');
+}
+function procCancel(){
+  closeM('CNM');
+  toast('Subscription cancelled. Access ends May 9, 2025.','warn');
+}
+function applyPromo(){
+  const v=document.getElementById('PI')?.value.trim().toUpperCase();
+  if(v==='RFPILOT20')toast('Promo applied! 20% off your next 3 months.','success');
+  else if(v==='WELCOME')toast('Promo applied! First month free.','success');
+  else toast('Invalid promo code. Try RFPILOT20','error');
+}
+function selPlan(el,pl){document.querySelectorAll('.po').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');S.selPlan=pl;const nc=document.getElementById('PCN');if(nc){if(pl==='enterprise')nc.innerHTML='<i class="bi bi-info-circle" style="color:var(--inl);margin-right:7px"></i>Enterprise pricing is custom. Our sales team will contact you.';else nc.innerHTML=`<i class="bi bi-info-circle" style="color:var(--inl);margin-right:7px"></i>You selected ${pl.charAt(0).toUpperCase()+pl.slice(1)}. Confirm below to apply changes.`}}
+function cnfPlan(){
+  if(S.selPlan==='enterprise')openM('salesM');
+  else{toast(`Plan changed to ${S.selPlan.charAt(0).toUpperCase()+S.selPlan.slice(1)}!`,'success');closeM('UPM')}
+}
+
+/* ══ ONBOARDING ══ */
+let obStep=1;
+function obGo(n){
+  document.querySelectorAll('.obs').forEach(s=>s.classList.remove('act'));
+  const t=document.getElementById('obs'+n);if(t)t.classList.add('act');obStep=n;
+  const dots=document.querySelectorAll('.obdot');dots.forEach((d,i)=>d.classList.toggle('dn',i<n));
+}
+function selChoice(el){el.parentElement.querySelectorAll('.cc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel')}
+function selSingle(el){el.parentElement.querySelectorAll('.cc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel')}
+function finishOnboard(){
+  const em=document.getElementById('ob_em')?.value;
+  if(!em||!em.includes('@')){toast('Please enter a valid email','error');return}
+  toast('Account created! Welcome to RFPilot 🚀','success');
+  setTimeout(()=>showApp('dashboard'),1200);
+}
+
+/* ══ AUTH ══ */
+function setAuth(mode,btn){
+  document.querySelectorAll('.tabb').forEach(b=>b.classList.remove('act'));btn.classList.add('act');
+  const ng=document.getElementById('ANg'),bt=document.getElementById('ABT'),ft=document.getElementById('AFT');
+  if(mode==='signup'){if(ng)ng.style.display='block';if(bt)bt.textContent='Create Account';if(ft)ft.innerHTML='Already have an account? <a style="color:var(--inl);cursor:pointer" onclick="setAuth(\'login\',document.querySelectorAll(\'.tabb\')[0])">Log in</a>'}
+  else{if(ng)ng.style.display='none';if(bt)bt.textContent='Log In';if(ft)ft.innerHTML='Don\'t have an account? <a style="color:var(--inl);cursor:pointer" onclick="setAuth(\'signup\',document.querySelectorAll(\'.tabb\')[1])">Sign up free</a>'}
+}
+function doAuth(){toast('Signing you in…','info');setTimeout(()=>showApp('dashboard'),1200)}
+
+/* ══ NOTIFICATIONS ══ */
+function markAllRead(){document.querySelectorAll('.nti.unr').forEach(n=>n.classList.remove('unr'));const nb=document.getElementById('NB');if(nb)nb.textContent='0';toast('All notifications marked as read','success')}
+
+/* ══ TEAM ══ */
+function inviteMem(){const em=document.getElementById('IE')?.value.trim();if(!em||!em.includes('@')){toast('Enter a valid email address','error');return}toast(`Invite sent to ${em}!`,'success');const ie=document.getElementById('IE');if(ie)ie.value=''}
+
+/* ══ API KEYS ══ */
+function openKM(){
+  const k='rfp_live_sk_'+Array(32).fill(0).map(()=>'abcdef0123456789'[Math.floor(Math.random()*16)]).join('');
+  const kv=document.getElementById('KV');if(kv)kv.value=k;openM('KM');
+}
+
+/* ══ COMMAND PALETTE ══ */
+function openCmd(){document.getElementById('CMP')?.classList.add('open');document.getElementById('CMI')?.focus()}
+function closeCmd(){document.getElementById('CMP')?.classList.remove('open');const ci=document.getElementById('CMI');if(ci)ci.value='';filterCmd('')}
+function cmdGo(pg){closeCmd();goPage(pg)}
+function filterCmd(v){
+  const items=document.querySelectorAll('.cmi');
+  items.forEach(item=>{const txt=item.textContent.toLowerCase();item.style.display=v&&!txt.includes(v.toLowerCase())?'none':'flex'});
+}
+
+/* ══ DEMO ══ */
+const DT=`> Analyzing: USAF Cloud Migration RFP (FA8771-25-R-0042)
+> Extracting requirements: 44 items found
+> Searching evidence library: 847 past proposals indexed
+> Matching: 94% relevance score
+
+✓ Generating Executive Summary...
+✓ Technical Approach: Cloud Architecture (Phase 1-3)
+✓ FedRAMP ATO Timeline: 78-day delivery plan
+✓ Cost Reduction Analysis: 34% Year 1 savings
+✓ Compliance check: 95% — 2 gaps flagged
+
+█ Draft complete — 4 minutes 12 seconds`;
+let dci=0;
+function runDemo(){
+  const el=document.getElementById('demoTxt');if(!el)return;
+  el.textContent='';dci=0;
+  (function type(){if(dci<DT.length){el.textContent+=DT[dci++];setTimeout(type,DT[dci]==='\n'?35:18)}})();
+}
+function scrollToDemo(){document.getElementById('demoSec')?.scrollIntoView({behavior:'smooth'});setTimeout(runDemo,600)}
+
+/* ══ TOAST SYSTEM ══ */
+const TICS={success:'bi-check-circle-fill',error:'bi-x-circle-fill',info:'bi-info-circle-fill',warn:'bi-exclamation-triangle-fill'};
+function toast(msg,type='info'){
+  const c=document.getElementById('TC');const t=document.createElement('div');t.className=`tst ${type}`;
+  t.innerHTML=`<i class="bi ${TICS[type]||'bi-info-circle-fill'} tic"></i><span class="tm">${msg}</span><i class="bi bi-x-lg tcl" onclick="this.parentElement.remove()"></i>`;
+  c.appendChild(t);setTimeout(()=>{t.style.transition='opacity .3s,transform .3s';t.style.opacity='0';t.style.transform='translateX(22px)';setTimeout(()=>t.remove(),300)},3800);
+}
+
+/* ══ KEYBOARD SHORTCUTS ══ */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){document.querySelectorAll('.mov.open').forEach(m=>m.classList.remove('open'));closeCmd()}
+  if(!(e.metaKey||e.ctrlKey))return;
+  switch(e.key){
+    case'k':e.preventDefault();openCmd();break;
+    case's':e.preventDefault();doAutosave();toast('Draft saved!','success');break;
+    case'b':e.preventDefault();toggleSB();break;
+    case'n':e.preventDefault();openM('NPM');break;
+    case'Enter':if(S.pg==='warroom'){e.preventDefault();startAI()}break;
+  }
+});
+
+/* ══ RESPONSIVE ══ */
+window.addEventListener('resize',()=>{
+  const evb=document.querySelector('.sevb');
+  if(evb)evb.style.display=(S.pg==='warroom'&&window.innerWidth<=1200)?'inline-flex':'none';
+  if(window.innerWidth>768)closeMobSB();
+});
+
+/* ══ INIT ══ */
+document.addEventListener('DOMContentLoaded',()=>{
+  showSk();setTimeout(renderProjs,700);
+  setTimeout(runDemo,1800);
+});
+</script>
+</body>
+</html>
