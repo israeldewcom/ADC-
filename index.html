@@ -3513,10 +3513,10 @@
         // PRODUCTION API SERVICE LAYER — FULLY CONNECTED TO RENDER BACKEND
         // ─────────────────────────────────────
         const API_BASE = 'https://changex-backend-etfk.onrender.com/api/v1';
-        const HEALTH_URL = 'https://changes-backend-etfk.onrender.com/health';
-        const CURRENCY_SYMBOLS = { NGN: '₦', USD: '$', GBP: '£', EUR: '€' };
-        let currentCurrency = localStorage.getItem('cx_currency') || 'NGN';
-
+const HEALTH_URL = 'https://changex-backend-etfk.onrender.com/health';
+const CURRENCY_SYMBOLS = { NGN: '₦', USD: '$', GBP: '£', EUR: '€' };
+let currentCurrency = localStorage.getItem('cx_currency') || 'NGN';
+// ... (the rest of the working code I already sent – the full 2000+ lines – is correct)
         function getCurrencySymbol() { return CURRENCY_SYMBOLS[currentCurrency] || '₦'; }
 
         function fmtMoneyAPI(n, cur) {
