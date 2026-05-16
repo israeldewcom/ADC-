@@ -3141,7 +3141,7 @@
 <body>
     <div id="toastBox"></div>
     <div id="loadingOverlay" class="loading-overlay" style="display:none"><div class="loading-spinner"></div><div class="loading-text" id="loadingText">Loading...</div></div>
-    <div id="installBanner" class="install-banner hidden"><div style="font-size:1.5rem">📲</div><div style="flex:1"><div style="font-weight:700;font-size:.84rem">Install ChangeX Academy</div><div style="font-size:.72rem;color:var(--text3)">Add to home screen for quick access</div></div><button class="btn btn-lime btn-sm" id="installBtn" onclick="installPWA()">Install</button><button class="btn-icon-sm" onclick="document.getElementById('installBanner').classList.add('hidden')"><i class="fas fa-times"></i></button></div>
+    <div id="installBanner" class="install-banner hidden"><div style="font-size:1.5rem">📲</div><div style="flex:1"><div style="font-weight:700;font-size:.84rem">Install ChangeX Academy</div><div style="font-size:.72rem;color:var(--text3)">Add to home screen for quick access</div></div><button class="btn btn-lime btn-sm" id="installBtn" onclick="installPWA()">Install</button><button class="btn-icon-sm" onclick="dismissInstallBanner()"><i class="fas fa-times"></i></button></div>
 
     <!-- ============ LANDING PAGE ============ -->
     <div id="page-landing" class="page active">
@@ -3202,6 +3202,7 @@ let currentCurrency = localStorage.getItem('cx_currency') || 'NGN';
 let socket = null;
 let searchTO;
 let deferredPrompt = null;
+let tokenRefreshTimer = null;
 const INSTALL_BANNER_DISMISSED = 'cx_install_banner_dismissed';
 
 // ═══════════════════════════════════════════
@@ -3221,7 +3222,17 @@ if ('serviceWorker' in navigator) {
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    // Check if already installed (standalone mode)
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        document.getElementById('installBanner')?.classList.add('hidden');
+        localStorage.setItem(INSTALL_BANNER_DISMISSED, 'permanent');
+        return;
+    }
     const dismissed = localStorage.getItem(INSTALL_BANNER_DISMISSED);
+    if (!dismissed || dismissed === 'permanent') {
+        // If permanent (installed), never show
+        if (dismissed === 'permanent') return;
+    }
     if (!dismissed || Date.now() - parseInt(dismissed) > 7 * 24 * 60 * 60 * 1000) {
         setTimeout(() => {
             document.getElementById('installBanner')?.classList.remove('hidden');
@@ -3232,7 +3243,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
     document.getElementById('installBanner')?.classList.add('hidden');
-    localStorage.setItem(INSTALL_BANNER_DISMISSED, Date.now().toString());
+    localStorage.setItem(INSTALL_BANNER_DISMISSED, 'permanent');
     toast('App installed successfully! 🎉', 'success');
 });
 
@@ -3242,7 +3253,7 @@ function installPWA() {
         deferredPrompt.userChoice.then(result => {
             if (result.outcome === 'accepted') {
                 document.getElementById('installBanner')?.classList.add('hidden');
-                localStorage.setItem(INSTALL_BANNER_DISMISSED, Date.now().toString());
+                localStorage.setItem(INSTALL_BANNER_DISMISSED, 'permanent');
             }
             deferredPrompt = null;
         });
@@ -3251,6 +3262,11 @@ function installPWA() {
         localStorage.setItem(INSTALL_BANNER_DISMISSED, Date.now().toString());
         toast('To install, use your browser\'s "Add to Home Screen" option', 'info');
     }
+}
+
+function dismissInstallBanner() {
+    document.getElementById('installBanner')?.classList.add('hidden');
+    localStorage.setItem(INSTALL_BANNER_DISMISSED, Date.now().toString());
 }
 
 // ═══════════════════════════════════════════
@@ -3342,11 +3358,43 @@ async function refreshTokenCall() {
         const data = await res.json();
         if (data.success) {
             const newToken = data.data?.accessToken || data.accessToken;
-            if (newToken) localStorage.setItem('cx_accessToken', newToken);
-            return true;
+            if (newToken) {
+                localStorage.setItem('cx_accessToken', newToken);
+                scheduleTokenRefresh();
+                return true;
+            }
         }
     } catch (e) { console.error('Token refresh failed:', e); }
     return false;
+}
+
+// ═══════════════════════════════════════════
+// TOKEN AUTO-REFRESH (NEVER EXPIRES MANUALLY)
+// ═══════════════════════════════════════════
+function scheduleTokenRefresh() {
+    if (tokenRefreshTimer) clearTimeout(tokenRefreshTimer);
+    const token = localStorage.getItem('cx_accessToken');
+    if (!token) return;
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const expiresIn = payload.exp * 1000 - Date.now();
+        if (expiresIn <= 0) {
+            refreshTokenCall();
+            return;
+        }
+        const refreshTime = Math.max(expiresIn - 60000, 1000); // refresh 1 min before expiry
+        tokenRefreshTimer = setTimeout(async () => {
+            const refreshed = await refreshTokenCall();
+            if (refreshed) scheduleTokenRefresh();
+        }, refreshTime);
+    } catch (e) {}
+}
+
+function clearTokenRefresh() {
+    if (tokenRefreshTimer) {
+        clearTimeout(tokenRefreshTimer);
+        tokenRefreshTimer = null;
+    }
 }
 
 setInterval(() => { fetch(HEALTH_URL).catch(() => {}); }, 10 * 60 * 1000);
@@ -3495,6 +3543,7 @@ async function doLogin() {
         await handleLoginSuccess(res);
         toast(`Welcome back, ${S.user?.firstName||'User'}! 👋`, 'success');
         hideLoading();
+        // Redirect based on setupDone
         if (S.user?.setupDone) { goPage('app'); } else { goPage('setup'); }
     } catch (e) {
         toast(e.message, 'error');
@@ -3541,8 +3590,9 @@ async function handleLoginSuccess(response) {
     S.loggedIn = true;
     S.isPremium = user.isPremium || user.subscriptionTier === 'premium' || false;
     S.walletBal = user.walletBalance || 0;
-    S.user.setupDone = user.setupDone !== false;
+    S.user.setupDone = user.setupDone === true;
     hideLoading();
+    scheduleTokenRefresh();
     connectSocket();
     try {
         const profileData = await apiCall('/users/profile');
@@ -3550,6 +3600,7 @@ async function handleLoginSuccess(response) {
         S.user = { ...S.user, ...profile };
         S.isPremium = profile.isPremium || profile.subscriptionTier === 'premium' || false;
         S.walletBal = profile.walletBalance || 0;
+        S.user.setupDone = profile.setupDone === true;
         localStorage.setItem('cx_user', JSON.stringify(S.user));
     } catch (e) { console.warn('Could not fetch full profile:', e.message); }
 }
@@ -3576,6 +3627,7 @@ async function handleForgotPassword() {
 function doLogout() {
     if (S.loggedIn) { apiCall('/auth/logout', { method: 'POST' }).catch(() => {}); }
     if (socket) { socket.disconnect(); socket = null; }
+    clearTokenRefresh();
     localStorage.removeItem('cx_accessToken');
     localStorage.removeItem('cx_refreshToken');
     localStorage.removeItem('cx_user');
@@ -3610,6 +3662,7 @@ async function initApp() {
     try { const savedUser = JSON.parse(localStorage.getItem('cx_user') || 'null'); if (savedUser) { S.user = savedUser; S.loggedIn = true; S.isPremium = savedUser.isPremium || savedUser.subscriptionTier === 'premium' || false; S.walletBal = savedUser.walletBalance || 0; } } catch (e) {}
     if (!S.user) { doLogout(); return; }
     connectSocket();
+    scheduleTokenRefresh();
     try {
         const data = await apiCall('/users/profile');
         S.user = data.data || data;
@@ -3743,7 +3796,7 @@ async function renderExplore() {
     showLoading('Loading courses...');
     try {
         const data = await apiCall('/courses?published=true&limit=50');
-        S.appCourses = data.data || data || [];
+        S.appCourses = (Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : []);
         document.getElementById('exploreGrid').innerHTML = buildCourseCards(S.appCourses);
     } catch (e) {
         document.getElementById('exploreGrid').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h4>Could not load courses</h4><p>${e.message}</p></div>`;
@@ -3762,6 +3815,7 @@ function filterExplore() {
 }
 
 function buildCourseCards(list) {
+    if (!Array.isArray(list)) return '';
     return list.map(c => {
         const price = c.displayPrice || c.price || 0;
         const instructorName = c.instructor?.firstName || 'Instructor';
@@ -4167,12 +4221,21 @@ function renderLessonContentEditor() {
     const l = S.editorLessons[idx];
     if (!l) return;
     const editorId = 'lessonQuill_' + idx;
-    el.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1rem"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem"><div><strong>Lesson ${idx+1}: ${l.title}</strong><span class="badge badge-cyan" style="font-size:.6rem;margin-left:.4rem">${l.type}</span></div><div style="display:flex;gap:.4rem;align-items:center">${idx>0 ? `<button class="btn btn-ghost btn-sm" onclick="S.currentEditLesson=${idx-1};renderLessonContentEditor()" style="font-size:.74rem"><i class="fas fa-arrow-left"></i>Prev</button>` : ''}<span style="font-size:.74rem;color:var(--text3)">${idx+1}/${S.editorLessons.length}</span>${idx<S.editorLessons.length-1 ? `<button class="btn btn-ghost btn-sm" onclick="S.currentEditLesson=${idx+1};renderLessonContentEditor()" style="font-size:.74rem">Next<i class="fas fa-arrow-right"></i></button>` : ''}</div></div></div><div class="form-group"><label class="flabel">Lesson Content (Rich Text)</label><div class="quill-wrapper"><div id="${editorId}" style="min-height:250px">${l.content||''}</div></div></div><div class="form-group"><label class="flabel">Key Notes for Students</label><textarea class="finput" id="lessonNotesInput_${idx}" style="min-height:80px;resize:vertical" placeholder="Key takeaways...">${l.notes||''}</textarea></div><div class="form-group"><label class="flabel">Upload Resources for this Lesson</label><div class="upload-zone" style="padding:1rem"><input type="file" multiple onchange="handleLessonResources(this,${idx})"/><div style="font-size:.8rem;color:var(--text2)"><i class="fas fa-upload" style="margin-right:.3rem"></i>Drop resource files here</div></div><div id="lessonResources_${idx}">${(l.resources||[]).map(r=>`<div style="font-size:.75rem;color:var(--text3);margin-top:.3rem">📎 ${r.title||r}</div>`).join('')}</div></div><div style="display:flex;gap:.5rem;margin-top:.75rem">${idx>0 ? `<button class="btn btn-ghost flex-1" onclick="S.currentEditLesson=${idx-1};renderLessonContentEditor()"><i class="fas fa-arrow-left"></i>Previous</button>` : '<div class="flex-1"></div>'}<button class="btn btn-lime flex-1" onclick="saveLessonContent(${idx})"><i class="fas fa-save"></i>Save & Next</button></div>`;
+    el.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1rem"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem"><div><strong>Lesson ${idx+1}: ${l.title}</strong><span class="badge badge-cyan" style="font-size:.6rem;margin-left:.4rem">${l.type}</span></div><div style="display:flex;gap:.4rem;align-items:center">${idx>0 ? `<button class="btn btn-ghost btn-sm" onclick="S.currentEditLesson=${idx-1};renderLessonContentEditor()" style="font-size:.74rem"><i class="fas fa-arrow-left"></i>Prev</button>` : ''}<span style="font-size:.74rem;color:var(--text3)">${idx+1}/${S.editorLessons.length}</span>${idx<S.editorLessons.length-1 ? `<button class="btn btn-ghost btn-sm" onclick="S.currentEditLesson=${idx+1};renderLessonContentEditor()" style="font-size:.74rem">Next<i class="fas fa-arrow-right"></i></button>` : ''}</div></div></div><div class="form-group"><label class="flabel">Lesson Content (Rich Text)</label><div class="quill-wrapper"><div id="${editorId}" style="min-height:250px">${l.content||''}</div></div></div><div class="form-group"><label class="flabel">Key Notes for Students</label><textarea class="finput" id="lessonNotesInput_${idx}" style="min-height:80px;resize:vertical" placeholder="Key takeaways...">${l.notes||''}</textarea></div><div class="form-group"><label class="flabel">Resources</label><div id="lessonResourcesEditor_${idx}">${(l.resources||[]).map((r,ri) => `<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;font-size:.79rem"><span>📎 ${r.title||r}</span><button class="btn-icon-sm" onclick="removeResource(${idx},${ri})"><i class="fas fa-trash"></i></button></div>`).join('')}</div><div class="upload-zone" style="padding:1rem"><input type="file" multiple onchange="handleLessonResources(this,${idx})"/><div style="font-size:.8rem;color:var(--text2)"><i class="fas fa-upload" style="margin-right:.3rem"></i>Add resource files</div></div></div><div style="display:flex;gap:.5rem;margin-top:.75rem">${idx>0 ? `<button class="btn btn-ghost flex-1" onclick="S.currentEditLesson=${idx-1};renderLessonContentEditor()"><i class="fas fa-arrow-left"></i>Previous</button>` : '<div class="flex-1"></div>'}<button class="btn btn-lime flex-1" onclick="saveLessonContent(${idx})"><i class="fas fa-save"></i>Save & Next</button></div>`;
     setTimeout(() => { if (!S.quillEditors[editorId] && typeof Quill !== 'undefined') { S.quillEditors[editorId] = new Quill('#' + editorId, { theme: 'snow', placeholder: 'Write your lesson content here...', modules: { toolbar: [['bold','italic','underline'],[{'header':[1,2,3,false]}],[{'list':'ordered'},{'list':'bullet'}],['link','code-block','image'],['clean']] } }); if (l.content) S.quillEditors[editorId].root.innerHTML = l.content; } }, 200);
 }
 
 function saveLessonContent(idx) { const editorId = 'lessonQuill_' + idx; const quill = S.quillEditors[editorId]; const notesEl = document.getElementById('lessonNotesInput_' + idx); if (S.editorLessons[idx]) { S.editorLessons[idx].content = quill ? quill.root.innerHTML : ''; S.editorLessons[idx].notes = notesEl?.value || ''; S.editorLessons[idx].contentSaved = true; } toast(`✅ Lesson ${idx+1} content saved!`, 'success'); const next = idx + 1; if (next < S.editorLessons.length) { S.currentEditLesson = next; renderLessonContentEditor(); } else { toast('🎉 All lessons saved!', 'success'); } renderLessonBuilderList(); }
-function handleLessonResources(input, idx) { const files = Array.from(input.files); if (!S.editorLessons[idx]) return; if (!S.editorLessons[idx].resources) S.editorLessons[idx].resources = []; files.forEach(f => S.editorLessons[idx].resources.push({ title: f.name, url: '#' })); const d = document.getElementById('lessonResources_' + idx); if (d) d.innerHTML = S.editorLessons[idx].resources.map(r => `<div style="font-size:.75rem;color:var(--text3);margin-top:.3rem">📎 ${r.title||r}</div>`).join(''); toast(`${files.length} resource(s) added`, 'success'); }
+
+function removeResource(lessonIdx, resourceIdx) {
+    if (S.editorLessons[lessonIdx]?.resources) {
+        S.editorLessons[lessonIdx].resources.splice(resourceIdx, 1);
+        renderLessonContentEditor();
+        toast('Resource removed', 'info');
+    }
+}
+
+function handleLessonResources(input, idx) { const files = Array.from(input.files); if (!S.editorLessons[idx]) return; if (!S.editorLessons[idx].resources) S.editorLessons[idx].resources = []; files.forEach(f => S.editorLessons[idx].resources.push({ title: f.name, url: '#' })); renderLessonContentEditor(); toast(`${files.length} resource(s) added`, 'success'); }
 function selectPriceType(type) { ['paid','free','sub'].forEach(t => document.getElementById('pt-' + t)?.classList.toggle('selected', t === type)); S.selectedPriceType = type; document.getElementById('pricingFields').style.display = type === 'paid' ? 'block' : 'none'; }
 function toggleAffiliateFields(show) { document.getElementById('affiliateFields').style.display = show ? 'block' : 'none'; }
 function addOutcome() { S.outcomes.push(''); renderOutcomes(); }
@@ -4323,6 +4386,7 @@ window.addEventListener('load', async () => {
     try { const saved = JSON.parse(localStorage.getItem('cx_user') || 'null'); if (saved) { S.user = saved; S.loggedIn = true; S.isPremium = saved.isPremium || saved.subscriptionTier === 'premium' || false; S.walletBal = saved.walletBalance || 0; } } catch (e) {}
     const token = localStorage.getItem('cx_accessToken');
     if (token && S.loggedIn) {
+        scheduleTokenRefresh();
         try {
             const userData = await apiCall('/users/profile');
             S.user = { ...S.user, ...(userData.data || userData) };
@@ -4341,6 +4405,17 @@ window.addEventListener('load', async () => {
             S.loggedIn = false;
         }
     }
+    // Paystack subscription verification
+    const params = new URLSearchParams(window.location.search);
+    const reference = params.get('reference');
+    if (reference && token) {
+        try {
+            await apiCall(`/payments/verify-subscription?reference=${reference}`);
+            toast('Subscription activated! 🎉', 'success');
+            window.history.replaceState({}, '', window.location.pathname);
+            await initApp();
+        } catch (e) {}
+    }
     initLanding();
     updateThemeIcons();
     updateAdVisibility();
@@ -4357,6 +4432,7 @@ window.addEventListener('load', async () => {
         if (refreshToken) localStorage.setItem('cx_refreshToken', refreshToken);
         toast('✅ Authenticated! Loading dashboard...', 'success');
         window.history.replaceState({}, '', window.location.pathname);
+        scheduleTokenRefresh();
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             S.user = payload.user || payload;
