@@ -3556,23 +3556,64 @@ function updateThemeIcons() {
 }
 
 // ═══════════════════════════════════════════
-// NAVIGATION
+// ROBUST NAVIGATION (WITH FALLBACKS)
 // ═══════════════════════════════════════════
 function goPage(pg) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const el = document.getElementById('page-' + pg);
-    if (el) { el.classList.add('active'); S.page = pg; window.scrollTo(0, 0); }
-    if (pg === 'app') {
-        if (!S.loggedIn) { toast('Please sign in first', 'error'); goPage('login'); return; }
-        setDP(S.dp);
-        initApp();
+    const pages = document.querySelectorAll('.page');
+    const target = document.getElementById('page-' + pg);
+    
+    if (!target) {
+        console.error(`Page "${pg}" not found`);
+        const fallback = document.getElementById('page-app');
+        if (fallback) {
+            pages.forEach(p => p.classList.remove('active'));
+            fallback.classList.add('active');
+            S.page = 'app';
+        }
+        return;
     }
-    if (pg === 'landing') initLanding();
+    
+    pages.forEach(p => p.classList.remove('active'));
+    target.classList.add('active');
+    S.page = pg;
+    window.scrollTo(0, 0);
+    
+    if (pg === 'app') {
+        setTimeout(() => {
+            if (typeof setDP === 'function') setDP(S.dp || 'home');
+            if (typeof initApp === 'function') initApp();
+        }, 50);
+    }
     if (pg === 'setup') {
         if (S.user?.setupDone) { goPage('app'); return; }
-        S.wizStep = 0; showWizStep(0); document.getElementById('wizName').textContent = S.user?.firstName || 'User';
+        setTimeout(() => {
+            if (typeof showWizStep === 'function') showWizStep(S.wizStep || 0);
+            document.getElementById('wizName').textContent = S.user?.firstName || 'User';
+        }, 50);
     }
     if (pg === 'login' || pg === 'register') { updateThemeIcons(); }
+}
+
+function forceRedirect(targetPage) {
+    if (typeof goPage === 'function') goPage(targetPage);
+    const pages = document.querySelectorAll('.page');
+    const target = document.getElementById('page-' + targetPage);
+    if (target) {
+        pages.forEach(p => p.classList.remove('active'));
+        target.classList.add('active');
+        S.page = targetPage;
+    }
+    if (window.location.hash !== `#${targetPage}`) {
+        window.location.hash = targetPage;
+    }
+    setTimeout(() => {
+        const activePage = document.querySelector('.page.active');
+        if (!activePage || activePage.id !== `page-${targetPage}`) {
+            console.warn('Redirect failed, reloading with hash');
+            window.location.hash = targetPage;
+            window.location.reload();
+        }
+    }, 500);
 }
 
 function setDP(pg) {
@@ -3599,7 +3640,6 @@ function setDP(pg) {
     };
     if (map[pg]) map[pg]();
     updateAdVisibility();
-    // Show/hide floating create button
     const fab = document.getElementById('fab');
     if (fab) {
         const hasCreatorAccess = S.isPremium || S.user?.roles?.includes('admin') || (S.user?.roles?.includes('creator') && S.user?.isApprovedInstructor);
@@ -3607,8 +3647,24 @@ function setDP(pg) {
     }
 }
 
+// Handle hash-based navigation (for reloads)
+function handleHashChange() {
+    const hash = window.location.hash.slice(1);
+    if (hash === 'app' || hash === 'setup' || hash === 'landing') {
+        if (S.loggedIn && hash !== 'landing') goPage(hash);
+        else if (!S.loggedIn && hash !== 'landing') goPage('landing');
+        else goPage(hash);
+    } else if (S.loggedIn) {
+        goPage('app');
+    } else {
+        goPage('landing');
+    }
+}
+
+window.addEventListener('hashchange', handleHashChange);
+
 // ═══════════════════════════════════════════
-// AUTHENTICATION (FIXED SPINNER + REDIRECT)
+// AUTHENTICATION (WITH FORCED REDIRECT)
 // ═══════════════════════════════════════════
 async function doLogin() {
     const em = document.getElementById('loginEmail')?.value.trim();
@@ -3677,17 +3733,12 @@ async function handleLoginSuccess(response, isFromLogin) {
         localStorage.setItem('cx_user', JSON.stringify(S.user));
     } catch (e) { console.warn('Could not fetch full profile:', e.message); }
     updateUserUI();
-    if (isFromLogin) {
-        toast(`Welcome back, ${S.user?.firstName||'User'}! 👋`, 'success');
-        goPage('app');
-    } else {
-        toast(`Welcome to ChangeX, ${S.user?.firstName||'User'}! 🎉`, 'success');
-        if (S.user.setupDone) {
-            goPage('app');
-        } else {
-            goPage('setup');
-        }
-    }
+    const targetPage = isFromLogin ? 'app' : (S.user.setupDone ? 'app' : 'setup');
+    const message = isFromLogin 
+        ? `Welcome back, ${S.user?.firstName || 'User'}! 👋` 
+        : `Welcome to ChangeX, ${S.user?.firstName || 'User'}! 🎉`;
+    toast(message, 'success');
+    forceRedirect(targetPage);
 }
 
 function handleGoogleLogin() { window.location.href = `${API_BASE}/auth/google`; }
@@ -3912,7 +3963,6 @@ function buildCourseCards(list) {
 function openBuyCourse(courseId) {
     const c = (S.appCourses || []).find(x => x._id === courseId);
     if (!c) return;
-    // Premium lock
     if (c.price > 0 && !S.isPremium && !S.user?.roles?.includes('admin')) {
         toast('This course requires a Premium subscription', 'warning');
         openModal('premiumModal');
@@ -4511,14 +4561,19 @@ window.addEventListener('load', async () => {
             localStorage.setItem('cx_user', JSON.stringify(S.user));
             updateUserUI();
             updateAdVisibility();
-            if (window.location.pathname === '/' || window.location.pathname === '') {
-                goPage('app');
-            }
+            const hash = window.location.hash.slice(1);
+            if (hash === 'app' || hash === 'setup') goPage(hash);
+            else goPage('app');
         } catch (e) {
             localStorage.removeItem('cx_accessToken');
             localStorage.removeItem('cx_user');
             S.loggedIn = false;
+            goPage('landing');
         }
+    } else {
+        const hash = window.location.hash.slice(1);
+        if (hash === 'app' || hash === 'setup') goPage('landing');
+        else goPage('landing');
     }
     initLanding();
     updateThemeIcons();
