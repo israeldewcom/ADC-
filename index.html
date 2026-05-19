@@ -23,8 +23,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
-    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-    <script src="https://cdn.socket.io/4.6.1/socket.io.esm.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js">
+    </script>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.esm.min.js">
+    </script>
     <style>
         :root {
             --bg: #04080F;
@@ -2979,6 +2981,10 @@
             gap: .5rem;
             font-size: .79rem;
             color: var(--gold);
+            cursor: pointer;
+        }
+        .announcement-bar:hover {
+            background: linear-gradient(135deg,rgba(245,158,11,.18),rgba(255,107,43,.1));
         }
         .web-row {
             display: flex;
@@ -3120,7 +3126,6 @@
                 opacity: 1;
             }
         }
-        /* Floating action button */
         .fab {
             position: fixed;
             bottom: 90px;
@@ -3154,7 +3159,6 @@
                 font-size: 1.7rem;
             }
         }
-        /* Additional beautification */
         .btn-lime:focus-visible, .btn-outline:focus-visible {
             box-shadow: 0 0 0 3px rgba(184,255,79,.5);
         }
@@ -3171,13 +3175,40 @@
         .lb-av {
             background-size: cover;
         }
-        /* Premium gate overlay */
         .premium-gate-overlay {
             background: linear-gradient(135deg,rgba(245,158,11,.08),rgba(255,107,43,.05));
             border: 1px solid rgba(245,158,11,.2);
             border-radius: var(--radius-lg);
             padding: 2rem;
             text-align: center;
+        }
+        /* Natural feel tweaks */
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(10px);
+        }
+        .sidebar {
+            background: var(--bg2);
+        }
+        .topbar {
+            background: var(--bg2);
+        }
+        .mob-bottom-nav {
+            background: var(--bg2);
+        }
+        input, select, textarea {
+            font-family: var(--font-body);
+        }
+        .btn {
+            letter-spacing: 0.01em;
+            font-weight: 600;
+        }
+        .land-nav-links a {
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .announcement-bar {
+            font-weight: 500;
         }
     </style>
 </head>
@@ -3251,7 +3282,7 @@ const INSTALL_BANNER_DISMISSED = 'cx_install_dismissed';
 let tokenRefreshTimer = null;
 
 // ═══════════════════════════════════════════
-// PWA - SERVICE WORKER REGISTRATION
+// PWA - SERVICE WORKER REGISTRATION & INSTALL BANNER
 // ═══════════════════════════════════════════
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -3270,7 +3301,8 @@ window.addEventListener('beforeinstallprompt', (e) => {
     const dismissed = localStorage.getItem(INSTALL_BANNER_DISMISSED);
     if (!dismissed || Date.now() - parseInt(dismissed) > 7 * 24 * 60 * 60 * 1000) {
         setTimeout(() => {
-            document.getElementById('installBanner')?.classList.remove('hidden');
+            const banner = document.getElementById('installBanner');
+            if (banner) banner.classList.remove('hidden');
         }, 2000);
     }
 });
@@ -3383,7 +3415,7 @@ function startTokenRefreshTimer() {
     } catch (e) {}
 }
 
-// Fallback – check token every minute
+// Fallback check every minute
 setInterval(() => {
     const token = localStorage.getItem('cx_accessToken');
     if (token) {
@@ -3457,7 +3489,7 @@ async function refreshTokenCall() {
 setInterval(() => { fetch(HEALTH_URL).catch(() => {}); }, 10 * 60 * 1000);
 
 // ═══════════════════════════════════════════
-// SOCKET.IO
+// SOCKET.IO (WITH AFFILIATE & ANNOUNCEMENT LISTENERS)
 // ═══════════════════════════════════════════
 function connectSocket() {
     const userId = S.user?._id;
@@ -3499,8 +3531,11 @@ function connectSocket() {
             if (S.dp === 'affiliates') renderAffiliates();
         });
         socket.on('announcement', (data) => {
-            document.getElementById('announcementBar').style.display = 'flex';
-            document.getElementById('announcementText').textContent = `📣 ${data.title}: ${data.content?.substring(0, 100) || ''}`;
+            const bar = document.getElementById('announcementBar');
+            if (bar) {
+                bar.style.display = 'flex';
+                document.getElementById('announcementText').textContent = `📣 ${data.title}: ${data.content?.substring(0, 100) || ''}`;
+            }
             toast(data.title || 'New announcement', 'info');
         });
         socket.on('disconnect', () => { console.log('Socket disconnected'); });
@@ -3556,24 +3591,70 @@ function updateThemeIcons() {
 }
 
 // ═══════════════════════════════════════════
-// NAVIGATION
+// ROBUST NAVIGATION WITH HASH FALLBACK
 // ═══════════════════════════════════════════
 function goPage(pg) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const el = document.getElementById('page-' + pg);
-    if (el) { el.classList.add('active'); S.page = pg; window.scrollTo(0, 0); }
+    const pages = document.querySelectorAll('.page');
+    const target = document.getElementById('page-' + pg);
+    if (!target) {
+        console.error(`Page "${pg}" not found`);
+        const fallback = document.getElementById('page-app');
+        if (fallback) {
+            pages.forEach(p => p.classList.remove('active'));
+            fallback.classList.add('active');
+            S.page = 'app';
+        }
+        return;
+    }
+    pages.forEach(p => p.classList.remove('active'));
+    target.classList.add('active');
+    S.page = pg;
+    window.scrollTo(0, 0);
     if (pg === 'app') {
-        if (!S.loggedIn) { toast('Please sign in first', 'error'); goPage('login'); return; }
-        setDP(S.dp);
-        initApp();
+        setTimeout(() => {
+            if (typeof setDP === 'function') setDP(S.dp || 'home');
+            if (typeof initApp === 'function') initApp();
+        }, 50);
     }
-    if (pg === 'landing') initLanding();
     if (pg === 'setup') {
-        if (S.user?.setupDone) { goPage('app'); return; }
-        S.wizStep = 0; showWizStep(0); document.getElementById('wizName').textContent = S.user?.firstName || 'User';
+        setTimeout(() => {
+            if (typeof showWizStep === 'function') showWizStep(S.wizStep || 0);
+        }, 50);
     }
-    if (pg === 'login' || pg === 'register') { updateThemeIcons(); }
 }
+
+function forceRedirect(targetPage) {
+    if (typeof goPage === 'function') goPage(targetPage);
+    const pages = document.querySelectorAll('.page');
+    const target = document.getElementById('page-' + targetPage);
+    if (target) {
+        pages.forEach(p => p.classList.remove('active'));
+        target.classList.add('active');
+        S.page = targetPage;
+    }
+    if (window.location.hash !== `#${targetPage}`) {
+        window.location.hash = targetPage;
+    }
+    setTimeout(() => {
+        const activePage = document.querySelector('.page.active');
+        if (!activePage || activePage.id !== `page-${targetPage}`) {
+            console.warn('Redirect failed, reloading with hash');
+            window.location.hash = targetPage;
+            window.location.reload();
+        }
+    }, 500);
+}
+
+function handleHashChange() {
+    const hash = window.location.hash.slice(1);
+    if (hash === 'app' || hash === 'setup' || hash === 'landing') {
+        if (S.loggedIn) goPage(hash);
+        else if (hash !== 'landing') goPage('landing');
+        else goPage('landing');
+    } else if (S.loggedIn) goPage('app');
+    else goPage('landing');
+}
+window.addEventListener('hashchange', handleHashChange);
 
 function setDP(pg) {
     document.querySelectorAll('.dash-sub').forEach(d => d.classList.remove('active'));
@@ -3599,7 +3680,6 @@ function setDP(pg) {
     };
     if (map[pg]) map[pg]();
     updateAdVisibility();
-    // Show/hide floating create button
     const fab = document.getElementById('fab');
     if (fab) {
         const hasCreatorAccess = S.isPremium || S.user?.roles?.includes('admin') || (S.user?.roles?.includes('creator') && S.user?.isApprovedInstructor);
@@ -3608,7 +3688,7 @@ function setDP(pg) {
 }
 
 // ═══════════════════════════════════════════
-// AUTHENTICATION (FIXED SPINNER + REDIRECT)
+// AUTHENTICATION (GUARANTEED REDIRECT)
 // ═══════════════════════════════════════════
 async function doLogin() {
     const em = document.getElementById('loginEmail')?.value.trim();
@@ -3675,19 +3755,11 @@ async function handleLoginSuccess(response, isFromLogin) {
         S.user.setupDone = profile.setupDone === true;
         S.user.referralCode = profile.referralCode || user.referralCode || 'REF';
         localStorage.setItem('cx_user', JSON.stringify(S.user));
-    } catch (e) { console.warn('Could not fetch full profile:', e.message); }
+    } catch (e) { console.warn('Profile fetch failed, using cached data:', e.message); }
     updateUserUI();
-    if (isFromLogin) {
-        toast(`Welcome back, ${S.user?.firstName||'User'}! 👋`, 'success');
-        goPage('app');
-    } else {
-        toast(`Welcome to ChangeX, ${S.user?.firstName||'User'}! 🎉`, 'success');
-        if (S.user.setupDone) {
-            goPage('app');
-        } else {
-            goPage('setup');
-        }
-    }
+    const targetPage = isFromLogin ? 'app' : (S.user.setupDone ? 'app' : 'setup');
+    toast(isFromLogin ? `Welcome back, ${S.user?.firstName||'User'}! 👋` : `Welcome to ChangeX, ${S.user?.firstName||'User'}! 🎉`, 'success');
+    forceRedirect(targetPage);
 }
 
 function handleGoogleLogin() { window.location.href = `${API_BASE}/auth/google`; }
@@ -3772,7 +3844,11 @@ async function fetchAnnouncements() {
         const list = Array.isArray(res.data) ? res.data : [];
         if (list.length > 0) {
             const latest = list[0];
-            document.getElementById('announcementBar').style.display = 'flex';
+            const bar = document.getElementById('announcementBar');
+            if (bar) {
+                bar.style.display = 'flex';
+                bar.onclick = () => toast(latest.title + ': ' + latest.content, 'info');
+            }
             document.getElementById('announcementText').textContent = `📣 ${latest.title}: ${latest.content?.substring(0, 100) || ''}`;
         }
     } catch (e) {}
@@ -3912,7 +3988,6 @@ function buildCourseCards(list) {
 function openBuyCourse(courseId) {
     const c = (S.appCourses || []).find(x => x._id === courseId);
     if (!c) return;
-    // Premium lock
     if (c.price > 0 && !S.isPremium && !S.user?.roles?.includes('admin')) {
         toast('This course requires a Premium subscription', 'warning');
         openModal('premiumModal');
@@ -3961,7 +4036,7 @@ function renderCourseGrid(filter) {
 function filterCourses(f, btn) { document.querySelectorAll('#dash-courses .fpill').forEach(p => p.classList.remove('active')); if (btn) btn.classList.add('active'); renderCourseGrid(f); }
 
 // ═══════════════════════════════════════════
-// LESSON / CURRICULUM (VIDEO PLAYER FIXED)
+// LESSON / CURRICULUM (VIDEO PLAYER, CONTENT, Q&A)
 // ═══════════════════════════════════════════
 function renderCurric() {
     const list = document.getElementById('curricList');
@@ -3985,13 +4060,15 @@ function updateLessonInfo() {
     document.getElementById('currentLessonTitle').textContent = `${l.title||'Lesson'} — ${l.order||S.currentLessonIdx+1}`;
     document.getElementById('lessonOverviewTitle').textContent = l.title || 'Lesson';
     const desc = l.description || (l.content || '').replace(/<[^>]*>/g, '').substring(0, 300) || `Learn about "${l.title}" in this ${l.type||'video'} lesson.`;
-    document.getElementById('lessonOverviewDesc').textContent = desc;
+    document.getElementById('lessonOverviewDesc').innerHTML = desc;
     document.getElementById('currentCourseTitle').textContent = S.currentCourseData?.title || '';
     const videoWrap = document.getElementById('lessonVideoWrap');
     if (l.type === 'video' && l.videoUrl) {
         videoWrap.innerHTML = `<div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden;"><iframe src="${l.videoUrl}" frameborder="0" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%;"></iframe></div>`;
     } else if (l.type === 'video' && !l.videoUrl) {
         videoWrap.innerHTML = `<div class="empty-state"><i class="fas fa-video"></i><p>Video URL missing. Please contact instructor.</p></div>`;
+    } else if (l.type === 'text' && l.content) {
+        videoWrap.innerHTML = `<div style="padding:1rem;background:var(--bg2);border-radius:var(--radius-sm);min-height:120px;line-height:1.7">${l.content}</div>`;
     } else {
         videoWrap.innerHTML = `<div class="empty-state"><i class="fas fa-file-alt"></i><p>This lesson is text‑based. Read the content below.</p></div>`;
     }
@@ -4022,6 +4099,7 @@ function switchLTab(tab, el) {
     const target = document.getElementById('ls-' + tab);
     if (target) target.classList.add('active');
     S.lessTab = tab;
+    if (tab === 'qa') loadQA();
 }
 
 function saveNote() { toast('📝 Note saved!', 'success'); localStorage.setItem('lesson_note_' + S.currentLessonIdx, document.getElementById('lessonNote')?.value || ''); }
@@ -4175,7 +4253,7 @@ function renderLB() {
 function switchLbTab(tab, btn) { document.querySelectorAll('#dash-leaderboard .tab-btn').forEach(b => b.classList.remove('active')); if (btn) btn.classList.add('active'); S.lbTab = tab; renderLB(); }
 
 // ═══════════════════════════════════════════
-// AFFILIATES (WITH LINK STORAGE)
+// AFFILIATES (WITH ACCEPT & NOTIFICATIONS)
 // ═══════════════════════════════════════════
 async function renderAffiliates() {
     try { const offersData = await apiCall('/courses?published=true&limit=20'); S.affiliateOffers = (Array.isArray(offersData.data) ? offersData.data : []).filter(c => c.hasAffiliate); } catch (e) { S.affiliateOffers = []; }
@@ -4219,7 +4297,7 @@ function handleAffiliateOfferClick(courseId) {
 }
 
 // ═══════════════════════════════════════════
-// INSTRUCTOR HUB (PREMIUM RESTRICTED)
+// INSTRUCTOR HUB (PREMIUM RESTRICTED, EDITABLE)
 // ═══════════════════════════════════════════
 function renderInstHub() {
     const hasCreatorAccess = S.isPremium || S.user?.roles?.includes('admin') || (S.user?.roles?.includes('creator') && S.user?.isApprovedInstructor);
@@ -4511,14 +4589,19 @@ window.addEventListener('load', async () => {
             localStorage.setItem('cx_user', JSON.stringify(S.user));
             updateUserUI();
             updateAdVisibility();
-            if (window.location.pathname === '/' || window.location.pathname === '') {
-                goPage('app');
-            }
+            const hash = window.location.hash.slice(1);
+            if (hash === 'app' || hash === 'setup') goPage(hash);
+            else goPage('app');
         } catch (e) {
             localStorage.removeItem('cx_accessToken');
             localStorage.removeItem('cx_user');
             S.loggedIn = false;
+            goPage('landing');
         }
+    } else {
+        const hash = window.location.hash.slice(1);
+        if (hash === 'app' || hash === 'setup') goPage('landing');
+        else goPage('landing');
     }
     initLanding();
     updateThemeIcons();
