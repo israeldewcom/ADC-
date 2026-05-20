@@ -29,44 +29,48 @@
     </script>
     <style>
         :root {
-            --bg: #04080F;
-            --bg2: #070D17;
-            --bg3: #0A1220;
-            --card: #0D1520;
-            --card2: #111E2E;
-            --card3: #162236;
-            --border: #1A2D45;
-            --border2: #213650;
-            --lime: #B8FF4F;
-            --lime2: #96E832;
-            --cyan: #00E5FF;
-            --violet: #8B5CF6;
-            --gold: #F59E0B;
-            --orange: #FF6B2B;
-            --danger: #FF3D6B;
-            --success: #00D68F;
-            --text: #ECF1F8;
-            --text2: #8EA4C0;
-            --text3: #4A6180;
-            --text4: #2A3D55;
-            --shadow: 0 12px 40px rgba(0,0,0,.6);
-            --shadow2: 0 4px 16px rgba(0,0,0,.4);
-            --glow: 0 0 32px rgba(184,255,79,.12);
-            --glow-cyan: 0 0 24px rgba(0,229,255,.1);
-            --radius: 14px;
-            --radius-sm: 9px;
-            --radius-lg: 20px;
-            --transition: .22s cubic-bezier(.4,0,.2,1);
-            --sidebar-w: 252px;
-            --topbar-h: 52px;
-            --bottom-nav-h: 56px;
-            --font-heading: 'Syne',sans-serif;
-            --font-body: 'DM Sans',sans-serif;
-            --font-mono: 'JetBrains Mono',monospace;
-            --overlay-bg: rgba(0,0,0,.78);
-            --skeleton-base: var(--border);
-            --skeleton-shine: var(--border2);
-            --loading-spinner-color: var(--lime);
+  /* Primary brand */
+  --primary: #0F3B2C;      /* Deep forest green – trustworthy, growth */
+  --primary-light: #1A5D44;
+  --primary-dark: #09281D;
+  --secondary: #1E3A5F;     /* Deep navy blue – stability, professionalism */
+  --secondary-light: #2C5282;
+  --accent: #D97706;        /* Amber – for CTAs, earnings highlights */
+  --accent-light: #F59E0B;
+  
+  /* Backgrounds */
+  --bg: #F8FAFC;            /* Light mode background (soft off-white) */
+  --bg2: #FFFFFF;
+  --bg3: #F1F5F9;
+  --card: #FFFFFF;
+  --card2: #F8FAFC;
+  --card3: #F1F5F9;
+  --border: #E2E8F0;
+  --border2: #CBD5E1;
+  
+  /* Dark mode overrides (keep existing dark variables but adjust) */
+  --dark-bg: #0A0C10;
+  --dark-bg2: #11151C;
+  --dark-card: #141A24;
+  --dark-border: #1E2A3A;
+  
+  /* Text */
+  --text: #1E293B;
+  --text2: #475569;
+  --text3: #64748B;
+  --text4: #94A3B8;
+  
+  /* Feedback */
+  --success: #10B981;
+  --danger: #EF4444;
+  --warning: #F59E0B;
+  --info: #3B82F6;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
         [data-theme="light"] {
             --bg: #F5F7FA;
