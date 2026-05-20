@@ -29,48 +29,42 @@
     </script>
     <style>
         :root {
-  /* Primary brand */
-  --primary: #0F3B2C;      /* Deep forest green – trustworthy, growth */
-  --primary-light: #1A5D44;
-  --primary-dark: #09281D;
-  --secondary: #1E3A5F;     /* Deep navy blue – stability, professionalism */
-  --secondary-light: #2C5282;
-  --accent: #D97706;        /* Amber – for CTAs, earnings highlights */
-  --accent-light: #F59E0B;
+  /* Primary brand – Emerald Green (trust, growth, money) */
+  --primary: #10B981;
+  --primary-dark: #059669;
+  --primary-light: #34D399;
   
-  /* Backgrounds */
-  --bg: #F8FAFC;            /* Light mode background (soft off-white) */
+  /* Secondary – Blue (security, reliability) */
+  --secondary: #3B82F6;
+  --secondary-dark: #2563EB;
+  
+  /* Accent – Amber (warnings, earnings, CTAs) */
+  --accent: #F59E0B;
+  --accent-dark: #D97706;
+  
+  /* Neutral backgrounds */
+  --bg: #F9FAFB;
   --bg2: #FFFFFF;
-  --bg3: #F1F5F9;
-  --card: #FFFFFF;
-  --card2: #F8FAFC;
-  --card3: #F1F5F9;
-  --border: #E2E8F0;
-  --border2: #CBD5E1;
+  --bg3: #F3F4F6;
   
-  /* Dark mode overrides (keep existing dark variables but adjust) */
-  --dark-bg: #0A0C10;
-  --dark-bg2: #11151C;
-  --dark-card: #141A24;
-  --dark-border: #1E2A3A;
+  /* Dark mode overrides (keep your existing dark vars, just adjust) */
+  --bg-dark: #0F172A;
+  --bg2-dark: #1E293B;
+  --bg3-dark: #334155;
   
   /* Text */
-  --text: #1E293B;
-  --text2: #475569;
-  --text3: #64748B;
-  --text4: #94A3B8;
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-muted: #6B7280;
   
-  /* Feedback */
-  --success: #10B981;
-  --danger: #EF4444;
-  --warning: #F59E0B;
-  --info: #3B82F6;
+  /* Borders */
+  --border: #E5E7EB;
+  --border-dark: #334155;
   
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
         [data-theme="light"] {
             --bg: #F5F7FA;
