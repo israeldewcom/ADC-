@@ -501,18 +501,6 @@
         .btn:active {
             transform: scale(.96);
         }
-        .btn-lime {
-            background: var(--lime);
-            color: #04080F;
-            padding: .65rem 1.6rem;
-            font-size: .88rem;
-            box-shadow: 0 4px 16px rgba(184,255,79,.15);
-        }
-        .btn-lime:hover {
-            background: var(--lime2);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(184,255,79,.3);
-        }
         .btn-primary {
             background: var(--primary);
             color: #fff;
@@ -577,6 +565,18 @@
             color: #04080F;
             padding: .62rem 1.6rem;
             font-size: .88rem;
+        }
+        .btn-lime {
+            background: var(--lime);
+            color: #04080F;
+            padding: .65rem 1.6rem;
+            font-size: .88rem;
+            box-shadow: 0 4px 16px rgba(184,255,79,.15);
+        }
+        .btn-lime:hover {
+            background: var(--lime2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(184,255,79,.3);
         }
         .btn-sm {
             padding: .38rem .9rem;
@@ -657,10 +657,10 @@
             letter-spacing: .03em;
             white-space: nowrap;
         }
-        .badge-lime {
-            background: rgba(184,255,79,.12);
-            color: var(--lime);
-            border: 1px solid rgba(184,255,79,.25);
+        .badge-primary {
+            background: rgba(124,58,237,.12);
+            color: var(--primary);
+            border: 1px solid rgba(124,58,237,.25);
         }
         .badge-cyan {
             background: rgba(0,229,255,.1);
@@ -701,11 +701,6 @@
             background: linear-gradient(135deg,rgba(245,158,11,.2),rgba(255,107,43,.15));
             color: var(--gold);
             border: 1px solid rgba(245,158,11,.4);
-        }
-        .badge-primary {
-            background: rgba(124,58,237,.12);
-            color: var(--primary);
-            border: 1px solid rgba(124,58,237,.25);
         }
         .card {
             background: var(--card);
@@ -817,6 +812,9 @@
             border-radius: 50px;
             transition: width .7s cubic-bezier(.4,0,.2,1);
         }
+        .pf-primary {
+            background: linear-gradient(90deg,var(--primary),var(--accent));
+        }
         .pf-lime {
             background: linear-gradient(90deg,var(--lime),var(--lime2));
         }
@@ -828,9 +826,6 @@
         }
         .pf-violet {
             background: linear-gradient(90deg,var(--violet),#7c3aed);
-        }
-        .pf-primary {
-            background: linear-gradient(90deg,var(--primary),var(--accent));
         }
         .pf-success {
             background: linear-gradient(90deg,var(--success),#00a872);
@@ -2234,6 +2229,10 @@
             font-size: .85rem;
             flex-shrink: 0;
         }
+        .si-primary {
+            background: rgba(124,58,237,.1);
+            color: var(--primary);
+        }
         .si-l {
             background: rgba(184,255,79,.1);
             color: var(--lime);
@@ -2261,10 +2260,6 @@
         .si-gold {
             background: rgba(245,158,11,.1);
             color: var(--gold);
-        }
-        .si-primary {
-            background: rgba(124,58,237,.1);
-            color: var(--primary);
         }
         .mob-bottom-nav {
             display: flex;
@@ -3693,7 +3688,7 @@ async function refreshTokenCall() {
 setInterval(() => { fetch(HEALTH_URL).catch(() => {}); }, 10 * 60 * 1000);
 
 // ═══════════════════════════════════════════
-// SOCKET.IO (REAL-TIME NOTIFICATIONS, ANNOUNCEMENTS, AFFILIATE OFFERS)
+// SOCKET.IO
 // ═══════════════════════════════════════════
 function connectSocket() {
     const userId = S.user?._id;
@@ -3919,12 +3914,22 @@ async function doRegister() {
     if (!terms) { toast('Please accept the terms', 'error'); return; }
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner spin"></i> Creating account...'; }
     showLoading('Creating account...');
+    const body = { firstName: first, lastName: last, email: em, phone, password: pw, referralCode: ref || undefined, acceptTerms: true, acceptMarketing: false };
     try {
-        const body = { firstName: first, lastName: last, email: em, phone, password: pw, referralCode: ref || undefined, acceptTerms: true, acceptMarketing: false };
         const res = await apiCall('/auth/register', { method: 'POST', body });
         await handleLoginSuccess(res, false);
     } catch (e) {
-        toast(e.message, 'error');
+        if (ref && (e.message.includes('referral') || e.message.includes('Referral') || e.status === 400)) {
+            toast('Referral code not recognised – registering without it', 'warning');
+            delete body.referralCode;
+            try {
+                const res2 = await apiCall('/auth/register', { method: 'POST', body });
+                await handleLoginSuccess(res2, false);
+                return;
+            } catch (e2) { toast(e2.message, 'error'); }
+        } else {
+            toast(e.message || 'Registration failed. Please try again.', 'error');
+        }
         hideLoading();
         if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-rocket"></i>Create My Free Account'; }
     }
@@ -3963,12 +3968,26 @@ async function handleLoginSuccess(response, isFromLogin) {
 function handleGoogleLogin() { window.location.href = `${API_BASE}/auth/google`; }
 function handleGithubLogin() { window.location.href = `${API_BASE}/auth/github`; }
 async function handleForgotPassword() {
-    const em = document.getElementById('loginEmail')?.value.trim();
-    if (!em || !em.includes('@')) { toast('Enter your email above first', 'warning'); return; }
-    showLoading('Sending reset link...');
-    try { await apiCall('/auth/forgot-password', { method: 'POST', body: { email: em } }); toast('Password reset link sent! Check your email.', 'success'); }
-    catch (e) { toast(e.message, 'error'); }
-    finally { hideLoading(); }
+    const email = document.getElementById('loginEmail')?.value.trim();
+    if (!email) { toast('Please enter your email address', 'error'); return; }
+    if (!email.includes('@')) { toast('Please enter a valid email address', 'error'); return; }
+    const btn = document.querySelector('[onclick="handleForgotPassword()"]');
+    const originalText = btn?.textContent;
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner spin"></i> Sending...'; }
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        const res = await fetch(`${API_BASE}/auth/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }), signal: controller.signal });
+        clearTimeout(timeoutId);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Request failed');
+        toast('If an account exists with that email, a password reset link has been sent.', 'success');
+    } catch (err) {
+        if (err.name === 'AbortError') toast('Request timed out. Please try again.', 'error');
+        else toast(err.message || 'Failed to send reset link. Please try again later.', 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
+    }
 }
 function doLogout() {
     if (tokenRefreshTimer) clearTimeout(tokenRefreshTimer);
@@ -4018,9 +4037,7 @@ async function updateCurrencyPreference(currency) {
     renderCurrencySelectorUI();
 }
 function renderCurrencySelectorUI() {
-    document.querySelectorAll('.currency-opt').forEach(opt => {
-        opt.classList.remove('active');
-    });
+    document.querySelectorAll('.currency-opt').forEach(opt => opt.classList.remove('active'));
     const map = { NGN: '₦', USD: '$', GBP: '£', EUR: '€' };
     document.querySelectorAll('.currency-opt').forEach(opt => {
         const txt = opt.textContent.trim();
@@ -4063,6 +4080,7 @@ async function initApp() {
     renderNotifs();
     renderCurrencySelectorUI();
 }
+
 async function fetchAnnouncements() {
     try {
         const res = await apiCall('/admin/announcements');
@@ -4316,7 +4334,7 @@ async function completeLessonAndNext() {
     if (S.currentCourseId && l._id) { try { await apiCall(`/courses/${S.currentCourseId}/lessons/${l._id}/progress`, { method: 'POST', body: { completed: true } }); toast('✅ Lesson completed! +XP', 'success'); await loadEnrollments(); } catch (e) { toast('Progress saved locally', 'info'); } }
     const nextIdx = S.currentLessonIdx + 1;
     if (nextIdx < S.currentLessons.length) { S.currentLessonIdx = nextIdx; }
-    else { toast('🎉 Course complete! Certificate ready!', 'success'); renderWallet(); setDP('certs'); }
+    else { toast('🎉 Course complete! Certificate ready!', 'success'); setDP('certs'); renderWallet(); }
     renderCurric();
 }
 function switchLTab(tab, el) {
@@ -4500,10 +4518,11 @@ async function renderAffiliates() {
     } catch (e) {}
     const offersHtml = S.affiliateOffers.length ? S.affiliateOffers.map(c => {
         const commissionPerSale = Math.round((c.salePrice || c.price || 0) * (c.affiliatePercent || 0) / 100);
+        const commissionText = commissionPerSale === 0 ? '₦0 / sale' : `${fmtMoneyAPI(commissionPerSale)} / sale`;
         return `<div class="affiliate-offer-card" data-course-id="${c._id}">
             <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
                 <div style="font-size:1.75rem">${c.thumbnail || c.emoji || '📚'}</div>
-                <div style="flex:1"><div style="font-weight:700">${c.title}</div><div style="font-size:.74rem;color:var(--text3)">${c.affiliatePercent || 0}% commission · ${fmtMoneyAPI(commissionPerSale)} / sale</div></div>
+                <div style="flex:1"><div style="font-weight:700">${c.title}</div><div style="font-size:.74rem;color:var(--text3)">${c.affiliatePercent || 0}% commission · ${commissionText}</div></div>
                 <button class="btn btn-violet btn-sm" onclick="acceptAff('${c._id}')"><i class="fas fa-handshake"></i>Accept</button>
             </div>
         </div>`;
@@ -4542,12 +4561,23 @@ async function acceptAffiliateOffer() {
     const courseId = document.getElementById('affiliateModal')?._courseId;
     const c = S.affiliateOffers.find(x => x._id === courseId);
     if (!c) return;
-    const refCode = S.user?.referralCode || 'REF';
-    const link = `${FRONTEND_URL}/aff/${refCode}/${courseId}`;
-    try { await apiCall('/users/referrals/affiliate', { method: 'POST', body: { courseId, affiliateLink: link } }); }
-    catch (e) { console.warn('Backend affiliate registration:', e.message); }
-    S.myAffiliateLinks.push({ courseId, title: c.title, link, percent: c.affiliatePercent || 0 });
-    closeModal('affiliateModal'); toast('✅ Affiliate accepted! Link ready 🔗', 'success'); renderAffiliates();
+    const btn = document.querySelector('#affiliateModal .btn-violet');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner spin"></i> Accepting...'; }
+    try {
+        const res = await apiCall('/affiliate/accept', { method: 'POST', body: { courseId } });
+        if (!res.success) throw new Error(res.message);
+        const profile = await apiCall('/users/profile');
+        S.user = profile.data;
+        S.myAffiliateLinks = S.user.affiliateLinks || [];
+        renderAffiliates();
+        closeModal('affiliateModal');
+        toast(`✅ Affiliate link for "${c.title}" created! Commission: ${c.affiliatePercent}%`, 'success');
+        navigator.clipboard.writeText(res.data.link).catch(() => {});
+    } catch (err) {
+        toast(err.message, 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-handshake"></i>Accept & Get Link'; }
+    }
 }
 function handleAffiliateOfferClick(courseId) {
     markAllRead();
