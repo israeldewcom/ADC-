@@ -199,39 +199,30 @@
         @media(min-width:768px) {
             .col-md-2 {
                 flex: 0 0 calc(16.667% - .625rem);
-                max-width: calc(16.667% - .625rem);
             }
             .col-md-3 {
                 flex: 0 0 calc(25% - .5625rem);
-                max-width: calc(25% - .5625rem);
             }
             .col-md-4 {
                 flex: 0 0 calc(33.333% - .5rem);
-                max-width: calc(33.333% - .5rem);
             }
             .col-md-5 {
                 flex: 0 0 calc(41.667% - .4375rem);
-                max-width: calc(41.667% - .4375rem);
             }
             .col-md-6 {
                 flex: 0 0 calc(50% - .375rem);
-                max-width: calc(50% - .375rem);
             }
             .col-md-8 {
                 flex: 0 0 calc(66.667% - .25rem);
-                max-width: calc(66.667% - .25rem);
             }
             .col-md-9 {
                 flex: 0 0 calc(75% - .1875rem);
-                max-width: calc(75% - .1875rem);
             }
             .col-md-10 {
                 flex: 0 0 calc(83.333% - .125rem);
-                max-width: calc(83.333% - .125rem);
             }
             .col-md-12 {
                 flex: 0 0 100%;
-                max-width: 100%;
             }
             .col-4 {
                 flex: 0 0 calc(33.333% - .5rem);
@@ -245,15 +236,12 @@
         @media(min-width:992px) {
             .col-lg-4 {
                 flex: 0 0 calc(33.333% - .5rem);
-                max-width: calc(33.333% - .5rem);
             }
             .col-lg-6 {
                 flex: 0 0 calc(50% - .375rem);
-                max-width: calc(50% - .375rem);
             }
             .col-lg-8 {
                 flex: 0 0 calc(66.667% - .25rem);
-                max-width: calc(66.667% - .25rem);
             }
         }
         .d-flex {
@@ -2563,6 +2551,9 @@
         }
         .lesson-sub.active {
             display: block;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 8px;
         }
         .curric-item {
             display: flex;
@@ -4169,7 +4160,7 @@ function updateUserUI() {
     if (document.getElementById('setLocation')) document.getElementById('setLocation').value = S.user.location || '';
     if (document.getElementById('tbWallet')) document.getElementById('tbWallet').textContent = fmtMoneyAPI(S.walletBal);
     const refCode = S.user?.referralCode || 'REF';
-    if (document.getElementById('refLink')) document.getElementById('refLink').textContent = `${FRONTEND_URL}/ref/${refCode}`;
+    if (document.getElementById('refLink')) document.getElementById('refLink').textContent = `${FRONTEND_URL}/?ref=${refCode}`;
     if (document.getElementById('refCode')) document.getElementById('refCode').textContent = refCode;
     if (document.getElementById('wizRefCode')) document.getElementById('wizRefCode').textContent = refCode;
     const hasCreatorAccess = S.isPremium || S.user?.roles?.includes('admin') || (S.user?.roles?.includes('creator') && S.user?.isApprovedInstructor);
@@ -4436,6 +4427,7 @@ function renderQuizQ() {
         const total = S.quizQuestions.length;
         const pct = Math.round((correct / total) * 100);
         el.innerHTML = `<div style="text-align:center;padding:2rem 0"><div style="font-size:3rem">${pct >= 80 ? '🎉' : '😅'}</div><h3>${pct}%</h3><p style="color:var(--text3);margin:.5rem 0">${correct}/${total} correct</p><button class="btn btn-primary" onclick="initQuiz()">Retake</button></div>`;
+        renderWallet();
         return;
     }
     const q = S.quizQuestions[S.qCurr];
@@ -4516,11 +4508,11 @@ async function processWithdraw() {
 }
 
 // ═══════════════════════════════════════════
-// REFERRALS
+// REFERRALS (updated link format)
 // ═══════════════════════════════════════════
 async function renderRefs() {
     const refCode = S.user?.referralCode || 'REF';
-    const refLink = `${FRONTEND_URL}/ref/${refCode}`;
+    const refLink = `${FRONTEND_URL}/?ref=${refCode}`;
     document.getElementById('refLink').textContent = refLink;
     document.getElementById('refCode').textContent = refCode;
     try {
@@ -4534,7 +4526,7 @@ async function renderRefs() {
 }
 function copyRefLink() { const link = document.getElementById('refLink')?.textContent || ''; navigator.clipboard?.writeText(link).then(() => toast('🔗 Referral link copied!', 'success')).catch(() => toast('Copy failed', 'error')); }
 function copyRefCode() { const code = document.getElementById('refCode')?.textContent || ''; navigator.clipboard?.writeText(code).then(() => toast('Code copied!', 'success')).catch(() => toast('Copy failed', 'error')); }
-function shareWhatsApp() { const refCode = S.user?.referralCode || 'REF'; const link = `${FRONTEND_URL}/ref/${refCode}`; window.open(`https://wa.me/?text=${encodeURIComponent('🚀 Join ChangeX Academy and earn while you learn! Use my code: ' + refCode + ' ' + link)}`, '_blank'); }
+function shareWhatsApp() { const refCode = S.user?.referralCode || 'REF'; const link = `${FRONTEND_URL}/?ref=${refCode}`; window.open(`https://wa.me/?text=${encodeURIComponent('🚀 Join ChangeX Academy and earn while you learn! Use my code: ' + refCode + ' ' + link)}`, '_blank'); }
 function shareOnSocial(p) { toast(`Shared on ${p}!`, 'success'); }
 
 // ═══════════════════════════════════════════
