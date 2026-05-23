@@ -14,7 +14,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="ChangeX Academy — Turn Tech Into Income">
     <meta name="twitter:description" content="Nigeria's #1 Learn-to-Earn platform. Learn tech skills and earn real money.">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" id="manifestLink">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ChangeX Academy">
@@ -566,18 +566,6 @@
             padding: .62rem 1.6rem;
             font-size: .88rem;
         }
-        .btn-lime {
-            background: var(--lime);
-            color: #04080F;
-            padding: .65rem 1.6rem;
-            font-size: .88rem;
-            box-shadow: 0 4px 16px rgba(184,255,79,.15);
-        }
-        .btn-lime:hover {
-            background: var(--lime2);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(184,255,79,.3);
-        }
         .btn-sm {
             padding: .38rem .9rem;
             font-size: .78rem;
@@ -657,10 +645,10 @@
             letter-spacing: .03em;
             white-space: nowrap;
         }
-        .badge-primary {
-            background: rgba(124,58,237,.12);
-            color: var(--primary);
-            border: 1px solid rgba(124,58,237,.25);
+        .badge-lime {
+            background: rgba(184,255,79,.12);
+            color: var(--lime);
+            border: 1px solid rgba(184,255,79,.25);
         }
         .badge-cyan {
             background: rgba(0,229,255,.1);
@@ -701,6 +689,11 @@
             background: linear-gradient(135deg,rgba(245,158,11,.2),rgba(255,107,43,.15));
             color: var(--gold);
             border: 1px solid rgba(245,158,11,.4);
+        }
+        .badge-primary {
+            background: rgba(124,58,237,.12);
+            color: var(--primary);
+            border: 1px solid rgba(124,58,237,.25);
         }
         .card {
             background: var(--card);
@@ -812,9 +805,6 @@
             border-radius: 50px;
             transition: width .7s cubic-bezier(.4,0,.2,1);
         }
-        .pf-primary {
-            background: linear-gradient(90deg,var(--primary),var(--accent));
-        }
         .pf-lime {
             background: linear-gradient(90deg,var(--lime),var(--lime2));
         }
@@ -826,6 +816,9 @@
         }
         .pf-violet {
             background: linear-gradient(90deg,var(--violet),#7c3aed);
+        }
+        .pf-primary {
+            background: linear-gradient(90deg,var(--primary),var(--accent));
         }
         .pf-success {
             background: linear-gradient(90deg,var(--success),#00a872);
@@ -2229,10 +2222,6 @@
             font-size: .85rem;
             flex-shrink: 0;
         }
-        .si-primary {
-            background: rgba(124,58,237,.1);
-            color: var(--primary);
-        }
         .si-l {
             background: rgba(184,255,79,.1);
             color: var(--lime);
@@ -2260,6 +2249,10 @@
         .si-gold {
             background: rgba(245,158,11,.1);
             color: var(--gold);
+        }
+        .si-primary {
+            background: rgba(124,58,237,.1);
+            color: var(--primary);
         }
         .mob-bottom-nav {
             display: flex;
@@ -3496,30 +3489,59 @@ const INSTALL_BANNER_DISMISSED = 'cx_install_dismissed';
 let tokenRefreshTimer = null;
 
 // ═══════════════════════════════════════════
-// PWA - SERVICE WORKER REGISTRATION & INSTALL BANNER
+// PWA – MANIFEST & SERVICE WORKER (inline)
 // ═══════════════════════════════════════════
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(reg => {
-            console.log('SW registered:', reg.scope);
-        }).catch(err => {
-            console.log('SW registration failed:', err);
-        });
-    });
-}
+(function() {
+  // Generate manifest dynamically
+  const manifest = {
+    name: 'ChangeX Academy',
+    short_name: 'ChangeX',
+    description: 'Learn tech skills and earn real money',
+    start_url: '/',
+    display: 'standalone',
+    theme_color: '#0A0F1F',
+    background_color: '#0A0F1F',
+    icons: [
+      { src: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  const manifestURL = URL.createObjectURL(blob);
+  document.getElementById('manifestLink').setAttribute('href', manifestURL);
 
+  // Register a minimal service worker
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+      self.addEventListener('install', event => {
+        self.skipWaiting();
+      });
+      self.addEventListener('activate', event => {
+        event.waitUntil(clients.claim());
+      });
+      self.addEventListener('fetch', event => {
+        event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+      });
+    `;
+    const swBlob = new Blob([swCode], { type: 'application/javascript' });
+    const swURL = URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swURL).catch(err => console.log('SW registration failed:', err));
+  }
+})();
+
+// ═══════════════════════════════════════════
+// PWA – INSTALL BANNER
+// ═══════════════════════════════════════════
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
 });
-
 window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
     document.getElementById('installBanner')?.classList.add('hidden');
     localStorage.setItem(INSTALL_BANNER_DISMISSED, Date.now().toString());
     toast('App installed successfully! 🎉', 'success');
 });
-
 function installPWA() {
     if (deferredPrompt) {
         deferredPrompt.prompt();
@@ -3535,12 +3557,10 @@ function installPWA() {
         dismissInstallBanner();
     }
 }
-
 function dismissInstallBanner() {
     document.getElementById('installBanner')?.classList.add('hidden');
     localStorage.setItem(INSTALL_BANNER_DISMISSED, Date.now().toString());
 }
-
 window.addEventListener('load', () => {
     setTimeout(() => {
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
@@ -3629,7 +3649,7 @@ setInterval(() => {
 }, 60000);
 
 // ═══════════════════════════════════════════
-// API SERVICE
+// API SERVICE (with friendly error messages)
 // ═══════════════════════════════════════════
 async function apiCall(endpoint, options = {}) {
     const token = localStorage.getItem('cx_accessToken');
@@ -3651,7 +3671,7 @@ async function apiCall(endpoint, options = {}) {
                 fetchOptions.headers['Authorization'] = `Bearer ${newToken}`;
                 const retryResp = await fetch(`${API_BASE}${endpoint}`, fetchOptions);
                 const retryData = await retryResp.json();
-                if (!retryResp.ok) throw new Error(retryData.message || 'API error after refresh');
+                if (!retryResp.ok) throw new Error(friendlyError(retryData.message || 'API error after refresh'));
                 startTokenRefreshTimer();
                 return retryData;
             } else {
@@ -3660,7 +3680,7 @@ async function apiCall(endpoint, options = {}) {
             }
         }
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || `HTTP ${response.status}`);
+        if (!response.ok) throw new Error(friendlyError(data.message || `HTTP ${response.status}`));
         return data;
     } catch (error) {
         if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
@@ -3668,6 +3688,14 @@ async function apiCall(endpoint, options = {}) {
         }
         throw error;
     }
+}
+function friendlyError(msg) {
+    if (!msg) return 'Something went wrong. Please try again.';
+    if (msg.toLowerCase().includes('validation')) return 'Please check your input and try again.';
+    if (msg.toLowerCase().includes('duplicate key')) return 'This record already exists.';
+    if (msg.toLowerCase().includes('referral')) return 'Referral code not recognised. You can still register.';
+    if (msg.toLowerCase().includes('password')) return 'Password must be at least 8 characters with uppercase, number & special character.';
+    return msg;
 }
 async function refreshTokenCall() {
     try {
@@ -3883,7 +3911,7 @@ function setDP(pg) {
 }
 
 // ═══════════════════════════════════════════
-// AUTHENTICATION (GUARANTEED REDIRECT)
+// AUTHENTICATION (UPDATED: friendly error, retry without ref, password strength)
 // ═══════════════════════════════════════════
 async function doLogin() {
     const em = document.getElementById('loginEmail')?.value.trim();
@@ -3910,16 +3938,27 @@ async function doRegister() {
     const ref = document.getElementById('regRef')?.value.trim();
     const terms = document.getElementById('termsChk')?.checked;
     const btn = document.getElementById('registerBtn');
-    if (!first || !last || !em || !pw) { toast('Please fill all required fields', 'error'); return; }
-    if (!terms) { toast('Please accept the terms', 'error'); return; }
+
+    if (!first || !last) { toast('Please enter your full name', 'error'); return; }
+    if (!em || !em.includes('@')) { toast('Please enter a valid email address', 'error'); return; }
+    if (!pw) { toast('Please enter a password', 'error'); return; }
+    if (!terms) { toast('Please accept the Terms and Privacy Policy', 'error'); return; }
+    if (pw.length < 8) { toast('Password must be at least 8 characters', 'error'); return; }
+    if (!/[A-Z]/.test(pw)) { toast('Password must contain an uppercase letter (A‑Z)', 'error'); return; }
+    if (!/[0-9]/.test(pw)) { toast('Password must contain a number (0‑9)', 'error'); return; }
+    if (!/[^a-zA-Z0-9]/.test(pw)) { toast('Password must contain a special character (!@#$%^&*)', 'error'); return; }
+
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner spin"></i> Creating account...'; }
     showLoading('Creating account...');
-    const body = { firstName: first, lastName: last, email: em, phone, password: pw, referralCode: ref || undefined, acceptTerms: true, acceptMarketing: false };
+
+    const body = { firstName: first, lastName: last, email: em, phone, password: pw, acceptTerms: true };
+    if (ref) body.referralCode = ref;
+
     try {
         const res = await apiCall('/auth/register', { method: 'POST', body });
         await handleLoginSuccess(res, false);
-    } catch (e) {
-        if (ref && (e.message.includes('referral') || e.message.includes('Referral') || e.status === 400)) {
+    } catch (err) {
+        if (ref && (err.message.includes('referral') || err.message.includes('Referral'))) {
             toast('Referral code not recognised – registering without it', 'warning');
             delete body.referralCode;
             try {
@@ -3928,7 +3967,7 @@ async function doRegister() {
                 return;
             } catch (e2) { toast(e2.message, 'error'); }
         } else {
-            toast(e.message || 'Registration failed. Please try again.', 'error');
+            toast(err.message || 'Registration failed. Please try again.', 'error');
         }
         hideLoading();
         if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-rocket"></i>Create My Free Account'; }
@@ -3977,7 +4016,12 @@ async function handleForgotPassword() {
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
-        const res = await fetch(`${API_BASE}/auth/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }), signal: controller.signal });
+        const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+            signal: controller.signal
+        });
         clearTimeout(timeoutId);
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Request failed');
@@ -4037,7 +4081,9 @@ async function updateCurrencyPreference(currency) {
     renderCurrencySelectorUI();
 }
 function renderCurrencySelectorUI() {
-    document.querySelectorAll('.currency-opt').forEach(opt => opt.classList.remove('active'));
+    document.querySelectorAll('.currency-opt').forEach(opt => {
+        opt.classList.remove('active');
+    });
     const map = { NGN: '₦', USD: '$', GBP: '£', EUR: '€' };
     document.querySelectorAll('.currency-opt').forEach(opt => {
         const txt = opt.textContent.trim();
@@ -4061,6 +4107,7 @@ async function initApp() {
         S.walletBal = S.user.walletBalance || 0;
         S.loggedIn = true;
         currentCurrency = S.user.preferredCurrency || localStorage.getItem('cx_currency') || 'NGN';
+        S.myAffiliateLinks = S.user.affiliateLinks || [];
         localStorage.setItem('cx_user', JSON.stringify(S.user));
     } catch (e) {}
     updateUserUI();
@@ -4334,7 +4381,7 @@ async function completeLessonAndNext() {
     if (S.currentCourseId && l._id) { try { await apiCall(`/courses/${S.currentCourseId}/lessons/${l._id}/progress`, { method: 'POST', body: { completed: true } }); toast('✅ Lesson completed! +XP', 'success'); await loadEnrollments(); } catch (e) { toast('Progress saved locally', 'info'); } }
     const nextIdx = S.currentLessonIdx + 1;
     if (nextIdx < S.currentLessons.length) { S.currentLessonIdx = nextIdx; }
-    else { toast('🎉 Course complete! Certificate ready!', 'success'); setDP('certs'); renderWallet(); }
+    else { toast('🎉 Course complete! Certificate ready! +₦100', 'success'); setDP('certs'); renderWallet(); }
     renderCurric();
 }
 function switchLTab(tab, el) {
@@ -4438,13 +4485,15 @@ async function downloadCert(courseId) {
 }
 
 // ═══════════════════════════════════════════
-// WALLET
+// WALLET (with pending withdrawal info)
 // ═══════════════════════════════════════════
 async function renderWallet() {
-    try { const walletData = await apiCall('/users/wallet'); const wallet = walletData.data || walletData; S.walletBal = wallet.balance || wallet.walletBalance || 0; S.user.walletBalance = S.walletBal; localStorage.setItem('cx_user', JSON.stringify(S.user)); } catch (e) {}
+    try { const walletData = await apiCall('/users/wallet'); const wallet = walletData.data || walletData; S.walletBal = wallet.balance || wallet.walletBalance || 0; S.user.walletBalance = S.walletBal; S.user.pendingWithdrawal = wallet.pendingWithdrawal || 0; localStorage.setItem('cx_user', JSON.stringify(S.user)); } catch (e) {}
     document.getElementById('walletBal').textContent = fmtMoneyAPI(S.walletBal);
     document.getElementById('withdrawBal').textContent = fmtMoneyAPI(S.walletBal);
     document.getElementById('tbWallet').textContent = fmtMoneyAPI(S.walletBal);
+    const pending = S.user?.pendingWithdrawal || 0;
+    document.getElementById('walletWeekChange').innerHTML = pending > 0 ? `<span style="color:var(--gold)">Pending: ${fmtMoneyAPI(pending)}</span>` : '+₦0 this week';
     document.getElementById('walletBreakdown').innerHTML = `<div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(S.user?.referralEarnings||0)}</span></div><div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(S.user?.courseEarnings||0)}</span></div><div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(S.user?.affiliateEarnings||0)}</span></div>`;
     document.getElementById('walletStatsRow').innerHTML = `<div class="col-6"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${fmtMoneyAPI(S.user?.referralEarnings||0)}</div><div class="sl">Referral Earnings</div></div></div><div class="col-6"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${fmtMoneyAPI(S.user?.affiliateEarnings||0)}</div><div class="sl">Affiliate Earned</div></div></div>`;
     await loadTransactions(); renderTxTable();
@@ -4504,7 +4553,7 @@ function renderLB() {
 function switchLbTab(tab, btn) { document.querySelectorAll('#dash-leaderboard .tab-btn').forEach(b => b.classList.remove('active')); if (btn) btn.classList.add('active'); S.lbTab = tab; renderLB(); }
 
 // ═══════════════════════════════════════════
-// AFFILIATES (WITH ACCEPT & LINK STORAGE)
+// AFFILIATES (UPDATED: accept, reload profile, friendly feedback)
 // ═══════════════════════════════════════════
 async function renderAffiliates() {
     showLoading('Loading affiliate offers...');
@@ -4922,4 +4971,4 @@ window.addEventListener('load', async () => {
 })();
 </script>
 </body>
-</html>
+    </html>
