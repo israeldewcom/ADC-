@@ -3712,7 +3712,7 @@ async function doRegister(){
     const body={firstName:first,lastName:last,email:em,phone,password:pw,acceptTerms:true}; if(ref) body.referralCode=ref;
     try{ const res=await apiCall('/auth/register',{method:'POST',body}); await handleLoginSuccess(res,false); }
     catch(err){
-        if(ref&&(err.status===400||err.message.includes('referral'))){ toast('Referral code not recognised – registering without it','warning'); delete body.referralCode; try{ const res2=await apiCall('/auth/register',{method:'POST',body}); await handleLoginSuccess(res2,false); return; } catch(e2){ toast(e2.message,'error'); } }
+        if(ref&&(err.status===400||err.message)){ toast('Referral code not recognised – registering without it','warning'); delete body.referralCode; try{ const res2=await apiCall('/auth/register',{method:'POST',body}); await handleLoginSuccess(res2,false); return; } catch(e2){ toast(e2.message,'error'); } }
         else{ toast(err.message||'Registration failed. Please try again.','error'); }
         hideLoading(); if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-rocket"></i>Create My Free Account'; }
     }
@@ -3874,7 +3874,7 @@ async function completeLessonAndNext(){
     if(S.currentCourseId&&l._id){ try{ await apiCall(`/courses/${S.currentCourseId}/lessons/${l._id}/progress`,{method:'POST',body:{completed:true, timeSpent}}); toast('✅ Lesson completed! +XP','success'); await loadEnrollments(); renderWallet(); } catch(e){ toast('Progress saved locally','info'); } }
     const nextIdx=S.currentLessonIdx+1;
     if(nextIdx<S.currentLessons.length){ S.currentLessonIdx=nextIdx; }
-    else{ toast('🎉 Course complete! Certificate ready! +₦100','success'); setDP('certs'); renderWallet(); }
+    else{ toast('🎉 Course complete! Certificate ready! +₦100','success'); renderWallet(); renderCerts(); setDP('certs'); }
     renderCurric();
 }
 function switchLTab(tab,el){ document.querySelectorAll('.ltab').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.lesson-sub').forEach(s=>s.classList.remove('active')); if(el) el.classList.add('active'); const target=document.getElementById('ls-'+tab); if(target) target.classList.add('active'); S.lessTab=tab; if(tab==='qa') loadQA(); }
@@ -4104,6 +4104,21 @@ function handleAffiliatePath(){
 }
 
 // ═══════════════════════════════════════════
+// HANDLE ?course= PARAMETER (from affiliate redirect)
+// ═══════════════════════════════════════════
+function handleCourseParam(){
+    const urlParams=new URLSearchParams(window.location.search);
+    const courseFromUrl=urlParams.get('course');
+    if(courseFromUrl){
+        setTimeout(()=>{
+            const course=(S.appCourses||[]).find(c=>c._id===courseFromUrl);
+            if(course) openBuyCourse(courseFromUrl);
+            else toast('Course not found','error');
+        },1000);
+    }
+}
+
+// ═══════════════════════════════════════════
 // INITIALIZATION
 // ═══════════════════════════════════════════
 window.addEventListener('load',async()=>{
@@ -4117,6 +4132,7 @@ window.addEventListener('load',async()=>{
         else{ const hash=window.location.hash.slice(1); if(hash==='app'||hash==='setup') goPage('landing'); else goPage('landing'); }
         initLanding(); updateThemeIcons(); updateAdVisibility(); if(S.loggedIn){ initApp().catch(()=>{}); }
     }
+    handleCourseParam();
     const pendingRef=localStorage.getItem('cx_pending_ref');
     if(pendingRef&&document.getElementById('regRef')){ document.getElementById('regRef').value=pendingRef; localStorage.removeItem('cx_pending_ref'); }
 });
