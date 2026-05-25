@@ -3478,6 +3478,24 @@
 
     <script>
 // ═══════════════════════════════════════════
+// AFFILIATE ROUTING – Call backend tracker & redirect
+// ═══════════════════════════════════════════
+(function handleAffiliateRouting() {
+  const path = window.location.pathname;
+  const match = path.match(/^\/aff\/([^\/]+)\/([^\/]+)\/([^\/]+)/);
+  if (match) {
+    const [, userId, courseId, code] = match;
+    fetch(`https://changex-backend-etfk.onrender.com/aff/${userId}/${courseId}/${code}`, {
+      method: 'GET',
+      credentials: 'include'
+    })
+    .then(() => { window.location.href = `/courses/${courseId}`; })
+    .catch(() => { window.location.href = `/courses/${courseId}`; });
+    return;
+  }
+})();
+
+// ═══════════════════════════════════════════
 // PRODUCTION API CONFIGURATION
 // ═══════════════════════════════════════════
 const API_BASE = 'https://changex-backend-etfk.onrender.com/api/v1';
@@ -3573,7 +3591,6 @@ function fmtMoneyAPI(n, cur) {
 }
 function showLoading(msg='Loading...') { const el=document.getElementById('loadingOverlay'); const txt=document.getElementById('loadingText'); if(el){el.style.display='flex';} if(txt) txt.textContent=msg; }
 function hideLoading() { const el=document.getElementById('loadingOverlay'); if(el) el.style.display='none'; }
-function generateUniqueId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 9); }
 
 // ═══════════════════════════════════════════
 // TOKEN REFRESH (PERMANENT SESSION — 30 DAYS)
@@ -3583,7 +3600,7 @@ function startTokenRefreshTimer() { const token = localStorage.getItem('cx_acces
 setInterval(()=>{ const token=localStorage.getItem('cx_accessToken'); if(token){ try{ const payload=JSON.parse(atob(token.split('.')[1])); if(payload.exp*1000-Date.now()<120000) refreshTokenCall(); } catch(e){} } }, 60000);
 
 // ═══════════════════════════════════════════
-// API SERVICE (friendly errors)
+// API SERVICE (friendly errors, timeout 15s)
 // ═══════════════════════════════════════════
 async function apiCall(endpoint, options={}) {
     const token = localStorage.getItem('cx_accessToken');
@@ -3928,21 +3945,6 @@ async function acceptAffiliateOffer(){ const courseId=document.getElementById('a
 function handleAffiliateOfferClick(courseId){ markAllRead(); setDP('affiliates'); setTimeout(()=>{ const offerCard=document.querySelector(`.affiliate-offer-card[data-course-id="${courseId}"]`); if(offerCard){ offerCard.scrollIntoView({behavior:'smooth',block:'center'}); offerCard.style.border='2px solid var(--primary)'; setTimeout(()=>{ offerCard.style.border=''; },2000); } },500); }
 
 // ═══════════════════════════════════════════
-// AFFILIATE PATH HANDLER (frontend-only)
-// ═══════════════════════════════════════════
-function handleAffiliatePath(){
-    const path=window.location.pathname;
-    const match=path.match(/^\/aff\/([^\/]+)\/([^\/]+)\/([^\/]+)/);
-    if(match){
-        const [,userId,courseId,code]=match;
-        localStorage.setItem('cx_affiliate',JSON.stringify({userId,courseId,code,timestamp:Date.now()}));
-        window.location.hash=`/courses/${courseId}`;
-        return true;
-    }
-    return false;
-}
-
-// ═══════════════════════════════════════════
 // INSTRUCTOR HUB
 // ═══════════════════════════════════════════
 function renderInstHub(){ const hasCreatorAccess=S.isPremium||S.user?.roles?.includes('admin')||(S.user?.roles?.includes('creator')&&S.user?.isApprovedInstructor); if(!hasCreatorAccess){ document.getElementById('instPremiumGate').style.display='block'; document.getElementById('instPremiumGate').innerHTML=`<div class="premium-gate-overlay"><h4>🔒 Premium Required</h4><p style="color:var(--text3)">Upgrade to Premium or get approved as an instructor to create & sell courses.</p><button class="btn btn-primary" onclick="openModal('premiumModal')">Upgrade — ₦5,000/mo</button></div>`; document.getElementById('instContent').style.display='none'; } else{ document.getElementById('instPremiumGate').style.display='none'; document.getElementById('instContent').style.display='block'; loadInstructorData(); } }
@@ -4108,13 +4110,11 @@ window.addEventListener('load',async()=>{
     const urlParams=new URLSearchParams(window.location.search);
     const urlRef=urlParams.get('ref');
     if(urlRef){ localStorage.setItem('cx_pending_ref',urlRef); }
-    if(!handleAffiliatePath()){
-        try{ const saved=JSON.parse(localStorage.getItem('cx_user')||'null'); if(saved){ S.user=saved; S.loggedIn=true; S.isPremium=saved.isPremium||saved.subscriptionTier==='premium'||false; S.walletBal=saved.walletBalance||0; } } catch(e){}
-        const token=localStorage.getItem('cx_accessToken');
-        if(token&&S.loggedIn){ startTokenRefreshTimer(); try{ const userData=await apiCall('/users/profile'); S.user={...S.user,...(userData.data||userData)}; S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false; S.walletBal=S.user.walletBalance||0; S.loggedIn=true; S.user.setupDone=S.user.setupDone===true; currentCurrency=S.user.preferredCurrency||localStorage.getItem('cx_currency')||'NGN'; localStorage.setItem('cx_user',JSON.stringify(S.user)); updateUserUI(); updateAdVisibility(); const hash=window.location.hash.slice(1); if(hash.startsWith('courses/')){ const courseId=hash.split('/')[1]; if(courseId) setTimeout(()=>openBuyCourse(courseId),1000); } else if(hash==='app'||hash==='setup') goPage(hash); else goPage('app'); } catch(e){ localStorage.removeItem('cx_accessToken'); localStorage.removeItem('cx_user'); S.loggedIn=false; goPage('landing'); } }
-        else{ const hash=window.location.hash.slice(1); if(hash==='app'||hash==='setup') goPage('landing'); else goPage('landing'); }
-        initLanding(); updateThemeIcons(); updateAdVisibility(); if(S.loggedIn){ initApp().catch(()=>{}); }
-    }
+    try{ const saved=JSON.parse(localStorage.getItem('cx_user')||'null'); if(saved){ S.user=saved; S.loggedIn=true; S.isPremium=saved.isPremium||saved.subscriptionTier==='premium'||false; S.walletBal=saved.walletBalance||0; } } catch(e){}
+    const token=localStorage.getItem('cx_accessToken');
+    if(token&&S.loggedIn){ startTokenRefreshTimer(); try{ const userData=await apiCall('/users/profile'); S.user={...S.user,...(userData.data||userData)}; S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false; S.walletBal=S.user.walletBalance||0; S.loggedIn=true; S.user.setupDone=S.user.setupDone===true; currentCurrency=S.user.preferredCurrency||localStorage.getItem('cx_currency')||'NGN'; localStorage.setItem('cx_user',JSON.stringify(S.user)); updateUserUI(); updateAdVisibility(); const hash=window.location.hash.slice(1); if(hash.startsWith('courses/')){ const courseId=hash.split('/')[1]; if(courseId) setTimeout(()=>openBuyCourse(courseId),1000); } else if(hash==='app'||hash==='setup') goPage(hash); else goPage('app'); } catch(e){ localStorage.removeItem('cx_accessToken'); localStorage.removeItem('cx_user'); S.loggedIn=false; goPage('landing'); } }
+    else{ const hash=window.location.hash.slice(1); if(hash==='app'||hash==='setup') goPage('landing'); else goPage('landing'); }
+    initLanding(); updateThemeIcons(); updateAdVisibility(); if(S.loggedIn){ initApp().catch(()=>{}); }
     const pendingRef=localStorage.getItem('cx_pending_ref');
     if(pendingRef&&document.getElementById('regRef')){ document.getElementById('regRef').value=pendingRef; localStorage.removeItem('cx_pending_ref'); }
 });
