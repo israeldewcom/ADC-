@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/aff/(.*)", "destination": "/" },
+    { "source": "/courses/(.*)", "destination": "/" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
