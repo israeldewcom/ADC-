@@ -23,12 +23,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
-    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js">
-    </script>
-    <script src="https://cdn.socket.io/4.6.1/socket.io.esm.min.js">
-    </script>
-    <script src="https://js.paystack.co/v1/inline.js">
-    </script>
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.esm.min.js"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <style>
         :root {
             --bg: #0A0F1F;
@@ -3478,13 +3475,14 @@
 
     <script>
 // ═══════════════════════════════════════════
-// AFFILIATE ROUTING – Call backend tracker & redirect
+// AFFILIATE ROUTING - MUST BE FIRST (calls backend tracker)
 // ═══════════════════════════════════════════
 (function handleAffiliateRouting() {
   const path = window.location.pathname;
   const match = path.match(/^\/aff\/([^\/]+)\/([^\/]+)\/([^\/]+)/);
   if (match) {
     const [, userId, courseId, code] = match;
+    // Call backend public tracker
     fetch(`https://changex-backend-etfk.onrender.com/aff/${userId}/${courseId}/${code}`, {
       method: 'GET',
       credentials: 'include'
@@ -3600,35 +3598,27 @@ function startTokenRefreshTimer() { const token = localStorage.getItem('cx_acces
 setInterval(()=>{ const token=localStorage.getItem('cx_accessToken'); if(token){ try{ const payload=JSON.parse(atob(token.split('.')[1])); if(payload.exp*1000-Date.now()<120000) refreshTokenCall(); } catch(e){} } }, 60000);
 
 // ═══════════════════════════════════════════
-// API SERVICE (friendly errors, timeout 15s)
+// API SERVICE (friendly errors, CORS-friendly, timeout 30s)
 // ═══════════════════════════════════════════
 async function apiCall(endpoint, options={}) {
     const token = localStorage.getItem('cx_accessToken');
-    const headers = { ...(options.body instanceof FormData ? {} : {'Content-Type':'application/json'}), ...(token && {'Authorization':`Bearer ${token}`}), ...options.headers };
-    const fetchOptions = { ...options, headers, credentials:'include' };
-    if(fetchOptions.body && typeof fetchOptions.body==='object' && !(fetchOptions.body instanceof FormData)) { fetchOptions.body = JSON.stringify(fetchOptions.body); }
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (token) { headers['Authorization'] = `Bearer ${token}`; }
+    const fetchOptions = { ...options, headers, credentials: 'include' };
+    if (fetchOptions.body && typeof fetchOptions.body !== 'string') { fetchOptions.body = JSON.stringify(fetchOptions.body); }
     try {
-        const controller = new AbortController(); const timeoutId = setTimeout(()=>controller.abort(), 15000);
+        const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 30000);
         fetchOptions.signal = controller.signal;
         const response = await fetch(`${API_BASE}${endpoint}`, fetchOptions); clearTimeout(timeoutId);
-        if(response.status===401 && token) {
-            const refreshed = await refreshTokenCall();
-            if(refreshed) {
-                const newToken = localStorage.getItem('cx_accessToken');
-                fetchOptions.headers['Authorization'] = `Bearer ${newToken}`;
-                const retryResp = await fetch(`${API_BASE}${endpoint}`, fetchOptions);
-                const retryData = await retryResp.json();
-                if(!retryResp.ok) throw new Error(friendlyError(retryData.message || 'API error after refresh'));
-                startTokenRefreshTimer();
-                return retryData;
-            } else { doLogout(); throw new Error('Session expired. Please login again.'); }
-        }
-        const data = await response.json();
-        if(!response.ok) throw { message: friendlyError(data.message || `HTTP ${response.status}`), status: response.status };
+        let data;
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) { data = await response.json(); }
+        else { data = { success: false, message: 'Invalid server response' }; }
+        if (!response.ok) { const error = new Error(data.message || data.errors?.[0]?.msg || `HTTP ${response.status}`); error.status = response.status; error.data = data; throw error; }
         return data;
     } catch(error) {
-        if(error.name==='AbortError') throw new Error('Request timed out. Please check your connection.');
-        if(error.name==='TypeError' && error.message==='Failed to fetch') throw new Error('Network error. Please check your connection.');
+        if (error.name === 'AbortError') throw new Error('Request timed out. Please check your connection.');
+        if (error.name === 'TypeError' && error.message === 'Failed to fetch') throw new Error('Network error. Please check your connection.');
         throw error;
     }
 }
@@ -3939,9 +3929,10 @@ function switchLbTab(tab,btn){ document.querySelectorAll('#dash-leaderboard .tab
 // ═══════════════════════════════════════════
 // AFFILIATES (UPDATED)
 // ═══════════════════════════════════════════
-async function renderAffiliates(){ showLoading('Loading affiliate offers...'); try{ const offersData=await apiCall('/courses?hasAffiliate=true&published=true&limit=20'); S.affiliateOffers=(Array.isArray(offersData.data)?offersData.data:(Array.isArray(offersData.data?.courses)?offersData.data.courses:[])); } catch(e){ S.affiliateOffers=[]; } try{ const statsRes=await apiCall('/affiliate/my-stats'); if(statsRes.data){ S.affiliateStats=statsRes.data; S.myAffiliateLinks=statsRes.data.links||[]; } } catch(e){} const offersHtml=S.affiliateOffers.length?S.affiliateOffers.map(c=>{ const commissionPerSale=Math.round((c.salePrice||c.price||0)*(c.affiliatePercent||0)/100); const commissionText=commissionPerSale===0?'₦0 / sale':`${fmtMoneyAPI(commissionPerSale)} / sale`; return `<div class="affiliate-offer-card" data-course-id="${c._id}"><div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap"><div style="font-size:1.75rem">${c.thumbnail||c.emoji||'📚'}</div><div style="flex:1"><div style="font-weight:700">${c.title}</div><div style="font-size:.74rem;color:var(--text3)">${c.affiliatePercent||0}% commission · ${commissionText}</div></div><button class="btn btn-violet btn-sm" onclick="acceptAff('${c._id}')"><i class="fas fa-handshake"></i>Accept</button></div></div>`; }).join(''):'<div class="empty-state"><p>No affiliate offers available</p></div>'; const myLinksHtml=S.myAffiliateLinks&&S.myAffiliateLinks.length?S.myAffiliateLinks.map(a=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.6rem"><div style="font-weight:600">${a.courseTitle||'Course'}</div><div class="ref-box mb-2" style="margin-top:.5rem"><span class="ref-link">${a.link}</span><button class="btn btn-primary btn-sm" onclick="navigator.clipboard?.writeText('${a.link}').then(()=>toast('Link copied!','success'))"><i class="fas fa-copy"></i> Copy</button></div><div style="display:flex;gap:1rem;margin-top:.5rem;font-size:.75rem;color:var(--text3)"><span><i class="fas fa-mouse-pointer"></i> ${a.clicks||0}</span><span><i class="fas fa-shopping-cart"></i> ${a.conversions||0}</span><span><i class="fas fa-wallet"></i> Earned: ${fmtMoneyAPI(a.totalEarned||0)}</span></div></div>`).join(''):'<div class="empty-state"><p>Accept affiliate offers above to get your links</p></div>'; document.getElementById('affiliateOffers').innerHTML=offersHtml; document.getElementById('myAffiliateLinks').innerHTML=myLinksHtml; const statsRow=S.affiliateStats?`<div class="col-6 col-md-3"><div class="stat-card"><div class="si si-v"><i class="fas fa-mouse-pointer"></i></div><div class="sv">${S.affiliateStats.totalClicks||0}</div><div class="sl">Clicks</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-user-plus"></i></div><div class="sv">${S.affiliateStats.totalSignups||0}</div><div class="sl">Signups</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-shopping-cart"></i></div><div class="sv">${S.affiliateStats.totalConversions||0}</div><div class="sl">Conversions</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(S.affiliateStats.totalEarned||0)}</div><div class="sl">Earned</div></div></div>`:'<div class="col-12"><div class="empty-state"><p>Accept an affiliate offer to see your stats</p></div></div>'; document.getElementById('affStatsRow').innerHTML=statsRow; document.getElementById('navAffBadge').textContent=S.myAffiliateLinks?.length||0; hideLoading(); }
-function acceptAff(courseId){ const c=S.affiliateOffers.find(x=>x._id===courseId); if(!c) return; document.getElementById('affiliateModalBody').innerHTML=`<div style="text-align:center"><h5>${c.title}</h5><p>Commission: ${c.affiliatePercent||0}% per sale</p><p style="font-size:.82rem;color:var(--text3)">Estimated: ${fmtMoneyAPI(Math.round((c.salePrice||c.price||0)*(c.affiliatePercent||0)/100))} per sale</p></div>`; document.getElementById('affiliateModal')._courseId=courseId; openModal('affiliateModal'); }
-async function acceptAffiliateOffer(){ const courseId=document.getElementById('affiliateModal')?._courseId; const c=S.affiliateOffers.find(x=>x._id===courseId); if(!c) return; const btn=document.querySelector('#affiliateModal .btn-violet'); if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner spin"></i> Accepting...'; } try{ const res=await apiCall('/affiliate/accept',{method:'POST',body:{courseId}}); if(!res.success) throw new Error(res.message); const {link}=res.data; const profile=await apiCall('/users/profile'); S.user=profile.data; S.myAffiliateLinks=S.user.affiliateLinks||[]; renderAffiliates(); closeModal('affiliateModal'); toast(`✅ Affiliate link created!`,'success'); if(link) navigator.clipboard.writeText(link).catch(()=>{}); } catch(err){ toast(err.message,'error'); } finally{ if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-handshake"></i>Accept & Get Link'; } } }
+async function renderAffiliates(){ showLoading('Loading affiliate offers...'); try{ const offersData=await apiCall('/courses?hasAffiliate=true&published=true&limit=20'); S.affiliateOffers=(Array.isArray(offersData.data)?offersData.data:(Array.isArray(offersData.data?.courses)?offersData.data.courses:[])); } catch(e){ S.affiliateOffers=[]; } try{ const statsRes=await apiCall('/affiliate/stats'); if(statsRes.data){ S.affiliateStats=statsRes.data; } const linksRes=await apiCall('/affiliate/my-links'); S.myAffiliateLinks=linksRes.data?.links||[]; } catch(e){ console.warn('Could not load affiliate stats:',e); } const offersHtml=S.affiliateOffers.length?S.affiliateOffers.map(c=>{ const price=c.salePrice||c.price||0; const percent=c.affiliatePercent||0; const commissionPerSale=Math.round(price*percent/100); const commissionText=commissionPerSale===0?'₦0 / sale':`${fmtMoneyAPI(commissionPerSale)} / sale`; return `<div class="affiliate-offer-card" data-course-id="${c._id}"><div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap"><div style="font-size:1.75rem">${c.thumbnail||c.emoji||'📚'}</div><div style="flex:1"><div style="font-weight:700">${c.title}</div><div style="font-size:.74rem;color:var(--text3)">${percent}% commission · ${commissionText}</div></div><button class="btn btn-violet btn-sm" onclick="acceptAff('${c._id}')"><i class="fas fa-handshake"></i>Accept & Get Link</button></div></div>`; }).join(''):'<div class="empty-state"><p>No affiliate offers available</p></div>'; const myLinksHtml=S.myAffiliateLinks&&S.myAffiliateLinks.length?S.myAffiliateLinks.map(a=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.6rem"><div style="font-weight:600">${a.courseTitle||'Course'}</div><div class="ref-box mb-2" style="margin-top:.5rem"><span class="ref-link">${a.link}</span><button class="btn btn-primary btn-sm" onclick="navigator.clipboard?.writeText('${a.link}').then(()=>toast('Link copied!','success'))"><i class="fas fa-copy"></i>Copy</button></div><div style="display:flex;gap:1rem;margin-top:.5rem;font-size:.75rem;color:var(--text3)"><span><i class="fas fa-mouse-pointer"></i> ${a.clicks||0}</span><span><i class="fas fa-shopping-cart"></i> ${a.conversions||0}</span><span><i class="fas fa-wallet"></i> Earned: ${fmtMoneyAPI(a.totalEarned||0)}</span></div></div>`).join(''):'<div class="empty-state"><p>Accept affiliate offers above to get your links</p></div>'; document.getElementById('affiliateOffers').innerHTML=offersHtml; document.getElementById('myAffiliateLinks').innerHTML=myLinksHtml; const stats=S.affiliateStats||{totalClicks:0,totalConversions:0,totalEarned:0,linksCount:0}; const statsRow=`<div class="col-6 col-md-3"><div class="stat-card"><div class="si si-v"><i class="fas fa-mouse-pointer"></i></div><div class="sv">${stats.totalClicks||0}</div><div class="sl">Clicks</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-user-plus"></i></div><div class="sv">${stats.totalSignups||0}</div><div class="sl">Signups</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-shopping-cart"></i></div><div class="sv">${stats.totalConversions||0}</div><div class="sl">Conversions</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(stats.totalEarned||0)}</div><div class="sl">Earned</div></div></div>`; document.getElementById('affStatsRow').innerHTML=statsRow; document.getElementById('navAffBadge').textContent=S.myAffiliateLinks?.length||0; hideLoading(); }
+function acceptAff(courseId){ const c=S.affiliateOffers.find(x=>x._id===courseId); if(!c) return; const price=c.salePrice||c.price||0; const percent=c.affiliatePercent||0; const est=Math.round(price*percent/100); document.getElementById('affiliateModalBody').innerHTML=`<div style="text-align:center"><h5>${c.title}</h5><p>Commission: ${percent}% per sale</p><p style="font-size:.82rem;color:var(--text3)">Estimated: ${fmtMoneyAPI(est)} per sale</p></div>`; document.getElementById('affiliateModal')._courseId=courseId; openModal('affiliateModal'); }
+async function acceptAffiliateOffer(){ const courseId=document.getElementById('affiliateModal')?._courseId; const c=S.affiliateOffers.find(x=>x._id===courseId); if(!c) return; const btn=document.querySelector('#affiliateModal .btn-violet'); if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner spin"></i> Accepting...'; } try{ const res=await apiCall('/affiliate/accept',{method:'POST',body:{courseId}}); if(!res.success) throw new Error(res.message); const {link}=res.data; await refreshAffiliateData(); closeModal('affiliateModal'); toast(`✅ Affiliate link created! Link copied.`,'success'); if(link) navigator.clipboard.writeText(link); } catch(err){ toast(err.message||'Error creating affiliate link','error'); } finally{ if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-handshake"></i>Accept & Get Link'; } } }
+async function refreshAffiliateData(){ try{ const statsRes=await apiCall('/affiliate/stats'); if(statsRes.success) S.affiliateStats=statsRes.data; const linksRes=await apiCall('/affiliate/my-links'); if(linksRes.success) S.myAffiliateLinks=linksRes.data.links||[]; if(S.dp==='affiliates') renderAffiliates(); } catch(e){ console.warn('Could not refresh affiliate data:',e); } }
 function handleAffiliateOfferClick(courseId){ markAllRead(); setDP('affiliates'); setTimeout(()=>{ const offerCard=document.querySelector(`.affiliate-offer-card[data-course-id="${courseId}"]`); if(offerCard){ offerCard.scrollIntoView({behavior:'smooth',block:'center'}); offerCard.style.border='2px solid var(--primary)'; setTimeout(()=>{ offerCard.style.border=''; },2000); } },500); }
 
 // ═══════════════════════════════════════════
