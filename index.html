@@ -3698,7 +3698,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // AUTHENTICATION – FIXED doLogin + doRegister
+        // AUTHENTICATION – FIXED doLogin + doRegister (uppercase ref, proper error)
         // ═══════════════════════════════════════════
         async function doLogin() {
           const email = document.getElementById('loginEmail')?.value.trim();
@@ -3729,13 +3729,13 @@
           const em = document.getElementById('regEmail')?.value.trim();
           const pw = document.getElementById('regPw')?.value;
           const phone = document.getElementById('regPhone')?.value.trim();
-          let ref = document.getElementById('regRef')?.value.trim();
+          let ref = document.getElementById('regRef')?.value.trim().toUpperCase();
           const terms = document.getElementById('termsChk')?.checked;
           const btn = document.getElementById('registerBtn');
 
           const pendingRef = localStorage.getItem('cx_pending_ref');
           if (pendingRef && !ref) {
-            ref = pendingRef;
+            ref = pendingRef.toUpperCase();
             if (document.getElementById('regRef')) document.getElementById('regRef').value = ref;
             localStorage.removeItem('cx_pending_ref');
           }
@@ -4028,7 +4028,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // FULL PAYSTACK INLINE INTEGRATION – WITH AFFILIATE CODE
+        // FULL PAYSTACK INLINE INTEGRATION – WITH AFFILIATE CODE (uppercase manual code)
         // ═══════════════════════════════════════════
         async function processCoursePurchase(){
             if(!S.currentBuyCourse) return;
@@ -4037,7 +4037,7 @@
             showLoading('Preparing payment...');
             try{
                 let code = getAffiliateCodeFromCookie();
-                const manualCode = document.getElementById('buyRefCode')?.value.trim();
+                const manualCode = document.getElementById('buyRefCode')?.value.trim().toUpperCase();
                 if (manualCode) code = manualCode;
                 const metadata = {
                     type:'course_purchase',
