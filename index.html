@@ -3497,7 +3497,7 @@
         // ═══════════════════════════════════════════
         const API_BASE = 'https://changex-backend-1.onrender.com/api/v1';
         const FRONTEND_URL = 'https://adc-mu.vercel.app';
-        const PAYSTACK_PUBLIC_KEY = 'pk_live_your_paystack_public_key'; // Replace with your real key
+        const PAYSTACK_PUBLIC_KEY = 'pk_live_your_paystack_public_key';
         const HEALTH_URL = 'https://changex-backend-1.onrender.com/health';
         const CURRENCY_SYMBOLS = { NGN: '₦', USD: '$', GBP: '£', EUR: '€' };
         let currentCurrency = localStorage.getItem('cx_currency') || 'NGN';
@@ -3578,13 +3578,16 @@
         }
 
         // ═══════════════════════════════════════════
-        // UTILITY FUNCTIONS
+        // UTILITY FUNCTIONS – FIXED fmtMoneyAPI
         // ═══════════════════════════════════════════
         function fmtMoneyAPI(n, cur) {
-            const c = cur || currentCurrency; const sym = CURRENCY_SYMBOLS[c] || '₦'; const val = Number(n) || 0;
-            if(c==='NGN') return sym + val.toLocaleString();
+            const c = cur || currentCurrency || 'NGN';
+            const sym = CURRENCY_SYMBOLS[c] || '₦';
+            let val = Number(n);
+            if (isNaN(val)) val = 0;
+            if (c === 'NGN') return sym + val.toLocaleString();
             const rate = exchangeRates[c] || 1;
-            return sym + (val*rate).toLocaleString(undefined, { minimumFractionDigits:2, maximumFractionDigits:2 });
+            return sym + (val * rate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
         function showLoading(msg='Loading...') { const el=document.getElementById('loadingOverlay'); const txt=document.getElementById('loadingText'); if(el){el.style.display='flex';} if(txt) txt.textContent=msg; }
         function hideLoading() { const el=document.getElementById('loadingOverlay'); if(el) el.style.display='none'; }
@@ -3597,7 +3600,7 @@
         setInterval(()=>{ const token=localStorage.getItem('cx_accessToken'); if(token){ try{ const payload=JSON.parse(atob(token.split('.')[1])); if(payload.exp*1000-Date.now()<120000) refreshTokenCall(); } catch(e){} } }, 60000);
 
         // ═══════════════════════════════════════════
-        // API SERVICE (friendly errors, CORS-friendly, timeout 30s)
+        // API SERVICE
         // ═══════════════════════════════════════════
         async function apiCall(endpoint, options={}) {
             const token = localStorage.getItem('cx_accessToken');
@@ -3620,16 +3623,6 @@
                 if (error.name === 'TypeError' && error.message === 'Failed to fetch') throw new Error('Network error. Please check your connection.');
                 throw error;
             }
-        }
-        function friendlyError(msg) {
-            if(!msg) return 'Something went wrong.';
-            const lc = msg.toLowerCase();
-            if(lc.includes('duplicate key')) return 'This already exists.';
-            if(lc.includes('referral')) return 'Referral code not recognised. You can still register.';
-            if(lc.includes('password')) return 'Password must be at least 8 characters with uppercase, number & special character.';
-            if(lc.includes('not found')) return 'Resource not found.';
-            if(lc.includes('unauthorized')) return 'Please log in again.';
-            return msg;
         }
         async function refreshTokenCall() {
             try {
@@ -3705,7 +3698,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // AUTHENTICATION
+        // AUTHENTICATION – FIXED doLogin (GET query) + doRegister (proper error handling)
         // ═══════════════════════════════════════════
         async function doLogin() {
           const email = document.getElementById('loginEmail')?.value.trim();
@@ -3772,7 +3765,7 @@
           } catch (err) {
             let errorMsg = err.message || 'Registration failed';
             // Only retry without referral code if error specifically mentions referral
-            if (errorMsg.toLowerCase().includes('referral')) {
+            if (ref && errorMsg.toLowerCase().includes('referral')) {
               toast('Referral code not recognised – registering without it', 'warning');
               delete body.referralCode;
               try {
@@ -3871,6 +3864,33 @@
         }
 
         // ═══════════════════════════════════════════
+        // SUBSCRIPTION EXPIRY CHECK
+        // ═══════════════════════════════════════════
+        async function checkSubscriptionExpiry() {
+            if (!S.user?.subscriptionExpires) return;
+            const expiry = new Date(S.user.subscriptionExpires);
+            if (expiry < new Date() && S.user.isPremium) {
+                try {
+                    await apiCall('/users/update-premium-status', { method: 'POST', body: { isPremium: false } });
+                    S.user.isPremium = false;
+                    S.isPremium = false;
+                    localStorage.setItem('cx_user', JSON.stringify(S.user));
+                    updateUserUI();
+                    toast('Your premium subscription has expired.', 'warning');
+                } catch(e) {}
+            }
+        }
+        setInterval(checkSubscriptionExpiry, 60 * 60 * 1000);
+
+        // ═══════════════════════════════════════════
+        // AFFILIATE CODE HELPER
+        // ═══════════════════════════════════════════
+        function getAffiliateCodeFromCookie() {
+            const match = document.cookie.match(/(?:^|; )affiliate_code=([^;]*)/);
+            return match ? decodeURIComponent(match[1]) : null;
+        }
+
+        // ═══════════════════════════════════════════
         // MULTI-CURRENCY
         // ═══════════════════════════════════════════
         async function loadExchangeRates(){ try{ const res=await apiCall('/v1/currency/rates'); if(res.data) exchangeRates={NGN:1,...res.data}; } catch(e){ console.warn('Using fallback rates'); } }
@@ -3904,6 +3924,7 @@
             const fab=document.getElementById('fab'); if(fab) fab.style.display=hasCreatorAccess?'block':'none';
             await loadEnrollments(); await fetchAnnouncements(); await fetchNotifications();
             updateThemeIcons(); renderNotifs(); renderCurrencySelectorUI();
+            checkSubscriptionExpiry();
             setTimeout(()=>{ const hash=window.location.hash.slice(1); if(hash.startsWith('courses/')){ const courseId=hash.split('/')[1]; if(courseId) openBuyCourse(courseId); } },800);
         }
         async function fetchAnnouncements(){ try{ const res=await apiCall('/admin/announcements'); const list=Array.isArray(res.data)?res.data:[]; if(list.length>0){ const latest=list[0]; const bar=document.getElementById('announcementBar'); if(bar){ bar.style.display='flex'; bar.onclick=()=>toast(latest.title+': '+latest.content,'info'); } document.getElementById('announcementText').textContent=`📣 ${latest.title}: ${latest.content?.substring(0,100)||''}`; } } catch(e){} }
@@ -3941,13 +3962,29 @@
         // ═══════════════════════════════════════════
         // DASHBOARD HOME
         // ═══════════════════════════════════════════
-        async function initHome(){ document.getElementById('homeContent').innerHTML=''; if(!S.user) return; updateUserUI(); try{ await loadEnrollments(); await loadLeaderboard(); await loadTransactions(); } catch(e){} renderHomeDashboard(); }
+        async function initHome(){ document.getElementById('homeContent').innerHTML=''; if(!S.user) return; updateUserUI(); try{ await loadEnrollments(); await loadLeaderboard(); await loadTransactions(); await loadReferralStats(); } catch(e){} renderHomeDashboard(); }
+        async function loadReferralStats() {
+            try {
+                const data = await apiCall('/users/referrals');
+                const referrals = data.data?.referrals || data.data || [];
+                const count = Array.isArray(referrals) ? referrals.length : 0;
+                const totalEarned = Array.isArray(referrals) ? referrals.reduce((sum, r) => sum + (r.earned || 0), 0) : 0;
+                S.referrals = Array.isArray(referrals) ? referrals : [];
+                const refStatsRow = document.getElementById('refStatsRow');
+                if (refStatsRow) {
+                    refStatsRow.innerHTML = `
+                        <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${count}</div><div class="sl">Total Refs</div></div></div>
+                        <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(totalEarned)}</div><div class="sl">Earned</div></div></div>
+                    `;
+                }
+            } catch(e) { console.warn('Could not load referrals', e); }
+        }
         function renderHomeDashboard(){
             const el=document.getElementById('homeContent');
             if(!el) return;
             const completedCnt=S.enrollments.filter(e=>e.status==='completed'||e.progress===100).length;
             const inProgress=S.enrollments.filter(e=>e.status==='active'||e.progress>0&&e.progress<100);
-            const refCnt=S.user?.referralCount||0;
+            const refCnt=S.referrals?.length||S.user?.referralCount||0;
             const h=new Date().getHours();
             const greet=h<12?'Good morning 👋':h<17?'Good afternoon 👋':'Good evening 👋';
             const streak=S.user?.streak||S.user?.streakDays||0;
@@ -3971,10 +4008,26 @@
         async function renderExplore(){ showLoading('Loading courses...'); try{ const data=await apiCall('/courses?published=true&limit=50'); const raw=data.data||data||[]; S.appCourses=Array.isArray(raw)?raw:(raw.courses||[]); document.getElementById('exploreGrid').innerHTML=buildCourseCards(S.appCourses); } catch(e){ S.appCourses=[]; document.getElementById('exploreGrid').innerHTML=`<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h4>Could not load courses</h4><p>${e.message}</p></div>`; } finally{ hideLoading(); } }
         function filterExplore(){ const q=(document.getElementById('exploreSearch')?.value||'').toLowerCase(); const cat=document.getElementById('exploreCat')?.value||''; const lev=document.getElementById('exploreLevel')?.value||''; let list=Array.isArray(S.appCourses)?S.appCourses:[]; if(q) list=list.filter(c=>(c.title||'').toLowerCase().includes(q)); if(cat) list=list.filter(c=>c.category===cat); if(lev) list=list.filter(c=>c.level===lev); document.getElementById('exploreGrid').innerHTML=list.length?buildCourseCards(list):'<div class="empty-state"><i class="fas fa-search"></i><h4>No courses found</h4></div>'; }
         function buildCourseCards(list){ if(!Array.isArray(list)) return '<div class="empty-state"><p>Loading courses...</p></div>'; return list.map(c=>{ const price=c.displayPrice||c.price||0; const instructorName=c.instructor?.firstName||'Instructor'; const lessonCount=c.totalLessons||(Array.isArray(c.lessons)?c.lessons.length:0); return `<div class="course-card" onclick="openBuyCourse('${c._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail||c.emoji||'📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress||0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title||'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level||'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate?`<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent||0}% aff</span>`:''}</div></div></div>`; }).join(''); }
-        function openBuyCourse(courseId){ const c=(S.appCourses||[]).find(x=>x._id===courseId); if(!c) return; if(c.price>0&&!S.isPremium&&!S.user?.roles?.includes('admin')){ toast('This course requires a Premium subscription','warning'); openModal('premiumModal'); return; } S.currentBuyCourse=c; const price=c.salePrice||c.price||0; document.getElementById('buyCourseInfo').innerHTML=`<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div style="font-size:2rem">${c.thumbnail||c.emoji||'📚'}</div><div><div style="font-weight:700;font-size:.92rem">${c.title}</div><div style="font-size:.75rem;color:var(--text3)">${c.instructor?.firstName||'Instructor'} · ${c.totalLessons||0} lessons</div></div></div>`; document.getElementById('buyCourseSummary').innerHTML=`<div class="pay-summary-row"><span>Course Price</span><span>${fmtMoneyAPI(c.price||0)}</span></div><div class="pay-summary-row"><span style="font-weight:700">Total</span><span style="color:var(--primary);font-weight:800">${fmtMoneyAPI(price)}</span></div>`; document.getElementById('paystackBtnText').textContent=`Pay ${fmtMoneyAPI(price)} with Paystack`; openModal('buyCourseModal'); document.getElementById('pageTitle').textContent=`${c.title} - ChangeX Academy`; document.getElementById('metaDescription').setAttribute('content',c.subtitle||''); document.getElementById('ogTitle').setAttribute('content',c.title+' - ChangeX Academy'); document.getElementById('ogDescription').setAttribute('content',c.subtitle||''); }
+        function openBuyCourse(courseId){
+            const c=(S.appCourses||[]).find(x=>x._id===courseId);
+            if(!c) return;
+            // Free course – enroll directly without Paystack
+            if((c.price===0||c.price==null)&&(c.salePrice===0||c.salePrice==null)){
+                apiCall(`/courses/${c._id}/enroll`,{method:'POST'})
+                    .then(()=>{ toast('✅ Free course enrolled!','success'); loadEnrollments(); setDP('courses'); })
+                    .catch(err=>toast(err.message,'error'));
+                return;
+            }
+            if(c.price>0&&!S.isPremium&&!S.user?.roles?.includes('admin')){ toast('This course requires a Premium subscription','warning'); openModal('premiumModal'); return; }
+            S.currentBuyCourse=c; const price=c.salePrice||c.price||0;
+            document.getElementById('buyCourseInfo').innerHTML=`<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div style="font-size:2rem">${c.thumbnail||c.emoji||'📚'}</div><div><div style="font-weight:700;font-size:.92rem">${c.title}</div><div style="font-size:.75rem;color:var(--text3)">${c.instructor?.firstName||'Instructor'} · ${c.totalLessons||0} lessons</div></div></div>`;
+            document.getElementById('buyCourseSummary').innerHTML=`<div class="pay-summary-row"><span>Course Price</span><span>${fmtMoneyAPI(c.price||0)}</span></div><div class="pay-summary-row"><span style="font-weight:700">Total</span><span style="color:var(--primary);font-weight:800">${fmtMoneyAPI(price)}</span></div>`;
+            document.getElementById('paystackBtnText').textContent=`Pay ${fmtMoneyAPI(price)} with Paystack`;
+            openModal('buyCourseModal');
+        }
 
         // ═══════════════════════════════════════════
-        // FULL PAYSTACK INLINE INTEGRATION
+        // FULL PAYSTACK INLINE INTEGRATION – WITH AFFILIATE CODE
         // ═══════════════════════════════════════════
         async function processCoursePurchase(){
             if(!S.currentBuyCourse) return;
@@ -3982,7 +4035,17 @@
             if(!email){ toast('Please log in to purchase','error'); return; }
             showLoading('Preparing payment...');
             try{
-                const paymentIntent=await apiCall('/payments/initialize-paystack',{method:'POST',body:{email,amount:course.salePrice||course.price,currency:'NGN',metadata:{type:'course_purchase',courseId:course._id,userId:S.user._id}}});
+                let code = getAffiliateCodeFromCookie();
+                const manualCode = document.getElementById('buyRefCode')?.value.trim();
+                if (manualCode) code = manualCode;
+                const metadata = {
+                    type:'course_purchase',
+                    courseId:course._id,
+                    userId:S.user._id,
+                    affiliateCode: code || undefined,
+                    referralCode: code || undefined
+                };
+                const paymentIntent=await apiCall('/payments/initialize-paystack',{method:'POST',body:{email,amount:course.salePrice||course.price,currency:'NGN',metadata}});
                 const {reference,amount:paystackAmount}=paymentIntent.data;
                 const handler=PaystackPop.setup({key:PAYSTACK_PUBLIC_KEY,email,amount:paystackAmount,currency:'NGN',ref:reference,metadata:{custom_fields:[{display_name:"Course",variable_name:"course",value:course.title},{display_name:"User ID",variable_name:"user_id",value:S.user._id}]},callback:async(response)=>{const verify=await apiCall('/payments/verify-paystack',{method:'POST',body:{reference:response.reference,courseId:course._id}});if(verify.success){toast('✅ Payment successful! You are now enrolled.','success');await loadEnrollments();closeModal('buyCourseModal');setDP('courses');renderWallet();}else{toast('Payment verification failed. Contact support.','error');}},onClose:()=>{toast('Payment cancelled','warning');}});
                 handler.openIframe();
@@ -4083,7 +4146,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // QUIZ (with wallet refresh)
+        // QUIZ
         // ═══════════════════════════════════════════
         function initQuiz(){ const el=document.getElementById('quizWrap'); if(!el) return; if(S.currentCourseData?.quizzes?.length){ const allQ=S.currentCourseData.quizzes.flatMap(qz=>qz.questions||[]); S.quizQuestions=allQ.length?allQ:[{question:'No questions available.',options:['Okay'],correctAnswer:0}]; } else{ S.quizQuestions=[{question:'Sample: What does HTML stand for?',options:['Hyper Text Markup Language','High Tech Modern Language','Hyper Transfer Markup Language','Home Tool Markup Language'],correctAnswer:0}]; } S.qCurr=0; S.qAns={}; renderQuizQ(); }
         function renderQuizQ(){
@@ -4126,7 +4189,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // WALLET (with pending withdrawal)
+        // WALLET
         // ═══════════════════════════════════════════
         async function renderWallet(){
             try{ const walletData=await apiCall('/users/wallet'); const wallet=walletData.data||walletData; S.walletBal=wallet.balance||wallet.walletBalance||0; S.user.walletBalance=S.walletBal; S.user.pendingWithdrawal=wallet.pendingWithdrawal||0; localStorage.setItem('cx_user',JSON.stringify(S.user)); } catch(e){}
@@ -4158,7 +4221,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // REFERRALS (updated link)
+        // REFERRALS
         // ═══════════════════════════════════════════
         async function renderRefs(){
             const refCode=S.user?.referralCode||'REF';
@@ -4200,7 +4263,7 @@
         function switchLbTab(tab,btn){ document.querySelectorAll('#dash-leaderboard .tab-btn').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); S.lbTab=tab; renderLB(); }
 
         // ═══════════════════════════════════════════
-        // AFFILIATES (UPDATED)
+        // AFFILIATES
         // ═══════════════════════════════════════════
         async function renderAffiliates(){
             showLoading('Loading affiliate offers...');
@@ -4396,14 +4459,32 @@
         function applyPremCode(val){ const st=document.getElementById('premCodeStatus'); if(!st) return; if(val.length>3){ st.style.color='var(--success)'; st.textContent='✅ Code applied'; } else{ st.textContent=''; } }
 
         // ═══════════════════════════════════════════
-        // WIZARD
+        // WIZARD – WITH WELCOME BONUS
         // ═══════════════════════════════════════════
         function nextWizStep(skip){ S.wizStep++; showWizStep(S.wizStep); }
         function prevWizStep(){ S.wizStep=Math.max(0,S.wizStep-1); showWizStep(S.wizStep); }
         function showWizStep(n){ document.querySelectorAll('.wizard-step').forEach(s=>s.classList.remove('active')); document.getElementById('wiz-'+n)?.classList.add('active'); document.getElementById('wizProg').style.width=Math.round((n/5)*100)+'%'; if(n===0&&S.user) document.getElementById('wizName').textContent=S.user.firstName||'User'; if(n===5&&S.user) document.getElementById('wizRefCode').textContent=S.user.referralCode||'REF'; }
         function toggleRole(role){ if(role==='all') S.wizRoles=['student','instructor','affiliate']; else{ const i=S.wizRoles.indexOf(role); if(i>=0) S.wizRoles.splice(i,1); else S.wizRoles.push(role); } ['student','instructor','affiliate','all'].forEach(r=>{ const el=document.getElementById('role-'+r); if(el) el.classList.toggle('selected',r==='all'?S.wizRoles.length===3:S.wizRoles.includes(r)); }); }
         function verifyAccount(val){ const st=document.getElementById('accVerifyStatus'); if(!st) return; if(val.length===10){ st.style.display='block'; st.style.color='var(--success)'; st.textContent='✅ Account verified'; document.getElementById('wiz-accname').value='Account Name Verified'; } }
-        async function finishWizard(isPremium){ if(S.user){ S.user.setupDone=true; S.user.isPremium=isPremium; S.isPremium=isPremium; localStorage.setItem('cx_user',JSON.stringify(S.user)); try{ await apiCall('/users/profile',{method:'PUT',body:{setupDone:true,roles:S.wizRoles.length?S.wizRoles:['student'],bio:document.getElementById('wiz-bio')?.value||'',location:document.getElementById('wiz-loc')?.value||''}}); } catch(e){ console.warn('Could not save wizard profile:',e.message); } } goPage('app'); renderWallet(); }
+        async function finishWizard(isPremium){
+            if(S.user){
+                S.user.setupDone=true;
+                S.user.isPremium=isPremium;
+                S.isPremium=isPremium;
+                localStorage.setItem('cx_user',JSON.stringify(S.user));
+                try{
+                    await apiCall('/users/profile',{method:'PUT',body:{setupDone:true,roles:S.wizRoles.length?S.wizRoles:['student'],bio:document.getElementById('wiz-bio')?.value||'',location:document.getElementById('wiz-loc')?.value||''}});
+                    // Claim welcome bonus
+                    try{
+                        await apiCall('/users/claim-welcome-bonus',{method:'POST'});
+                        toast('🎉 Welcome bonus ₦500 added to your wallet!','success');
+                        renderWallet();
+                    } catch(e){ console.warn('Bonus already claimed or not available'); }
+                } catch(e){ console.warn('Could not save wizard profile:',e.message); }
+            }
+            goPage('app');
+            renderWallet();
+        }
 
         // ═══════════════════════════════════════════
         // LANDING PAGE
@@ -4426,7 +4507,7 @@
         // ═══════════════════════════════════════════
         // FEEDBACK
         // ═══════════════════════════════════════════
-        async function sendFeedback(){ const message=document.getElementById('feedbackMsg')?.value.trim(); const email=document.getElementById('feedbackEmail')?.value.trim(); if(!message){ toast('Please enter a message','error'); return; } showLoading('Sending...'); try{ await apiCall('/feedback',{method:'POST',body:{message,email,userId:S.user?._id,url:window.location.href}}); toast('Thank you for your feedback! 🙏','success'); closeModal('feedbackModal'); document.getElementById('feedbackMsg').value=''; document.getElementById('feedbackEmail').value=''; } catch(e){ toast('Failed to send: '+e.message,'error'); } finally{ hideLoading(); } }
+        async function sendFeedback(){ const message=document.getElementById('feedbackMsg')?.value.trim(); const email=document.getElementById('feedbackEmail')?.value.trim(); if(!message){ toast('Please enter a message','error'); return; } showLoading('Sending...'); try{ const res=await apiCall('/feedback',{method:'POST',body:{message,email,userId:S.user?._id,url:window.location.href}}); toast('Thank you for your feedback! 🙏','success'); closeModal('feedbackModal'); document.getElementById('feedbackMsg').value=''; document.getElementById('feedbackEmail').value=''; } catch(e){ toast('Failed to send: '+e.message,'error'); } finally{ hideLoading(); } }
 
         // ═══════════════════════════════════════════
         // MODALS & NOTIFICATIONS
