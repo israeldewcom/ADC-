@@ -3730,44 +3730,66 @@
             if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i>Sign In'; }
           }
         }
-        async function doRegister(){
-            const first=document.getElementById('regFirst')?.value.trim();
-            const last=document.getElementById('regLast')?.value.trim();
-            const em=document.getElementById('regEmail')?.value.trim();
-            const pw=document.getElementById('regPw')?.value;
-            const phone=document.getElementById('regPhone')?.value.trim(); // kept in UI but not sent
-            let ref=document.getElementById('regRef')?.value.trim();
-            const terms=document.getElementById('termsChk')?.checked;
-            const btn=document.getElementById('registerBtn');
-            const pendingRef=localStorage.getItem('cx_pending_ref');
-            if(pendingRef&&!ref){ ref=pendingRef; if(document.getElementById('regRef')) document.getElementById('regRef').value=ref; localStorage.removeItem('cx_pending_ref'); }
-            if(!first||!last){ toast('Please enter your full name','error'); return; }
-            if(!em||!em.includes('@')){ toast('Enter a valid email address','error'); return; }
-            if(!pw){ toast('Enter a password','error'); return; }
-            if(!terms){ toast('Accept the Terms and Privacy Policy','error'); return; }
-            if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner spin"></i> Creating account...'; }
-            showLoading('Creating account...');
-            // Build body with ONLY fields backend expects (no phone, no acceptTerms)
-            const body={firstName:first,lastName:last,email:em,password:pw};
-            if(ref) body.referralCode=ref;
-            try{
-                const res=await apiCall('/auth/register',{method:'POST',body});
-                await handleLoginSuccess(res,false);
+        async function doRegister() {
+          const first = document.getElementById('regFirst')?.value.trim();
+          const last = document.getElementById('regLast')?.value.trim();
+          const em = document.getElementById('regEmail')?.value.trim();
+          const pw = document.getElementById('regPw')?.value;
+          const phone = document.getElementById('regPhone')?.value.trim();
+          let ref = document.getElementById('regRef')?.value.trim();
+          const terms = document.getElementById('termsChk')?.checked;
+          const btn = document.getElementById('registerBtn');
+
+          const pendingRef = localStorage.getItem('cx_pending_ref');
+          if (pendingRef && !ref) {
+            ref = pendingRef;
+            if (document.getElementById('regRef')) document.getElementById('regRef').value = ref;
+            localStorage.removeItem('cx_pending_ref');
+          }
+
+          if (!first || !last) { toast('Please enter your full name', 'error'); return; }
+          if (!em || !em.includes('@')) { toast('Enter a valid email address', 'error'); return; }
+          if (!pw) { toast('Enter a password', 'error'); return; }
+          if (!terms) { toast('Accept the Terms and Privacy Policy', 'error'); return; }
+
+          if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner spin"></i> Creating account...';
+          }
+          showLoading('Creating account...');
+
+          const body = {
+            firstName: first,
+            lastName: last,
+            email: em,
+            password: pw
+          };
+          if (ref) body.referralCode = ref;
+
+          try {
+            const res = await apiCall('/auth/register', { method: 'POST', body });
+            await handleLoginSuccess(res, false);
+          } catch (err) {
+            let errorMsg = err.message || 'Registration failed';
+            // Only retry without referral code if error specifically mentions referral
+            if (errorMsg.toLowerCase().includes('referral')) {
+              toast('Referral code not recognised – registering without it', 'warning');
+              delete body.referralCode;
+              try {
+                const res2 = await apiCall('/auth/register', { method: 'POST', body });
+                await handleLoginSuccess(res2, false);
+                return;
+              } catch (e2) {
+                errorMsg = e2.message || 'Registration failed';
+              }
             }
-            catch(err){
-                if(ref){
-                    toast('Referral code not recognised – registering without it','warning');
-                    delete body.referralCode;
-                    try{
-                        const res2=await apiCall('/auth/register',{method:'POST',body});
-                        await handleLoginSuccess(res2,false);
-                        return;
-                    } catch(e2){ toast(e2.message,'error'); }
-                }
-                else{ toast(err.message||'Registration failed','error'); }
-                hideLoading();
-                if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-rocket"></i>Create My Free Account'; }
+            toast(errorMsg, 'error');
+            hideLoading();
+            if (btn) {
+              btn.disabled = false;
+              btn.innerHTML = '<i class="fas fa-rocket"></i>Create My Free Account';
             }
+          }
         }
         async function handleLoginSuccess(response, isFromLogin){
             const payload=response.data||response;
