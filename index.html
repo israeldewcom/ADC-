@@ -3698,7 +3698,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // AUTHENTICATION – FIXED doLogin (GET query) + doRegister (proper error handling)
+        // AUTHENTICATION – FIXED doLogin + doRegister
         // ═══════════════════════════════════════════
         async function doLogin() {
           const email = document.getElementById('loginEmail')?.value.trim();
@@ -3960,7 +3960,7 @@
         async function loadEnrollments(){ try{ const data=await apiCall('/courses/my/enrollments'); S.enrollments=Array.isArray(data.data)?data.data:[]; const cntEl=document.getElementById('navCoursesCnt'); if(cntEl) cntEl.textContent=S.enrollments.length; } catch(e){ S.enrollments=[]; } }
 
         // ═══════════════════════════════════════════
-        // DASHBOARD HOME
+        // DASHBOARD HOME – with referral stats
         // ═══════════════════════════════════════════
         async function initHome(){ document.getElementById('homeContent').innerHTML=''; if(!S.user) return; updateUserUI(); try{ await loadEnrollments(); await loadLeaderboard(); await loadTransactions(); await loadReferralStats(); } catch(e){} renderHomeDashboard(); }
         async function loadReferralStats() {
@@ -4003,7 +4003,7 @@
         async function loadCourseForLesson(courseId){ try{ const data=await apiCall(`/courses/${courseId}`); S.currentCourseData=data.data||data; S.currentLessons=Array.isArray(S.currentCourseData.lessons)?S.currentCourseData.lessons:(S.currentCourseData.sections?.flatMap(s=>s.lessons)||[]); S.currentLessonIdx=0; renderCurric(); } catch(e){ toast('Could not load course: '+e.message,'error'); } }
 
         // ═══════════════════════════════════════════
-        // EXPLORE COURSES
+        // EXPLORE COURSES – with free course direct enrollment
         // ═══════════════════════════════════════════
         async function renderExplore(){ showLoading('Loading courses...'); try{ const data=await apiCall('/courses?published=true&limit=50'); const raw=data.data||data||[]; S.appCourses=Array.isArray(raw)?raw:(raw.courses||[]); document.getElementById('exploreGrid').innerHTML=buildCourseCards(S.appCourses); } catch(e){ S.appCourses=[]; document.getElementById('exploreGrid').innerHTML=`<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h4>Could not load courses</h4><p>${e.message}</p></div>`; } finally{ hideLoading(); } }
         function filterExplore(){ const q=(document.getElementById('exploreSearch')?.value||'').toLowerCase(); const cat=document.getElementById('exploreCat')?.value||''; const lev=document.getElementById('exploreLevel')?.value||''; let list=Array.isArray(S.appCourses)?S.appCourses:[]; if(q) list=list.filter(c=>(c.title||'').toLowerCase().includes(q)); if(cat) list=list.filter(c=>c.category===cat); if(lev) list=list.filter(c=>c.level===lev); document.getElementById('exploreGrid').innerHTML=list.length?buildCourseCards(list):'<div class="empty-state"><i class="fas fa-search"></i><h4>No courses found</h4></div>'; }
@@ -4013,6 +4013,7 @@
             if(!c) return;
             // Free course – enroll directly without Paystack
             if((c.price===0||c.price==null)&&(c.salePrice===0||c.salePrice==null)){
+                if(!S.loggedIn){ toast('Please log in to enroll','warning'); goPage('login'); return; }
                 apiCall(`/courses/${c._id}/enroll`,{method:'POST'})
                     .then(()=>{ toast('✅ Free course enrolled!','success'); loadEnrollments(); setDP('courses'); })
                     .catch(err=>toast(err.message,'error'));
@@ -4060,7 +4061,7 @@
         function filterCourses(f,btn){ document.querySelectorAll('#dash-courses .fpill').forEach(p=>p.classList.remove('active')); if(btn) btn.classList.add('active'); renderCourseGrid(f); }
 
         // ═══════════════════════════════════════════
-        // LESSON / CURRICULUM (TIME TRACKING, SCROLLABLE)
+        // LESSON / CURRICULUM
         // ═══════════════════════════════════════════
         function renderCurric(){
             const list=document.getElementById('curricList');
