@@ -3698,7 +3698,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // AUTHENTICATION – FIXED doLogin + doRegister (uppercase ref, proper error)
+        // AUTHENTICATION – FIXED doLogin + doRegister
         // ═══════════════════════════════════════════
         async function doLogin() {
           const email = document.getElementById('loginEmail')?.value.trim();
@@ -3729,13 +3729,13 @@
           const em = document.getElementById('regEmail')?.value.trim();
           const pw = document.getElementById('regPw')?.value;
           const phone = document.getElementById('regPhone')?.value.trim();
-          let ref = document.getElementById('regRef')?.value.trim().toUpperCase();
+          let ref = document.getElementById('regRef')?.value.trim();
           const terms = document.getElementById('termsChk')?.checked;
           const btn = document.getElementById('registerBtn');
 
           const pendingRef = localStorage.getItem('cx_pending_ref');
           if (pendingRef && !ref) {
-            ref = pendingRef.toUpperCase();
+            ref = pendingRef;
             if (document.getElementById('regRef')) document.getElementById('regRef').value = ref;
             localStorage.removeItem('cx_pending_ref');
           }
@@ -4028,7 +4028,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // FULL PAYSTACK INLINE INTEGRATION – WITH AFFILIATE CODE (uppercase manual code)
+        // FULL PAYSTACK INLINE INTEGRATION – WITH AFFILIATE CODE
         // ═══════════════════════════════════════════
         async function processCoursePurchase(){
             if(!S.currentBuyCourse) return;
@@ -4037,7 +4037,7 @@
             showLoading('Preparing payment...');
             try{
                 let code = getAffiliateCodeFromCookie();
-                const manualCode = document.getElementById('buyRefCode')?.value.trim().toUpperCase();
+                const manualCode = document.getElementById('buyRefCode')?.value.trim();
                 if (manualCode) code = manualCode;
                 const metadata = {
                     type:'course_purchase',
@@ -4460,7 +4460,7 @@
         function applyPremCode(val){ const st=document.getElementById('premCodeStatus'); if(!st) return; if(val.length>3){ st.style.color='var(--success)'; st.textContent='✅ Code applied'; } else{ st.textContent=''; } }
 
         // ═══════════════════════════════════════════
-        // WIZARD – WITH WELCOME BONUS
+        // WIZARD – WITH WELCOME BONUS (₦500)
         // ═══════════════════════════════════════════
         function nextWizStep(skip){ S.wizStep++; showWizStep(S.wizStep); }
         function prevWizStep(){ S.wizStep=Math.max(0,S.wizStep-1); showWizStep(S.wizStep); }
@@ -4475,7 +4475,7 @@
                 localStorage.setItem('cx_user',JSON.stringify(S.user));
                 try{
                     await apiCall('/users/profile',{method:'PUT',body:{setupDone:true,roles:S.wizRoles.length?S.wizRoles:['student'],bio:document.getElementById('wiz-bio')?.value||'',location:document.getElementById('wiz-loc')?.value||''}});
-                    // Claim welcome bonus
+                    // Claim welcome bonus (₦500)
                     try{
                         await apiCall('/users/claim-welcome-bonus',{method:'POST'});
                         toast('🎉 Welcome bonus ₦500 added to your wallet!','success');
