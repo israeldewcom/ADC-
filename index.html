@@ -3635,12 +3635,13 @@
         setInterval(()=>{ fetch(HEALTH_URL).catch(()=>{}); }, 10*60*1000);
 
         // ═══════════════════════════════════════════
-        // SOCKET.IO
+        // SOCKET.IO – with token auth
         // ═══════════════════════════════════════════
         function connectSocket() {
             const userId = S.user?._id; if(!userId || socket?.connected) return;
             try {
-                socket = io(API_BASE.replace('/api/v1',''), { auth:{userId}, withCredentials:true, transports:['websocket','polling'] });
+                const token = localStorage.getItem('cx_accessToken');
+                socket = io(API_BASE.replace('/api/v1',''), { auth:{token}, withCredentials:true, transports:['websocket','polling'] });
                 socket.on('connect', ()=>{ console.log('Socket connected'); });
                 socket.on('notification', (notif)=>{ S.notifications.unshift({...notif, unread:true, time:new Date(notif.createdAt).toLocaleTimeString(), bg:'si-primary', ic:notif.icon||'fa-bell'}); renderNotifs(); toast(notif.title||'New notification','info'); document.getElementById('notifDot').style.display='block'; });
                 socket.on('affiliate-offer', (data)=>{ toast(`📢 New Affiliate Offer: ${data.title} - ${data.affiliatePercent}% commission!`,'info'); S.notifications.unshift({_id:Date.now(), title:'New Affiliate Offer Available!', message:`${data.title} now offers ${data.affiliatePercent}% commission.`, type:'system', unread:true, time:new Date().toLocaleTimeString(), bg:'si-gold', ic:'fa-handshake', data:{courseId:data.courseId, type:'affiliate_offer'}}); renderNotifs(); document.getElementById('notifDot').style.display='block'; if(S.dp==='affiliates') renderAffiliates(); });
@@ -3729,13 +3730,13 @@
           const em = document.getElementById('regEmail')?.value.trim();
           const pw = document.getElementById('regPw')?.value;
           const phone = document.getElementById('regPhone')?.value.trim();
-          let ref = document.getElementById('regRef')?.value.trim();
+          let ref = document.getElementById('regRef')?.value.trim().toUpperCase();
           const terms = document.getElementById('termsChk')?.checked;
           const btn = document.getElementById('registerBtn');
 
           const pendingRef = localStorage.getItem('cx_pending_ref');
           if (pendingRef && !ref) {
-            ref = pendingRef;
+            ref = pendingRef.toUpperCase();
             if (document.getElementById('regRef')) document.getElementById('regRef').value = ref;
             localStorage.removeItem('cx_pending_ref');
           }
@@ -3927,7 +3928,18 @@
             checkSubscriptionExpiry();
             setTimeout(()=>{ const hash=window.location.hash.slice(1); if(hash.startsWith('courses/')){ const courseId=hash.split('/')[1]; if(courseId) openBuyCourse(courseId); } },800);
         }
-        async function fetchAnnouncements(){ try{ const res=await apiCall('/admin/announcements'); const list=Array.isArray(res.data)?res.data:[]; if(list.length>0){ const latest=list[0]; const bar=document.getElementById('announcementBar'); if(bar){ bar.style.display='flex'; bar.onclick=()=>toast(latest.title+': '+latest.content,'info'); } document.getElementById('announcementText').textContent=`📣 ${latest.title}: ${latest.content?.substring(0,100)||''}`; } } catch(e){} }
+        async function fetchAnnouncements(){
+            try{
+                const res = await apiCall('/announcements/latest');
+                const list=Array.isArray(res.data)?res.data:[];
+                if(list.length>0){
+                    const latest=list[0];
+                    const bar=document.getElementById('announcementBar');
+                    if(bar){ bar.style.display='flex'; bar.onclick=()=>toast(latest.title+': '+latest.content,'info'); }
+                    document.getElementById('announcementText').textContent=`📣 ${latest.title}: ${latest.content?.substring(0,100)||''}`;
+                }
+            } catch(e){}
+        }
         async function fetchNotifications(){ try{ const res=await apiCall('/users/notifications'); const list=Array.isArray(res.data)?res.data:[]; S.notifications=list.map(n=>({...n, unread:!n.read, time:new Date(n.createdAt).toLocaleTimeString(), bg:'si-primary', ic:n.icon||'fa-bell'})); } catch(e){ console.warn('Could not fetch notifications:',e.message); } }
         function updateUserUI(){
             if(!S.user) return;
@@ -4382,7 +4394,7 @@
         function initEditor(){ if(!S.editorLessons.length) S.editorLessons=[]; S.currentEditLesson=0; if(!S.quizBuilderList.length) S.quizBuilderList=[]; if(!S.outcomes.length) S.outcomes=[]; if(!S.uploadedFiles.length) S.uploadedFiles=[]; S.esStep=1; goES(1); initQuillEditors(); renderLessonBuilderList(); startAutoSave(); }
         function initQuillEditors(){ setTimeout(()=>{ const descEl=document.getElementById('descEditorQuill'); if(descEl&&!S.quillEditors['descEditorQuill']&&typeof Quill!=='undefined'){ const existingContent=S.currentCourseData?.description||''; S.quillEditors['descEditorQuill']=new Quill('#descEditorQuill',{theme:'snow',placeholder:'Write a compelling description...',modules:{toolbar:[['bold','italic','underline'],[{'list':'ordered'},{'list':'bullet'}],['link','code-block'],['clean']]}}); if(existingContent&&existingContent!=='No description provided'){ S.quillEditors['descEditorQuill'].root.innerHTML=existingContent; } } },300); }
         function goES(n){ document.querySelectorAll('.esc-step').forEach(s=>s.classList.remove('active')); document.querySelectorAll('.editor-step-panel').forEach(p=>p.classList.remove('active')); document.getElementById('es-'+n)?.classList.add('active'); document.getElementById('esp-'+n)?.classList.add('active'); S.esStep=n; if(n===2) renderLessonBuilderList(); if(n===3) renderLessonContentEditor(); if(n===5) renderQuizBuilder(); if(n===8) updateReviewSummary(); initQuillEditors(); }
-        async function saveDraftToServer(){ const title=document.getElementById('edTitle')?.value.trim()||'Untitled Course'; const subtitle=document.getElementById('edSubtitle')?.value.trim()||''; let desc=S.quillEditors['descEditorQuill']?S.quillEditors['descEditorQuill'].root.innerHTML:''; if(!desc||desc==='<p><br></p>'||desc.trim()==='') desc='No description provided'; const body={title,subtitle,description:desc,category:document.getElementById('edCategory')?.value||'Web Development',level:document.getElementById('edLevel')?.value||'Beginner',language:document.getElementById('edLanguage')?.value||'English',thumbnail:document.getElementById('edEmoji')?.value||'📚',promoVideo:document.getElementById('edPromoVideo')?.value||'',lessons:S.editorLessons,quizzes:S.quizBuilderList.map(q=>({title:q.question,questions:[{question:q.question,options:q.options,correctAnswer:q.correctIdx,points:10}],passingScore:60})),price:S.selectedPriceType==='paid'?Number(document.getElementById('edPrice')?.value)||0:0,salePrice:S.selectedPriceType==='paid'?Number(document.getElementById('edSalePrice')?.value)||0:0,hasAffiliate:document.getElementById('edAffEnabled')?.checked||false,affiliatePercent:Number(document.getElementById('edAffPercent')?.value)||15,isPublished:false}; try{ if(S.currentCourseData?._id){ await apiCall(`/courses/${S.currentCourseData._id}`,{method:'PUT',body}); } else{ const res=await apiCall('/courses',{method:'POST',body}); S.currentCourseData=res.data; } toast('💾 Draft saved to server!','success'); document.getElementById('edAutoSave').textContent='Draft · Saved'; localStorage.removeItem(`course_draft_${S.currentCourseData?._id||'new'}`); } catch(e){ toast('Save failed: '+e.message,'error'); } }
+        async function saveDraftToServer(){ const title=document.getElementById('edTitle')?.value.trim()||'Untitled Course'; const subtitle=document.getElementById('edSubtitle')?.value.trim()||''; let desc=S.quillEditors['descEditorQuill']?S.quillEditors['descEditorQuill'].root.innerHTML:''; if(!desc||desc==='<p><br></p>'||desc.trim()==='') desc='No description provided'; const body={title,subtitle,description:desc,category:document.getElementById('edCategory')?.value||'Web Development',level:document.getElementById('edLevel')?.value||'Beginner',language:document.getElementById('edLanguage')?.value||'English',thumbnail:document.getElementById('edEmoji')?.value||'📚',promoVideo:document.getElementById('edPromoVideo')?.value||'',lessons:S.editorLessons,quizzes:S.quizBuilderList.map(q=>({title:q.question,questions:[{question:q.question,options:q.options,correctAnswer:q.correctIdx,points:10}],passingScore:60})),price:S.selectedPriceType==='paid'?Number(document.getElementById('edPrice')?.value)||0:0,salePrice:S.selectedPriceType==='paid'?Number(document.getElementById('edSalePrice')?.value)||0:0,hasAffiliate:document.getElementById('edAffEnabled')?.checked||false,affiliatePercent:Number(document.getElementById('edAffPercent')?.value)||15,isPublished:false}; try{ if(S.currentCourseData?._id){ await apiCall(`/courses/${S.currentCourseData._id}`,{method:'PUT',body}); } else{ const res=await apiCall('/instructor/courses',{method:'POST',body}); S.currentCourseData=res.data; } toast('💾 Draft saved to server!','success'); document.getElementById('edAutoSave').textContent='Draft · Saved'; localStorage.removeItem(`course_draft_${S.currentCourseData?._id||'new'}`); } catch(e){ toast('Save failed: '+e.message,'error'); } }
         function confirmAddLesson(){ const title=document.getElementById('newLessonTitle')?.value.trim(); if(!title){ toast('Enter a lesson title','error'); return; } S.editorLessons.push({title,type:S.currentLessonType||'video',duration:Number(document.getElementById('newLessonDur')?.value)||10,contentSaved:false,content:'',notes:'',resources:[],videoUrl:'',order:S.editorLessons.length+1,xpReward:50}); closeModal('addLessonModal'); document.getElementById('newLessonTitle').value=''; document.getElementById('newLessonDur').value=''; toast('✅ Lesson added','success'); renderLessonBuilderList(); }
         function renderLessonBuilderList(){ const el=document.getElementById('lessonBuilderList'); if(!el) return; const badge=document.getElementById('lessonCountBadge'); const cnt=S.editorLessons.length; if(badge) badge.innerHTML=cnt>=20?`<span class="badge badge-success"><i class="fas fa-check"></i>${cnt}/20 lessons ✅ Ready</span>`:`<span class="badge badge-gold"><i class="fas fa-exclamation-triangle"></i>${cnt}/20 lessons — need ${20-cnt} more</span>`; if(!cnt){ el.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--text3);font-size:.83rem;border:2px dashed var(--border);border-radius:var(--radius-sm)">No lessons yet. Add at least 20 to publish.</div>'; return; } el.innerHTML=S.editorLessons.map((l,i)=>{ const typeIcon=l.type==='video'?'play':l.type==='quiz'?'question-circle':l.type==='assignment'?'tasks':'file-alt'; const typeClass=l.type==='assignment'?'assign':l.type; return `<div style="display:flex;align-items:center;gap:.6rem;padding:.55rem .7rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:.3rem"><span style="color:var(--text3);font-size:.8rem"><i class="fas fa-grip-vertical"></i></span><div class="lesson-type-badge lt-${typeClass}" style="width:24px;height:24px;font-size:.65rem"><i class="fas fa-${typeIcon}"></i></div><div style="flex:1;min-width:0"><div style="font-size:.82rem;font-weight:600">${i+1}. ${l.title}</div><div style="font-size:.68rem;color:var(--text3)">${l.type} · ${l.duration||'—'} mins ${l.contentSaved?'· <span style="color:var(--success)">✅ Content Saved</span>':''}</div></div><button class="btn-icon-sm" onclick="editLesson(${i})" title="Edit content"><i class="fas fa-edit"></i></button><button class="btn-icon-sm" onclick="removeEditorLesson(${i})" style="color:var(--danger)"><i class="fas fa-trash"></i></button></div>`; }).join(''); }
         function editLesson(i){ S.currentEditLesson=i; goES(3); }
@@ -4543,7 +4555,7 @@
         window.addEventListener('load',async()=>{
             const urlParams=new URLSearchParams(window.location.search);
             const urlRef=urlParams.get('ref');
-            if(urlRef){ localStorage.setItem('cx_pending_ref',urlRef); }
+            if(urlRef){ localStorage.setItem('cx_pending_ref',urlRef.toUpperCase()); }
             try{ const saved=JSON.parse(localStorage.getItem('cx_user')||'null'); if(saved){ S.user=saved; S.loggedIn=true; S.isPremium=saved.isPremium||saved.subscriptionTier==='premium'||false; S.walletBal=saved.walletBalance||0; } } catch(e){}
             const token=localStorage.getItem('cx_accessToken');
             if(token&&S.loggedIn){ startTokenRefreshTimer(); try{ const userData=await apiCall('/users/profile'); S.user={...S.user,...(userData.data||userData)}; S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false; S.walletBal=S.user.walletBalance||0; S.loggedIn=true; S.user.setupDone=S.user.setupDone===true; currentCurrency=S.user.preferredCurrency||localStorage.getItem('cx_currency')||'NGN'; localStorage.setItem('cx_user',JSON.stringify(S.user)); updateUserUI(); updateAdVisibility(); const hash=window.location.hash.slice(1); if(hash.startsWith('courses/')){ const courseId=hash.split('/')[1]; if(courseId) setTimeout(()=>openBuyCourse(courseId),1000); } else if(hash==='app'||hash==='setup') goPage(hash); else goPage('app'); } catch(e){ localStorage.removeItem('cx_accessToken'); localStorage.removeItem('cx_user'); S.loggedIn=false; goPage('landing'); } }
@@ -4559,7 +4571,7 @@
             const token=params.get('token'); const refreshToken=params.get('refreshToken'); const reference=params.get('reference');
             if(token){ localStorage.setItem('cx_accessToken',token); if(refreshToken) localStorage.setItem('cx_refreshToken',refreshToken); startTokenRefreshTimer(); toast('✅ Authenticated! Loading dashboard...','success'); window.history.replaceState({},'',window.location.pathname); try{ const payload=JSON.parse(atob(token.split('.')[1])); S.user=payload.user||payload; S.loggedIn=true; S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false; S.walletBal=S.user.walletBalance||0; localStorage.setItem('cx_user',JSON.stringify(S.user)); (async()=>{ try{ const userData=await apiCall('/users/profile'); S.user={...S.user,...(userData.data||userData)}; S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false; S.user.setupDone=S.user.setupDone===true; S.loggedIn=true; localStorage.setItem('cx_user',JSON.stringify(S.user)); updateUserUI(); updateAdVisibility(); } catch(e){} if(S.user?.setupDone){ goPage('app'); } else{ goPage('setup'); } })(); } catch(e){ goPage('app'); } }
             if(reference){ (async()=>{ try{ await apiCall(`/payments/verify-subscription?reference=${reference}`); toast('Subscription activated! 🎉','success'); S.isPremium=true; S.user.isPremium=true; S.user.subscriptionTier='premium'; localStorage.setItem('cx_user',JSON.stringify(S.user)); updateUserUI(); updateAdVisibility(); } catch(e){ console.warn('Subscription verification failed:',e.message); } window.history.replaceState({},'',window.location.pathname); })(); }
-            const ref=params.get('ref'); if(ref&&!S.loggedIn){ localStorage.setItem('cx_pending_ref',ref); }
+            const ref=params.get('ref'); if(ref&&!S.loggedIn){ localStorage.setItem('cx_pending_ref',ref.toUpperCase()); }
             const refFromStorage=localStorage.getItem('cx_pending_ref'); if(refFromStorage&&S.loggedIn){ localStorage.removeItem('cx_pending_ref'); document.getElementById('regRef')&&(document.getElementById('regRef').value=refFromStorage); }
         })();
     </script>
