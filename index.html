@@ -3600,14 +3600,24 @@
         setInterval(()=>{ const token=localStorage.getItem('cx_accessToken'); if(token){ try{ const payload=JSON.parse(atob(token.split('.')[1])); if(payload.exp*1000-Date.now()<120000) refreshTokenCall(); } catch(e){} } }, 60000);
 
         // ═══════════════════════════════════════════
-        // API SERVICE
+        // API SERVICE – UPDATED WITH credentials: 'include' AND LOGGING
         // ═══════════════════════════════════════════
         async function apiCall(endpoint, options={}) {
             const token = localStorage.getItem('cx_accessToken');
-            const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-            if (token) { headers['Authorization'] = `Bearer ${token}`; }
-            const fetchOptions = { ...options, headers, credentials: 'include' };
-            if (fetchOptions.body && typeof fetchOptions.body !== 'string') { fetchOptions.body = JSON.stringify(fetchOptions.body); }
+            const headers = {
+                ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+                ...(token && { 'Authorization': `Bearer ${token}` }),
+                ...(options.headers || {})
+            };
+            const fetchOptions = {
+                ...options,
+                credentials: 'include',  // ← CRITICAL: sends refresh token cookie
+                headers,
+            };
+            if (fetchOptions.body && typeof fetchOptions.body === 'object' && !(fetchOptions.body instanceof FormData)) {
+                fetchOptions.body = JSON.stringify(fetchOptions.body);
+            }
+            console.log(`[API] ${options.method || 'GET'} ${endpoint}`); // Logging
             try {
                 const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 30000);
                 fetchOptions.signal = controller.signal;
@@ -3616,9 +3626,16 @@
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.includes('application/json')) { data = await response.json(); }
                 else { data = { success: false, message: 'Invalid server response' }; }
-                if (!response.ok) { const error = new Error(data.message || data.errors?.[0]?.msg || `HTTP ${response.status}`); error.status = response.status; error.data = data; throw error; }
+                if (!response.ok) {
+                    console.error(`[API ERROR] ${endpoint}:`, data); // Log error
+                    const error = new Error(data.message || data.errors?.[0]?.msg || `HTTP ${response.status}`);
+                    error.status = response.status;
+                    error.data = data;
+                    throw error;
+                }
                 return data;
             } catch(error) {
+                console.error(`[API FAIL] ${endpoint}:`, error); // Log failure
                 if (error.name === 'AbortError') throw new Error('Request timed out. Please check your connection.');
                 if (error.name === 'TypeError' && error.message === 'Failed to fetch') throw new Error('Network error. Please check your connection.');
                 throw error;
@@ -3626,9 +3643,17 @@
         }
         async function refreshTokenCall() {
             try {
-                const res = await fetch(`${API_BASE}/auth/refresh-token`, { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'} });
+                const res = await fetch(`${API_BASE}/auth/refresh-token`, {
+                    method:'POST',
+                    credentials:'include',  // ← must be here
+                    headers:{'Content-Type':'application/json'}
+                });
                 const data = await res.json();
-                if(data.success) { const newToken = data.data?.accessToken || data.accessToken; if(newToken) localStorage.setItem('cx_accessToken', newToken); return true; }
+                if(data.success) {
+                    const newToken = data.data?.accessToken || data.accessToken;
+                    if(newToken) localStorage.setItem('cx_accessToken', newToken);
+                    return true;
+                }
             } catch(e) {}
             return false;
         }
@@ -3699,7 +3724,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // AUTHENTICATION – FIXED doLogin + doRegister
+        // AUTHENTICATION – with credentials: 'include' and referral logging
         // ═══════════════════════════════════════════
         async function doLogin() {
           const email = document.getElementById('loginEmail')?.value.trim();
@@ -3713,11 +3738,12 @@
           if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner spin"></i> Signing in...'; }
           showLoading('Signing in...');
           try {
-            const url = `https://changex-backend-1.onrender.com/api/v1/auth/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&rememberMe=${rememberMe}`;
-            const res = await fetch(url, { method: 'GET', credentials: 'include' });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || 'Login failed');
-            await handleLoginSuccess(data, true);
+            // Using POST to avoid passwords in URL
+            const res = await apiCall('/auth/login', {
+              method: 'POST',
+              body: { email, password, rememberMe }
+            });
+            await handleLoginSuccess(res, true);
           } catch (e) {
             toast(e.message, 'error');
             hideLoading();
@@ -3730,7 +3756,7 @@
           const em = document.getElementById('regEmail')?.value.trim();
           const pw = document.getElementById('regPw')?.value;
           const phone = document.getElementById('regPhone')?.value.trim();
-          let ref = document.getElementById('regRef')?.value.trim().toUpperCase();
+          let ref = document.getElementById('regRef')?.value.trim();
           const terms = document.getElementById('termsChk')?.checked;
           const btn = document.getElementById('registerBtn');
 
@@ -3740,6 +3766,10 @@
             if (document.getElementById('regRef')) document.getElementById('regRef').value = ref;
             localStorage.removeItem('cx_pending_ref');
           }
+
+          // Send undefined if empty (not an empty string)
+          const referralCode = ref || undefined;
+          console.log('[REGISTER] Sending referral code:', referralCode);
 
           if (!first || !last) { toast('Please enter your full name', 'error'); return; }
           if (!em || !em.includes('@')) { toast('Enter a valid email address', 'error'); return; }
@@ -3756,16 +3786,16 @@
             firstName: first,
             lastName: last,
             email: em,
-            password: pw
+            password: pw,
+            phone,
+            referralCode
           };
-          if (ref) body.referralCode = ref;
 
           try {
             const res = await apiCall('/auth/register', { method: 'POST', body });
             await handleLoginSuccess(res, false);
           } catch (err) {
             let errorMsg = err.message || 'Registration failed';
-            // Only retry without referral code if error specifically mentions referral
             if (ref && errorMsg.toLowerCase().includes('referral')) {
               toast('Referral code not recognised – registering without it', 'warning');
               delete body.referralCode;
@@ -3892,9 +3922,9 @@
         }
 
         // ═══════════════════════════════════════════
-        // MULTI-CURRENCY
+        // MULTI-CURRENCY – FIXED ENDPOINT
         // ═══════════════════════════════════════════
-        async function loadExchangeRates(){ try{ const res=await apiCall('/v1/currency/rates'); if(res.data) exchangeRates={NGN:1,...res.data}; } catch(e){ console.warn('Using fallback rates'); } }
+        async function loadExchangeRates(){ try{ const res = await apiCall('/currency/rates'); if(res.data) exchangeRates={NGN:1,...res.data}; } catch(e){ console.warn('Using fallback rates'); } }
         async function updateCurrencyPreference(currency){
             currentCurrency=currency; localStorage.setItem('cx_currency',currency);
             try{ await apiCall('/users/profile',{method:'PUT',body:{preferredCurrency:currency}}); } catch(e){}
@@ -3972,7 +4002,7 @@
         async function loadEnrollments(){ try{ const data=await apiCall('/courses/my/enrollments'); S.enrollments=Array.isArray(data.data)?data.data:[]; const cntEl=document.getElementById('navCoursesCnt'); if(cntEl) cntEl.textContent=S.enrollments.length; } catch(e){ S.enrollments=[]; } }
 
         // ═══════════════════════════════════════════
-        // DASHBOARD HOME – with referral stats
+        // DASHBOARD HOME
         // ═══════════════════════════════════════════
         async function initHome(){ document.getElementById('homeContent').innerHTML=''; if(!S.user) return; updateUserUI(); try{ await loadEnrollments(); await loadLeaderboard(); await loadTransactions(); await loadReferralStats(); } catch(e){} renderHomeDashboard(); }
         async function loadReferralStats() {
@@ -4026,6 +4056,7 @@
             // Free course – enroll directly without Paystack
             if((c.price===0||c.price==null)&&(c.salePrice===0||c.salePrice==null)){
                 if(!S.loggedIn){ toast('Please log in to enroll','warning'); goPage('login'); return; }
+                console.log('[ENROLL] Enrolling in free course:', courseId);
                 apiCall(`/courses/${c._id}/enroll`,{method:'POST'})
                     .then(()=>{ toast('✅ Free course enrolled!','success'); loadEnrollments(); setDP('courses'); })
                     .catch(err=>toast(err.message,'error'));
