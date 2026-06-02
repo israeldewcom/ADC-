@@ -3503,7 +3503,7 @@
             const match = path.match(/^\/aff\/([^\/]+)\/([^\/]+)\/([^\/]+)/);
             if (match) {
                 const [, userId, courseId, code] = match;
-                // ✅ FIX: Use the real tracking endpoint with API_BASE
+                // ✅ Use the real tracking endpoint with API_BASE
                 fetch(`${API_BASE}/affiliate/track/${code}`, {
                     method: 'GET',
                     credentials: 'include'
@@ -3614,7 +3614,7 @@
         function hideLoading() { const el=document.getElementById('loadingOverlay'); if(el) el.style.display='none'; }
 
         // ═══════════════════════════════════════════
-        // CLIPBOARD UTILITY – FALLBACK FOR HTTP
+        // COPY TO CLIPBOARD (fallback included)
         // ═══════════════════════════════════════════
         function copyToClipboard(text) {
           if (!text) { toast('Nothing to copy', 'error'); return; }
@@ -3636,6 +3636,26 @@
           document.execCommand('copy');
           document.body.removeChild(textarea);
           toast('Link copied to clipboard!', 'success');
+        }
+
+        // ═══════════════════════════════════════════
+        // EXTRACT COURSE ID FROM ENROLLMENT (robust)
+        // ═══════════════════════════════════════════
+        function extractCourseId(enrollment) {
+          if (enrollment.course && typeof enrollment.course === 'object' && enrollment.course._id) {
+            return enrollment.course._id;
+          }
+          if (typeof enrollment.course === 'string') {
+            return enrollment.course;
+          }
+          if (enrollment.courseId && typeof enrollment.courseId === 'string') {
+            return enrollment.courseId;
+          }
+          if (enrollment.course && enrollment.course.id) {
+            return enrollment.course.id;
+          }
+          console.warn('Invalid course ID in enrollment:', enrollment);
+          return null;
         }
 
         // ═══════════════════════════════════════════
@@ -3893,18 +3913,6 @@
         }
 
         // ═══════════════════════════════════════════
-        // COURSE ID EXTRACTION HELPER
-        // ═══════════════════════════════════════════
-        function getCourseIdFromEnrollment(enrollment) {
-          if (enrollment.course && enrollment.course._id) return enrollment.course._id;
-          if (typeof enrollment.course === 'string') return enrollment.course;
-          if (enrollment.courseId) return enrollment.courseId;
-          if (enrollment.course && enrollment.course.id) return enrollment.course.id;
-          console.warn('Invalid course ID in enrollment:', enrollment);
-          return null;
-        }
-
-        // ═══════════════════════════════════════════
         // SUBSCRIPTION EXPIRY CHECK
         // ═══════════════════════════════════════════
         async function checkSubscriptionExpiry() {
@@ -4049,11 +4057,12 @@
             <div class="welcome-banner"><div><div style="font-size:.7rem;color:var(--text3);margin-bottom:.28rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em">${greet}</div><h2 style="font-size:1.35rem;margin-bottom:.15rem">${S.user?.firstName||'User'} ${S.user?.lastName||''}</h2><p style="color:var(--text3);font-size:.8rem;margin:0">You're on a <strong style="color:var(--primary)">${streak}-day streak</strong>! 🔥</p></div><div style="display:flex;gap:.4rem;flex-wrap:wrap"><span class="badge badge-gold"><i class="fas fa-star"></i>Level ${level}</span><span class="badge badge-danger"><i class="fas fa-fire"></i>${streak} Streak</span><span class="badge badge-premium">${S.user?.roles?.includes('admin')?'<i class="fas fa-shield-alt"></i>Admin':S.isPremium?'<i class="fas fa-crown"></i>Premium':'<i class="fas fa-user"></i>Free'}</span></div></div>
             <div class="card card-sm mb-3"><div style="display:flex;justify-content:space-between;margin-bottom:.42rem"><span style="font-size:.79rem;color:var(--text2)">XP → <strong style="color:var(--primary)">Level ${level}</strong></span><span style="font-size:.79rem;color:var(--gold);font-weight:800;font-family:var(--font-heading)">${xp.toLocaleString()} / ${xpNext.toLocaleString()}</span></div><div class="prog" style="height:7px"><div class="prog-fill pf-primary" style="width:${xpProgress}%"></div></div></div>
             <div class="row mb-4"><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(S.walletBal)}</div><div class="sl">Wallet</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-book-open"></i></div><div class="sv">${completedCnt}/${S.enrollments.length}</div><div class="sl">Courses</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-users"></i></div><div class="sv">${refCnt}</div><div class="sl">Referrals</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${S.myAffiliateLinks?.length||0}</div><div class="sl">Affiliates</div></div></div></div>
-            <div class="row"><div class="col-12 col-md-8"><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.4rem"><h6 style="margin:0">Continue Learning</h6><button class="btn btn-ghost btn-sm" onclick="setDP('courses')">View all</button></div>${inProgress.length?inProgress.slice(0,3).map(e=>{ const cId=getCourseIdFromEnrollment(e); if(!cId) return ''; return `<div style="display:flex;align-items:center;gap:.75rem;padding:.65rem 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openEnrollmentLesson('${cId}','${e._id}')"><div style="width:36px;height:36px;background:var(--card2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem">📚</div><div style="flex:1;min-width:0"><div style="font-size:.82rem;font-weight:600">${e.course?.title||'Course'}</div><div class="prog mt-1" style="height:4px"><div class="prog-fill pf-primary" style="width:${e.progress||0}%"></div></div><div style="font-size:.68rem;color:var(--text3);margin-top:.2rem">${e.progress||0}% complete</div></div><button class="btn btn-primary btn-sm" style="font-size:.68rem;padding:.2rem .55rem">Continue</button></div>`; }).join(''):'<div class="empty-state"><i class="fas fa-book-open"></i><h4>No courses yet</h4><p>Explore and enroll in courses to start learning!</p></div>'}</div></div><div class="col-12 col-md-4"><div class="card card-p mb-3"><h6 style="margin-bottom:.65rem">🏆 Leaderboard</h6><div id="homeLB">${S.leaderboard.slice(0,5).map((u,i)=>`<div class="lb-row ${u._id===S.user?._id?'you':''}" style="padding:.5rem .4rem"><div class="lb-rank">${['🥇','🥈','🥉'][i]||i+1}</div><div class="lb-av" style="background:linear-gradient(135deg,var(--violet),var(--cyan));width:28px;height:28px;font-size:.7rem">${(u.firstName||'U')[0]}</div><div style="flex:1;font-size:.8rem;font-weight:600">${u.firstName||'User'} ${u._id===S.user?._id?'<span class="badge badge-primary" style="font-size:.52rem">You</span>':''}</div><div style="font-weight:700;font-size:.78rem;color:var(--primary)">${(u.xp||0).toLocaleString()}</div></div>`).join('')||'<div class="empty-state"><p>Loading...</p></div>'}</div><button class="btn btn-ghost btn-sm w-full mt-3" onclick="setDP('leaderboard')">Full Leaderboard</button></div></div></div>`;
+            <div class="row"><div class="col-12 col-md-8"><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.4rem"><h6 style="margin:0">Continue Learning</h6><button class="btn btn-ghost btn-sm" onclick="setDP('courses')">View all</button></div>${inProgress.length?inProgress.slice(0,3).map(e=>{ const cId=extractCourseId(e); if(!cId) return ''; return `<div style="display:flex;align-items:center;gap:.75rem;padding:.65rem 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openEnrollmentLesson('${cId}','${e._id}')"><div style="width:36px;height:36px;background:var(--card2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem">📚</div><div style="flex:1;min-width:0"><div style="font-size:.82rem;font-weight:600">${e.course?.title||'Course'}</div><div class="prog mt-1" style="height:4px"><div class="prog-fill pf-primary" style="width:${e.progress||0}%"></div></div><div style="font-size:.68rem;color:var(--text3);margin-top:.2rem">${e.progress||0}% complete</div></div><button class="btn btn-primary btn-sm" style="font-size:.68rem;padding:.2rem .55rem">Continue</button></div>`; }).join(''):'<div class="empty-state"><i class="fas fa-book-open"></i><h4>No courses yet</h4><p>Explore and enroll in courses to start learning!</p></div>'}</div></div><div class="col-12 col-md-4"><div class="card card-p mb-3"><h6 style="margin-bottom:.65rem">🏆 Leaderboard</h6><div id="homeLB">${S.leaderboard.slice(0,5).map((u,i)=>`<div class="lb-row ${u._id===S.user?._id?'you':''}" style="padding:.5rem .4rem"><div class="lb-rank">${['🥇','🥈','🥉'][i]||i+1}</div><div class="lb-av" style="background:linear-gradient(135deg,var(--violet),var(--cyan));width:28px;height:28px;font-size:.7rem">${(u.firstName||'U')[0]}</div><div style="flex:1;font-size:.8rem;font-weight:600">${u.firstName||'User'} ${u._id===S.user?._id?'<span class="badge badge-primary" style="font-size:.52rem">You</span>':''}</div><div style="font-weight:700;font-size:.78rem;color:var(--primary)">${(u.xp||0).toLocaleString()}</div></div>`).join('')||'<div class="empty-state"><p>Loading...</p></div>'}</div><button class="btn btn-ghost btn-sm w-full mt-3" onclick="setDP('leaderboard')">Full Leaderboard</button></div></div></div>`;
         }
         function openEnrollmentLesson(courseId, enrollmentId) {
+          // Convert to string if it's an object (just in case)
           if (courseId && typeof courseId === 'object') {
-            courseId = courseId._id || courseId.id || String(courseId);
+            courseId = courseId._id || courseId.id || null;
           }
           if (!courseId || courseId === 'undefined' || courseId === 'null') {
             toast('Invalid course. Please return to course list.', 'error');
@@ -4124,7 +4133,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // MY COURSES — FIXED: uses helper for courseId
+        // MY COURSES — FIXED: uses extractCourseId
         // ═══════════════════════════════════════════
         function renderCourseGrid(filter){
             S.courseFilter=filter||'all'; let list=Array.isArray(S.enrollments)?S.enrollments:[];
@@ -4133,8 +4142,8 @@
             else if(filter==='new') list=list.filter(e=>e.status==='active'&&(!e.progress||e.progress===0));
             document.getElementById('coursesGrid').innerHTML=list.length?list.map(e=>{
                 const progress=e.progress||0; const status=progress>=100?'completed':'active';
-                const courseId = getCourseIdFromEnrollment(e);
-                if (!courseId) return '';
+                const courseId=extractCourseId(e);
+                if(!courseId) return '';
                 return `<div class="course-card" onclick="openEnrollmentLesson('${courseId}','${e._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">📚</div><div class="cc-bar"><div class="cc-fill ${progress===100?'pf-success':'pf-primary'}" style="width:${progress}%"></div></div><div class="cc-body"><div style="font-weight:700;font-size:.88rem;margin-bottom:.25rem">${e.course?.title||'Course'}</div><div style="font-size:.74rem;color:var(--text3)">${e.course?.totalLessons||0} lessons · ★${e.course?.rating||0}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:.5rem"><span class="badge ${status==='completed'?'badge-success':'badge-cyan'}" style="font-size:.6rem">${status==='completed'?'✓ Done':progress+'%'}</span><button class="btn btn-primary btn-sm" style="font-size:.68rem;padding:.22rem .6rem">Continue</button></div></div></div>`;
             }).join(''):'<div class="empty-state"><i class="fas fa-book-open"></i><h4>No courses</h4><p>Explore courses to start learning!</p></div>';
         }
@@ -4263,7 +4272,7 @@
         // ═══════════════════════════════════════════
         function renderCerts(){
             const completed=S.enrollments.filter(e=>e.status==='completed'||e.progress===100);
-            document.getElementById('certsGrid').innerHTML=completed.length?completed.map(e=>{ const cId=getCourseIdFromEnrollment(e); return `<div style="flex:1;min-width:260px"><div class="cert-card"><div style="font-size:.6rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;font-family:monospace;margin-bottom:.5rem">Certificate of Completion</div><div style="font-size:2rem;margin:.35rem 0">📜</div><h4 style="font-size:1rem;margin-bottom:.25rem">${e.course?.title||'Course'}</h4><p style="font-size:.75rem;color:var(--text3);margin-bottom:.85rem">Awarded to <strong>${S.user?.firstName||'User'} ${S.user?.lastName||''}</strong></p><button class="btn btn-gold btn-sm" onclick="downloadCert('${cId}')"><i class="fas fa-download"></i>Download</button></div></div>`; }).join(''):'<div class="empty-state"><i class="fas fa-certificate"></i><h4>No certificates yet</h4><p>Complete courses to earn certificates!</p></div>';
+            document.getElementById('certsGrid').innerHTML=completed.length?completed.map(e=>{ const cId=extractCourseId(e); return `<div style="flex:1;min-width:260px"><div class="cert-card"><div style="font-size:.6rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;font-family:monospace;margin-bottom:.5rem">Certificate of Completion</div><div style="font-size:2rem;margin:.35rem 0">📜</div><h4 style="font-size:1rem;margin-bottom:.25rem">${e.course?.title||'Course'}</h4><p style="font-size:.75rem;color:var(--text3);margin-bottom:.85rem">Awarded to <strong>${S.user?.firstName||'User'} ${S.user?.lastName||''}</strong></p><button class="btn btn-gold btn-sm" onclick="downloadCert('${cId}')"><i class="fas fa-download"></i>Download</button></div></div>`; }).join(''):'<div class="empty-state"><i class="fas fa-certificate"></i><h4>No certificates yet</h4><p>Complete courses to earn certificates!</p></div>';
         }
         async function downloadCert(courseId){
             try{ const token=localStorage.getItem('cx_accessToken'); const response=await fetch(`${API_BASE}/certificates/${courseId}/download`,{headers:{'Authorization':`Bearer ${token}`}}); if(!response.ok) throw new Error('Failed to generate certificate'); const blob=await response.blob(); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`certificate_${courseId}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); toast('Certificate downloaded!','success'); } catch(err){ toast(err.message,'error'); }
@@ -4318,8 +4327,8 @@
                 document.getElementById('referralTable').innerHTML=`<thead><tr><th>Name</th><th>Date</th><th>Status</th><th>Earned</th></tr></thead><tbody>${refs.map(r=>`<tr><td style="font-weight:600">${r.referred?.firstName||r.name||'User'}</td><td>${new Date(r.createdAt||r.date).toLocaleDateString()}</td><td><span class="pstatus ${r.status==='converted'?'ps-paid':'ps-pend'}">${r.status||'pending'}</span></td><td style="font-weight:800;color:var(--primary)">${fmtMoneyAPI(r.earned||0)}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;color:var(--text3)">No referrals yet</td></tr>'}</tbody>`;
             } catch(e){ document.getElementById('referralTable').innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--text3)">Could not load referrals</td></tr>'; }
         }
-        function copyRefLink(){ copyToClipboard(document.getElementById('refLink')?.textContent||''); }
-        function copyRefCode(){ copyToClipboard(document.getElementById('refCode')?.textContent||''); }
+        function copyRefLink(){ const link=document.getElementById('refLink')?.textContent||''; copyToClipboard(link); }
+        function copyRefCode(){ const code=document.getElementById('refCode')?.textContent||''; copyToClipboard(code); }
         function shareWhatsApp(){ const refCode=S.user?.referralCode||'REF'; const link=`${FRONTEND_URL}/?ref=${refCode}`; window.open(`https://wa.me/?text=${encodeURIComponent('🚀 Join ChangeX Academy and earn while you learn! Use my code: '+refCode+' '+link)}`,'_blank'); }
         function shareOnSocial(p){ toast(`Shared on ${p}!`,'success'); }
 
@@ -4344,7 +4353,7 @@
         function switchLbTab(tab,btn){ document.querySelectorAll('#dash-leaderboard .tab-btn').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); S.lbTab=tab; renderLB(); }
 
         // ═══════════════════════════════════════════
-        // AFFILIATES — with fallback copy
+        // AFFILIATES — FIXED: uses copyToClipboard
         // ═══════════════════════════════════════════
         async function renderAffiliates(){
             showLoading('Loading affiliate offers...');
@@ -4540,7 +4549,7 @@
         function applyPremCode(val){ const st=document.getElementById('premCodeStatus'); if(!st) return; if(val.length>3){ st.style.color='var(--success)'; st.textContent='✅ Code applied'; } else{ st.textContent=''; } }
 
         // ═══════════════════════════════════════════
-        // WIZARD – with welcome bonus & wallet refresh
+        // WIZARD — with welcome bonus refresh
         // ═══════════════════════════════════════════
         function nextWizStep(skip){ S.wizStep++; showWizStep(S.wizStep); }
         function prevWizStep(){ S.wizStep=Math.max(0,S.wizStep-1); showWizStep(S.wizStep); }
@@ -4558,13 +4567,13 @@
                     try{
                         await apiCall('/users/claim-welcome-bonus',{method:'POST'});
                         toast('🎉 Welcome bonus ₦500 added to your wallet!','success');
+                        await renderWallet();       // refresh wallet display
+                        updateUserUI();            // update top bar wallet
                     } catch(e){ console.warn('Bonus already claimed or not available'); }
                 } catch(e){ console.warn('Could not save wizard profile:',e.message); }
             }
-            // Force wallet refresh and update UI
-            await renderWallet();
-            updateUserUI();
             goPage('app');
+            renderWallet();
         }
 
         // ═══════════════════════════════════════════
