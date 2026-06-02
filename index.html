@@ -1,41 +1,50 @@
 <!DOCTYPE html>
 <html>
-<head><title>Backend Test</title></head>
+<head><title>Referral Flow Test</title></head>
 <body>
-<h2>Test Enrollment (POST)</h2>
-<label>Course ID: <input id="courseId" value="6a08901d6c9b6377ac2edd72" size="30"></label><br>
-<label>Access Token: <input id="token" size="80"></label><br>
-<button onclick="testEnroll()">Enroll</button>
-<pre id="result1"></pre>
-
-<h2>Test Registration with Referral Code (POST)</h2>
+<h2>Referral Test</h2>
+<label>Referrer Token: <input id="refToken" size="80"></label><br>
 <label>Referral Code: <input id="refCode" value="GW50JLPC"></label><br>
-<button onclick="testRegister()">Register</button>
-<pre id="result2"></pre>
+<button onclick="testReferral()">Run Test</button>
+<pre id="output"></pre>
 
 <script>
-async function testEnroll() {
-  const courseId = document.getElementById('courseId').value;
-  const token = document.getElementById('token').value;
-  const res = await fetch(`https://changex-backend-1.onrender.com/api/v1/courses/${courseId}/enroll`, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
-  });
-  const data = await res.json();
-  document.getElementById('result1').textContent = JSON.stringify(data, null, 2);
-}
-async function testRegister() {
+async function testReferral() {
+  const refToken = document.getElementById('refToken').value;
   const refCode = document.getElementById('refCode').value;
-  const email = 'test' + Date.now() + '@example.com';
-  const res = await fetch('https://changex-backend-1.onrender.com/api/v1/auth/register', {
+  let out = '';
+
+  // 1. Register new user with referral code
+  const email = 'test_ref_' + Date.now() + '@example.com';
+  const regRes = await fetch('https://changex-backend-1.onrender.com/api/v1/auth/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email, password: 'Test1234!', firstName: 'Test', lastName: 'User', referralCode: refCode
-    })
+    body: JSON.stringify({ email, password: 'Test1234!', firstName: 'Test', lastName: 'User', referralCode: refCode })
   });
-  const data = await res.json();
-  document.getElementById('result2').textContent = JSON.stringify(data, null, 2);
+  const regData = await regRes.json();
+  out += 'Registration response: ' + JSON.stringify(regData, null, 2) + '\n\n';
+  if (!regData.success) { document.getElementById('output').textContent = out; return; }
+
+  const referredToken = regData.data.accessToken;
+
+  // 2. Check referrer's referrals before subscription (should be pending)
+  const beforeRes = await fetch('https://changex-backend-1.onrender.com/api/v1/users/referrals', {
+    headers: { 'Authorization': 'Bearer ' + refToken }
+  });
+  const beforeData = await beforeRes.json();
+  out += 'Referrals BEFORE subscription: ' + JSON.stringify(beforeData, null, 2) + '\n\n';
+
+  // 3. Simulate the referred user subscribing (you need to actually process payment)
+  // For demonstration, we will manually update the user's premium status and trigger referral bonus
+  // In production, this happens via Paystack webhook. To test, you can call an admin endpoint or direct DB update.
+  // Instead, we'll show how to manually mark as premium and call the referral conversion.
+
+  out += 'To fully test, you need to:\n';
+  out += '- Log in as the referred user and complete a premium subscription via Paystack.\n';
+  out += '- After payment, check the referrer’s wallet and referrals again.\n';
+  out += 'Here is the referred user’s token (save it for the subscription step):\n' + referredToken + '\n\n';
+
+  document.getElementById('output').textContent = out;
 }
 </script>
 </body>
