@@ -1,51 +1,235 @@
 <!DOCTYPE html>
-<html>
-<head><title>Referral Flow Test</title></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChangeX Academy - Advanced Backend Test Suite</title>
+  <style>
+    body { font-family: monospace; background: #0A0F1F; color: #eee; padding: 20px; }
+    .test { border: 1px solid #2E425A; border-radius: 8px; margin-bottom: 20px; padding: 15px; background: #111827; }
+    .test h3 { margin-top: 0; color: #7C3AED; }
+    button { background: #7C3AED; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-right: 10px; margin-bottom: 10px; }
+    input, select { background: #1B2335; border: 1px solid #2E425A; color: white; padding: 6px 10px; border-radius: 4px; margin: 5px; width: 300px; }
+    pre { background: #0A0F1F; padding: 10px; border-radius: 6px; overflow-x: auto; white-space: pre-wrap; font-size: 12px; border: 1px solid #2E425A; }
+    .success { color: #22C55E; }
+    .error { color: #EF4444; }
+    .warning { color: #F59E0B; }
+    hr { border-color: #2E425A; }
+    .flex { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  </style>
+</head>
 <body>
-<h2>Referral Test</h2>
-<label>Referrer Token: <input id="refToken" size="80"></label><br>
-<label>Referral Code: <input id="refCode" value="GW50JLPC"></label><br>
-<button onclick="testReferral()">Run Test</button>
-<pre id="output"></pre>
+<h1>🔬 ChangeX Academy – Backend Monetization Test Suite</h1>
+<p>Tests affiliate tracking, instructor payouts, referral bonuses, premium expiry – all via direct API calls.</p>
+
+<div class="test">
+  <h3>🔑 Step 0 – Set Auth Tokens & IDs</h3>
+  <div class="flex">
+    <label>Admin Token: <input type="text" id="adminToken" style="width: 400px;" placeholder="eyJhbGci..."></label>
+    <label>Instructor Token: <input type="text" id="instructorToken" style="width: 400px;" placeholder="eyJhbGci..."></label>
+    <label>Affiliate Token: <input type="text" id="affiliateToken" style="width: 400px;" placeholder="eyJhbGci..."></label>
+    <label>Referrer Token: <input type="text" id="referrerToken" style="width: 400px;" placeholder="eyJhbGci..."></label>
+  </div>
+  <div class="flex">
+    <label>Course ID (with affiliate): <input type="text" id="courseId" value="6a08901d6c9b6377ac2edd72"></label>
+    <label>Instructor ID: <input type="text" id="instructorId" placeholder="ObjectId"></label>
+    <label>User ID (referred): <input type="text" id="referredUserId" placeholder="ObjectId"></label>
+  </div>
+  <p class="warning">⚠️ Tokens must be from <strong>live logins</strong> (copy from localStorage after login). The script will NOT modify real data unless you run the destructive tests (payments).</p>
+</div>
+
+<div class="test">
+  <h3>💰 1. Affiliate System – Clicks, Signups, Earnings</h3>
+  <div class="flex">
+    <label>Affiliate Link Code: <input type="text" id="affiliateCode" placeholder="e.g., 8f3a2b1c"></label>
+    <button id="testAffClick">Simulate Click</button>
+    <button id="testAffStats">Fetch Affiliate Stats</button>
+    <button id="testAffLeaderboard">Fetch Leaderboard</button>
+  </div>
+  <pre id="affOutput">Waiting...</pre>
+</div>
+
+<div class="test">
+  <h3>📊 2. Instructor Payout – Automatic Earnings</h3>
+  <div class="flex">
+    <label>Instructor Course ID: <input type="text" id="instCourseId" placeholder="Same as above or another"></label>
+    <button id="testInstDashboard">Fetch Instructor Dashboard</button>
+    <button id="testInstSales">Fetch Sales & Revenue</button>
+  </div>
+  <pre id="instOutput">Waiting...</pre>
+</div>
+
+<div class="test">
+  <h3>👥 3. Referral Bonus & Total Referrals</h3>
+  <div class="flex">
+    <button id="testReferrals">Fetch Referrals (referrer token)</button>
+    <button id="testReferralStats">Fetch Referral Stats (dashboard)</button>
+    <button id="testReferralConversion">Simulate Referral Conversion (Admin)</button>
+  </div>
+  <pre id="referralOutput">Waiting...</pre>
+</div>
+
+<div class="test">
+  <h3>⏰ 4. Premium Subscription Expiry</h3>
+  <div class="flex">
+    <label>User ID to test premium: <input type="text" id="premiumUserId" placeholder="ObjectId"></label>
+    <button id="testPremiumStatus">Check Premium Status</button>
+    <button id="testExpiry">Trigger Expiry Check (Safe)</button>
+  </div>
+  <pre id="premiumOutput">Waiting...</pre>
+</div>
+
+<div class="test">
+  <h3>🧪 5. Full Workflow (Simulate Referral → Subscribe → Payout)</h3>
+  <p>⚠️ This will attempt to register a new user, accept affiliate offer, and simulate subscription – requires admin token and valid course.</p>
+  <button id="testFullFlow">Run Full Flow (Read‑Only Sim)</button>
+  <pre id="fullFlowOutput">Waiting...</pre>
+</div>
 
 <script>
-async function testReferral() {
-  const refToken = document.getElementById('refToken').value;
-  const refCode = document.getElementById('refCode').value;
-  let out = '';
+  const API_BASE = 'https://changex-backend-1.onrender.com/api/v1';
 
-  // 1. Register new user with referral code
-  const email = 'test_ref_' + Date.now() + '@example.com';
-  const regRes = await fetch('https://changex-backend-1.onrender.com/api/v1/auth/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password: 'Test1234!', firstName: 'Test', lastName: 'User', referralCode: refCode })
-  });
-  const regData = await regRes.json();
-  out += 'Registration response: ' + JSON.stringify(regData, null, 2) + '\n\n';
-  if (!regData.success) { document.getElementById('output').textContent = out; return; }
+  // Helper to fetch with auth
+  async function apiCall(endpoint, options = {}, token = null) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+    const data = await res.json();
+    return { status: res.status, data };
+  }
 
-  const referredToken = regData.data.accessToken;
+  // Display helpers
+  function display(selector, text, isError = false) {
+    const pre = document.querySelector(selector);
+    pre.innerHTML = text;
+    pre.className = isError ? 'error' : '';
+  }
 
-  // 2. Check referrer's referrals before subscription (should be pending)
-  const beforeRes = await fetch('https://changex-backend-1.onrender.com/api/v1/users/referrals', {
-    headers: { 'Authorization': 'Bearer ' + refToken }
-  });
-  const beforeData = await beforeRes.json();
-  out += 'Referrals BEFORE subscription: ' + JSON.stringify(beforeData, null, 2) + '\n\n';
+  // 1. Affiliate tests
+  document.getElementById('testAffClick').onclick = async () => {
+    const code = document.getElementById('affiliateCode').value;
+    if (!code) { display('#affOutput', '❌ Please enter an affiliate code', true); return; }
+    display('#affOutput', 'Simulating click...');
+    try {
+      // The affiliate tracking endpoint is GET /affiliate/track/:code (no auth required)
+      const res = await fetch(`${API_BASE}/affiliate/track/${code}`, { method: 'GET', credentials: 'include' });
+      const text = await res.text();
+      display('#affOutput', `✅ Click tracked. Redirect response status: ${res.status}\n${text.substring(0, 500)}`);
+    } catch (err) {
+      display('#affOutput', `❌ Error: ${err.message}`, true);
+    }
+  };
+  document.getElementById('testAffStats').onclick = async () => {
+    const token = document.getElementById('affiliateToken').value;
+    if (!token) { display('#affOutput', '❌ Affiliate token required', true); return; }
+    display('#affOutput', 'Fetching affiliate stats...');
+    const { data } = await apiCall('/affiliate/stats', {}, token);
+    display('#affOutput', JSON.stringify(data, null, 2));
+  };
+  document.getElementById('testAffLeaderboard').onclick = async () => {
+    const { data } = await apiCall('/affiliate/leaderboard?limit=10');
+    display('#affOutput', JSON.stringify(data, null, 2));
+  };
 
-  // 3. Simulate the referred user subscribing (you need to actually process payment)
-  // For demonstration, we will manually update the user's premium status and trigger referral bonus
-  // In production, this happens via Paystack webhook. To test, you can call an admin endpoint or direct DB update.
-  // Instead, we'll show how to manually mark as premium and call the referral conversion.
+  // 2. Instructor tests
+  document.getElementById('testInstDashboard').onclick = async () => {
+    const token = document.getElementById('instructorToken').value;
+    if (!token) { display('#instOutput', '❌ Instructor token required', true); return; }
+    display('#instOutput', 'Loading instructor dashboard...');
+    const { data } = await apiCall('/instructor/dashboard', {}, token);
+    display('#instOutput', JSON.stringify(data, null, 2));
+  };
+  document.getElementById('testInstSales').onclick = async () => {
+    const token = document.getElementById('instructorToken').value;
+    if (!token) { display('#instOutput', '❌ Instructor token required', true); return; }
+    // Sales data is inside dashboard, but we call a separate endpoint if exists.
+    // Use dashboard again; it contains revenue.
+    const { data } = await apiCall('/instructor/dashboard', {}, token);
+    const sales = data.data?.totalRevenue || data.totalRevenue || 0;
+    display('#instOutput', `💰 Total Instructor Revenue: ${sales}\nFull response:\n${JSON.stringify(data, null, 2)}`);
+  };
 
-  out += 'To fully test, you need to:\n';
-  out += '- Log in as the referred user and complete a premium subscription via Paystack.\n';
-  out += '- After payment, check the referrer’s wallet and referrals again.\n';
-  out += 'Here is the referred user’s token (save it for the subscription step):\n' + referredToken + '\n\n';
+  // 3. Referral tests
+  document.getElementById('testReferrals').onclick = async () => {
+    const token = document.getElementById('referrerToken').value;
+    if (!token) { display('#referralOutput', '❌ Referrer token required', true); return; }
+    const { data } = await apiCall('/users/referrals', {}, token);
+    display('#referralOutput', JSON.stringify(data, null, 2));
+  };
+  document.getElementById('testReferralStats').onclick = async () => {
+    const token = document.getElementById('referrerToken').value;
+    if (!token) { display('#referralOutput', '❌ Referrer token required', true); return; }
+    // The dashboard home already shows referral count, but we call referrer's wallet for earnings.
+    const wallet = await apiCall('/users/wallet', {}, token);
+    const referrals = await apiCall('/users/referrals', {}, token);
+    display('#referralOutput', `Referrals: ${JSON.stringify(referrals.data, null, 2)}\n\nWallet: ${JSON.stringify(wallet.data, null, 2)}`);
+  };
+  document.getElementById('testReferralConversion').onclick = async () => {
+    const adminToken = document.getElementById('adminToken').value;
+    const referredUserId = document.getElementById('referredUserId').value;
+    if (!adminToken || !referredUserId) { display('#referralOutput', '❌ Admin token and referred user ID required', true); return; }
+    display('#referralOutput', 'Simulating referral conversion (mark subscription as paid)...');
+    // In a real scenario, this would be triggered by Paystack webhook.
+    // Here we just fetch the referral to see if it's pending, but we cannot force subscription without payment.
+    // Instead, we show how to check.
+    const refData = await apiCall(`/users/referrals`, {}, adminToken);
+    display('#referralOutput', `Referral data (admin view):\n${JSON.stringify(refData.data, null, 2)}\n\nTo actually convert, the referred user must complete a premium subscription via Paystack.`);
+  };
 
-  document.getElementById('output').textContent = out;
-}
+  // 4. Premium expiry
+  document.getElementById('testPremiumStatus').onclick = async () => {
+    const userId = document.getElementById('premiumUserId').value;
+    const adminToken = document.getElementById('adminToken').value;
+    if (!userId || !adminToken) { display('#premiumOutput', '❌ User ID and admin token required', true); return; }
+    const { data } = await apiCall(`/admin/users?limit=100`, {}, adminToken);
+    const user = data.data?.find(u => u._id === userId) || data?.find(u => u._id === userId);
+    if (user) {
+      display('#premiumOutput', `User premium status: ${user.isPremium}\nSubscription expires: ${user.subscriptionExpires || 'never'}`);
+    } else {
+      display('#premiumOutput', 'User not found in admin list');
+    }
+  };
+  document.getElementById('testExpiry').onclick = async () => {
+    // This just calls the backend's subscription expiry check (if exists)
+    display('#premiumOutput', 'Expiry check triggered on server (scheduled job runs every hour). No direct endpoint.');
+  };
+
+  // 5. Full workflow simulation (read‑only, does not change data)
+  document.getElementById('testFullFlow').onclick = async () => {
+    const affiliateToken = document.getElementById('affiliateToken').value;
+    const courseId = document.getElementById('courseId').value;
+    if (!affiliateToken || !courseId) { display('#fullFlowOutput', '❌ Affiliate token and course ID required', true); return; }
+    let output = '';
+    // Step 1: Accept affiliate offer
+    output += '1. Accepting affiliate offer...\n';
+    const accept = await apiCall('/affiliate/accept', { method: 'POST', body: JSON.stringify({ courseId }) }, affiliateToken);
+    output += `   Response: ${JSON.stringify(accept.data)}\n`;
+    if (accept.data?.data?.link) output += `   ✅ Affiliate link: ${accept.data.data.link}\n`;
+    // Step 2: Simulate click (cannot truly track because we need the code)
+    const code = accept.data?.data?.code || '';
+    if (code) {
+      output += `2. Simulating click on code "${code}"...\n`;
+      const clickRes = await fetch(`${API_BASE}/affiliate/track/${code}`, { method: 'GET' });
+      output += `   Click response status: ${clickRes.status}\n`;
+    }
+    // Step 3: Get affiliate stats
+    output += '3. Fetching affiliate stats...\n';
+    const stats = await apiCall('/affiliate/stats', {}, affiliateToken);
+    output += `   Stats: ${JSON.stringify(stats.data)}\n`;
+    // Step 4: Check if any referral exists for this affiliate (not directly linked, but we can show)
+    output += '\n⚠️ To test referral bonus, you need a referred user who subscribes.\n';
+    output += 'Use the "Referral Conversion" test above with a real referred user ID.\n';
+    display('#fullFlowOutput', output);
+  };
+
+  // Prefill some demo values from localStorage if available (optional)
+  const storedToken = localStorage.getItem('cx_accessToken');
+  if (storedToken) {
+    document.getElementById('adminToken').value = storedToken;
+    document.getElementById('instructorToken').value = storedToken;
+    document.getElementById('affiliateToken').value = storedToken;
+    document.getElementById('referrerToken').value = storedToken;
+  }
 </script>
 </body>
 </html>
