@@ -3506,8 +3506,7 @@
         let searchTO;
         let deferredPrompt = null;
         const INSTALL_BANNER_DISMISSED = 'cx_install_dismissed';
-        let tokenRefreshTimer = null;
-        let autoSaveTimer = null;
+        let autoSaveTimer = null; // No token refresh timer
 
         // ═══════════════════════════════════════════
         // PWA – MANIFEST & SERVICE WORKER (inline)
@@ -3593,62 +3592,30 @@
         function hideLoading() { const el=document.getElementById('loadingOverlay'); if(el) el.style.display='none'; }
 
         // ═══════════════════════════════════════════
-        // TOKEN REFRESH (PERMANENT SESSION — 30 DAYS)
+        // API SERVICE – No token refresh logic
         // ═══════════════════════════════════════════
-        function scheduleTokenRefresh(expiresInMs) { if(tokenRefreshTimer) clearTimeout(tokenRefreshTimer); const refreshTime = Math.max(expiresInMs-60000,10000); if(refreshTime<=0) return; tokenRefreshTimer = setTimeout(async ()=>{ try{ const refreshed=await refreshTokenCall(); if(refreshed){ const newToken=localStorage.getItem('cx_accessToken'); if(newToken){ try{ const payload=JSON.parse(atob(newToken.split('.')[1])); const newExpiry=payload.exp*1000-Date.now(); if(newExpiry>0) scheduleTokenRefresh(newExpiry); } catch(e){} } } else { doLogout(); toast('Session expired. Please login again.','warning'); } } catch(e){ console.warn('Token refresh error:', e); } }, refreshTime); }
-        function startTokenRefreshTimer() { const token = localStorage.getItem('cx_accessToken'); if(!token) return; try{ const payload=JSON.parse(atob(token.split('.')[1])); const expiresIn=payload.exp*1000-Date.now(); if(expiresIn>0) scheduleTokenRefresh(expiresIn); } catch(e){} }
-        setInterval(()=>{ const token=localStorage.getItem('cx_accessToken'); if(token){ try{ const payload=JSON.parse(atob(token.split('.')[1])); if(payload.exp*1000-Date.now()<120000) refreshTokenCall(); } catch(e){} } }, 60000);
-
-        // ═══════════════════════════════════════════
-        // API SERVICE – WITH TOKEN + 401 RETRY
-        // ═══════════════════════════════════════════
-        async function apiCall(endpoint, options = {}) {
-          let token = localStorage.getItem('cx_accessToken');
-          if (!token && window.__cx_token) token = window.__cx_token;
-          const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-          if (token) headers['Authorization'] = `Bearer ${token}`;
-          const fetchOptions = { ...options, headers, credentials: 'include' };
-          if (fetchOptions.body && typeof fetchOptions.body !== 'string') { fetchOptions.body = JSON.stringify(fetchOptions.body); }
-          try {
-            const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 30000);
-            fetchOptions.signal = controller.signal;
-            const response = await fetch(`${API_BASE}${endpoint}`, fetchOptions); clearTimeout(timeoutId);
-            let data;
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) { data = await response.json(); }
-            else { data = { success: false, message: 'Invalid server response' }; }
-            if (!response.ok) {
-              if (response.status === 401 && token) {
-                const refreshed = await refreshTokenCall();
-                if (refreshed) {
-                  const newToken = localStorage.getItem('cx_accessToken');
-                  headers['Authorization'] = `Bearer ${newToken}`;
-                  fetchOptions.headers = headers;
-                  const retryResponse = await fetch(`${API_BASE}${endpoint}`, fetchOptions);
-                  const retryData = await retryResponse.json();
-                  if (!retryResponse.ok) throw new Error(retryData.message || `HTTP ${retryResponse.status}`);
-                  return retryData;
-                } else { throw new Error('Session expired. Please log in again.'); }
-              }
-              const error = new Error(data.message || data.errors?.[0]?.msg || `HTTP ${response.status}`);
-              error.status = response.status; error.data = data; throw error;
-            }
-            return data;
-          } catch(error) {
-            if (error.name === 'AbortError') throw new Error('Request timed out. Please check your connection.');
-            if (error.name === 'TypeError' && error.message === 'Failed to fetch') throw new Error('Network error. Please check your connection.');
-            throw error;
-          }
-        }
-        async function refreshTokenCall() {
+        async function apiCall(endpoint, options={}) {
+            const token = localStorage.getItem('cx_accessToken');
+            const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+            if (token) { headers['Authorization'] = `Bearer ${token}`; }
+            const fetchOptions = { ...options, headers, credentials: 'include' };
+            if (fetchOptions.body && typeof fetchOptions.body !== 'string') { fetchOptions.body = JSON.stringify(fetchOptions.body); }
             try {
-                const res = await fetch(`${API_BASE}/auth/refresh-token`, { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'} });
-                const data = await res.json();
-                if(data.success) { const newToken = data.data?.accessToken || data.accessToken; if(newToken) { localStorage.setItem('cx_accessToken', newToken); window.__cx_token = newToken; } return true; }
-            } catch(e) {}
-            return false;
+                const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 30000);
+                fetchOptions.signal = controller.signal;
+                const response = await fetch(`${API_BASE}${endpoint}`, fetchOptions); clearTimeout(timeoutId);
+                let data;
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) { data = await response.json(); }
+                else { data = { success: false, message: 'Invalid server response' }; }
+                if (!response.ok) { const error = new Error(data.message || data.errors?.[0]?.msg || `HTTP ${response.status}`); error.status = response.status; error.data = data; throw error; }
+                return data;
+            } catch(error) {
+                if (error.name === 'AbortError') throw new Error('Request timed out. Please check your connection.');
+                if (error.name === 'TypeError' && error.message === 'Failed to fetch') throw new Error('Network error. Please check your connection.');
+                throw error;
+            }
         }
-        setInterval(()=>{ fetch(HEALTH_URL).catch(()=>{}); }, 10*60*1000);
 
         // ═══════════════════════════════════════════
         // SOCKET.IO – with token auth
@@ -3788,11 +3755,16 @@
                 const res2 = await apiCall('/auth/register', { method: 'POST', body });
                 await handleLoginSuccess(res2, false);
                 return;
-              } catch (e2) { errorMsg = e2.message || 'Registration failed'; }
+              } catch (e2) {
+                errorMsg = e2.message || 'Registration failed';
+              }
             }
             toast(errorMsg, 'error');
             hideLoading();
-            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-rocket"></i>Create My Free Account'; }
+            if (btn) {
+              btn.disabled = false;
+              btn.innerHTML = '<i class="fas fa-rocket"></i>Create My Free Account';
+            }
           }
         }
         async function handleLoginSuccess(response, isFromLogin){
@@ -3801,10 +3773,9 @@
             const user=payload.user;
             if(!token||!user){ toast('Invalid server response','error'); hideLoading(); return; }
             localStorage.setItem('cx_accessToken',token);
-            window.__cx_token = token;
             localStorage.setItem('cx_user',JSON.stringify(user));
             S.user=user; S.loggedIn=true; S.isPremium=user.isPremium||user.subscriptionTier==='premium'||false; S.walletBal=user.walletBalance||0; S.user.setupDone=user.setupDone===true;
-            startTokenRefreshTimer(); hideLoading(); connectSocket();
+            hideLoading(); connectSocket();
             try{
                 const profileData=await apiCall('/users/profile');
                 const profile=profileData.data||profileData;
@@ -3838,11 +3809,13 @@
                 if(!res.ok) throw new Error(data.message||'Request failed');
                 toast('If an account exists with that email, a password reset link has been sent.','success');
             }
-            catch(err){ if(err.name==='AbortError') toast('Request timed out. Please try again.','error'); else toast(err.message||'Failed to send reset link.','error'); }
+            catch(err){
+                if(err.name==='AbortError') toast('Request timed out. Please try again.','error');
+                else toast(err.message||'Failed to send reset link.','error');
+            }
             finally{ if(btn){ btn.disabled=false; btn.innerHTML=originalText; } }
         }
         function doLogout(){
-            if(tokenRefreshTimer) clearTimeout(tokenRefreshTimer);
             if(autoSaveTimer) clearInterval(autoSaveTimer);
             if(S.loggedIn){ apiCall('/auth/logout',{method:'POST'}).catch(()=>{}); }
             if(socket){ socket.disconnect(); socket=null; }
@@ -3854,14 +3827,20 @@
             goPage('landing');
         }
         function togglePw(id,btn){
-            const inp=document.getElementById(id); if(!inp) return;
+            const inp=document.getElementById(id);
+            if(!inp) return;
             inp.type=inp.type==='password'?'text':'password';
             btn.innerHTML=inp.type==='text'?'<i class="fas fa-eye-slash"></i>':'<i class="fas fa-eye"></i>';
         }
         function checkPwStr(v){
             const segs=['pb1','pb2','pb3','pb4'].map(id=>document.getElementById(id));
-            segs.forEach(s=>{ if(s) s.className='pw-bar'; }); if(v.length<4) return;
-            let sc=0; if(v.length>=8) sc++; if(/[A-Z]/.test(v)) sc++; if(/[0-9]/.test(v)) sc++; if(/[^a-zA-Z0-9]/.test(v)) sc++;
+            segs.forEach(s=>{ if(s) s.className='pw-bar'; });
+            if(v.length<4) return;
+            let sc=0;
+            if(v.length>=8) sc++;
+            if(/[A-Z]/.test(v)) sc++;
+            if(/[0-9]/.test(v)) sc++;
+            if(/[^a-zA-Z0-9]/.test(v)) sc++;
             const cls=sc<2?'weak':sc<3?'fair':'strong';
             for(let i=0;i<sc;i++){ if(segs[i]) segs[i].classList.add(cls); }
         }
@@ -3875,9 +3854,11 @@
             if (expiry < new Date() && S.user.isPremium) {
                 try {
                     await apiCall('/users/update-premium-status', { method: 'POST', body: { isPremium: false } });
-                    S.user.isPremium = false; S.isPremium = false;
+                    S.user.isPremium = false;
+                    S.isPremium = false;
                     localStorage.setItem('cx_user', JSON.stringify(S.user));
-                    updateUserUI(); toast('Your premium subscription has expired.', 'warning');
+                    updateUserUI();
+                    toast('Your premium subscription has expired.', 'warning');
                 } catch(e) {}
             }
         }
@@ -3894,12 +3875,13 @@
         // ═══════════════════════════════════════════
         // MULTI-CURRENCY
         // ═══════════════════════════════════════════
-        async function loadExchangeRates(){ try{ const res=await apiCall('/currency/rates'); if(res.data) exchangeRates={NGN:1,...res.data}; } catch(e){ console.warn('Using fallback rates'); } }
+        async function loadExchangeRates(){ try{ const res=await apiCall('/v1/currency/rates'); if(res.data) exchangeRates={NGN:1,...res.data}; } catch(e){ console.warn('Using fallback rates'); } }
         async function updateCurrencyPreference(currency){
             currentCurrency=currency; localStorage.setItem('cx_currency',currency);
             try{ await apiCall('/users/profile',{method:'PUT',body:{preferredCurrency:currency}}); } catch(e){}
             toast(`Currency changed to ${currency}`,'success');
-            if(S.dp==='wallet') renderWallet(); if(S.dp==='home') renderHomeDashboard();
+            if(S.dp==='wallet') renderWallet();
+            if(S.dp==='home') renderHomeDashboard();
             renderCurrencySelectorUI();
         }
         function renderCurrencySelectorUI(){
@@ -3914,7 +3896,7 @@
         async function initApp(){
             try{ const savedUser=JSON.parse(localStorage.getItem('cx_user')||'null'); if(savedUser){ S.user=savedUser; S.loggedIn=true; S.isPremium=savedUser.isPremium||savedUser.subscriptionTier==='premium'||false; S.walletBal=savedUser.walletBalance||0; } } catch(e){}
             if(!S.user){ doLogout(); return; }
-            connectSocket(); startTokenRefreshTimer(); await loadExchangeRates();
+            connectSocket(); await loadExchangeRates();
             try{ const data=await apiCall('/users/profile'); S.user=data.data||data; S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false; S.walletBal=S.user.walletBalance||0; S.loggedIn=true; currentCurrency=S.user.preferredCurrency||localStorage.getItem('cx_currency')||'NGN'; S.myAffiliateLinks=S.user.affiliateLinks||[]; localStorage.setItem('cx_user',JSON.stringify(S.user)); } catch(e){}
             updateUserUI(); updateAdVisibility();
             if(S.user.roles?.includes('admin')||S.user.role==='admin'||S.user.role==='superadmin'){ document.getElementById('adminNavLi').style.display='block'; }
@@ -3923,23 +3905,31 @@
             document.getElementById('nav-course-editor').style.display=hasCreatorAccess?'':'none';
             const fab=document.getElementById('fab'); if(fab) fab.style.display=hasCreatorAccess?'block':'none';
             await loadEnrollments(); await fetchAnnouncements(); await fetchNotifications();
-            updateThemeIcons(); renderNotifs(); renderCurrencySelectorUI(); checkSubscriptionExpiry();
+            updateThemeIcons(); renderNotifs(); renderCurrencySelectorUI();
+            checkSubscriptionExpiry();
             setTimeout(()=>{ const hash=window.location.hash.slice(1); if(hash.startsWith('courses/')){ const courseId=hash.split('/')[1]; if(courseId) openBuyCourse(courseId); } },800);
         }
         async function fetchAnnouncements(){
             try{
                 const res = await apiCall('/announcements/latest');
                 const list=Array.isArray(res.data)?res.data:[];
-                if(list.length>0){ const latest=list[0]; const bar=document.getElementById('announcementBar'); if(bar){ bar.style.display='flex'; bar.onclick=()=>toast(latest.title+': '+latest.content,'info'); } document.getElementById('announcementText').textContent=`📣 ${latest.title}: ${latest.content?.substring(0,100)||''}`; }
+                if(list.length>0){
+                    const latest=list[0];
+                    const bar=document.getElementById('announcementBar');
+                    if(bar){ bar.style.display='flex'; bar.onclick=()=>toast(latest.title+': '+latest.content,'info'); }
+                    document.getElementById('announcementText').textContent=`📣 ${latest.title}: ${latest.content?.substring(0,100)||''}`;
+                }
             } catch(e){}
         }
         async function fetchNotifications(){ try{ const res=await apiCall('/users/notifications'); const list=Array.isArray(res.data)?res.data:[]; S.notifications=list.map(n=>({...n, unread:!n.read, time:new Date(n.createdAt).toLocaleTimeString(), bg:'si-primary', ic:n.icon||'fa-bell'})); } catch(e){ console.warn('Could not fetch notifications:',e.message); } }
         function updateUserUI(){
             if(!S.user) return;
-            const nm=`${S.user.firstName||''} ${S.user.lastName||''}`; const av=((S.user.firstName?.[0]||'U')+(S.user.lastName?.[0]||'')).toUpperCase();
+            const nm=`${S.user.firstName||''} ${S.user.lastName||''}`;
+            const av=((S.user.firstName?.[0]||'U')+(S.user.lastName?.[0]||'')).toUpperCase();
             ['sbAvatar','tbAvatar','settingsAv'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=av; });
             ['sbName','settingsName'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=nm.trim(); });
-            const sl=document.getElementById('sbLevel'); if(sl){ const tier=S.user.roles?.includes('admin')?'Admin':S.isPremium?'Premium':'Free'; sl.textContent=`⚡ Lvl ${S.user.level||1} · ${tier}`; }
+            const sl=document.getElementById('sbLevel');
+            if(sl){ const tier=S.user.roles?.includes('admin')?'Admin':S.isPremium?'Premium':'Free'; sl.textContent=`⚡ Lvl ${S.user.level||1} · ${tier}`; }
             if(document.getElementById('setEmail')) document.getElementById('setEmail').value=S.user.email||'';
             if(document.getElementById('setFirstName')) document.getElementById('setFirstName').value=S.user.firstName||'';
             if(document.getElementById('setLastName')) document.getElementById('setLastName').value=S.user.lastName||'';
@@ -3953,7 +3943,8 @@
             if(document.getElementById('wizRefCode')) document.getElementById('wizRefCode').textContent=refCode;
             const hasCreatorAccess=S.isPremium||S.user?.roles?.includes('admin')||(S.user?.roles?.includes('creator')&&S.user?.isApprovedInstructor);
             document.getElementById('instVerifiedBadge').textContent=hasCreatorAccess?'Verified':'Free';
-            const navInstructor=document.getElementById('nav-instructor'); const navCourseEditor=document.getElementById('nav-course-editor');
+            const navInstructor=document.getElementById('nav-instructor');
+            const navCourseEditor=document.getElementById('nav-course-editor');
             if(navInstructor) navInstructor.style.display=hasCreatorAccess?'':'none';
             if(navCourseEditor) navCourseEditor.style.display=hasCreatorAccess?'':'none';
             const fab=document.getElementById('fab'); if(fab) fab.style.display=hasCreatorAccess?'block':'none';
@@ -3973,16 +3964,27 @@
                 const totalEarned = Array.isArray(referrals) ? referrals.reduce((sum, r) => sum + (r.earned || 0), 0) : 0;
                 S.referrals = Array.isArray(referrals) ? referrals : [];
                 const refStatsRow = document.getElementById('refStatsRow');
-                if (refStatsRow) refStatsRow.innerHTML = `<div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${count}</div><div class="sl">Total Refs</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(totalEarned)}</div><div class="sl">Earned</div></div></div>`;
+                if (refStatsRow) {
+                    refStatsRow.innerHTML = `
+                        <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${count}</div><div class="sl">Total Refs</div></div></div>
+                        <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(totalEarned)}</div><div class="sl">Earned</div></div></div>
+                    `;
+                }
             } catch(e) { console.warn('Could not load referrals', e); }
         }
         function renderHomeDashboard(){
-            const el=document.getElementById('homeContent'); if(!el) return;
+            const el=document.getElementById('homeContent');
+            if(!el) return;
             const completedCnt=S.enrollments.filter(e=>e.status==='completed'||e.progress===100).length;
             const inProgress=S.enrollments.filter(e=>e.status==='active'||e.progress>0&&e.progress<100);
             const refCnt=S.referrals?.length||S.user?.referralCount||0;
-            const h=new Date().getHours(); const greet=h<12?'Good morning 👋':h<17?'Good afternoon 👋':'Good evening 👋';
-            const streak=S.user?.streak||S.user?.streakDays||0; const level=S.user?.level||1; const xp=S.user?.xp||0; const xpNext=level*1000; const xpProgress=Math.min(100,Math.round((xp/xpNext)*100));
+            const h=new Date().getHours();
+            const greet=h<12?'Good morning 👋':h<17?'Good afternoon 👋':'Good evening 👋';
+            const streak=S.user?.streak||S.user?.streakDays||0;
+            const level=S.user?.level||1;
+            const xp=S.user?.xp||0;
+            const xpNext=level*1000;
+            const xpProgress=Math.min(100,Math.round((xp/xpNext)*100));
             const showUpgrade=!S.isPremium&&!S.user?.roles?.includes('admin');
             el.innerHTML=`<div id="homeUpgradeBanner" style="display:${showUpgrade?'block':'none'};background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(255,107,43,.05));border:1px solid rgba(245,158,11,.2);border-radius:var(--radius);padding:1rem;margin-bottom:1rem"><div class="d-flex items-center gap-3 flex-wrap"><div class="si si-gold"><i class="fas fa-crown"></i></div><div style="flex:1"><strong style="font-size:.88rem">Unlock Course Creation!</strong><br><span style="font-size:.76rem;color:var(--text3)">Go Premium to create courses, earn affiliates & remove ads</span></div><button class="btn btn-gold btn-sm" onclick="openModal('premiumModal')"><i class="fas fa-crown"></i>Upgrade — ₦5k/mo</button></div></div>
             <div class="welcome-banner"><div><div style="font-size:.7rem;color:var(--text3);margin-bottom:.28rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em">${greet}</div><h2 style="font-size:1.35rem;margin-bottom:.15rem">${S.user?.firstName||'User'} ${S.user?.lastName||''}</h2><p style="color:var(--text3);font-size:.8rem;margin:0">You're on a <strong style="color:var(--primary)">${streak}-day streak</strong>! 🔥</p></div><div style="display:flex;gap:.4rem;flex-wrap:wrap"><span class="badge badge-gold"><i class="fas fa-star"></i>Level ${level}</span><span class="badge badge-danger"><i class="fas fa-fire"></i>${streak} Streak</span><span class="badge badge-premium">${S.user?.roles?.includes('admin')?'<i class="fas fa-shield-alt"></i>Admin':S.isPremium?'<i class="fas fa-crown"></i>Premium':'<i class="fas fa-user"></i>Free'}</span></div></div>
@@ -3990,7 +3992,14 @@
             <div class="row mb-4"><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(S.walletBal)}</div><div class="sl">Wallet</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-book-open"></i></div><div class="sv">${completedCnt}/${S.enrollments.length}</div><div class="sl">Courses</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-users"></i></div><div class="sv">${refCnt}</div><div class="sl">Referrals</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${S.myAffiliateLinks?.length||0}</div><div class="sl">Affiliates</div></div></div></div>
             <div class="row"><div class="col-12 col-md-8"><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.4rem"><h6 style="margin:0">Continue Learning</h6><button class="btn btn-ghost btn-sm" onclick="setDP('courses')">View all</button></div>${inProgress.length?inProgress.slice(0,3).map(e=>`<div style="display:flex;align-items:center;gap:.75rem;padding:.65rem 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openEnrollmentLesson('${e.course?._id||e.course}','${e._id}')"><div style="width:36px;height:36px;background:var(--card2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem">📚</div><div style="flex:1;min-width:0"><div style="font-size:.82rem;font-weight:600">${e.course?.title||'Course'}</div><div class="prog mt-1" style="height:4px"><div class="prog-fill pf-primary" style="width:${e.progress||0}%"></div></div><div style="font-size:.68rem;color:var(--text3);margin-top:.2rem">${e.progress||0}% complete</div></div><button class="btn btn-primary btn-sm" style="font-size:.68rem;padding:.2rem .55rem">Continue</button></div>`).join(''):'<div class="empty-state"><i class="fas fa-book-open"></i><h4>No courses yet</h4><p>Explore and enroll in courses to start learning!</p></div>'}</div></div><div class="col-12 col-md-4"><div class="card card-p mb-3"><h6 style="margin-bottom:.65rem">🏆 Leaderboard</h6><div id="homeLB">${S.leaderboard.slice(0,5).map((u,i)=>`<div class="lb-row ${u._id===S.user?._id?'you':''}" style="padding:.5rem .4rem"><div class="lb-rank">${['🥇','🥈','🥉'][i]||i+1}</div><div class="lb-av" style="background:linear-gradient(135deg,var(--violet),var(--cyan));width:28px;height:28px;font-size:.7rem">${(u.firstName||'U')[0]}</div><div style="flex:1;font-size:.8rem;font-weight:600">${u.firstName||'User'} ${u._id===S.user?._id?'<span class="badge badge-primary" style="font-size:.52rem">You</span>':''}</div><div style="font-weight:700;font-size:.78rem;color:var(--primary)">${(u.xp||0).toLocaleString()}</div></div>`).join('')||'<div class="empty-state"><p>Loading...</p></div>'}</div><button class="btn btn-ghost btn-sm w-full mt-3" onclick="setDP('leaderboard')">Full Leaderboard</button></div></div></div>`;
         }
-        function openEnrollmentLesson(courseId, enrollmentId){ S.currentCourseId=courseId; S.currentEnrollmentId=enrollmentId; loadCourseForLesson(courseId); setDP('lesson'); }
+        function openEnrollmentLesson(courseId, enrollmentId) {
+          if (!courseId || courseId === 'undefined') {
+            toast('Invalid course. Please return to course list.', 'error');
+            return;
+          }
+          S.currentCourseId=courseId; S.currentEnrollmentId=enrollmentId;
+          loadCourseForLesson(courseId); setDP('lesson');
+        }
         async function loadCourseForLesson(courseId){ try{ const data=await apiCall(`/courses/${courseId}`); S.currentCourseData=data.data||data; S.currentLessons=Array.isArray(S.currentCourseData.lessons)?S.currentCourseData.lessons:(S.currentCourseData.sections?.flatMap(s=>s.lessons)||[]); S.currentLessonIdx=0; renderCurric(); } catch(e){ toast('Could not load course: '+e.message,'error'); } }
 
         // ═══════════════════════════════════════════
@@ -3998,9 +4007,19 @@
         // ═══════════════════════════════════════════
         async function renderExplore(){ showLoading('Loading courses...'); try{ const data=await apiCall('/courses?published=true&limit=50'); const raw=data.data||data||[]; S.appCourses=Array.isArray(raw)?raw:(raw.courses||[]); document.getElementById('exploreGrid').innerHTML=buildCourseCards(S.appCourses); } catch(e){ S.appCourses=[]; document.getElementById('exploreGrid').innerHTML=`<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h4>Could not load courses</h4><p>${e.message}</p></div>`; } finally{ hideLoading(); } }
         function filterExplore(){ const q=(document.getElementById('exploreSearch')?.value||'').toLowerCase(); const cat=document.getElementById('exploreCat')?.value||''; const lev=document.getElementById('exploreLevel')?.value||''; let list=Array.isArray(S.appCourses)?S.appCourses:[]; if(q) list=list.filter(c=>(c.title||'').toLowerCase().includes(q)); if(cat) list=list.filter(c=>c.category===cat); if(lev) list=list.filter(c=>c.level===lev); document.getElementById('exploreGrid').innerHTML=list.length?buildCourseCards(list):'<div class="empty-state"><i class="fas fa-search"></i><h4>No courses found</h4></div>'; }
-        function buildCourseCards(list){ if(!Array.isArray(list)) return '<div class="empty-state"><p>Loading courses...</p></div>'; return list.map(c=>{ const price=c.displayPrice||c.price||0; const instructorName=c.instructor?.firstName||'Instructor'; const lessonCount=c.totalLessons||(Array.isArray(c.lessons)?c.lessons.length:0); return `<div class="course-card" onclick="openBuyCourse('${c._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail||c.emoji||'📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress||0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title||'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level||'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate?`<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent||0}% aff</span>`:''}</div></div></div>`; }).join(''); }
+        function buildCourseCards(list) {
+          if (!Array.isArray(list)) return '<div class="empty-state"><p>Loading courses...</p></div>';
+          return list.filter(c => c && c._id).map(c=>{
+            const price=c.displayPrice||c.price||0;
+            const instructorName=c.instructor?.firstName||'Instructor';
+            const lessonCount=c.totalLessons||(Array.isArray(c.lessons)?c.lessons.length:0);
+            return `<div class="course-card" onclick="openBuyCourse('${c._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail||c.emoji||'📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress||0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title||'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level||'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate?`<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent||0}% aff</span>`:''}</div></div></div>`;
+          }).join('');
+        }
         function openBuyCourse(courseId){
-            const c=(S.appCourses||[]).find(x=>x._id===courseId); if(!c) return;
+            const c=(S.appCourses||[]).find(x=>x._id===courseId);
+            if(!c) return;
+            // Free course – enroll directly without Paystack
             if((c.price===0||c.price==null)&&(c.salePrice===0||c.salePrice==null)){
                 if(!S.loggedIn){ toast('Please log in to enroll','warning'); goPage('login'); return; }
                 apiCall(`/courses/${c._id}/enroll`,{method:'POST'})
@@ -4012,7 +4031,8 @@
             S.currentBuyCourse=c; const price=c.salePrice||c.price||0;
             document.getElementById('buyCourseInfo').innerHTML=`<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div style="font-size:2rem">${c.thumbnail||c.emoji||'📚'}</div><div><div style="font-weight:700;font-size:.92rem">${c.title}</div><div style="font-size:.75rem;color:var(--text3)">${c.instructor?.firstName||'Instructor'} · ${c.totalLessons||0} lessons</div></div></div>`;
             document.getElementById('buyCourseSummary').innerHTML=`<div class="pay-summary-row"><span>Course Price</span><span>${fmtMoneyAPI(c.price||0)}</span></div><div class="pay-summary-row"><span style="font-weight:700">Total</span><span style="color:var(--primary);font-weight:800">${fmtMoneyAPI(price)}</span></div>`;
-            document.getElementById('paystackBtnText').textContent=`Pay ${fmtMoneyAPI(price)} with Paystack`; openModal('buyCourseModal');
+            document.getElementById('paystackBtnText').textContent=`Pay ${fmtMoneyAPI(price)} with Paystack`;
+            openModal('buyCourseModal');
         }
 
         // ═══════════════════════════════════════════
@@ -4027,7 +4047,13 @@
                 let code = getAffiliateCodeFromCookie();
                 const manualCode = document.getElementById('buyRefCode')?.value.trim();
                 if (manualCode) code = manualCode;
-                const metadata = { type:'course_purchase', courseId:course._id, userId:S.user._id, affiliateCode: code || undefined, referralCode: code || undefined };
+                const metadata = {
+                    type:'course_purchase',
+                    courseId:course._id,
+                    userId:S.user._id,
+                    affiliateCode: code || undefined,
+                    referralCode: code || undefined
+                };
                 const paymentIntent=await apiCall('/payments/initialize-paystack',{method:'POST',body:{email,amount:course.salePrice||course.price,currency:'NGN',metadata}});
                 const {reference,amount:paystackAmount}=paymentIntent.data;
                 const handler=PaystackPop.setup({key:PAYSTACK_PUBLIC_KEY,email,amount:paystackAmount,currency:'NGN',ref:reference,metadata:{custom_fields:[{display_name:"Course",variable_name:"course",value:course.title},{display_name:"User ID",variable_name:"user_id",value:S.user._id}]},callback:async(response)=>{const verify=await apiCall('/payments/verify-paystack',{method:'POST',body:{reference:response.reference,courseId:course._id}});if(verify.success){toast('✅ Payment successful! You are now enrolled.','success');await loadEnrollments();closeModal('buyCourseModal');setDP('courses');renderWallet();}else{toast('Payment verification failed. Contact support.','error');}},onClose:()=>{toast('Payment cancelled','warning');}});
@@ -4046,23 +4072,36 @@
         // LESSON / CURRICULUM
         // ═══════════════════════════════════════════
         function renderCurric(){
-            const list=document.getElementById('curricList'); if(!list) return;
+            const list=document.getElementById('curricList');
+            if(!list) return;
             const lessons=Array.isArray(S.currentLessons)?S.currentLessons:[];
             if(!lessons.length){ if(list) list.innerHTML='<div class="empty-state"><p>Select a course to view lessons</p></div>'; return; }
             list.innerHTML=lessons.map((l,i)=>`<div class="curric-item ${l.completed?'done':''} ${i===S.currentLessonIdx?'active':''}" onclick="jumpToLesson(${i})"><div class="ci-num">${l.completed?'<i class="fas fa-check" style="font-size:.55rem"></i>':(l.order||i+1)}</div><div class="lesson-type-badge lt-${l.type==='video'?'video':l.type==='quiz'?'quiz':'text'}" style="width:20px;height:20px;font-size:.6rem"><i class="fas fa-${l.type==='video'?'play':l.type==='quiz'?'question-circle':'file-alt'}"></i></div><div style="flex:1;min-width:0"><div style="font-size:.79rem;font-weight:${i===S.currentLessonIdx?'600':'400'}">${l.title||'Lesson '+(i+1)}</div><div style="font-size:.65rem;color:var(--text3)">${l.duration||0} mins</div></div></div>`).join('');
-            const done=lessons.filter(l=>l.completed).length; const total=lessons.length;
-            const curricBar=document.getElementById('curricBar'); if(curricBar) curricBar.style.width=total?Math.round((done/total)*100)+'%':'0%';
-            const progressEl=document.getElementById('curricProgress'); if(progressEl) progressEl.textContent=`${done}/${total}`;
-            const lpDone=document.getElementById('lpLessonsDone'); if(lpDone) lpDone.textContent=`${done}/${total}`;
-            const navInd=document.getElementById('lessonNavIndicator'); if(navInd) navInd.textContent=`${S.currentLessonIdx+1} of ${total}`;
-            S.lessonStartTime=Date.now(); updateLessonInfo(); updateAdVisibility();
+            const done=lessons.filter(l=>l.completed).length;
+            const total=lessons.length;
+            const curricBar=document.getElementById('curricBar');
+            if(curricBar) curricBar.style.width=total?Math.round((done/total)*100)+'%':'0%';
+            const progressEl=document.getElementById('curricProgress');
+            if(progressEl) progressEl.textContent=`${done}/${total}`;
+            const lpDone=document.getElementById('lpLessonsDone');
+            if(lpDone) lpDone.textContent=`${done}/${total}`;
+            const navInd=document.getElementById('lessonNavIndicator');
+            if(navInd) navInd.textContent=`${S.currentLessonIdx+1} of ${total}`;
+            S.lessonStartTime=Date.now();
+            updateLessonInfo();
+            updateAdVisibility();
         }
         function updateLessonInfo(){
-            const l=S.currentLessons[S.currentLessonIdx]; if(!l) return;
-            const titleEl=document.getElementById('currentLessonTitle'); if(titleEl) titleEl.textContent=`${l.title||'Lesson'} — ${l.order||S.currentLessonIdx+1}`;
-            const overviewTitle=document.getElementById('lessonOverviewTitle'); if(overviewTitle) overviewTitle.textContent=l.title||'Lesson';
-            const descEl=document.getElementById('lessonOverviewDesc'); if(descEl){ let desc=l.description||(l.content||'').replace(/<[^>]*>/g,'').substring(0,300)||`Learn about "${l.title}" in this ${l.type||'video'} lesson.`; descEl.innerHTML=desc; }
-            const courseTitleEl=document.getElementById('currentCourseTitle'); if(courseTitleEl) courseTitleEl.textContent=S.currentCourseData?.title||'';
+            const l=S.currentLessons[S.currentLessonIdx];
+            if(!l) return;
+            const titleEl=document.getElementById('currentLessonTitle');
+            if(titleEl) titleEl.textContent=`${l.title||'Lesson'} — ${l.order||S.currentLessonIdx+1}`;
+            const overviewTitle=document.getElementById('lessonOverviewTitle');
+            if(overviewTitle) overviewTitle.textContent=l.title||'Lesson';
+            const descEl=document.getElementById('lessonOverviewDesc');
+            if(descEl){ let desc=l.description||(l.content||'').replace(/<[^>]*>/g,'').substring(0,300)||`Learn about "${l.title}" in this ${l.type||'video'} lesson.`; descEl.innerHTML=desc; }
+            const courseTitleEl=document.getElementById('currentCourseTitle');
+            if(courseTitleEl) courseTitleEl.textContent=S.currentCourseData?.title||'';
             const videoWrap=document.getElementById('lessonVideoWrap');
             if(videoWrap){
                 if(l.type==='video'&&l.videoUrl){ videoWrap.innerHTML=`<div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden;"><iframe src="${l.videoUrl}" frameborder="0" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%;"></iframe></div>`; }
@@ -4070,52 +4109,93 @@
                 else if(l.type==='text'&&l.content){ videoWrap.innerHTML=`<div style="padding:1rem;background:var(--bg2);border-radius:var(--radius-sm);min-height:120px;line-height:1.7">${l.content}</div>`; }
                 else{ videoWrap.innerHTML=`<div class="empty-state"><i class="fas fa-file-alt"></i><p>This lesson is text‑based. Read the content below.</p></div>`; }
             }
-            const resList=document.getElementById('lessonResourcesList'); if(resList){ if(Array.isArray(l.resources)&&l.resources.length){ resList.innerHTML=l.resources.map(r=>`<div style="padding:.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:.3rem;font-size:.79rem"><i class="fas fa-paperclip" style="color:var(--accent);margin-right:.4rem"></i><a href="${r.url}" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">${r.title||r.url}</a></div>`).join(''); } else{ resList.innerHTML='<div class="empty-state"><p>No resources for this lesson</p></div>'; } }
+            const resList=document.getElementById('lessonResourcesList');
+            if(resList){ if(Array.isArray(l.resources)&&l.resources.length){ resList.innerHTML=l.resources.map(r=>`<div style="padding:.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:.3rem;font-size:.79rem"><i class="fas fa-paperclip" style="color:var(--accent);margin-right:.4rem"></i><a href="${r.url}" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">${r.title||r.url}</a></div>`).join(''); } else{ resList.innerHTML='<div class="empty-state"><p>No resources for this lesson</p></div>'; } }
         }
         function jumpToLesson(i){ S.currentLessonIdx=i; renderCurric(); }
         function navigateLesson(dir){ const newIdx=S.currentLessonIdx+dir; if(newIdx<0||newIdx>=S.currentLessons.length) return; S.currentLessonIdx=newIdx; renderCurric(); }
         async function completeLessonAndNext(){
-            const l=S.currentLessons[S.currentLessonIdx]; if(!l) return;
+            const l=S.currentLessons[S.currentLessonIdx];
+            if(!l) return;
             const timeSpent = S.lessonStartTime ? Math.floor((Date.now()-S.lessonStartTime)/1000) : 0;
             l.completed=true;
-            if(S.currentCourseId&&l._id){ try{ await apiCall(`/courses/${S.currentCourseId}/lessons/${l._id}/progress`,{method:'POST',body:{completed:true, timeSpent}}); toast('✅ Lesson completed! +XP','success'); await loadEnrollments(); renderWallet(); } catch(e){ toast('Progress saved locally','info'); } }
+            if(S.currentCourseId&&l._id){
+                try{ await apiCall(`/courses/${S.currentCourseId}/lessons/${l._id}/progress`,{method:'POST',body:{completed:true, timeSpent}}); toast('✅ Lesson completed! +XP','success'); await loadEnrollments(); renderWallet(); } catch(e){ toast('Progress saved locally','info'); }
+            }
             const nextIdx=S.currentLessonIdx+1;
-            if(nextIdx<S.currentLessons.length){ S.currentLessonIdx=nextIdx; } else{ toast('🎉 Course complete! Certificate ready! +₦100','success'); setDP('certs'); renderWallet(); }
+            if(nextIdx<S.currentLessons.length){ S.currentLessonIdx=nextIdx; }
+            else{ toast('🎉 Course complete! Certificate ready! +₦100','success'); setDP('certs'); renderWallet(); }
             renderCurric();
         }
         function switchLTab(tab,el){
             document.querySelectorAll('.ltab').forEach(t=>t.classList.remove('active'));
             document.querySelectorAll('.lesson-sub').forEach(s=>s.classList.remove('active'));
-            if(el) el.classList.add('active'); const target=document.getElementById('ls-'+tab); if(target) target.classList.add('active'); S.lessTab=tab; if(tab==='qa') loadQA();
+            if(el) el.classList.add('active');
+            const target=document.getElementById('ls-'+tab);
+            if(target) target.classList.add('active');
+            S.lessTab=tab;
+            if(tab==='qa') loadQA();
         }
         function saveNote(){ toast('📝 Note saved!','success'); localStorage.setItem('lesson_note_'+S.currentLessonIdx,document.getElementById('lessonNote')?.value||''); }
-        async function submitQuestion(){ const inp=document.getElementById('qaInput'); if(!inp?.value.trim()) return; if(!S.currentCourseId){ toast('Select a course first','warning'); return; } try{ await apiCall(`/courses/${S.currentCourseId}/questions`,{method:'POST',body:{question:inp.value.trim(), lessonId:S.currentLessons[S.currentLessonIdx]?._id}}); toast('Question submitted! Instructor notified 📩','success'); inp.value=''; await loadQA(); } catch(e){ toast(e.message,'error'); } }
-        async function loadQA(){ if(!S.currentCourseId) return; try{ const data=await apiCall(`/courses/${S.currentCourseId}/questions`); const questions=Array.isArray(data.data)?data.data:[]; const qaList=document.getElementById('qaList'); if(qaList){ qaList.innerHTML=questions.length?questions.map(q=>`<div class="qa-item"><div style="font-size:.82rem;font-weight:600">${q.user?.firstName||'Student'}: ${q.question}</div>${q.answer?`<div class="qa-reply"><strong>Instructor:</strong> ${q.answer}</div>`:'<div style="font-size:.72rem;color:var(--text3)">Waiting for answer...</div>'}</div>`).join(''):'<div class="empty-state"><p>No questions yet</p></div>'; } } catch(e){ console.warn('Could not load Q&A:',e.message); } }
-        async function submitQAReply(){ const questionId=document.getElementById('qaReplyModal')._questionId; const text=document.getElementById('qaReplyText')?.value.trim(); if(!questionId||!text) return; try{ await apiCall(`/instructor/questions/${questionId}/answer`,{method:'POST',body:{answer:text}}); closeModal('qaReplyModal'); toast('✅ Reply posted!','success'); } catch(e){ toast(e.message,'error'); } }
+        async function submitQuestion(){
+            const inp=document.getElementById('qaInput');
+            if(!inp?.value.trim()) return;
+            if(!S.currentCourseId){ toast('Select a course first','warning'); return; }
+            try{ await apiCall(`/courses/${S.currentCourseId}/questions`,{method:'POST',body:{question:inp.value.trim(), lessonId:S.currentLessons[S.currentLessonIdx]?._id}}); toast('Question submitted! Instructor notified 📩','success'); inp.value=''; await loadQA(); } catch(e){ toast(e.message,'error'); }
+        }
+        async function loadQA(){
+            if(!S.currentCourseId) return;
+            try{ const data=await apiCall(`/courses/${S.currentCourseId}/questions`); const questions=Array.isArray(data.data)?data.data:[]; const qaList=document.getElementById('qaList'); if(qaList){ qaList.innerHTML=questions.length?questions.map(q=>`<div class="qa-item"><div style="font-size:.82rem;font-weight:600">${q.user?.firstName||'Student'}: ${q.question}</div>${q.answer?`<div class="qa-reply"><strong>Instructor:</strong> ${q.answer}</div>`:'<div style="font-size:.72rem;color:var(--text3)">Waiting for answer...</div>'}</div>`).join(''):'<div class="empty-state"><p>No questions yet</p></div>'; } } catch(e){ console.warn('Could not load Q&A:',e.message); }
+        }
+        async function submitQAReply(){
+            const questionId=document.getElementById('qaReplyModal')._questionId;
+            const text=document.getElementById('qaReplyText')?.value.trim();
+            if(!questionId||!text) return;
+            try{ await apiCall(`/instructor/questions/${questionId}/answer`,{method:'POST',body:{answer:text}}); closeModal('qaReplyModal'); toast('✅ Reply posted!','success'); } catch(e){ toast(e.message,'error'); }
+        }
 
         // ═══════════════════════════════════════════
         // QUIZ
         // ═══════════════════════════════════════════
         function initQuiz(){ const el=document.getElementById('quizWrap'); if(!el) return; if(S.currentCourseData?.quizzes?.length){ const allQ=S.currentCourseData.quizzes.flatMap(qz=>qz.questions||[]); S.quizQuestions=allQ.length?allQ:[{question:'No questions available.',options:['Okay'],correctAnswer:0}]; } else{ S.quizQuestions=[{question:'Sample: What does HTML stand for?',options:['Hyper Text Markup Language','High Tech Modern Language','Hyper Transfer Markup Language','Home Tool Markup Language'],correctAnswer:0}]; } S.qCurr=0; S.qAns={}; renderQuizQ(); }
         function renderQuizQ(){
-            const el=document.getElementById('quizWrap'); if(!el) return;
-            if(S.qCurr>=S.quizQuestions.length){ const correct=Object.values(S.qAns).filter(Boolean).length; const total=S.quizQuestions.length; const pct=Math.round((correct/total)*100); el.innerHTML=`<div style="text-align:center;padding:2rem 0"><div style="font-size:3rem">${pct>=80?'🎉':'😅'}</div><h3>${pct}%</h3><p style="color:var(--text3);margin:.5rem 0">${correct}/${total} correct</p><button class="btn btn-primary" onclick="initQuiz()">Retake</button></div>`; renderWallet(); return; }
-            const q=S.quizQuestions[S.qCurr]; const questionText=q.question||q.q||'Question'; const options=q.options||q.opts||[];
+            const el=document.getElementById('quizWrap');
+            if(!el) return;
+            if(S.qCurr>=S.quizQuestions.length){
+                const correct=Object.values(S.qAns).filter(Boolean).length;
+                const total=S.quizQuestions.length;
+                const pct=Math.round((correct/total)*100);
+                el.innerHTML=`<div style="text-align:center;padding:2rem 0"><div style="font-size:3rem">${pct>=80?'🎉':'😅'}</div><h3>${pct}%</h3><p style="color:var(--text3);margin:.5rem 0">${correct}/${total} correct</p><button class="btn btn-primary" onclick="initQuiz()">Retake</button></div>`;
+                renderWallet();
+                return;
+            }
+            const q=S.quizQuestions[S.qCurr];
+            const questionText=q.question||q.q||'Question';
+            const options=q.options||q.opts||[];
             el.innerHTML=`<div class="quiz-q">${questionText}</div>${options.map((o,i)=>`<div class="quiz-opt" id="qopt-${i}" onclick="selectOpt(${i})">${o}</div>`).join('')}`;
         }
         function selectOpt(i){
-            document.querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('selected')); document.getElementById('qopt-'+i)?.classList.add('selected');
-            const q=S.quizQuestions[S.qCurr]; const correctAns=q.correctAnswer!==undefined?q.correctAnswer:q.ans;
-            const correct=correctAns===i||correctAns===q.options?.[i]; document.getElementById('qopt-'+i)?.classList.add(correct?'correct':'wrong');
+            document.querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('selected'));
+            document.getElementById('qopt-'+i)?.classList.add('selected');
+            const q=S.quizQuestions[S.qCurr];
+            const correctAns=q.correctAnswer!==undefined?q.correctAnswer:q.ans;
+            const correct=correctAns===i||correctAns===q.options?.[i];
+            document.getElementById('qopt-'+i)?.classList.add(correct?'correct':'wrong');
             if(!correct&&typeof correctAns==='number') document.getElementById('qopt-'+correctAns)?.classList.add('correct');
-            S.qAns[S.qCurr]=correct; setTimeout(()=>{ S.qCurr++; renderQuizQ(); },900);
+            S.qAns[S.qCurr]=correct;
+            setTimeout(()=>{ S.qCurr++; renderQuizQ(); },900);
         }
 
         // ═══════════════════════════════════════════
         // CERTIFICATES
         // ═══════════════════════════════════════════
-        function renderCerts(){ const completed=S.enrollments.filter(e=>e.status==='completed'||e.progress===100); document.getElementById('certsGrid').innerHTML=completed.length?completed.map(e=>`<div style="flex:1;min-width:260px"><div class="cert-card"><div style="font-size:.6rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;font-family:monospace;margin-bottom:.5rem">Certificate of Completion</div><div style="font-size:2rem;margin:.35rem 0">📜</div><h4 style="font-size:1rem;margin-bottom:.25rem">${e.course?.title||'Course'}</h4><p style="font-size:.75rem;color:var(--text3);margin-bottom:.85rem">Awarded to <strong>${S.user?.firstName||'User'} ${S.user?.lastName||''}</strong></p><button class="btn btn-gold btn-sm" onclick="downloadCert('${e.course?._id||e.course}')"><i class="fas fa-download"></i>Download</button></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-certificate"></i><h4>No certificates yet</h4><p>Complete courses to earn certificates!</p></div>'; }
-        async function downloadCert(courseId){ try{ const token=localStorage.getItem('cx_accessToken'); const response=await fetch(`${API_BASE}/certificates/${courseId}/download`,{headers:{'Authorization':`Bearer ${token}`}}); if(!response.ok) throw new Error('Failed to generate certificate'); const blob=await response.blob(); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`certificate_${courseId}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); toast('Certificate downloaded!','success'); } catch(err){ toast(err.message,'error'); } }
+        function renderCerts(){
+            const completed=S.enrollments.filter(e=>e.status==='completed'||e.progress===100);
+            document.getElementById('certsGrid').innerHTML=completed.length?completed.map(e=>`<div style="flex:1;min-width:260px"><div class="cert-card"><div style="font-size:.6rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;font-family:monospace;margin-bottom:.5rem">Certificate of Completion</div><div style="font-size:2rem;margin:.35rem 0">📜</div><h4 style="font-size:1rem;margin-bottom:.25rem">${e.course?.title||'Course'}</h4><p style="font-size:.75rem;color:var(--text3);margin-bottom:.85rem">Awarded to <strong>${S.user?.firstName||'User'} ${S.user?.lastName||''}</strong></p><button class="btn btn-gold btn-sm" onclick="downloadCert('${e.course?._id||e.course}')"><i class="fas fa-download"></i>Download</button></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-certificate"></i><h4>No certificates yet</h4><p>Complete courses to earn certificates!</p></div>';
+        }
+        async function downloadCert(courseId){
+            try{ const token=localStorage.getItem('cx_accessToken'); const response=await fetch(`${API_BASE}/certificates/${courseId}/download`,{headers:{'Authorization':`Bearer ${token}`}}); if(!response.ok) throw new Error('Failed to generate certificate'); const blob=await response.blob(); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`certificate_${courseId}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); toast('Certificate downloaded!','success'); } catch(err){ toast(err.message,'error'); }
+        }
 
         // ═══════════════════════════════════════════
         // WALLET
@@ -4129,23 +4209,39 @@
             document.getElementById('walletWeekChange').innerHTML=pending>0?`<span style="color:var(--gold)">Pending: ${fmtMoneyAPI(pending)}</span>`:'+₦0 this week';
             document.getElementById('walletBreakdown').innerHTML=`<div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(S.user?.referralEarnings||0)}</span></div><div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(S.user?.courseEarnings||0)}</span></div><div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(S.user?.affiliateEarnings||0)}</span></div>`;
             document.getElementById('walletStatsRow').innerHTML=`<div class="col-6"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${fmtMoneyAPI(S.user?.referralEarnings||0)}</div><div class="sl">Referral Earnings</div></div></div><div class="col-6"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${fmtMoneyAPI(S.user?.affiliateEarnings||0)}</div><div class="sl">Affiliate Earned</div></div></div>`;
-            await loadTransactions(); renderTxTable();
+            await loadTransactions();
+            renderTxTable();
             try{ const payoutData=await apiCall('/payments/methods'); const banks=Array.isArray(payoutData.data?.bankAccounts)?payoutData.data.bankAccounts:[]; const bankSelect=document.getElementById('withdrawBank'); if(bankSelect&&banks.length) bankSelect.innerHTML=banks.map(b=>`<option value="${b._id||b.accountNumber}">${b.bankName} - ${b.accountNumber}</option>`).join(''); } catch(e){}
         }
         async function loadTransactions(){ try{ const data=await apiCall('/payments/transactions?limit=50'); S.transactions=Array.isArray(data.data)?data.data:[]; } catch(e){ S.transactions=[]; } }
-        function renderTxTable(filterType){ const filtered=filterType&&filterType!=='All'?S.transactions.filter(t=>t.type?.toLowerCase()===filterType.toLowerCase()):S.transactions; document.getElementById('txTable').innerHTML=`<thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead><tbody>${filtered.map(tx=>{ const amount=tx.amount||0; const isPositive=amount>=0; return `<tr><td style="font-size:.74rem;color:var(--text3)">${new Date(tx.createdAt).toLocaleDateString()}</td><td><span class="badge badge-dark" style="font-size:.6rem">${tx.type||'—'}</span></td><td style="font-size:.78rem">${tx.description||''}</td><td style="font-weight:800;color:${isPositive?'var(--success)':'var(--danger)'}">${fmtMoneyAPI(amount)}</td><td><span class="pstatus ${tx.status==='completed'?'ps-paid':'ps-pend'}">${tx.status||'pending'}</span></td></tr>`; }).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--text3)">No transactions</td></tr>'}</tbody>`; }
+        function renderTxTable(filterType){
+            const filtered=filterType&&filterType!=='All'?S.transactions.filter(t=>t.type?.toLowerCase()===filterType.toLowerCase()):S.transactions;
+            document.getElementById('txTable').innerHTML=`<thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead><tbody>${filtered.map(tx=>{ const amount=tx.amount||0; const isPositive=amount>=0; return `<tr><td style="font-size:.74rem;color:var(--text3)">${new Date(tx.createdAt).toLocaleDateString()}</td><td><span class="badge badge-dark" style="font-size:.6rem">${tx.type||'—'}</span></td><td style="font-size:.78rem">${tx.description||''}</td><td style="font-weight:800;color:${isPositive?'var(--success)':'var(--danger)'}">${fmtMoneyAPI(amount)}</td><td><span class="pstatus ${tx.status==='completed'?'ps-paid':'ps-pend'}">${tx.status||'pending'}</span></td></tr>`; }).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--text3)">No transactions</td></tr>'}</tbody>`;
+        }
         function filterTx(type){ renderTxTable(type); }
-        async function processWithdraw(){ const amt=Number(document.getElementById('withdrawAmt')?.value); if(!amt||amt<2000){ toast('Minimum withdrawal is ₦2,000','error'); return; } if(amt>S.walletBal){ toast('Insufficient balance','error'); return; } closeModal('withdrawModal'); showLoading('Processing withdrawal...'); try{ await apiCall('/payments/withdraw',{method:'POST',body:{amount:amt}}); toast('💸 Withdrawal submitted! Processing 1-3 business days','success'); await renderWallet(); } catch(e){ toast(e.message,'error'); } finally{ hideLoading(); } }
+        async function processWithdraw(){
+            const amt=Number(document.getElementById('withdrawAmt')?.value);
+            if(!amt||amt<2000){ toast('Minimum withdrawal is ₦2,000','error'); return; }
+            if(amt>S.walletBal){ toast('Insufficient balance','error'); return; }
+            closeModal('withdrawModal');
+            showLoading('Processing withdrawal...');
+            try{ await apiCall('/payments/withdraw',{method:'POST',body:{amount:amt}}); toast('💸 Withdrawal submitted! Processing 1-3 business days','success'); await renderWallet(); } catch(e){ toast(e.message,'error'); }
+            finally{ hideLoading(); }
+        }
 
         // ═══════════════════════════════════════════
         // REFERRALS
         // ═══════════════════════════════════════════
         async function renderRefs(){
-            const refCode=S.user?.referralCode||'REF'; const refLink=`${FRONTEND_URL}/?ref=${refCode}`;
-            document.getElementById('refLink').textContent=refLink; document.getElementById('refCode').textContent=refCode;
+            const refCode=S.user?.referralCode||'REF';
+            const refLink=`${FRONTEND_URL}/?ref=${refCode}`;
+            document.getElementById('refLink').textContent=refLink;
+            document.getElementById('refCode').textContent=refCode;
             try{
-                const data=await apiCall('/users/referrals'); const refs=Array.isArray(data.data?.referrals)?data.data.referrals:(Array.isArray(data.data)?data.data:[]);
-                S.referrals=refs; const totalEarned=refs.reduce((sum,r)=>sum+(r.earned||0),0);
+                const data=await apiCall('/users/referrals');
+                const refs=Array.isArray(data.data?.referrals)?data.data.referrals:(Array.isArray(data.data)?data.data:[]);
+                S.referrals=refs;
+                const totalEarned=refs.reduce((sum,r)=>sum+(r.earned||0),0);
                 document.getElementById('refStatsRow').innerHTML=`<div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${refs.length}</div><div class="sl">Total Refs</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(totalEarned)}</div><div class="sl">Earned</div></div></div>`;
                 document.getElementById('referralTable').innerHTML=`<thead><tr><th>Name</th><th>Date</th><th>Status</th><th>Earned</th></tr></thead><tbody>${refs.map(r=>`<tr><td style="font-weight:600">${r.referred?.firstName||r.name||'User'}</td><td>${new Date(r.createdAt||r.date).toLocaleDateString()}</td><td><span class="pstatus ${r.status==='converted'?'ps-paid':'ps-pend'}">${r.status||'pending'}</span></td><td style="font-weight:800;color:var(--primary)">${fmtMoneyAPI(r.earned||0)}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;color:var(--text3)">No referrals yet</td></tr>'}</tbody>`;
             } catch(e){ document.getElementById('referralTable').innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--text3)">Could not load referrals</td></tr>'; }
@@ -4159,7 +4255,20 @@
         // LEADERBOARD
         // ═══════════════════════════════════════════
         async function loadLeaderboard(){ try{ const data=await apiCall('/users/leaderboard?limit=20'); S.leaderboard=Array.isArray(data.data)?data.data:[]; } catch(e){ S.leaderboard=[]; } }
-        function renderLB(){ const el=document.getElementById('lbFull'); if(!el) return; el.innerHTML=S.leaderboard.map((u,i)=>{ let value; switch(S.lbTab){ case'earnings':value=fmtMoneyAPI(u.totalEarned||0);break; case'streak':value=(u.streakDays||0)+' days';break; case'refs':value=(u.referralCount||0)+' refs';break; default:value=(u.xp||0).toLocaleString()+' XP'; } return `<div class="lb-row ${u._id===S.user?._id?'you':''}"><div class="lb-rank">${['🥇','🥈','🥉'][i]||i+1}</div><div class="lb-av" style="background:linear-gradient(135deg,var(--violet),var(--cyan))">${(u.firstName||'U')[0]}</div><div style="flex:1"><div style="font-size:.85rem;font-weight:600">${u.firstName||'User'} ${u._id===S.user?._id?'<span class="badge badge-primary" style="font-size:.55rem">You</span>':''}</div><div style="font-size:.71rem;color:var(--text3)">🔥 ${u.streakDays||0}-day streak</div></div><div style="font-weight:800;color:var(--primary)">${value}</div></div>`; }).join('')||'<div class="empty-state"><p>No leaderboard data</p></div>'; }
+        function renderLB(){
+            const el=document.getElementById('lbFull');
+            if(!el) return;
+            el.innerHTML=S.leaderboard.map((u,i)=>{
+                let value;
+                switch(S.lbTab){
+                    case'earnings':value=fmtMoneyAPI(u.totalEarned||0);break;
+                    case'streak':value=(u.streakDays||0)+' days';break;
+                    case'refs':value=(u.referralCount||0)+' refs';break;
+                    default:value=(u.xp||0).toLocaleString()+' XP';
+                }
+                return `<div class="lb-row ${u._id===S.user?._id?'you':''}"><div class="lb-rank">${['🥇','🥈','🥉'][i]||i+1}</div><div class="lb-av" style="background:linear-gradient(135deg,var(--violet),var(--cyan))">${(u.firstName||'U')[0]}</div><div style="flex:1"><div style="font-size:.85rem;font-weight:600">${u.firstName||'User'} ${u._id===S.user?._id?'<span class="badge badge-primary" style="font-size:.55rem">You</span>':''}</div><div style="font-size:.71rem;color:var(--text3)">🔥 ${u.streakDays||0}-day streak</div></div><div style="font-weight:800;color:var(--primary)">${value}</div></div>`;
+            }).join('')||'<div class="empty-state"><p>No leaderboard data</p></div>';
+        }
         function switchLbTab(tab,btn){ document.querySelectorAll('#dash-leaderboard .tab-btn').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); S.lbTab=tab; renderLB(); }
 
         // ═══════════════════════════════════════════
@@ -4171,19 +4280,27 @@
             try{ const statsRes=await apiCall('/affiliate/stats'); if(statsRes.data){ S.affiliateStats=statsRes.data; } const linksRes=await apiCall('/affiliate/my-links'); S.myAffiliateLinks=linksRes.data?.links||[]; } catch(e){ console.warn('Could not load affiliate stats:',e); }
             const offersHtml=S.affiliateOffers.length?S.affiliateOffers.map(c=>{ const price=c.salePrice||c.price||0; const percent=c.affiliatePercent||0; const commissionPerSale=Math.round(price*percent/100); const commissionText=commissionPerSale===0?'₦0 / sale':`${fmtMoneyAPI(commissionPerSale)} / sale`; return `<div class="affiliate-offer-card" data-course-id="${c._id}"><div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap"><div style="font-size:1.75rem">${c.thumbnail||c.emoji||'📚'}</div><div style="flex:1"><div style="font-weight:700">${c.title}</div><div style="font-size:.74rem;color:var(--text3)">${percent}% commission · ${commissionText}</div></div><button class="btn btn-violet btn-sm" onclick="acceptAff('${c._id}')"><i class="fas fa-handshake"></i>Accept & Get Link</button></div></div>`; }).join(''):'<div class="empty-state"><p>No affiliate offers available</p></div>';
             const myLinksHtml=S.myAffiliateLinks&&S.myAffiliateLinks.length?S.myAffiliateLinks.map(a=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.6rem"><div style="font-weight:600">${a.courseTitle||'Course'}</div><div class="ref-box mb-2" style="margin-top:.5rem"><span class="ref-link">${a.link}</span><button class="btn btn-primary btn-sm" onclick="navigator.clipboard?.writeText('${a.link}').then(()=>toast('Link copied!','success'))"><i class="fas fa-copy"></i>Copy</button></div><div style="display:flex;gap:1rem;margin-top:.5rem;font-size:.75rem;color:var(--text3)"><span><i class="fas fa-mouse-pointer"></i> ${a.clicks||0}</span><span><i class="fas fa-shopping-cart"></i> ${a.conversions||0}</span><span><i class="fas fa-wallet"></i> Earned: ${fmtMoneyAPI(a.totalEarned||0)}</span></div></div>`).join(''):'<div class="empty-state"><p>Accept affiliate offers above to get your links</p></div>';
-            document.getElementById('affiliateOffers').innerHTML=offersHtml; document.getElementById('myAffiliateLinks').innerHTML=myLinksHtml;
+            document.getElementById('affiliateOffers').innerHTML=offersHtml;
+            document.getElementById('myAffiliateLinks').innerHTML=myLinksHtml;
             const stats=S.affiliateStats||{totalClicks:0,totalConversions:0,totalEarned:0,linksCount:0};
             const statsRow=`<div class="col-6 col-md-3"><div class="stat-card"><div class="si si-v"><i class="fas fa-mouse-pointer"></i></div><div class="sv">${stats.totalClicks||0}</div><div class="sl">Clicks</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-user-plus"></i></div><div class="sv">${stats.totalSignups||0}</div><div class="sl">Signups</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-shopping-cart"></i></div><div class="sv">${stats.totalConversions||0}</div><div class="sl">Conversions</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(stats.totalEarned||0)}</div><div class="sl">Earned</div></div></div>`;
-            document.getElementById('affStatsRow').innerHTML=statsRow; document.getElementById('navAffBadge').textContent=S.myAffiliateLinks?.length||0; hideLoading();
+            document.getElementById('affStatsRow').innerHTML=statsRow;
+            document.getElementById('navAffBadge').textContent=S.myAffiliateLinks?.length||0;
+            hideLoading();
         }
         function acceptAff(courseId){ const c=S.affiliateOffers.find(x=>x._id===courseId); if(!c) return; const price=c.salePrice||c.price||0; const percent=c.affiliatePercent||0; const est=Math.round(price*percent/100); document.getElementById('affiliateModalBody').innerHTML=`<div style="text-align:center"><h5>${c.title}</h5><p>Commission: ${percent}% per sale</p><p style="font-size:.82rem;color:var(--text3)">Estimated: ${fmtMoneyAPI(est)} per sale</p></div>`; document.getElementById('affiliateModal')._courseId=courseId; openModal('affiliateModal'); }
         async function acceptAffiliateOffer(){
-            const courseId=document.getElementById('affiliateModal')?._courseId; const c=S.affiliateOffers.find(x=>x._id===courseId); if(!c) return;
-            const btn=document.querySelector('#affiliateModal .btn-violet'); if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner spin"></i> Accepting...'; }
+            const courseId=document.getElementById('affiliateModal')?._courseId;
+            const c=S.affiliateOffers.find(x=>x._id===courseId);
+            if(!c) return;
+            const btn=document.querySelector('#affiliateModal .btn-violet');
+            if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner spin"></i> Accepting...'; }
             try{ const res=await apiCall('/affiliate/accept',{method:'POST',body:{courseId}}); if(!res.success) throw new Error(res.message); const {link}=res.data; await refreshAffiliateData(); closeModal('affiliateModal'); toast(`✅ Affiliate link created! Link copied.`,'success'); if(link) navigator.clipboard.writeText(link); } catch(err){ toast(err.message||'Error creating affiliate link','error'); }
             finally{ if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-handshake"></i>Accept & Get Link'; } }
         }
-        async function refreshAffiliateData(){ try{ const statsRes=await apiCall('/affiliate/stats'); if(statsRes.success) S.affiliateStats=statsRes.data; const linksRes=await apiCall('/affiliate/my-links'); if(linksRes.success) S.myAffiliateLinks=linksRes.data.links||[]; if(S.dp==='affiliates') renderAffiliates(); } catch(e){ console.warn('Could not refresh affiliate data:',e); } }
+        async function refreshAffiliateData(){
+            try{ const statsRes=await apiCall('/affiliate/stats'); if(statsRes.success) S.affiliateStats=statsRes.data; const linksRes=await apiCall('/affiliate/my-links'); if(linksRes.success) S.myAffiliateLinks=linksRes.data.links||[]; if(S.dp==='affiliates') renderAffiliates(); } catch(e){ console.warn('Could not refresh affiliate data:',e); }
+        }
         function handleAffiliateOfferClick(courseId){ markAllRead(); setDP('affiliates'); setTimeout(()=>{ const offerCard=document.querySelector(`.affiliate-offer-card[data-course-id="${courseId}"]`); if(offerCard){ offerCard.scrollIntoView({behavior:'smooth',block:'center'}); offerCard.style.border='2px solid var(--primary)'; setTimeout(()=>{ offerCard.style.border=''; },2000); } },500); }
 
         // ═══════════════════════════════════════════
@@ -4191,18 +4308,77 @@
         // ═══════════════════════════════════════════
         function renderInstHub(){
             const hasCreatorAccess=S.isPremium||S.user?.roles?.includes('admin')||(S.user?.roles?.includes('creator')&&S.user?.isApprovedInstructor);
-            if(!hasCreatorAccess){ document.getElementById('instPremiumGate').style.display='block'; document.getElementById('instPremiumGate').innerHTML=`<div class="premium-gate-overlay"><h4>🔒 Premium Required</h4><p style="color:var(--text3)">Upgrade to Premium or get approved as an instructor to create & sell courses.</p><button class="btn btn-primary" onclick="openModal('premiumModal')">Upgrade — ₦5,000/mo</button></div>`; document.getElementById('instContent').style.display='none'; }
-            else { document.getElementById('instPremiumGate').style.display='none'; document.getElementById('instContent').style.display='block'; loadInstructorData(); }
+            if(!hasCreatorAccess){
+                document.getElementById('instPremiumGate').style.display='block';
+                document.getElementById('instPremiumGate').innerHTML=`<div class="premium-gate-overlay"><h4>🔒 Premium Required</h4><p style="color:var(--text3)">Upgrade to Premium or get approved as an instructor to create & sell courses.</p><button class="btn btn-primary" onclick="openModal('premiumModal')">Upgrade — ₦5,000/mo</button></div>`;
+                document.getElementById('instContent').style.display='none';
+            } else {
+                document.getElementById('instPremiumGate').style.display='none';
+                document.getElementById('instContent').style.display='block';
+                loadInstructorData();
+            }
         }
         async function loadInstructorData(){
-            try{ const data=await apiCall('/instructor/dashboard'); const stats=data.data||{}; S.instructorCourses=Array.isArray(stats.courses)?stats.courses:[]; document.getElementById('instCoursesTable').innerHTML=`<thead><tr><th>Course</th><th>Status</th><th>Students</th><th>Revenue</th><th>Actions</th></tr></thead><tbody>${S.instructorCourses.map(c=>{ const statusLabel=c.isApproved?'Live':c.pendingApproval?'Pending':'Draft'; const statusClass=c.isApproved?'ps-paid':c.pendingApproval?'ps-pend':'ps-fail'; return `<tr><td><div style="display:flex;align-items:center;gap:.5rem"><span>📚</span><span>${c.title||'Course'}</span></div></td><td><span class="pstatus ${statusClass}">${statusLabel}</span></td><td>${c.totalStudents||0}</td><td style="font-weight:700;color:var(--primary)">${fmtMoneyAPI(c.instructorEarnings||c.totalRevenue||0)}</td><td><button class="btn btn-ghost btn-sm" onclick="editExistingCourse('${c._id}')"><i class="fas fa-edit"></i> Edit</button>${!c.isApproved&&!c.pendingApproval?`<button class="btn btn-primary btn-sm" onclick="submitExistingCourse('${c._id}')"><i class="fas fa-paper-plane"></i> Submit</button>`:''}</td></tr>`; }).join('')||'<tr><td colspan="5" style="text-align:center">No courses yet</td></tr>'}</tbody>`; document.getElementById('instStatsRow').innerHTML=`<div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-book"></i></div><div class="sv">${stats.totalCourses||S.instructorCourses.length||0}</div><div class="sl">Courses</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-users"></i></div><div class="sv">${stats.totalStudents||0}</div><div class="sl">Students</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(stats.totalRevenue||0)}</div><div class="sl">Revenue</div></div></div>`; if(stats.pendingQuestions>0&&S.instructorCourses.length>0){ document.getElementById('instQANotifs').style.display='block'; try{ const qData=await apiCall(`/instructor/courses/${S.instructorCourses[0]._id}/questions`); const qs=Array.isArray(qData.data)?qData.data:[]; document.getElementById('instQAList').innerHTML=qs.slice(0,5).map(q=>`<div style="padding:.5rem;background:var(--bg2);border-radius:var(--radius-sm);margin-bottom:.3rem;font-size:.79rem"><strong>${q.user?.firstName||'Student'}:</strong> ${q.question}<button class="btn btn-ghost btn-sm" style="font-size:.65rem;padding:.15rem .5rem;margin-left:.5rem" onclick="openQAReply('${q._id}','${(q.question||'').replace(/'/g,"\\'")}')">Reply</button></div>`).join(''); } catch(e){} } await loadInstructorSales(); } catch(e){ toast('Could not load instructor data: '+e.message,'error'); }
+            try{
+                const data=await apiCall('/instructor/dashboard');
+                const stats=data.data||{};
+                S.instructorCourses=Array.isArray(stats.courses)?stats.courses:[];
+                document.getElementById('instCoursesTable').innerHTML=`<thead><tr><th>Course</th><th>Status</th><th>Students</th><th>Revenue</th><th>Actions</th></tr></thead><tbody>${S.instructorCourses.map(c=>{ const statusLabel=c.isApproved?'Live':c.pendingApproval?'Pending':'Draft'; const statusClass=c.isApproved?'ps-paid':c.pendingApproval?'ps-pend':'ps-fail'; return `<tr><td><div style="display:flex;align-items:center;gap:.5rem"><span>📚</span><span>${c.title||'Course'}</span></div></td><td><span class="pstatus ${statusClass}">${statusLabel}</span></td><td>${c.totalStudents||0}</td><td style="font-weight:700;color:var(--primary)">${fmtMoneyAPI(c.instructorEarnings||c.totalRevenue||0)}</td><td><button class="btn btn-ghost btn-sm" onclick="editExistingCourse('${c._id}')"><i class="fas fa-edit"></i> Edit</button>${!c.isApproved&&!c.pendingApproval?`<button class="btn btn-primary btn-sm" onclick="submitExistingCourse('${c._id}')"><i class="fas fa-paper-plane"></i> Submit</button>`:''}</td></tr>`; }).join('')||'<tr><td colspan="5" style="text-align:center">No courses yet</td></tr>'}</tbody>`;
+                document.getElementById('instStatsRow').innerHTML=`<div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-book"></i></div><div class="sv">${stats.totalCourses||S.instructorCourses.length||0}</div><div class="sl">Courses</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-users"></i></div><div class="sv">${stats.totalStudents||0}</div><div class="sl">Students</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(stats.totalRevenue||0)}</div><div class="sl">Revenue</div></div></div>`;
+                if(stats.pendingQuestions>0&&S.instructorCourses.length>0){
+                    document.getElementById('instQANotifs').style.display='block';
+                    try{ const qData=await apiCall(`/instructor/courses/${S.instructorCourses[0]._id}/questions`); const qs=Array.isArray(qData.data)?qData.data:[]; document.getElementById('instQAList').innerHTML=qs.slice(0,5).map(q=>`<div style="padding:.5rem;background:var(--bg2);border-radius:var(--radius-sm);margin-bottom:.3rem;font-size:.79rem"><strong>${q.user?.firstName||'Student'}:</strong> ${q.question}<button class="btn btn-ghost btn-sm" style="font-size:.65rem;padding:.15rem .5rem;margin-left:.5rem" onclick="openQAReply('${q._id}','${(q.question||'').replace(/'/g,"\\'")}')">Reply</button></div>`).join(''); } catch(e){}
+                }
+                await loadInstructorSales();
+            } catch(e){ toast('Could not load instructor data: '+e.message,'error'); }
         }
-        async function loadInstructorSales(){ const el=document.getElementById('instSalesContent'); if(!el) return; try{ const data=await apiCall('/instructor/dashboard'); const stats=data.data||{}; const courses=Array.isArray(stats.courses)?stats.courses:[]; let totalSales=0; courses.forEach(c=>{ totalSales+=c.totalRevenue||0; }); el.innerHTML=`<div class="row mb-3"><div class="col-6 col-md-4"><div class="stat-card"><div class="sv">${fmtMoneyAPI(totalSales)}</div><div class="sl">Total Revenue</div></div></div><div class="col-6 col-md-4"><div class="stat-card"><div class="sv">${fmtMoneyAPI(totalSales*0.8)}</div><div class="sl">Your Share (80%)</div></div></div><div class="col-6 col-md-4"><div class="stat-card"><div class="sv">${fmtMoneyAPI(totalSales*0.7)}</div><div class="sl">Net (70%)</div></div></div></div><div class="overflow-x-auto"><table class="dtable"><thead><tr><th>Course</th><th>Price</th><th>Students</th><th>Your Cut (70%)</th></tr></thead><tbody>${courses.map(c=>`<tr><td>${c.title||'Course'}</td><td>${fmtMoneyAPI(c.price||0)}</td><td>${c.totalStudents||0}</td><td style="color:var(--primary);font-weight:700">${fmtMoneyAPI(Math.round((c.price||0)*0.7*(c.totalStudents||0)))}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center">No sales data</td></tr>'}</tbody></table></div>`; document.getElementById('instEarningsContent').innerHTML=`<div class="web-row"><span>Platform Fee (20%)</span><span>${fmtMoneyAPI(totalSales*0.2)}</span></div><div class="web-row"><span>Your Share (80%)</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(totalSales*0.8)}</span></div><div class="web-row"><span style="font-weight:700">Net to You (70%)</span><span style="color:var(--primary);font-weight:800">${fmtMoneyAPI(totalSales*0.7)}</span></div>`; } catch(e){ el.innerHTML='<div class="empty-state"><p>Loading sales data...</p></div>'; } }
-        function switchInstTab(tab,btn){ document.querySelectorAll('#dash-instructor .tab-btn').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); document.getElementById('inst-tab-courses').style.display=tab==='courses'?'block':'none'; document.getElementById('inst-tab-sales').style.display=tab==='sales'?'block':'none'; document.getElementById('inst-tab-earnings').style.display=tab==='earnings'?'block':'none'; S.instTab=tab; if(tab==='sales') loadInstructorSales(); }
+        async function loadInstructorSales(){
+            const el=document.getElementById('instSalesContent');
+            if(!el) return;
+            try{ const data=await apiCall('/instructor/dashboard'); const stats=data.data||{}; const courses=Array.isArray(stats.courses)?stats.courses:[]; let totalSales=0; courses.forEach(c=>{ totalSales+=c.totalRevenue||0; }); el.innerHTML=`<div class="row mb-3"><div class="col-6 col-md-4"><div class="stat-card"><div class="sv">${fmtMoneyAPI(totalSales)}</div><div class="sl">Total Revenue</div></div></div><div class="col-6 col-md-4"><div class="stat-card"><div class="sv">${fmtMoneyAPI(totalSales*0.8)}</div><div class="sl">Your Share (80%)</div></div></div><div class="col-6 col-md-4"><div class="stat-card"><div class="sv">${fmtMoneyAPI(totalSales*0.7)}</div><div class="sl">Net (70%)</div></div></div></div><div class="overflow-x-auto"><table class="dtable"><thead><tr><th>Course</th><th>Price</th><th>Students</th><th>Your Cut (70%)</th></tr></thead><tbody>${courses.map(c=>`<tr><td>${c.title||'Course'}</td><td>${fmtMoneyAPI(c.price||0)}</td><td>${c.totalStudents||0}</td><td style="color:var(--primary);font-weight:700">${fmtMoneyAPI(Math.round((c.price||0)*0.7*(c.totalStudents||0)))}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center">No sales data</td></tr>'}</tbody></table></div>`; document.getElementById('instEarningsContent').innerHTML=`<div class="web-row"><span>Platform Fee (20%)</span><span>${fmtMoneyAPI(totalSales*0.2)}</span></div><div class="web-row"><span>Your Share (80%)</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(totalSales*0.8)}</span></div><div class="web-row"><span style="font-weight:700">Net to You (70%)</span><span style="color:var(--primary);font-weight:800">${fmtMoneyAPI(totalSales*0.7)}</span></div>`; } catch(e){ el.innerHTML='<div class="empty-state"><p>Loading sales data...</p></div>'; }
+        }
+        function switchInstTab(tab,btn){
+            document.querySelectorAll('#dash-instructor .tab-btn').forEach(b=>b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            document.getElementById('inst-tab-courses').style.display=tab==='courses'?'block':'none';
+            document.getElementById('inst-tab-sales').style.display=tab==='sales'?'block':'none';
+            document.getElementById('inst-tab-earnings').style.display=tab==='earnings'?'block':'none';
+            S.instTab=tab;
+            if(tab==='sales') loadInstructorSales();
+        }
         function openQAReply(questionId,question){ document.getElementById('qaReplyContext').innerHTML=`<div style="font-size:.84rem"><strong>Student:</strong> ${question}</div>`; document.getElementById('qaReplyModal')._questionId=questionId; openModal('qaReplyModal'); }
-        async function editExistingCourse(courseId){ try{ const data=await apiCall(`/courses/${courseId}`); S.currentCourseData=data.data||data; document.getElementById('edTitle').value=S.currentCourseData.title||''; document.getElementById('edSubtitle').value=S.currentCourseData.subtitle||''; document.getElementById('edCategory').value=S.currentCourseData.category||'Web Development'; document.getElementById('edLevel').value=S.currentCourseData.level||'Beginner'; document.getElementById('edEmoji').value=S.currentCourseData.thumbnail||S.currentCourseData.emoji||'📚'; if(S.currentCourseData.price) document.getElementById('edPrice').value=S.currentCourseData.price; if(S.currentCourseData.salePrice) document.getElementById('edSalePrice').value=S.currentCourseData.salePrice; S.editorLessons=Array.isArray(S.currentCourseData.lessons)?S.currentCourseData.lessons:[]; S.quizBuilderList=(S.currentCourseData.quizzes||[]).flatMap(q=>(q.questions||[]).map(qq=>({question:qq.question, options:qq.options||[], correctIdx:qq.correctAnswer}))); setDP('course-editor'); goES(1); loadDraftFromLocalStorage(courseId); setTimeout(()=>{ if(S.quillEditors['descEditorQuill']){ S.quillEditors['descEditorQuill'].root.innerHTML=S.currentCourseData.description||''; } },300); toast('Course loaded for editing','success'); } catch(e){ toast('Failed to load course: '+e.message,'error'); } }
-        async function submitExistingCourse(courseId){ if(!confirm('Submit this course for admin approval? It will be reviewed before going live.')) return; showLoading('Submitting course...'); try{ await apiCall(`/instructor/courses/${courseId}/submit`,{method:'POST'}); toast('🚀 Course submitted for review!','success'); hideLoading(); loadInstructorData(); } catch(e){ toast('Failed to submit: '+e.message,'error'); hideLoading(); } }
-        function initNewCourse(){ const hasCreatorAccess=S.isPremium||S.user?.roles?.includes('admin')||(S.user?.roles?.includes('creator')&&S.user?.isApprovedInstructor); if(!hasCreatorAccess){ toast('Upgrade to Premium to create courses','warning'); openModal('premiumModal'); return; } S.editorLessons=[]; S.quizBuilderList=[]; S.outcomes=[]; S.uploadedFiles=[]; S.esStep=1; S.currentCourseData=null; document.getElementById('edTitle').value=''; document.getElementById('edSubtitle').value=''; document.getElementById('edPrice').value=''; document.getElementById('edSalePrice').value=''; document.getElementById('edCourseTitle').textContent='Untitled Course'; loadDraftFromLocalStorage('new'); setDP('course-editor'); goES(1); startAutoSave(); }
+        async function editExistingCourse(courseId){
+            try{
+                const data=await apiCall(`/courses/${courseId}`); S.currentCourseData=data.data||data;
+                document.getElementById('edTitle').value=S.currentCourseData.title||'';
+                document.getElementById('edSubtitle').value=S.currentCourseData.subtitle||'';
+                document.getElementById('edCategory').value=S.currentCourseData.category||'Web Development';
+                document.getElementById('edLevel').value=S.currentCourseData.level||'Beginner';
+                document.getElementById('edEmoji').value=S.currentCourseData.thumbnail||S.currentCourseData.emoji||'📚';
+                if(S.currentCourseData.price) document.getElementById('edPrice').value=S.currentCourseData.price;
+                if(S.currentCourseData.salePrice) document.getElementById('edSalePrice').value=S.currentCourseData.salePrice;
+                S.editorLessons=Array.isArray(S.currentCourseData.lessons)?S.currentCourseData.lessons:[];
+                S.quizBuilderList=(S.currentCourseData.quizzes||[]).flatMap(q=>(q.questions||[]).map(qq=>({question:qq.question, options:qq.options||[], correctIdx:qq.correctAnswer})));
+                setDP('course-editor'); goES(1); loadDraftFromLocalStorage(courseId);
+                setTimeout(()=>{ if(S.quillEditors['descEditorQuill']){ S.quillEditors['descEditorQuill'].root.innerHTML=S.currentCourseData.description||''; } },300);
+                toast('Course loaded for editing','success');
+            } catch(e){ toast('Failed to load course: '+e.message,'error'); }
+        }
+        async function submitExistingCourse(courseId){
+            if(!confirm('Submit this course for admin approval? It will be reviewed before going live.')) return;
+            showLoading('Submitting course...');
+            try{ await apiCall(`/instructor/courses/${courseId}/submit`,{method:'POST'}); toast('🚀 Course submitted for review!','success'); hideLoading(); loadInstructorData(); } catch(e){ toast('Failed to submit: '+e.message,'error'); hideLoading(); }
+        }
+        function initNewCourse(){
+            const hasCreatorAccess=S.isPremium||S.user?.roles?.includes('admin')||(S.user?.roles?.includes('creator')&&S.user?.isApprovedInstructor);
+            if(!hasCreatorAccess){ toast('Upgrade to Premium to create courses','warning'); openModal('premiumModal'); return; }
+            S.editorLessons=[]; S.quizBuilderList=[]; S.outcomes=[]; S.uploadedFiles=[]; S.esStep=1; S.currentCourseData=null;
+            document.getElementById('edTitle').value=''; document.getElementById('edSubtitle').value='';
+            document.getElementById('edPrice').value=''; document.getElementById('edSalePrice').value='';
+            document.getElementById('edCourseTitle').textContent='Untitled Course';
+            loadDraftFromLocalStorage('new');
+            setDP('course-editor'); goES(1); startAutoSave();
+        }
 
         // ═══════════════════════════════════════════
         // DRAFT AUTO-SAVE TO LOCALSTORAGE
@@ -4301,10 +4477,21 @@
         function verifyAccount(val){ const st=document.getElementById('accVerifyStatus'); if(!st) return; if(val.length===10){ st.style.display='block'; st.style.color='var(--success)'; st.textContent='✅ Account verified'; document.getElementById('wiz-accname').value='Account Name Verified'; } }
         async function finishWizard(isPremium){
             if(S.user){
-                S.user.setupDone=true; S.user.isPremium=isPremium; S.isPremium=isPremium; localStorage.setItem('cx_user',JSON.stringify(S.user));
-                try{ await apiCall('/users/profile',{method:'PUT',body:{setupDone:true,roles:S.wizRoles.length?S.wizRoles:['student'],bio:document.getElementById('wiz-bio')?.value||'',location:document.getElementById('wiz-loc')?.value||''}}); try{ await apiCall('/users/claim-welcome-bonus',{method:'POST'}); toast('🎉 Welcome bonus ₦500 added to your wallet!','success'); renderWallet(); } catch(e){ console.warn('Bonus already claimed or not available'); } } catch(e){ console.warn('Could not save wizard profile:',e.message); }
+                S.user.setupDone=true;
+                S.user.isPremium=isPremium;
+                S.isPremium=isPremium;
+                localStorage.setItem('cx_user',JSON.stringify(S.user));
+                try{
+                    await apiCall('/users/profile',{method:'PUT',body:{setupDone:true,roles:S.wizRoles.length?S.wizRoles:['student'],bio:document.getElementById('wiz-bio')?.value||'',location:document.getElementById('wiz-loc')?.value||''}});
+                    try{
+                        await apiCall('/users/claim-welcome-bonus',{method:'POST'});
+                        toast('🎉 Welcome bonus ₦500 added to your wallet!','success');
+                        renderWallet();
+                    } catch(e){ console.warn('Bonus already claimed or not available'); }
+                } catch(e){ console.warn('Could not save wizard profile:',e.message); }
             }
-            goPage('app'); renderWallet();
+            goPage('app');
+            renderWallet();
         }
 
         // ═══════════════════════════════════════════
@@ -4366,7 +4553,26 @@
             if(urlRef){ localStorage.setItem('cx_pending_ref',urlRef.toUpperCase()); }
             try{ const saved=JSON.parse(localStorage.getItem('cx_user')||'null'); if(saved){ S.user=saved; S.loggedIn=true; S.isPremium=saved.isPremium||saved.subscriptionTier==='premium'||false; S.walletBal=saved.walletBalance||0; } } catch(e){}
             const token=localStorage.getItem('cx_accessToken');
-            if(token&&S.loggedIn){ startTokenRefreshTimer(); try{ const userData=await apiCall('/users/profile'); S.user={...S.user,...(userData.data||userData)}; S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false; S.walletBal=S.user.walletBalance||0; S.loggedIn=true; S.user.setupDone=S.user.setupDone===true; currentCurrency=S.user.preferredCurrency||localStorage.getItem('cx_currency')||'NGN'; localStorage.setItem('cx_user',JSON.stringify(S.user)); updateUserUI(); updateAdVisibility(); const hash=window.location.hash.slice(1); if(hash.startsWith('courses/')){ const courseId=hash.split('/')[1]; if(courseId) setTimeout(()=>openBuyCourse(courseId),1000); } else if(hash==='app'||hash==='setup') goPage(hash); else goPage('app'); } catch(e){ localStorage.removeItem('cx_accessToken'); localStorage.removeItem('cx_user'); S.loggedIn=false; goPage('landing'); } }
+            if(token&&S.loggedIn){
+                try{
+                    const userData=await apiCall('/users/profile');
+                    S.user={...S.user,...(userData.data||userData)};
+                    S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false;
+                    S.walletBal=S.user.walletBalance||0; S.loggedIn=true; S.user.setupDone=S.user.setupDone===true;
+                    currentCurrency=S.user.preferredCurrency||localStorage.getItem('cx_currency')||'NGN';
+                    localStorage.setItem('cx_user',JSON.stringify(S.user));
+                    updateUserUI(); updateAdVisibility();
+                    const hash=window.location.hash.slice(1);
+                    if(hash.startsWith('courses/')){
+                        const courseId=hash.split('/')[1];
+                        if(courseId) setTimeout(()=>openBuyCourse(courseId),1000);
+                    } else if(hash==='app'||hash==='setup') goPage(hash);
+                    else goPage('app');
+                } catch(e){
+                    localStorage.removeItem('cx_accessToken'); localStorage.removeItem('cx_user');
+                    S.loggedIn=false; goPage('landing');
+                }
+            }
             else{ const hash=window.location.hash.slice(1); if(hash==='app'||hash==='setup') goPage('landing'); else goPage('landing'); }
             initLanding(); updateThemeIcons(); updateAdVisibility(); if(S.loggedIn){ initApp().catch(()=>{}); }
             const pendingRef=localStorage.getItem('cx_pending_ref');
@@ -4377,10 +4583,49 @@
         (function(){
             const params=new URLSearchParams(window.location.search);
             const token=params.get('token'); const refreshToken=params.get('refreshToken'); const reference=params.get('reference');
-            if(token){ localStorage.setItem('cx_accessToken',token); if(refreshToken) localStorage.setItem('cx_refreshToken',refreshToken); startTokenRefreshTimer(); toast('✅ Authenticated! Loading dashboard...','success'); window.history.replaceState({},'',window.location.pathname); try{ const payload=JSON.parse(atob(token.split('.')[1])); S.user=payload.user||payload; S.loggedIn=true; S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false; S.walletBal=S.user.walletBalance||0; localStorage.setItem('cx_user',JSON.stringify(S.user)); (async()=>{ try{ const userData=await apiCall('/users/profile'); S.user={...S.user,...(userData.data||userData)}; S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false; S.user.setupDone=S.user.setupDone===true; S.loggedIn=true; localStorage.setItem('cx_user',JSON.stringify(S.user)); updateUserUI(); updateAdVisibility(); } catch(e){} if(S.user?.setupDone){ goPage('app'); } else{ goPage('setup'); } })(); } catch(e){ goPage('app'); } }
-            if(reference){ (async()=>{ try{ await apiCall(`/payments/verify-subscription?reference=${reference}`); toast('Subscription activated! 🎉','success'); S.isPremium=true; S.user.isPremium=true; S.user.subscriptionTier='premium'; localStorage.setItem('cx_user',JSON.stringify(S.user)); updateUserUI(); updateAdVisibility(); } catch(e){ console.warn('Subscription verification failed:',e.message); } window.history.replaceState({},'',window.location.pathname); })(); }
+            if(token){
+                localStorage.setItem('cx_accessToken',token);
+                if(refreshToken) localStorage.setItem('cx_refreshToken',refreshToken);
+                toast('✅ Authenticated! Loading dashboard...','success');
+                window.history.replaceState({},'',window.location.pathname);
+                try{
+                    const payload=JSON.parse(atob(token.split('.')[1]));
+                    S.user=payload.user||payload;
+                    S.loggedIn=true; S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false;
+                    S.walletBal=S.user.walletBalance||0;
+                    localStorage.setItem('cx_user',JSON.stringify(S.user));
+                    (async()=>{
+                        try{
+                            const userData=await apiCall('/users/profile');
+                            S.user={...S.user,...(userData.data||userData)};
+                            S.isPremium=S.user.isPremium||S.user.subscriptionTier==='premium'||false;
+                            S.user.setupDone=S.user.setupDone===true;
+                            S.loggedIn=true;
+                            localStorage.setItem('cx_user',JSON.stringify(S.user));
+                            updateUserUI(); updateAdVisibility();
+                        } catch(e){}
+                        if(S.user?.setupDone){ goPage('app'); } else{ goPage('setup'); }
+                    })();
+                } catch(e){ goPage('app'); }
+            }
+            if(reference){
+                (async()=>{
+                    try{
+                        await apiCall(`/payments/verify-subscription?reference=${reference}`);
+                        toast('Subscription activated! 🎉','success');
+                        S.isPremium=true; S.user.isPremium=true; S.user.subscriptionTier='premium';
+                        localStorage.setItem('cx_user',JSON.stringify(S.user));
+                        updateUserUI(); updateAdVisibility();
+                    } catch(e){ console.warn('Subscription verification failed:',e.message); }
+                    window.history.replaceState({},'',window.location.pathname);
+                })();
+            }
             const ref=params.get('ref'); if(ref&&!S.loggedIn){ localStorage.setItem('cx_pending_ref',ref.toUpperCase()); }
-            const refFromStorage=localStorage.getItem('cx_pending_ref'); if(refFromStorage&&S.loggedIn){ localStorage.removeItem('cx_pending_ref'); document.getElementById('regRef')&&(document.getElementById('regRef').value=refFromStorage); }
+            const refFromStorage=localStorage.getItem('cx_pending_ref');
+            if(refFromStorage&&S.loggedIn){
+                localStorage.removeItem('cx_pending_ref');
+                document.getElementById('regRef')&&(document.getElementById('regRef').value=refFromStorage);
+            }
         })();
     </script>
 </body>
