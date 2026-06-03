@@ -2493,26 +2493,25 @@
             color: #fff;
             flex-shrink: 0;
         }
+        /* ✅ LESSON LAYOUT – Vertical expansion fix */
         .lesson-layout {
             display: flex;
             flex-direction: row;
             gap: 1.5rem;
-            height: calc(100vh - 120px);
-            overflow: hidden;
+            min-height: 0; /* allow flex children to shrink */
         }
-        /* ✅ FIX: Enable scrolling on both columns */
-        .lesson-layout>div:first-child {
+        .lesson-layout > div:first-child {
             flex: 2;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            max-height: 100%;
+            max-height: none; /* removed fixed height */
             padding-right: 8px;
         }
-        .lesson-layout>div:last-child {
+        .lesson-layout > div:last-child {
             flex: 1;
             overflow-y: auto;
-            max-height: 100%;
+            max-height: none;
         }
         .video-wrap {
             flex-shrink: 0;
@@ -2520,12 +2519,11 @@
         }
         .lesson-sub {
             flex: 1;
-            overflow-y: auto;
+            overflow-y: visible; /* allow content to expand */
             padding-bottom: 2rem;
         }
-        /* ✅ FIX: remove fixed max-height, use natural overflow */
         .lesson-sub.active {
-            overflow-y: auto;
+            overflow-y: visible;
             padding: 0 8px 20px 0;
         }
         #curricList {
@@ -2538,14 +2536,14 @@
                 height: auto;
                 overflow: visible;
             }
-            .lesson-layout>div:first-child,
-            .lesson-layout>div:last-child {
+            .lesson-layout > div:first-child,
+            .lesson-layout > div:last-child {
                 max-height: none;
                 overflow-y: visible;
             }
             .lesson-sub {
-                max-height: none; /* allow full height */
-                overflow-y: auto;
+                max-height: none;
+                overflow-y: visible;
             }
         }
         .video-wrap iframe,
@@ -3485,7 +3483,7 @@
     <div class="modal-ov hidden" id="rateModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">⭐ Rate This Course</h5><button class="btn-icon-sm" onclick="closeModal('rateModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><p style="color:var(--text3);font-size:.84rem;margin-bottom:1rem">Your feedback helps instructors improve and helps other students make better choices.</p><div style="text-align:center;margin-bottom:1rem"><div style="display:flex;justify-content:center;gap:.35rem;font-size:2rem;cursor:pointer" id="starRow"><span onclick="setRating(1)" class="star-pick" data-v="1">☆</span><span onclick="setRating(2)" class="star-pick" data-v="2">☆</span><span onclick="setRating(3)" class="star-pick" data-v="3">☆</span><span onclick="setRating(4)" class="star-pick" data-v="4">☆</span><span onclick="setRating(5)" class="star-pick" data-v="5">☆</span></div><p id="ratingLabel" style="font-size:.8rem;color:var(--text3);margin-top:.35rem">Tap to rate</p></div><div class="form-group"><label class="flabel">Review (optional)</label><textarea class="finput" id="rateReview" style="min-height:90px;resize:vertical" placeholder="What did you like or dislike?"></textarea></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('rateModal')">Cancel</button><button class="btn btn-primary" onclick="submitRating()"><i class="fas fa-star"></i>Submit Review</button></div></div></div>
     <div class="modal-ov hidden" id="addLessonModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">Add Lesson</h5><button class="btn-icon-sm" onclick="closeModal('addLessonModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div class="form-group"><label class="flabel">Lesson Title</label><input type="text" class="finput" id="newLessonTitle" placeholder="e.g. Introduction to Variables"/></div><div class="form-group"><label class="flabel">Lesson Type</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.35rem" id="lessonTypeGrid"><div class="lesson-type-opt selected" data-type="video" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid rgba(0,229,255,.3);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-video"><i class="fas fa-play"></i></div><div><div style="font-size:.84rem;font-weight:600;color:var(--cyan)">Video</div><div style="font-size:.7rem;color:var(--text3)">Upload or link</div></div></div><div class="lesson-type-opt" data-type="text" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-text"><i class="fas fa-file-alt"></i></div><div><div style="font-size:.84rem;font-weight:600">Article</div><div style="font-size:.7rem;color:var(--text3)">Rich text</div></div></div><div class="lesson-type-opt" data-type="quiz" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-quiz"><i class="fas fa-question-circle"></i></div><div><div style="font-size:.84rem;font-weight:600">Quiz</div><div style="font-size:.7rem;color:var(--text3)">MCQ, T/F</div></div></div><div class="lesson-type-opt" data-type="assignment" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-assign"><i class="fas fa-tasks"></i></div><div><div style="font-size:.84rem;font-weight:600">Assignment</div><div style="font-size:.7rem;color:var(--text3)">Project</div></div></div></div></div><div class="form-group"><label class="flabel">Duration (mins)</label><input type="number" class="finput" id="newLessonDur" placeholder="e.g. 20"/></div><div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem"><input type="checkbox" id="lessonPreview" style="accent-color:var(--primary)"/><label for="lessonPreview" style="color:var(--text2);cursor:pointer">Allow free preview</label></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('addLessonModal')">Cancel</button><button class="btn btn-primary" onclick="confirmAddLesson()"><i class="fas fa-plus"></i>Add Lesson</button></div></div></div>
     <div class="modal-ov hidden" id="affiliateModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">🤝 Affiliate Offer</h5><button class="btn-icon-sm" onclick="closeModal('affiliateModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd" id="affiliateModalBody"></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('affiliateModal')">Decline</button><button class="btn btn-violet" onclick="acceptAffiliateOffer()"><i class="fas fa-handshake"></i>Accept & Get Link</button></div></div></div>
-    <div class="modal-ov hidden" id="certUploadModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">📜 Upload Certificate</h5><button class="btn-icon-sm" onclick="closeModal('certUploadModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div class="form-group"><label class="flabel">Student Name</label><input type="text" class="finput" id="certStudentName" placeholder="Enter student full name"/></div><div class="form-group"><label class="flabel">Course</label><input type="text" class="finput" id="certCourseName" readonly/></div><div class="form-group"><label class="flabel">Certificate File</label><div class="upload-zone" style="padding:1.5rem"><input type="file" accept=".pdf,.png,.jpg" onchange="handleCertFile(this)"/><div class="upload-icon"><i class="fas fa-certificate"></i></div><div style="font-size:.82rem;color:var(--text2)">Upload certificate (PDF or Image)</div></div></div><div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem"><input type="checkbox" id="certNotify" checked style="accent-color:var(--primary)"/><label for="certNotify" style="color:var(--text2);cursor:pointer">Notify student when uploaded</label></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('certUploadModal')">Cancel</button><button class="btn btn-primary" onclick="uploadCertificate()"><i class="fas fa-upload"></i>Upload</button></div></div></div>
+    <div class="modal-ov hidden" id="certUploadModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">📜 Upload Certificate Template</h5><button class="btn-icon-sm" onclick="closeModal('certUploadModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div class="form-group"><label class="flabel">Course</label><input type="text" class="finput" id="certCourseName" readonly/></div><div class="form-group"><label class="flabel">Certificate Template (Image)</label><div class="upload-zone" style="padding:1.5rem"><input type="file" accept="image/*" onchange="handleCertTemplateFile(this)"/><div class="upload-icon"><i class="fas fa-certificate"></i></div><div style="font-size:.82rem;color:var(--text2)">Upload a custom certificate background (recommended size: 1123x794px)</div></div></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('certUploadModal')">Cancel</button><button class="btn btn-primary" onclick="uploadCertificateTemplate()"><i class="fas fa-upload"></i>Upload Template</button></div></div></div>
     <div class="modal-ov hidden" id="qaReplyModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">💬 Reply to Question</h5><button class="btn-icon-sm" onclick="closeModal('qaReplyModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div class="qa-item" id="qaReplyContext" style="margin-bottom:1rem"></div><div class="form-group"><label class="flabel">Your Reply</label><textarea class="finput" id="qaReplyText" style="min-height:100px;resize:vertical" placeholder="Type your answer..."></textarea></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('qaReplyModal')">Cancel</button><button class="btn btn-primary" onclick="submitQAReply()"><i class="fas fa-paper-plane"></i>Post Reply</button></div></div></div>
     <div class="modal-ov hidden" id="couponModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">🏷️ Create Coupon</h5><button class="btn-icon-sm" onclick="closeModal('couponModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div class="form-group"><label class="flabel">Coupon Code</label><input type="text" class="finput" id="couponCode" placeholder="e.g. LAUNCH50"/></div><div class="form-group"><label class="flabel">Discount Percentage</label><input type="number" class="finput" id="couponPercent" placeholder="e.g. 25" min="5" max="100"/></div><div class="form-group"><label class="flabel">Max Uses (0 = unlimited)</label><input type="number" class="finput" id="couponMaxUses" placeholder="e.g. 100" min="0"/></div><div class="form-group"><label class="flabel">Expiry Date</label><input type="date" class="finput" id="couponExpiry"/></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('couponModal')">Cancel</button><button class="btn btn-primary" onclick="createCoupon()"><i class="fas fa-plus"></i>Create Coupon</button></div></div></div>
     <div class="modal-ov hidden" id="feedbackModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">📢 Send Feedback</h5><button class="btn-icon-sm" onclick="closeModal('feedbackModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div class="form-group"><label class="flabel">Your Message</label><textarea class="finput" id="feedbackMsg" style="min-height:120px" placeholder="Tell us what you love, what's broken, or what you'd like to see..."></textarea></div><div class="form-group"><label class="flabel">Your Email (optional, for replies)</label><input type="email" class="finput" id="feedbackEmail" placeholder="you@example.com" /></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('feedbackModal')">Cancel</button><button class="btn btn-primary" onclick="sendFeedback()">Send Feedback</button></div></div></div>
@@ -3497,14 +3495,13 @@
 
     <script>
         // ═══════════════════════════════════════════
-        // AFFILIATE ROUTING — FIXED: uses correct API_BASE endpoint
+        // AFFILIATE ROUTING — uses correct API_BASE endpoint
         // ═══════════════════════════════════════════
         (function handleAffiliateRouting() {
             const path = window.location.pathname;
             const match = path.match(/^\/aff\/([^\/]+)\/([^\/]+)\/([^\/]+)/);
             if (match) {
                 const [, userId, courseId, code] = match;
-                // ✅ FIX: Use the real tracking endpoint with API_BASE
                 fetch(`${API_BASE}/affiliate/track/${code}`, {
                     method: 'GET',
                     credentials: 'include'
@@ -3673,7 +3670,7 @@
             landingInstructors:[], leaderboard:[], transactions:[],
             referrals:[], affiliateOffers:[], instructorCourses:[],
             enrollments:[], courseFilter:'all', quillEditors:{},
-            currentCourseData:null, certFile:null, adminUsers:[],
+            currentCourseData:null, certFile:null, certTemplateFile:null, adminUsers:[],
             adminCourses:[], adminWithdrawals:[], pendingApprovals:[],
             appCourses:[], instTab:'courses', affiliateStats:null, lessonStartTime:null
         };
@@ -3944,7 +3941,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // MULTI-CURRENCY — FIXED: removed duplicate /v1
+        // MULTI-CURRENCY
         // ═══════════════════════════════════════════
         async function loadExchangeRates(){ try{ const res=await apiCall('/currency/rates'); if(res.data) exchangeRates={NGN:1,...res.data}; } catch(e){ console.warn('Using fallback rates'); } }
         async function updateCurrencyPreference(currency){
@@ -4154,7 +4151,7 @@
         function filterCourses(f,btn){ document.querySelectorAll('#dash-courses .fpill').forEach(p=>p.classList.remove('active')); if(btn) btn.classList.add('active'); renderCourseGrid(f); }
 
         // ═══════════════════════════════════════════
-        // LESSON / CURRICULUM
+        // LESSON / CURRICULUM – Time enforcement & XP
         // ═══════════════════════════════════════════
         function renderCurric(){
             const list=document.getElementById('curricList');
@@ -4203,6 +4200,12 @@
             const l=S.currentLessons[S.currentLessonIdx];
             if(!l) return;
             const timeSpent = S.lessonStartTime ? Math.floor((Date.now()-S.lessonStartTime)/1000) : 0;
+            const requiredSeconds = (l.duration||10) * 60; // lesson duration in seconds
+            // ✅ Time gate: require at least 70% of estimated duration
+            if (timeSpent < requiredSeconds * 0.7) {
+                toast(`Please spend at least ${Math.ceil(requiredSeconds*0.7/60)} minutes on this lesson to earn XP.`,'warning');
+                return;
+            }
             l.completed=true;
             if(S.currentCourseId&&l._id){
                 try{ await apiCall(`/courses/${S.currentCourseId}/lessons/${l._id}/progress`,{method:'POST',body:{completed:true, timeSpent}}); toast('✅ Lesson completed! +XP','success'); await loadEnrollments(); renderWallet(); } catch(e){ toast('Progress saved locally','info'); }
@@ -4272,7 +4275,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // CERTIFICATES — FIXED: extract courseId
+        // CERTIFICATES – download & template upload
         // ═══════════════════════════════════════════
         function renderCerts(){
             const completed=S.enrollments.filter(e=>e.status==='completed'||e.progress===100);
@@ -4284,6 +4287,46 @@
         }
         async function downloadCert(courseId){
             try{ const token=localStorage.getItem('cx_accessToken'); const response=await fetch(`${API_BASE}/certificates/${courseId}/download`,{headers:{'Authorization':`Bearer ${token}`}}); if(!response.ok) throw new Error('Failed to generate certificate'); const blob=await response.blob(); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`certificate_${courseId}.pdf`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); toast('Certificate downloaded!','success'); } catch(err){ toast(err.message,'error'); }
+        }
+        // Instructor upload certificate template UI
+        function openCertUploadModal(courseId){
+            document.getElementById('certCourseName').value = courseId; // just for display
+            openModal('certUploadModal');
+        }
+        function handleCertTemplateFile(input){
+            S.certTemplateFile = input.files[0];
+            if(S.certTemplateFile){
+                toast('Template file selected','success');
+            }
+        }
+        async function uploadCertificateTemplate(){
+            if(!S.certTemplateFile){
+                toast('Select a file first','error');
+                return;
+            }
+            const courseId = S.currentCourseData?._id;
+            if(!courseId){ toast('Save the course draft first','warning'); return; }
+            showLoading('Uploading template...');
+            const formData = new FormData();
+            formData.append('template', S.certTemplateFile);
+            const token = localStorage.getItem('cx_accessToken');
+            try{
+                const res = await fetch(`${API_BASE}/instructor/courses/${courseId}/certificate-template`,{
+                    method:'POST',
+                    headers:{'Authorization':`Bearer ${token}`},
+                    body:formData,
+                    credentials:'include'
+                });
+                const data = await res.json();
+                if(data.success){
+                    toast('Certificate template uploaded! ✅','success');
+                    S.currentCourseData.certificateTemplate = data.data.url;
+                    closeModal('certUploadModal');
+                } else throw new Error(data.message);
+            } catch(e){
+                toast('Upload failed: '+e.message,'error');
+            }
+            finally{ hideLoading(); S.certTemplateFile=null; }
         }
 
         // ═══════════════════════════════════════════
@@ -4319,7 +4362,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // REFERRALS — FIXED: clipboard fallback
+        // REFERRALS — clipboard fallback
         // ═══════════════════════════════════════════
         async function renderRefs(){
             const refCode=S.user?.referralCode||'REF';
@@ -4361,14 +4404,13 @@
         function switchLbTab(tab,btn){ document.querySelectorAll('#dash-leaderboard .tab-btn').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); S.lbTab=tab; renderLB(); }
 
         // ═══════════════════════════════════════════
-        // AFFILIATES — FIXED: clipboard and link rendering
+        // AFFILIATES — clipboard & link rendering
         // ═══════════════════════════════════════════
         async function renderAffiliates(){
             showLoading('Loading affiliate offers...');
             try{ const offersData=await apiCall('/courses?hasAffiliate=true&published=true&limit=20'); S.affiliateOffers=(Array.isArray(offersData.data)?offersData.data:(Array.isArray(offersData.data?.courses)?offersData.data.courses:[])); } catch(e){ S.affiliateOffers=[]; }
             try{ const statsRes=await apiCall('/affiliate/stats'); if(statsRes.data){ S.affiliateStats=statsRes.data; } const linksRes=await apiCall('/affiliate/my-links'); S.myAffiliateLinks=linksRes.data?.links||[]; } catch(e){ console.warn('Could not load affiliate stats:',e); }
             const offersHtml=S.affiliateOffers.length?S.affiliateOffers.map(c=>{ const price=c.salePrice||c.price||0; const percent=c.affiliatePercent||0; const commissionPerSale=Math.round(price*percent/100); const commissionText=commissionPerSale===0?'₦0 / sale':`${fmtMoneyAPI(commissionPerSale)} / sale`; return `<div class="affiliate-offer-card" data-course-id="${c._id}"><div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap"><div style="font-size:1.75rem">${c.thumbnail||c.emoji||'📚'}</div><div style="flex:1"><div style="font-weight:700">${c.title}</div><div style="font-size:.74rem;color:var(--text3)">${percent}% commission · ${commissionText}</div></div><button class="btn btn-violet btn-sm" onclick="acceptAff('${c._id}')"><i class="fas fa-handshake"></i>Accept & Get Link</button></div></div>`; }).join(''):'<div class="empty-state"><p>No affiliate offers available</p></div>';
-            // FIX: use copyToClipboard for each link
             const myLinksHtml=S.myAffiliateLinks&&S.myAffiliateLinks.length?S.myAffiliateLinks.map(a=>{
                 const link=a.link||'';
                 return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.6rem"><div style="font-weight:600">${a.courseTitle||'Course'}</div><div class="ref-box mb-2" style="margin-top:.5rem"><span class="ref-link">${link}</span><button class="btn btn-primary btn-sm" onclick="copyToClipboard('${link.replace(/'/g,"\\'")}')"><i class="fas fa-copy"></i>Copy</button></div><div style="display:flex;gap:1rem;margin-top:.5rem;font-size:.75rem;color:var(--text3)"><span><i class="fas fa-mouse-pointer"></i> ${a.clicks||0}</span><span><i class="fas fa-shopping-cart"></i> ${a.conversions||0}</span><span><i class="fas fa-wallet"></i> Earned: ${fmtMoneyAPI(a.totalEarned||0)}</span></div></div>`;
