@@ -2493,7 +2493,7 @@
             color: #fff;
             flex-shrink: 0;
         }
-        /* LESSON LAYOUT – Vertical expansion fix */
+        /* ✅ LESSON LAYOUT – never cut off content */
         .lesson-layout {
             display: flex;
             flex-direction: row;
@@ -3941,7 +3941,7 @@
         }
 
         // ═══════════════════════════════════════════
-        // MULTI-CURRENCY
+        // MULTI-CURRENCY — FIXED: removed duplicate /v1
         // ═══════════════════════════════════════════
         async function loadExchangeRates(){ try{ const res=await apiCall('/currency/rates'); if(res.data) exchangeRates={NGN:1,...res.data}; } catch(e){ console.warn('Using fallback rates'); } }
         async function updateCurrencyPreference(currency){
@@ -4061,6 +4061,7 @@
             <div class="row"><div class="col-12 col-md-8"><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.4rem"><h6 style="margin:0">Continue Learning</h6><button class="btn btn-ghost btn-sm" onclick="setDP('courses')">View all</button></div>${inProgress.length?inProgress.slice(0,3).map(e=>{ const cId=extractCourseId(e); if(!cId) return ''; return `<div style="display:flex;align-items:center;gap:.75rem;padding:.65rem 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="openEnrollmentLesson('${cId}','${e._id}')"><div style="width:36px;height:36px;background:var(--card2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem">📚</div><div style="flex:1;min-width:0"><div style="font-size:.82rem;font-weight:600">${e.course?.title||'Course'}</div><div class="prog mt-1" style="height:4px"><div class="prog-fill pf-primary" style="width:${e.progress||0}%"></div></div><div style="font-size:.68rem;color:var(--text3);margin-top:.2rem">${e.progress||0}% complete</div></div><button class="btn btn-primary btn-sm" style="font-size:.68rem;padding:.2rem .55rem">Continue</button></div>`; }).join(''):'<div class="empty-state"><i class="fas fa-book-open"></i><h4>No courses yet</h4><p>Explore and enroll in courses to start learning!</p></div>'}</div></div><div class="col-12 col-md-4"><div class="card card-p mb-3"><h6 style="margin-bottom:.65rem">🏆 Leaderboard</h6><div id="homeLB">${S.leaderboard.slice(0,5).map((u,i)=>`<div class="lb-row ${u._id===S.user?._id?'you':''}" style="padding:.5rem .4rem"><div class="lb-rank">${['🥇','🥈','🥉'][i]||i+1}</div><div class="lb-av" style="background:linear-gradient(135deg,var(--violet),var(--cyan));width:28px;height:28px;font-size:.7rem">${(u.firstName||'U')[0]}</div><div style="flex:1;font-size:.8rem;font-weight:600">${u.firstName||'User'} ${u._id===S.user?._id?'<span class="badge badge-primary" style="font-size:.52rem">You</span>':''}</div><div style="font-weight:700;font-size:.78rem;color:var(--primary)">${(u.xp||0).toLocaleString()}</div></div>`).join('')||'<div class="empty-state"><p>Loading...</p></div>'}</div><button class="btn btn-ghost btn-sm w-full mt-3" onclick="setDP('leaderboard')">Full Leaderboard</button></div></div></div>`;
         }
         function openEnrollmentLesson(courseId, enrollmentId) {
+          // ✅ FIX: Convert object to string ID if needed
           if (courseId && typeof courseId === 'object') {
             courseId = courseId._id || courseId.id || null;
           }
@@ -4200,7 +4201,7 @@
             if(!l) return;
             const timeSpent = S.lessonStartTime ? Math.floor((Date.now()-S.lessonStartTime)/1000) : 0;
             const requiredSeconds = (l.duration||10) * 60; // lesson duration in seconds
-            // Time gate: require at least 70% of estimated duration
+            // ✅ Time gate: require at least 70% of estimated duration
             if (timeSpent < requiredSeconds * 0.7) {
                 toast(`Please spend at least ${Math.ceil(requiredSeconds*0.7/60)} minutes on this lesson to earn XP.`,'warning');
                 return;
@@ -4289,7 +4290,7 @@
         }
         // Instructor upload certificate template UI
         function openCertUploadModal(courseId){
-            document.getElementById('certCourseName').value = courseId;
+            document.getElementById('certCourseName').value = courseId; // just for display
             openModal('certUploadModal');
         }
         function handleCertTemplateFile(input){
