@@ -2493,25 +2493,26 @@
             color: #fff;
             flex-shrink: 0;
         }
-        /* ✅ LESSON LAYOUT – never cut off content */
+        /* ✅ LESSON LAYOUT – Never cut off content, scrollable like W3Schools */
         .lesson-layout {
             display: flex;
             flex-direction: row;
             gap: 1.5rem;
-            min-height: 0;
+            height: calc(100vh - 130px); /* Adjust based on your topbar + footer height */
+            overflow: hidden; /* Prevents double scrollbars */
         }
         .lesson-layout > div:first-child {
             flex: 2;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
-            max-height: none;
+            overflow-y: auto; /* Scrollable content */
+            max-height: 100%;
             padding-right: 8px;
         }
         .lesson-layout > div:last-child {
             flex: 1;
-            overflow-y: auto;
-            max-height: none;
+            overflow-y: auto; /* Scrollable curriculum */
+            max-height: 100%;
         }
         .video-wrap {
             flex-shrink: 0;
@@ -2519,7 +2520,7 @@
         }
         .lesson-sub {
             flex: 1;
-            overflow-y: visible;
+            overflow-y: visible; /* Inner content doesn't create double scrollbar */
             padding-bottom: 2rem;
         }
         .lesson-sub.active {
@@ -2542,8 +2543,8 @@
                 overflow-y: visible;
             }
             .lesson-sub {
-                max-height: none;
-                overflow-y: visible;
+                max-height: 70vh;
+                overflow-y: auto;
             }
         }
         .video-wrap iframe,
