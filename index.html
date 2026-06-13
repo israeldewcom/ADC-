@@ -3185,12 +3185,18 @@
         }
         .cert-card {
             background: linear-gradient(135deg, var(--card), var(--card2));
-            border: 1px solid rgba(245, 158, 11, .3);
+            border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 1.5rem;
             text-align: center;
+            transition: all var(--transition);
             position: relative;
             overflow: hidden;
+        }
+        .cert-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
         }
         .cert-card::before {
             content: '';
@@ -3198,8 +3204,34 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--gold), var(--orange), var(--gold));
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--gold));
+        }
+        .cert-icon {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+        }
+        .cert-card h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .cert-date {
+            font-size: 0.75rem;
+            color: var(--text3);
+            margin-bottom: 0.25rem;
+        }
+        .cert-student {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .cert-warning {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--danger);
+            margin-top: 0.5rem;
         }
         .mini-chart {
             display: flex;
@@ -4478,24 +4510,128 @@
                 renderQuizQ(); }, 900); }
 
         // ═══════════════════════════════════════════
-        // CERTIFICATES
+        // CERTIFICATES (PRODUCTION-READY WITH BACKEND)
         // ═══════════════════════════════════════════
-        function renderCerts() { const completed = S.enrollments.filter(e => e.status === 'completed' || e.progress === 100);
-            document.getElementById('certsGrid').innerHTML = completed.length ? completed.map(e => { const courseId =
-                    extractCourseId(e); if (!courseId) return ''; return `<div style="flex:1;min-width:260px"><div class="cert-card"><div style="font-size:.6rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;font-family:monospace;margin-bottom:.5rem">Certificate of Completion</div><div style="font-size:2rem;margin:.35rem 0">📜</div><h4 style="font-size:1rem;margin-bottom:.25rem">${e.course?.title || 'Course'}</h4><p style="font-size:.75rem;color:var(--text3);margin-bottom:.85rem">Awarded to <strong>${S.user?.firstName || 'User'} ${S.user?.lastName || ''}</strong></p><button class="btn btn-gold btn-sm" onclick="downloadCert('${courseId}')"><i class="fas fa-download"></i>Download</button></div></div>`;
-                }).join('') :
-                '<div class="empty-state"><i class="fas fa-certificate"></i><h4>No certificates yet</h4><p>Complete courses to earn certificates!</p></div>'; }
-        async function downloadCert(courseId) { try { const token = localStorage.getItem('cx_accessToken'); const response =
-                    await fetch(`${API_BASE}/certificates/${courseId}/download`, { headers: { 'Authorization': `Bearer ${token}` } }); if (
-                    !response.ok) throw new Error('Failed to generate certificate'); const blob = await response.blob(); const url =
-                URL.createObjectURL(blob); const a = document.createElement('a');
-            a.href = url;
-            a.download = `certificate_${courseId}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            toast('Certificate downloaded!', 'success'); } catch (err) { toast(err.message, 'error'); } }
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        async function checkCertificateAvailability(courseId) {
+            try {
+                const token = localStorage.getItem('cx_accessToken');
+                const response = await fetch(`${API_BASE}/courses/${courseId}/certificate/check`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                return data.data || { available: false, message: 'Unable to check' };
+            } catch (err) {
+                return { available: false, message: 'Unable to check' };
+            }
+        }
+
+        async function downloadCert(courseId) {
+            if (!courseId) {
+                toast('Invalid course selection', 'error');
+                return;
+            }
+            const token = localStorage.getItem('cx_accessToken');
+            if (!token) {
+                toast('Please log in to download certificates', 'error');
+                goPage('login');
+                return;
+            }
+            showLoading('Generating your certificate...');
+            try {
+                const response = await fetch(`${API_BASE}/courses/${courseId}/certificate/download`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    let errorMessage = `HTTP ${response.status}`;
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.message || errorMessage;
+                    } catch (e) {}
+                    throw new Error(errorMessage);
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Certificate_Course_${courseId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                toast('Certificate downloaded successfully! 🎓', 'success');
+            } catch (err) {
+                console.error('Certificate download error:', err);
+                toast(err.message || 'Failed to generate certificate. Please try again.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function renderCerts() {
+            try {
+                const enrollmentsData = await apiCall('/courses/my/enrollments');
+                const enrollments = enrollmentsData.data || [];
+                const completed = enrollments.filter(e =>
+                    e.status === 'completed' || e.progress === 100
+                );
+                if (!completed.length) {
+                    document.getElementById('certsGrid').innerHTML = `
+                    <div class="empty-state">
+                      <i class="fas fa-certificate"></i>
+                      <h4>No certificates yet</h4>
+                      <p>Complete courses to earn certificates!</p>
+                      <button class="btn btn-primary" onclick="setDP('explore')">Browse Courses</button>
+                    </div>`;
+                    return;
+                }
+                const certsHtml = await Promise.all(completed.map(async (e) => {
+                    const courseId = e.courseId?._id || e.courseId;
+                    const courseTitle = e.courseId?.title || 'Course';
+                    const completedDate = e.completedAt ? new Date(e.completedAt).toLocaleDateString() : 'Recently';
+                    let certAvailable = true;
+                    try {
+                        const check = await checkCertificateAvailability(courseId);
+                        certAvailable = check.available;
+                    } catch (err) { console.warn('Cert check failed:', err); }
+                    return `
+                    <div class="col-12 col-md-6 col-lg-4">
+                      <div class="cert-card">
+                        <div class="cert-icon">🎓</div>
+                        <h4>${escapeHtml(courseTitle)}</h4>
+                        <p class="cert-date">Completed: ${completedDate}</p>
+                        <p class="cert-student">${escapeHtml(S.user?.firstName || '')} ${escapeHtml(S.user?.lastName || '')}</p>
+                        <button class="btn btn-gold btn-sm" onclick="downloadCert('${courseId}')" ${!certAvailable ? 'disabled' : ''}>
+                          <i class="fas fa-download"></i> Download Certificate
+                        </button>
+                        ${!certAvailable ? '<small class="cert-warning">Complete all lessons first</small>' : ''}
+                      </div>
+                    </div>`;
+                }));
+                document.getElementById('certsGrid').innerHTML = certsHtml.join('');
+            } catch (err) {
+                console.error('Render certs error:', err);
+                document.getElementById('certsGrid').innerHTML = `
+                  <div class="empty-state">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h4>Unable to load certificates</h4>
+                    <p>${err.message}</p>
+                  </div>`;
+            }
+        }
 
         function openCertUploadModal(courseId) { document.getElementById('certCourseName').value = courseId;
             openModal('certUploadModal'); }
