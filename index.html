@@ -2079,6 +2079,7 @@
             font-size: .82rem;
             color: #fff;
             flex-shrink: 0;
+            overflow: hidden;
         }
         .um-av img {
             width: 100%;
@@ -2586,6 +2587,7 @@
             font-size: .85rem;
             color: #fff;
             flex-shrink: 0;
+            overflow: hidden;
         }
         .lb-av img {
             width: 100%;
@@ -2892,6 +2894,7 @@
             font-size: 1.4rem;
             color: #fff;
             margin: 0 auto .75rem;
+            overflow: hidden;
         }
         .inst-av-lg img {
             width: 100%;
@@ -3995,6 +3998,21 @@
         .admin-challenge-form .finput {
             font-size: .82rem;
         }
+        .admin-challenge-list-item {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: .75rem;
+            margin-bottom: .4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: .5rem;
+        }
+        .admin-challenge-list-item .badge {
+            font-size: .55rem;
+        }
 
         /* ===== FOLLOWING BADGE ===== */
         .follow-badge {
@@ -4015,6 +4033,31 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
+        }
+        .ql-editor {
+            min-height: 200px;
+        }
+        .ql-container {
+            min-height: 200px;
+        }
+        .ql-toolbar {
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
+        }
+        .ql-container {
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm) !important;
+        }
+        .quill-wrapper {
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+        #postEditor .ql-editor {
+            min-height: 200px;
+        }
+        #postEditor .ql-container {
+            min-height: 200px;
+        }
+        .ql-snow .ql-editor img {
+            max-width: 100%;
         }
     </style>
 </head>
@@ -4153,7 +4196,7 @@
 
     <div class="dash-wrap thin-scroll" id="dashWrap">
         <!-- FEED -->
-        <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openModal('createPostModal')"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span></div><div id="feedContainer"></div><div id="feedPagination" class="d-flex justify-center mt-3"></div></div>
+        <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span></div><div id="feedContainer"></div><div id="feedPagination" class="d-flex justify-center mt-3"></div></div>
 
         <!-- CHALLENGES -->
         <div id="dash-challenges" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Challenges</h2><p class="page-sub">Join challenges, earn XP &amp; win rewards</p></div><div class="d-flex gap-2 mb-3"><span class="fpill active" onclick="filterChallenges('active',this)">Active</span><span class="fpill" onclick="filterChallenges('upcoming',this)">Upcoming</span><span class="fpill" onclick="filterChallenges('completed',this)">Completed</span></div><div id="challengesContainer"></div></div>
@@ -4517,8 +4560,13 @@
         // ═══════════════════════════════════════════════════════════════
         // MODALS
         // ═══════════════════════════════════════════════════════════════
-        function openModal(id) { document.getElementById(id)?.classList.remove('hidden');
-            populateAllBankDetailsBoxes(); }
+        function openModal(id) {
+            document.getElementById(id)?.classList.remove('hidden');
+            populateAllBankDetailsBoxes();
+            if (id === 'createPostModal') {
+                setTimeout(initPostQuill, 300);
+            }
+        }
 
         function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
         document.addEventListener('click', e => { if (e.target.classList.contains('modal-ov')) e.target.classList.add(
@@ -5117,42 +5165,89 @@
 
         function openCreatePostModal() {
             const modal = document.getElementById('createPostModal');
-            if (modal) { openModal('createPostModal');
-                setTimeout(() => initPostQuill(), 300); }
+            if (modal) {
+                openModal('createPostModal');
+                // Quill will be initialized inside openModal
+            }
         }
 
         function initPostQuill() {
-            if (S.postQuill) return;
+            if (S.postQuill) {
+                // If already exists, just focus
+                try { S.postQuill.focus(); } catch (e) {}
+                return;
+            }
             const el = document.getElementById('postEditor');
-            if (!el || typeof Quill === 'undefined') return;
-            S.postQuill = new Quill('#postEditor', {
-                theme: 'snow',
-                placeholder: 'Write your post content...',
-                modules: { toolbar: [
-                        ['bold', 'italic', 'underline'],
-                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                        ['link', 'image', 'code-block'],
-                        ['clean']
-                    ] }
-            });
+            if (!el || typeof Quill === 'undefined') {
+                // If Quill not loaded yet, retry
+                setTimeout(initPostQuill, 300);
+                return;
+            }
+            try {
+                S.postQuill = new Quill('#postEditor', {
+                    theme: 'snow',
+                    placeholder: 'Write your post content here...',
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            ['link', 'image', 'code-block'],
+                            ['clean']
+                        ]
+                    }
+                });
+                // Set a default empty content to ensure editor is ready
+                if (!S.postQuill.root.innerHTML || S.postQuill.root.innerHTML === '<p><br></p>') {
+                    S.postQuill.root.innerHTML = '';
+                }
+            } catch (e) {
+                console.warn('Quill init error:', e);
+                setTimeout(initPostQuill, 500);
+            }
         }
 
         async function submitNewPost() {
             const title = document.getElementById('postTitle')?.value.trim();
             const type = document.getElementById('postType')?.value || 'article';
-            const content = S.postQuill?.root.innerHTML || '';
+            let content = '';
+            if (S.postQuill) {
+                content = S.postQuill.root.innerHTML;
+            } else {
+                // Fallback: try to get content from the editor div
+                const editorEl = document.getElementById('postEditor');
+                if (editorEl) {
+                    content = editorEl.innerHTML || '';
+                }
+            }
             const tags = document.getElementById('postTags')?.value || '';
             const featuredImage = document.getElementById('postImage')?.value || '';
             const seoTitle = document.getElementById('postSeoTitle')?.value || '';
             const seoDesc = document.getElementById('postSeoDesc')?.value || '';
-            if (!title || !content) { toast('Title and content required', 'error'); return; }
+            if (!title) { toast('Please enter a title', 'error'); return; }
+            if (!content || content === '<p><br></p>' || content.trim() === '') {
+                toast('Please write some content for your post', 'error');
+                return;
+            }
             try {
-                await apiCall(POSTS_API, { method: 'POST', body: { title, content, type, tags, featuredImage, seoTitle,
-                        seoDescription: seoDesc } });
+                const res = await apiCall(POSTS_API, {
+                    method: 'POST',
+                    body: { title, content, type, tags, featuredImage, seoTitle, seoDescription: seoDesc }
+                });
                 toast('Post created! Publish it from your dashboard.', 'success');
                 closeModal('createPostModal');
+                // Reset form
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postTags').value = '';
+                document.getElementById('postImage').value = '';
+                document.getElementById('postSeoTitle').value = '';
+                document.getElementById('postSeoDesc').value = '';
+                if (S.postQuill) {
+                    S.postQuill.root.innerHTML = '';
+                }
                 if (S.dp === 'feed') loadFeed();
-            } catch (err) { toast('Failed to create post: ' + err.message, 'error'); }
+            } catch (err) {
+                toast('Failed to create post: ' + err.message, 'error');
+            }
         }
 
         // ================================================================
@@ -5162,39 +5257,57 @@
             showLoading('Loading challenges...');
             try {
                 const filter = S.challengesFilter || 'active';
-                const url = filter === 'active' ? `${CHALLENGES_API}/active` :
-                    filter === 'upcoming' ? `${CHALLENGES_API}/upcoming` :
-                    `${CHALLENGES_API}/all?status=completed`;
+                let url;
+                if (filter === 'active') {
+                    url = `${CHALLENGES_API}/active`;
+                } else if (filter === 'upcoming') {
+                    url = `${CHALLENGES_API}/upcoming`;
+                } else {
+                    url = `${CHALLENGES_API}/all?status=completed`;
+                }
                 const res = await apiCall(url);
                 const challenges = res.data || [];
                 renderChallenges(challenges);
-            } catch (err) { toast('Failed to load challenges', 'error'); } finally { hideLoading(); }
+                // Update badge count
+                const badge = document.getElementById('navChallengeBadge');
+                if (badge) {
+                    const activeChallenges = challenges.filter(c => c.status === 'active').length;
+                    badge.textContent = activeChallenges || 0;
+                }
+            } catch (err) {
+                toast('Failed to load challenges: ' + err.message, 'error');
+            } finally { hideLoading(); }
         }
 
         function renderChallenges(challenges) {
             const container = document.getElementById('challengesContainer');
             if (!container) return;
-            if (!challenges.length) {
+            if (!challenges || !challenges.length) {
                 container.innerHTML =
                     '<div class="empty-state"><i class="fas fa-trophy"></i><h4>No challenges</h4><p>Check back soon!</p></div>';
                 return;
             }
-            container.innerHTML = challenges.map(c => `
+            container.innerHTML = challenges.map(c => {
+                const isJoined = c.participants && c.participants.includes(S.user?._id);
+                const statusClass = c.status === 'active' ? 'badge-success' : c.status === 'upcoming' ? 'badge-cyan' :
+                    'badge-dark';
+                return `
                 <div class="challenge-card card card-p">
                     <div class="challenge-icon">🏆</div>
                     <h3>${escapeHtml(c.title)}</h3>
                     <p>${escapeHtml(c.description)}</p>
                     <div class="challenge-meta">
-                        <span><i class="fas fa-calendar"></i> ${new Date(c.endDate).toLocaleDateString()}</span>
+                        <span><i class="fas fa-calendar"></i> ${new Date(c.startDate).toLocaleDateString()} → ${new Date(c.endDate).toLocaleDateString()}</span>
                         <span><i class="fas fa-star"></i> ${c.rewardXP || 500} XP</span>
                         ${c.rewardAmount ? `<span><i class="fas fa-wallet"></i> ${fmtMoneyAPI(c.rewardAmount)}</span>` : ''}
                         <span><i class="fas fa-users"></i> ${c.participants?.length || 0} joined</span>
+                        <span class="badge ${statusClass}" style="font-size:.55rem">${c.status || 'active'}</span>
                     </div>
-                    <button class="btn-primary btn-sm" onclick="joinChallenge('${c._id}')">
-                        ${c.participants?.includes(S.user?._id) ? '✅ Joined' : 'Join Challenge'}
+                    <button class="btn-primary btn-sm" onclick="joinChallenge('${c._id}')" ${isJoined ? 'disabled' : ''}>
+                        ${isJoined ? '✅ Joined' : 'Join Challenge'}
                     </button>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
         function filterChallenges(type, el) {
@@ -5232,7 +5345,7 @@
                 });
                 await Promise.all(followPromises);
                 renderPeople(users);
-            } catch (err) { toast('Failed to load users', 'error'); } finally { hideLoading(); }
+            } catch (err) { toast('Failed to load users: ' + err.message, 'error'); } finally { hideLoading(); }
         }
 
         function renderPeople(users) {
@@ -5278,7 +5391,6 @@
                 S.followStatus[userId] = isNowFollowing;
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
                 renderPeople(S.users);
-                // Also update the people list to reflect the change
             } catch (err) { toast('Error: ' + err.message, 'error'); }
         }
 
@@ -7314,7 +7426,9 @@
             }
         }
 
-        // Admin create challenge
+        // ================================================================
+        // ADMIN CHALLENGES
+        // ================================================================
         async function adminCreateChallenge() {
             const title = document.getElementById('admChallengeTitle')?.value.trim();
             const description = document.getElementById('admChallengeDesc')?.value.trim();
@@ -7333,6 +7447,8 @@
                 });
                 toast('✅ Challenge created successfully!', 'success');
                 loadAdminChallenges();
+                // Refresh the public challenges list
+                if (S.dp === 'challenges') loadChallenges();
                 // Clear form
                 document.getElementById('admChallengeTitle').value = '';
                 document.getElementById('admChallengeDesc').value = '';
@@ -7355,11 +7471,12 @@
                     return;
                 }
                 listEl.innerHTML = challenges.map(c => `
-                    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:.4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
+                    <div class="admin-challenge-list-item">
                         <div>
                             <strong>${escapeHtml(c.title)}</strong>
                             <span class="badge ${c.status === 'active' ? 'badge-success' : c.status === 'upcoming' ? 'badge-cyan' : 'badge-dark'}" style="font-size:.55rem">${c.status}</span>
                             <br><small style="color:var(--text3)">${c.rewardXP || 0} XP · ${c.participants?.length || 0} joined</small>
+                            <br><small style="color:var(--text3)">${new Date(c.startDate).toLocaleDateString()} → ${new Date(c.endDate).toLocaleDateString()}</small>
                         </div>
                         <div style="display:flex;gap:.3rem">
                             <button class="btn btn-ghost btn-sm" onclick="deleteAdminChallenge('${c._id}')" style="color:var(--danger)"><i class="fas fa-trash"></i></button>
@@ -7378,6 +7495,7 @@
                 await apiCall(`/admin/challenges/${challengeId}`, { method: 'DELETE' });
                 toast('Challenge deleted', 'success');
                 loadAdminChallenges();
+                if (S.dp === 'challenges') loadChallenges();
             } catch (err) { toast('Failed to delete: ' + err.message, 'error'); }
         }
 
