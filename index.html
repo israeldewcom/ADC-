@@ -3790,6 +3790,11 @@
             align-items: center;
             gap: 1rem;
             padding: 1rem;
+            cursor: pointer;
+            transition: background .15s;
+        }
+        .person-card:hover {
+            background: rgba(128, 128, 128, .04);
         }
         .person-avatar {
             width: 50px;
@@ -4087,13 +4092,16 @@
             max-width: 100%;
         }
 
-        /* ===== USER PROFILE ===== */
+        /* ===== PROFILE PAGE ===== */
         .profile-header {
             background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
             padding: 1.5rem;
+            border-radius: var(--radius);
             margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
         }
         .profile-avatar {
             width: 80px;
@@ -4111,23 +4119,18 @@
         .profile-avatar img {
             width: 100%;
             height: 100%;
+            border-radius: 50%;
             object-fit: cover;
         }
-        .profile-header h2 {
-            margin-bottom: .25rem;
-        }
-        .profile-header .profile-stats {
+        .profile-stats {
             display: flex;
             gap: 1rem;
             font-size: .85rem;
             color: var(--text3);
+            flex-wrap: wrap;
         }
-        .profile-header .profile-stats strong {
+        .profile-stats strong {
             color: var(--text);
-        }
-        .profile-content h4 {
-            margin-top: 1.5rem;
-            margin-bottom: .5rem;
         }
     </style>
 </head>
@@ -4218,6 +4221,9 @@
     <!-- User Details Modal (Admin) -->
     <div class="modal-ov hidden" id="userDetailsModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👤 User Details</h5><button class="btn-icon-sm" onclick="closeModal('userDetailsModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd" id="userDetailsContent"></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('userDetailsModal')">Close</button></div></div></div>
 
+    <!-- Participants Modal (Admin) -->
+    <div class="modal-ov hidden" id="participantsModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👥 Challenge Participants</h5><button class="btn-icon-sm" onclick="closeModal('participantsModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd" id="participantsContent"></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('participantsModal')">Close</button></div></div></div>
+
     <!-- ============================================================ -->
     <!-- NOTIFICATION PANEL -->
     <!-- ============================================================ -->
@@ -4259,9 +4265,9 @@
         <li><span class="nav-item" onclick="openModal('feedbackModal')"><span class="nav-ico"><i class="fas fa-comment-dots"></i></span>Feedback</span></li>
         <li><span class="nav-item" onclick="doLogout()"><span class="nav-ico"><i class="fas fa-sign-out-alt"></i></span>Logout</span></li>
     </ul></nav>
-    <div class="sb-footer"><div class="user-mini" onclick="setDP('profile')"><div class="um-av" id="sbAvatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary))">U</div><div style="flex:1;min-width:0"><div class="um-name" id="sbName">User</div><div class="um-level" id="sbLevel">⚡ Level 1 · Free</div></div><i class="fas fa-chevron-right" style="color:var(--text3);font-size:.65rem"></i></div></div></aside>
+    <div class="sb-footer"><div class="user-mini" onclick="setDP('settings')"><div class="um-av" id="sbAvatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary))">U</div><div style="flex:1;min-width:0"><div class="um-name" id="sbName">User</div><div class="um-level" id="sbLevel">⚡ Level 1 · Free</div></div><i class="fas fa-chevron-right" style="color:var(--text3);font-size:.65rem"></i></div></div></aside>
 
-    <div class="main-content" id="mainContent"><div class="topbar"><button class="hamburger" onclick="openSidebar()"><i class="fas fa-bars"></i></button><div class="search-wrap"><i class="fas fa-search search-ico"></i><input type="text" class="top-search" id="globalSearch" placeholder="Search courses, lessons, posts..."/><div class="search-dd" id="searchDD"></div></div><div class="topbar-r"><button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" style="width:32px;height:32px;font-size:.75rem"><i class="fas" id="themeIcon2"></i></button><div class="wallet-chip" onclick="setDP('wallet')"><i class="fas fa-wallet" style="font-size:.7rem;color:var(--lime)"></i><span class="wc-val" id="tbWallet">₦0</span></div><div class="currency-select" style="display:flex;gap:.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:50px;padding:.2rem .4rem;margin-left:.5rem"><span class="currency-opt" id="curNGN" onclick="updateCurrencyPreference('NGN')">₦</span><span class="currency-opt" id="curUSD" onclick="updateCurrencyPreference('USD')">$</span><span class="currency-opt" id="curGBP" onclick="updateCurrencyPreference('GBP')">£</span><span class="currency-opt" id="curEUR" onclick="updateCurrencyPreference('EUR')">€</span></div><button class="btn-icon" style="position:relative" onclick="toggleNotif()"><i class="fas fa-bell"></i><span class="notif-dot" id="notifDot" style="display:none"></span></button><button class="btn-icon" onclick="setDP('ai')"><i class="fas fa-robot"></i></button><div class="um-av" style="width:30px;height:30px;font-size:.78rem;cursor:pointer;background:linear-gradient(135deg,var(--primary),var(--secondary))" id="tbAvatar" onclick="setDP('profile')">U</div></div></div>
+    <div class="main-content" id="mainContent"><div class="topbar"><button class="hamburger" onclick="openSidebar()"><i class="fas fa-bars"></i></button><div class="search-wrap"><i class="fas fa-search search-ico"></i><input type="text" class="top-search" id="globalSearch" placeholder="Search courses, lessons, posts..."/><div class="search-dd" id="searchDD"></div></div><div class="topbar-r"><button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" style="width:32px;height:32px;font-size:.75rem"><i class="fas" id="themeIcon2"></i></button><div class="wallet-chip" onclick="setDP('wallet')"><i class="fas fa-wallet" style="font-size:.7rem;color:var(--lime)"></i><span class="wc-val" id="tbWallet">₦0</span></div><div class="currency-select" style="display:flex;gap:.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:50px;padding:.2rem .4rem;margin-left:.5rem"><span class="currency-opt" id="curNGN" onclick="updateCurrencyPreference('NGN')">₦</span><span class="currency-opt" id="curUSD" onclick="updateCurrencyPreference('USD')">$</span><span class="currency-opt" id="curGBP" onclick="updateCurrencyPreference('GBP')">£</span><span class="currency-opt" id="curEUR" onclick="updateCurrencyPreference('EUR')">€</span></div><button class="btn-icon" style="position:relative" onclick="toggleNotif()"><i class="fas fa-bell"></i><span class="notif-dot" id="notifDot" style="display:none"></span></button><button class="btn-icon" onclick="setDP('ai')"><i class="fas fa-robot"></i></button><div class="um-av" style="width:30px;height:30px;font-size:.78rem;cursor:pointer;background:linear-gradient(135deg,var(--primary),var(--secondary))" id="tbAvatar" onclick="setDP('settings')">U</div></div></div>
 
     <div class="mob-bottom-nav"><div class="mbn-item active" id="mbn-feed" onclick="setDP('feed')"><i class="fas fa-newspaper"></i><span>Feed</span></div><div class="mbn-item" id="mbn-challenges" onclick="setDP('challenges')"><i class="fas fa-trophy"></i><span>Challenges</span></div><div class="mbn-item" id="mbn-explore" onclick="setDP('explore')"><i class="fas fa-compass"></i><span>Explore</span></div><div class="mbn-item" id="mbn-wallet" onclick="setDP('wallet')"><i class="fas fa-wallet"></i><span>Wallet</span></div><div class="mbn-item" id="mbn-more" onclick="openSidebar()"><i class="fas fa-bars"></i><span>More</span></div></div>
 
@@ -4276,7 +4282,7 @@
         <div id="dash-people" class="dash-sub"><div class="page-hd"><h2 class="page-title">👥 People</h2><p class="page-sub">Connect with fellow learners &amp; instructors</p></div><div class="people-search"><input type="text" class="finput" id="peopleSearch" placeholder="Search by name..." oninput="filterPeople(this.value)"/></div><div id="peopleContainer" class="people-grid"></div></div>
 
         <!-- PROFILE -->
-        <div id="dash-profile" class="dash-sub"><div id="profileContent"></div></div>
+        <div id="dash-profile" class="dash-sub"><div id="profileContent"><div class="empty-state"><i class="fas fa-user-circle"></i><h4>Select a user</h4><p>Click on a user from the People tab to view their profile.</p></div></div></div>
 
         <!-- HOME (Dashboard) -->
         <div id="dash-home" class="dash-sub"><div id="homeSkeleton" style="display:none"><div class="skeleton" style="height:120px;margin-bottom:1rem;border-radius:var(--radius)"></div><div class="row"><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div></div></div><div id="homeContent"></div></div>
@@ -4417,7 +4423,7 @@
             postQuill: null,
             followStatus: {},
             following: [],
-            challengeProgress: []
+            profileUser: null
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -4600,8 +4606,7 @@
                 feed: loadFeed,
                 challenges: loadChallenges,
                 people: loadPeople,
-                profile: () => { if (!S.user) return;
-                    openUserProfile(S.user._id); },
+                profile: () => { if (S.profileUser) loadUserProfile(S.profileUser._id); },
                 home: initHome,
                 explore: renderExplore,
                 courses: () => renderCourseGrid(S.courseFilter),
@@ -5070,21 +5075,102 @@
         const ADS_API = '/ads';
         const INTERACTIVE_API = '/interactive';
 
+        // ================================================================
+        // FOLLOWING FEED
+        // ================================================================
+        async function loadFollowingFeed() {
+            showLoading('Loading following feed...');
+            try {
+                const res = await apiCall('/posts/following');
+                const items = res.data || [];
+                renderFollowingFeed(items);
+            } catch (err) {
+                toast('Failed to load following feed: ' + err.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderFollowingFeed(items) {
+            const container = document.getElementById('feedContainer');
+            if (!container) return;
+            if (!items || !items.length) {
+                container.innerHTML =
+                    '<div class="empty-state"><i class="fas fa-users"></i><h4>No posts from people you follow</h4><p>Follow more users to see their content here.</p></div>';
+                return;
+            }
+            container.innerHTML = items.map(item => {
+                if (item.type === 'post') {
+                    return renderPostCard(item);
+                } else if (item.type === 'course') {
+                    return renderCourseCardInFeed(item);
+                }
+                return '';
+            }).join('');
+        }
+
+        function renderPostCard(post) {
+            const author = post.authorId || post.author || {};
+            const avatarHtml = getAvatarUrl(author) ?
+                `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                (author.firstName?.[0] || 'U');
+            return `
+                <div class="post-card card card-p" data-post-id="${post._id}">
+                    <div class="post-header">
+                        <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
+                            ${avatarHtml}
+                        </div>
+                        <div class="post-author-info">
+                            <strong>${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
+                            <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
+                            <span class="badge badge-cyan" style="font-size:.55rem">${post.type || 'article'}</span>
+                        </div>
+                    </div>
+                    <h3 class="post-title" onclick="window.open('/post/${post.slug}','_blank')">${escapeHtml(post.title)}</h3>
+                    ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
+                    <div class="post-excerpt">${escapeHtml(post.excerpt || post.content?.substring(0, 200) || '')}...</div>
+                    <div class="post-stats">
+                        <span class="post-likes" data-id="${post._id}"><i class="far fa-heart"></i> ${post.likes || 0}</span>
+                        <span class="post-comments"><i class="far fa-comment"></i> ${post.commentsCount || 0}</span>
+                        <span class="post-shares"><i class="fas fa-share-alt"></i> ${post.shares || 0}</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="btn-like" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
+                        <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
+                        <button class="btn-share" data-id="${post._id}" data-slug="${post.slug}"><i class="fas fa-share-alt"></i> Share</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCourseCardInFeed(course) {
+            const author = course.instructorId || course.instructor || {};
+            return `
+                <div class="course-card" onclick="openBuyCourse('${course._id}')" style="margin-bottom:.75rem;">
+                    <div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3));">
+                        ${course.thumbnail || course.emoji || '📚'}
+                    </div>
+                    <div class="cc-body">
+                        <div style="font-weight:700;font-size:.88rem;margin-bottom:.25rem">${escapeHtml(course.title)}</div>
+                        <div style="font-size:.74rem;color:var(--text3)">By ${escapeHtml(author.firstName || 'Instructor')} · ${course.totalLessons || 0} lessons</div>
+                        <div style="font-weight:800;color:var(--lime);margin-top:.5rem">${fmtMoneyAPI(course.price || 0)}</div>
+                    </div>
+                </div>
+            `;
+        }
+
         async function loadFeed(page = 1) {
             S.feedPage = page || 1;
             const filter = S.feedFilter || 'all';
+            // If filter is 'following', use the dedicated endpoint
+            if (filter === 'following') {
+                await loadFollowingFeed();
+                return;
+            }
             showLoading('Loading feed...');
             try {
                 let url = `${POSTS_API}?page=${S.feedPage}&limit=10`;
                 if (filter !== 'all') url += `&type=${filter}`;
-                // If filter is 'following', use the following feed endpoint
-                if (filter === 'following') {
-                    const res = await apiCall('/posts/following');
-                    const items = res.data || [];
-                    renderFollowingFeed(items);
-                    hideLoading();
-                    return;
-                }
                 const res = await apiCall(url);
                 const posts = res.data?.posts || res.data || [];
                 const pagination = res.data?.pagination || { total: 0, pages: 1 };
@@ -5148,66 +5234,6 @@
                     pagEl.innerHTML = html;
                 }
             }
-        }
-
-        function renderFollowingFeed(items) {
-            const container = document.getElementById('feedContainer');
-            if (!container) return;
-            if (!items.length) {
-                container.innerHTML =
-                    '<div class="empty-state"><i class="fas fa-users"></i><h4>No posts from people you follow</h4><p>Follow more users to see their content here.</p></div>';
-                return;
-            }
-            container.innerHTML = items.map(item => {
-                if (item.type === 'post') {
-                    const post = item;
-                    const author = post.authorId || {};
-                    const avatarHtml = getAvatarUrl(author) ?
-                        `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
-                        (author.firstName?.[0] || 'U');
-                    return `
-                    <div class="post-card card card-p" data-post-id="${post._id}">
-                        <div class="post-header">
-                            <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
-                                ${avatarHtml}
-                            </div>
-                            <div class="post-author-info">
-                                <strong>${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
-                                <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
-                                <span class="badge badge-cyan" style="font-size:.55rem">Post</span>
-                            </div>
-                        </div>
-                        <h3 class="post-title" onclick="window.open('/post/${post.slug}','_blank')">${escapeHtml(post.title)}</h3>
-                        ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
-                        <div class="post-excerpt">${escapeHtml(post.excerpt || post.content?.substring(0, 200) || '')}...</div>
-                        <div class="post-actions">
-                            <button class="btn-like" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
-                            <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
-                            <button class="btn-share" data-id="${post._id}" data-slug="${post.slug}"><i class="fas fa-share-alt"></i> Share</button>
-                        </div>
-                    </div>`;
-                } else if (item.type === 'course') {
-                    const course = item;
-                    const instructor = course.instructorId || {};
-                    const avatarHtml = getAvatarUrl(instructor) ?
-                        `<img src="${getAvatarUrl(instructor)}" alt="${instructor.firstName || 'I'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
-                        (instructor.firstName?.[0] || 'I');
-                    return `
-                    <div class="course-card" onclick="openBuyCourse('${course._id}')">
-                        <div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3));">
-                            ${course.thumbnail || course.emoji || '📚'}
-                        </div>
-                        <div class="cc-body">
-                            <div style="font-weight:700;font-size:.88rem;margin-bottom:.25rem">${escapeHtml(course.title)}</div>
-                            <div style="font-size:.74rem;color:var(--text3)">By ${escapeHtml(instructor.firstName || 'Instructor')} · ${course.totalLessons || 0} lessons</div>
-                            <div style="font-weight:800;color:var(--lime);margin-top:.5rem">${fmtMoneyAPI(course.price || 0)}</div>
-                        </div>
-                    </div>`;
-                }
-                return '';
-            }).join('');
-            // Attach event listeners for new posts
-            attachPostEventListeners();
         }
 
         function attachPostEventListeners() {
@@ -5370,11 +5396,21 @@
                 return;
             }
             try {
-                const res = await apiCall(POSTS_API, {
+                // ✅ AUTO-PUBLISH: isPublished: true
+                await apiCall(POSTS_API, {
                     method: 'POST',
-                    body: { title, content, type, tags, featuredImage, seoTitle, seoDescription: seoDesc, isPublished: true }
+                    body: {
+                        title,
+                        content,
+                        type,
+                        tags,
+                        featuredImage,
+                        seoTitle,
+                        seoDescription: seoDesc,
+                        isPublished: true
+                    }
                 });
-                toast('Post published!', 'success');
+                toast('Post published! 🎉', 'success');
                 closeModal('createPostModal');
                 document.getElementById('postTitle').value = '';
                 document.getElementById('postTags').value = '';
@@ -5413,18 +5449,9 @@
                     const activeChallenges = challenges.filter(c => c.status === 'active').length;
                     badge.textContent = activeChallenges || 0;
                 }
-                // Also load user's progress
-                await loadChallengeProgress();
             } catch (err) {
                 toast('Failed to load challenges: ' + err.message, 'error');
             } finally { hideLoading(); }
-        }
-
-        async function loadChallengeProgress() {
-            try {
-                const res = await apiCall('/challenges/my-progress');
-                S.challengeProgress = res.data || [];
-            } catch (e) { console.warn('Could not load challenge progress:', e); }
         }
 
         function renderChallenges(challenges) {
@@ -5437,27 +5464,22 @@
             }
             container.innerHTML = challenges.map(c => {
                 const isJoined = c.participants && c.participants.includes(S.user?._id);
-                const progress = S.challengeProgress.find(p => p.challengeId._id === c._id);
-                const status = progress ? progress.status : 'not_enrolled';
-                const progressPercent = progress ? progress.progress : 0;
-                const statusClass = status === 'completed' ? 'badge-success' : status === 'in_progress' ?
-                    'badge-cyan' : status === 'enrolled' ? 'badge-primary' : 'badge-dark';
-                const statusLabel = status === 'not_enrolled' ? 'Not Enrolled' : status;
+                const statusClass = c.status === 'active' ? 'badge-success' : c.status === 'upcoming' ? 'badge-cyan' :
+                    'badge-dark';
                 return `
                 <div class="challenge-card card card-p">
                     <div class="challenge-icon">🏆</div>
                     <h3>${escapeHtml(c.title)}</h3>
                     <p>${escapeHtml(c.description)}</p>
-                    ${status !== 'not_enrolled' ? `<div class="prog mb-2" style="height:6px"><div class="prog-fill pf-primary" style="width:${progressPercent}%"></div></div><div style="font-size:.75rem;color:var(--text3)">${progressPercent}% complete</div>` : ''}
                     <div class="challenge-meta">
                         <span><i class="fas fa-calendar"></i> ${new Date(c.startDate).toLocaleDateString()} → ${new Date(c.endDate).toLocaleDateString()}</span>
                         <span><i class="fas fa-star"></i> ${c.rewardXP || 500} XP</span>
                         ${c.rewardAmount ? `<span><i class="fas fa-wallet"></i> ${fmtMoneyAPI(c.rewardAmount)}</span>` : ''}
                         <span><i class="fas fa-users"></i> ${c.participants?.length || 0} joined</span>
-                        <span class="badge ${statusClass}" style="font-size:.55rem">${statusLabel}</span>
+                        <span class="badge ${statusClass}" style="font-size:.55rem">${c.status || 'active'}</span>
                     </div>
-                    <button class="btn-primary btn-sm" onclick="joinChallenge('${c._id}')" ${status !== 'not_enrolled' ? 'disabled' : ''}>
-                        ${status === 'not_enrolled' ? 'Join Challenge' : status === 'completed' ? '✅ Completed' : 'In Progress'}
+                    <button class="btn-primary btn-sm" onclick="joinChallenge('${c._id}')" ${isJoined ? 'disabled' : ''}>
+                        ${isJoined ? '✅ Joined' : 'Join Challenge'}
                     </button>
                 </div>`;
             }).join('');
@@ -5562,15 +5584,23 @@
         // USER PROFILE
         // ================================================================
         async function openUserProfile(userId) {
+            if (userId === S.user?._id) {
+                toast('That\'s you! Go to Settings to edit your profile.', 'info');
+                setDP('settings');
+                return;
+            }
             showLoading('Loading profile...');
             try {
                 const res = await apiCall(`/users/${userId}/profile`);
                 const data = res.data;
+                S.profileUser = data.user;
                 renderUserProfile(data);
                 setDP('profile');
             } catch (err) {
                 toast('Failed to load profile: ' + err.message, 'error');
-            } finally { hideLoading(); }
+            } finally {
+                hideLoading();
+            }
         }
 
         function renderUserProfile(data) {
@@ -5580,86 +5610,47 @@
             const posts = data.posts || [];
             const courses = data.courses || [];
             const isFollowing = data.isFollowing;
+            const followersCount = data.followersCount || 0;
+            const followingCount = data.followingCount || 0;
+
             const avatarHtml = getAvatarUrl(user) ?
-                `<img src="${getAvatarUrl(user)}" alt="${user.firstName?.[0] || 'U'}" style="width:100%;height:100%;object-fit:cover;">` :
+                `<img src="${getAvatarUrl(user)}" alt="${user.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                 (user.firstName?.[0] || 'U');
 
             container.innerHTML = `
-                <div class="page-hd">
-                    <button class="btn btn-ghost btn-sm" onclick="setDP('people')"><i class="fas fa-arrow-left"></i> Back</button>
+                <div style="margin-bottom:1rem;">
+                    <button class="btn btn-ghost btn-sm" onclick="setDP('people')"><i class="fas fa-arrow-left"></i> Back to People</button>
                 </div>
                 <div class="profile-header">
-                    <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
-                        <div class="profile-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
-                            ${avatarHtml}
+                    <div class="profile-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
+                        ${avatarHtml}
+                    </div>
+                    <div style="flex:1;">
+                        <h2 style="margin-bottom:.25rem;">${escapeHtml(user.firstName || 'User')} ${escapeHtml(user.lastName || '')}</h2>
+                        <p style="color:var(--text2);margin-bottom:.5rem;">${escapeHtml(user.bio || 'No bio yet')}</p>
+                        <div class="profile-stats">
+                            <span><strong>${followersCount}</strong> followers</span>
+                            <span><strong>${followingCount}</strong> following</span>
+                            <span><strong>${posts.length}</strong> posts</span>
+                            <span><strong>${courses.length}</strong> courses</span>
                         </div>
-                        <div style="flex:1;">
-                            <h2>${escapeHtml(user.firstName)} ${escapeHtml(user.lastName)}</h2>
-                            <p style="color:var(--text2);">${escapeHtml(user.bio || 'No bio yet')}</p>
-                            <div class="profile-stats">
-                                <span><strong>${data.followersCount}</strong> followers</span>
-                                <span><strong>${data.followingCount}</strong> following</span>
-                                <span><strong>${posts.length}</strong> posts</span>
-                                <span><strong>${courses.length}</strong> courses</span>
-                            </div>
-                            ${user._id !== S.user?._id ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="toggleFollowProfile('${user._id}')">${isFollowing ? 'Unfollow' : 'Follow'}</button>` : ''}
-                        </div>
+                        ${user._id !== S.user?._id ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="toggleProfileFollow('${user._id}')" style="margin-top:.5rem;">${isFollowing ? 'Following' : 'Follow'}</button>` : ''}
                     </div>
                 </div>
                 <div class="profile-content">
-                    <h4>📝 Posts</h4>
-                    <div class="row">${posts.length ? posts.map(p => `<div class="col-12 col-md-6">${renderPostCard(p)}</div>`).join('') : '<p class="text-muted">No posts yet</p>'}</div>
-                    <h4>📚 Courses</h4>
-                    <div class="row">${courses.length ? courses.map(c => `<div class="col-12 col-md-6">${renderCourseCard(c)}</div>`).join('') : '<p class="text-muted">No courses yet</p>'}</div>
+                    <h4 style="margin-top:1rem;margin-bottom:.5rem;">📝 Posts</h4>
+                    <div class="row">
+                        ${posts.length ? posts.map(p => `<div class="col-12 col-md-6">${renderPostCard(p)}</div>`).join('') : '<p class="text-muted" style="padding:.5rem 0;">No posts yet</p>'}
+                    </div>
+                    <h4 style="margin-top:1.5rem;margin-bottom:.5rem;">📚 Courses</h4>
+                    <div class="row">
+                        ${courses.length ? courses.map(c => `<div class="col-12 col-md-6">${renderCourseCardInFeed(c)}</div>`).join('') : '<p class="text-muted" style="padding:.5rem 0;">No courses yet</p>'}
+                    </div>
                 </div>
             `;
-            // Attach post event listeners for profile posts
-            attachPostEventListeners();
         }
 
-        function renderPostCard(post) {
-            const author = post.authorId || {};
-            const avatarHtml = getAvatarUrl(author) ?
-                `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
-                (author.firstName?.[0] || 'U');
-            return `
-                <div class="post-card card card-p" data-post-id="${post._id}">
-                    <div class="post-header">
-                        <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
-                            ${avatarHtml}
-                        </div>
-                        <div class="post-author-info">
-                            <strong>${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
-                            <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
-                        </div>
-                    </div>
-                    <h3 class="post-title" onclick="window.open('/post/${post.slug}','_blank')">${escapeHtml(post.title)}</h3>
-                    ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
-                    <div class="post-excerpt">${escapeHtml(post.excerpt || post.content?.substring(0, 200) || '')}...</div>
-                    <div class="post-actions">
-                        <button class="btn-like" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
-                        <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
-                        <button class="btn-share" data-id="${post._id}" data-slug="${post.slug}"><i class="fas fa-share-alt"></i> Share</button>
-                    </div>
-                </div>`;
-        }
-
-        function renderCourseCard(course) {
-            const instructor = course.instructorId || {};
-            return `
-                <div class="course-card" onclick="openBuyCourse('${course._id}')">
-                    <div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3));">
-                        ${course.thumbnail || course.emoji || '📚'}
-                    </div>
-                    <div class="cc-body">
-                        <div style="font-weight:700;font-size:.88rem;margin-bottom:.25rem">${escapeHtml(course.title)}</div>
-                        <div style="font-size:.74rem;color:var(--text3)">By ${escapeHtml(instructor.firstName || 'Instructor')} · ${course.totalLessons || 0} lessons</div>
-                        <div style="font-weight:800;color:var(--lime);margin-top:.5rem">${fmtMoneyAPI(course.price || 0)}</div>
-                    </div>
-                </div>`;
-        }
-
-        async function toggleFollowProfile(userId) {
+        async function toggleProfileFollow(userId) {
             try {
                 const res = await apiCall(`${FOLLOWS_API}/${userId}/follow`, { method: 'POST' });
                 const isNowFollowing = res.followed;
@@ -5671,7 +5662,10 @@
                 }
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
                 // Refresh profile
-                openUserProfile(userId);
+                if (S.profileUser) {
+                    const res2 = await apiCall(`/users/${userId}/profile`);
+                    renderUserProfile(res2.data);
+                }
             } catch (err) { toast('Error: ' + err.message, 'error'); }
         }
 
@@ -5889,8 +5883,6 @@
             loadAds('in-feed', 'adFeedTop');
             // Load following list
             await loadPeople();
-            // Load challenge progress
-            await loadChallengeProgress();
             setTimeout(() => {
                 const hash = window.location.hash.slice(1);
                 if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(() =>
@@ -7788,6 +7780,7 @@
                         </div>
                         <div style="display:flex;gap:.3rem">
                             <button class="btn btn-ghost btn-sm" onclick="deleteAdminChallenge('${c._id}')" style="color:var(--danger)"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-ghost btn-sm" onclick="viewParticipants('${c._id}')"><i class="fas fa-users"></i> Participants</button>
                         </div>
                     </div>
                 `).join('');
@@ -7805,6 +7798,61 @@
                 loadAdminChallenges();
                 if (S.dp === 'challenges') loadChallenges();
             } catch (err) { toast('Failed to delete: ' + err.message, 'error'); }
+        }
+
+        // ================================================================
+        // ADMIN CHALLENGE PARTICIPANTS
+        // ================================================================
+        async function viewParticipants(challengeId) {
+            showLoading('Loading participants...');
+            try {
+                const res = await apiCall(`/admin/challenges/${challengeId}/participants`);
+                const participants = res.data || [];
+                const content = document.getElementById('participantsContent');
+                if (!content) return;
+                if (!participants.length) {
+                    content.innerHTML = '<div class="empty-state"><p>No participants yet.</p></div>';
+                } else {
+                    content.innerHTML = participants.map(p => {
+                        const user = p.userId || {};
+                        const statusClass = p.status === 'completed' ? 'ps-paid' : p.status === 'in_progress' ?
+                            'ps-pend' : 'ps-fail';
+                        return `
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.5rem;">
+                            <div>
+                                <strong>${escapeHtml(user.firstName || 'User')} ${escapeHtml(user.lastName || '')}</strong>
+                                <span class="badge badge-dark" style="font-size:.55rem">${p.status || 'enrolled'}</span>
+                                <span style="font-size:.75rem;color:var(--text3);margin-left:.5rem;">Progress: ${p.progress || 0}%</span>
+                                ${p.completedAt ? `<span style="font-size:.7rem;color:var(--text3);margin-left:.5rem;">Completed: ${new Date(p.completedAt).toLocaleDateString()}</span>` : ''}
+                            </div>
+                            ${p.status !== 'completed' ? `<button class="btn btn-primary btn-sm" onclick="completeChallenge('${challengeId}','${user._id}')"><i class="fas fa-check"></i> Mark Complete</button>` : '<span class="badge badge-success">✅ Completed</span>'}
+                        </div>
+                    `;
+                    }).join('');
+                }
+                openModal('participantsModal');
+            } catch (err) {
+                toast('Failed to load participants: ' + err.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function completeChallenge(challengeId, userId) {
+            if (!confirm('Mark this user as completed? They will receive rewards (XP, wallet bonus, premium days).')) return;
+            showLoading('Processing...');
+            try {
+                await apiCall(`/admin/challenges/${challengeId}/complete/${userId}`, {
+                    method: 'PUT',
+                    body: { adminNote: 'Completed by admin' }
+                });
+                toast('✅ User marked as completed! Rewards awarded.', 'success');
+                viewParticipants(challengeId);
+            } catch (err) {
+                toast('Failed: ' + err.message, 'error');
+            } finally {
+                hideLoading();
+            }
         }
 
         // ================================================================
