@@ -1,0 +1,15 @@
+{
+  "name": "ChangeX Academy – Turn Tech Into Income",
+  "short_name": "ChangeX",
+  "description": "Learn tech skills and earn real money. Nigeria's #1 Learn-to-Earn platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0A0F1F",
+  "background_color": "#0A0F1F",
+  "icons": [
+    { "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "categories": ["education", "productivity"],
+  "lang": "en-NG"
+}
