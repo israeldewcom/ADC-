@@ -4014,6 +4014,33 @@
             font-size: .55rem;
         }
 
+        /* ===== ADMIN ADS ===== */
+        .admin-ads-form {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .admin-ads-form .row {
+            margin-bottom: .5rem;
+        }
+        .admin-ads-form .finput {
+            font-size: .82rem;
+        }
+        .admin-ads-list-item {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: .75rem;
+            margin-bottom: .4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: .5rem;
+        }
+
         /* ===== FOLLOWING BADGE ===== */
         .follow-badge {
             display: inline-flex;
@@ -4196,7 +4223,7 @@
 
     <div class="dash-wrap thin-scroll" id="dashWrap">
         <!-- FEED -->
-        <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span></div><div id="feedContainer"></div><div id="feedPagination" class="d-flex justify-center mt-3"></div></div>
+        <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span><span class="fpill" onclick="filterFeed('following',this)">Following</span></div><div id="feedContainer"></div><div id="feedPagination" class="d-flex justify-center mt-3"></div></div>
 
         <!-- CHALLENGES -->
         <div id="dash-challenges" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Challenges</h2><p class="page-sub">Join challenges, earn XP &amp; win rewards</p></div><div class="d-flex gap-2 mb-3"><span class="fpill active" onclick="filterChallenges('active',this)">Active</span><span class="fpill" onclick="filterChallenges('upcoming',this)">Upcoming</span><span class="fpill" onclick="filterChallenges('completed',this)">Completed</span></div><div id="challengesContainer"></div></div>
@@ -4247,7 +4274,7 @@
         <div id="dash-settings" class="dash-sub"><div class="page-hd"><h2 class="page-title">Settings</h2><p class="page-sub">Manage your account &amp; preferences</p></div><div class="set-tabs"><div class="set-tab active" onclick="switchSet('ss-profile',this)">Profile</div><div class="set-tab" onclick="switchSet('ss-security',this)">Security</div><div class="set-tab" onclick="switchSet('ss-payout',this)">Payouts</div><div class="set-tab" onclick="switchSet('ss-subscription',this)">Subscription</div><div class="set-tab" onclick="switchSet('ss-prefs',this)">Preferences</div><div class="set-tab" onclick="switchSet('ss-notifs',this)">Notifications</div></div><div class="set-sec active" id="ss-profile"><div class="card card-p"><div class="d-flex items-center gap-3 mb-4 flex-wrap"><div class="um-av" id="settingsAv" style="width:64px;height:64px;font-size:1.4rem;background:linear-gradient(135deg,var(--primary),var(--secondary))">U</div><div><h5 style="margin-bottom:.2rem" id="settingsName">User</h5><div id="settingsRoles"><span class="badge badge-cyan">Student</span></div></div><button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="document.getElementById('avatarFileInput').click()"><i class="fas fa-camera"></i>Change Photo</button><input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)"/></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="setFirstName" value=""/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="setLastName" value=""/></div></div></div><div class="form-group"><label class="flabel">Email</label><input type="email" class="finput" id="setEmail" readonly/></div><div class="form-group"><label class="flabel">Phone</label><input type="tel" class="finput" id="setPhone" value=""/></div><div class="form-group"><label class="flabel">Bio</label><textarea class="finput" id="setBio" style="min-height:80px;resize:vertical" placeholder="Tell the world about yourself..."></textarea></div><div class="form-group"><label class="flabel">Location</label><input type="text" class="finput" id="setLocation" placeholder="e.g. Lagos, Nigeria"/></div><button class="btn btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i>Save Profile</button></div></div><div class="set-sec" id="ss-security"><div class="card card-p"><h5 style="margin-bottom:1rem">Security Settings</h5><div class="form-group"><label class="flabel">Current Password</label><input type="password" class="finput" id="secCurrentPw" placeholder="••••••••"/></div><div class="form-group"><label class="flabel">New Password</label><input type="password" class="finput" id="secNewPw" placeholder="Min 8 characters"/></div><div class="form-group"><label class="flabel">Confirm Password</label><input type="password" class="finput" id="secConfirmPw" placeholder="Repeat new password"/></div><button class="btn btn-primary" onclick="changePassword()"><i class="fas fa-lock"></i>Update Password</button></div></div><div class="set-sec" id="ss-payout"><div class="card card-p"><h5 style="margin-bottom:.7rem">Payout Settings</h5><p style="font-size:.76rem;color:var(--text3);margin-bottom:1rem">Bank details are required before you can withdraw your earnings.</p><div class="form-group"><label class="flabel">Bank</label><select class="finput" id="payoutBank"><option value="">Select Bank</option><option>GTBank</option><option>Access Bank</option><option>Zenith Bank</option><option>UBA</option><option>First Bank</option><option>Opay</option><option>Palmpay</option><option>Kuda Bank</option><option>Moniepoint</option></select></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Number</label><input type="text" class="finput" id="payoutAccNum" placeholder="0123456789" maxlength="10"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Name</label><input type="text" class="finput" id="payoutAccName" placeholder="Auto-verified..."/></div></div></div><div id="payoutSaveStatus" style="font-size:.76rem;margin-bottom:.75rem;min-height:1.2em"></div><button class="btn btn-primary" onclick="savePayoutSettings()"><i class="fas fa-save"></i>Save Bank Details</button></div></div><div class="set-sec" id="ss-subscription"><div class="card card-p" id="subStatusCard"></div></div><div class="set-sec" id="ss-prefs"><div class="card card-p"><h5 style="margin-bottom:1rem">Preferences</h5><div style="display:flex;flex-direction:column;gap:.55rem"><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Autoplay Next Lesson</div><div style="font-size:.72rem;color:var(--text3)">Continue automatically</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer"/></div><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Daily Streak Reminder</div><div style="font-size:.72rem;color:var(--text3)">Push notification daily</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer"/></div><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Preferred Currency</div><div style="font-size:.72rem;color:var(--text3)">Display earnings in</div></div><div class="currency-select"><span class="currency-opt" id="prefNGN" onclick="updateCurrencyPreference('NGN')">₦</span><span class="currency-opt" id="prefUSD" onclick="updateCurrencyPreference('USD')">$</span><span class="currency-opt" id="prefGBP" onclick="updateCurrencyPreference('GBP')">£</span><span class="currency-opt" id="prefEUR" onclick="updateCurrencyPreference('EUR')">€</span></div></div></div></div></div><div class="set-sec" id="ss-notifs"><div class="card card-p"><h5 style="margin-bottom:1rem">Notification Settings</h5><div id="notifSettingsList"></div><button class="btn btn-primary mt-4" onclick="toast('Preferences saved!','success')"><i class="fas fa-save"></i>Save</button></div></div></div>
 
         <!-- ADMIN -->
-        <div id="dash-admin" class="dash-sub"><div class="admin-hd"><div class="si si-d" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-shield-alt"></i></div><div><h4 style="margin:0">Admin Panel</h4><p style="font-size:.78rem;color:var(--text2);margin:.12rem 0 0">Super admin · All actions logged · Actions affect user dashboards live</p></div><div style="margin-left:0"><span class="badge badge-danger">SUPER ADMIN</span></div></div><div class="row"><div class="col-12"><div style="display:flex;gap:.28rem;flex-wrap:wrap;overflow-x:auto;margin-bottom:.75rem;padding-bottom:.2rem"><span class="fpill active" onclick="switchAdm('dashboard',this)">Dashboard</span><span class="fpill" onclick="switchAdm('users',this)">Users</span><span class="fpill" onclick="switchAdm('courses',this)">Courses</span><span class="fpill" onclick="switchAdm('approvals',this)">Approvals</span><span class="fpill" onclick="switchAdm('withdrawals',this)">Payouts</span><span class="fpill" onclick="switchAdm('manualPayments',this)">Manual Pay</span><span class="fpill" onclick="switchAdm('coupons',this)">Coupons</span><span class="fpill" onclick="switchAdm('announcements',this)">Announce</span><span class="fpill" onclick="switchAdm('challenges',this)">Challenges</span><span class="fpill" onclick="switchAdm('affiliates',this)">Affiliates</span><span class="fpill" onclick="switchAdm('audit',this)">Audit</span></div><div id="adminContent"></div></div></div></div>
+        <div id="dash-admin" class="dash-sub"><div class="admin-hd"><div class="si si-d" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-shield-alt"></i></div><div><h4 style="margin:0">Admin Panel</h4><p style="font-size:.78rem;color:var(--text2);margin:.12rem 0 0">Super admin · All actions logged · Actions affect user dashboards live</p></div><div style="margin-left:0"><span class="badge badge-danger">SUPER ADMIN</span></div></div><div class="row"><div class="col-12"><div style="display:flex;gap:.28rem;flex-wrap:wrap;overflow-x:auto;margin-bottom:.75rem;padding-bottom:.2rem"><span class="fpill active" onclick="switchAdm('dashboard',this)">Dashboard</span><span class="fpill" onclick="switchAdm('users',this)">Users</span><span class="fpill" onclick="switchAdm('courses',this)">Courses</span><span class="fpill" onclick="switchAdm('approvals',this)">Approvals</span><span class="fpill" onclick="switchAdm('withdrawals',this)">Payouts</span><span class="fpill" onclick="switchAdm('manualPayments',this)">Manual Pay</span><span class="fpill" onclick="switchAdm('coupons',this)">Coupons</span><span class="fpill" onclick="switchAdm('announcements',this)">Announce</span><span class="fpill" onclick="switchAdm('challenges',this)">Challenges</span><span class="fpill" onclick="switchAdm('ads',this)">Ads</span><span class="fpill" onclick="switchAdm('affiliates',this)">Affiliates</span><span class="fpill" onclick="switchAdm('audit',this)">Audit</span></div><div id="adminContent"></div></div></div></div>
     </div></div></div></div>
 
     <!-- ============================================================ -->
@@ -4341,7 +4368,8 @@
             peopleSearchTerm: '',
             interactiveMaterials: [],
             postQuill: null,
-            followStatus: {}
+            followStatus: {},
+            following: [] // list of user IDs the current user follows
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -5002,8 +5030,14 @@
                 const res = await apiCall(url);
                 const posts = res.data?.posts || res.data || [];
                 const pagination = res.data?.pagination || { total: 0, pages: 1 };
-                S.posts = posts;
-                renderFeed(posts, pagination);
+                // Filter for following
+                let filteredPosts = posts;
+                if (filter === 'following') {
+                    const followingIds = S.following || [];
+                    filteredPosts = posts.filter(p => followingIds.includes(p.authorId?._id || p.authorId));
+                }
+                S.posts = filteredPosts;
+                renderFeed(filteredPosts, pagination);
                 attachPostEventListeners();
             } catch (err) {
                 toast('Failed to load feed: ' + err.message, 'error');
@@ -5167,19 +5201,16 @@
             const modal = document.getElementById('createPostModal');
             if (modal) {
                 openModal('createPostModal');
-                // Quill will be initialized inside openModal
             }
         }
 
         function initPostQuill() {
             if (S.postQuill) {
-                // If already exists, just focus
                 try { S.postQuill.focus(); } catch (e) {}
                 return;
             }
             const el = document.getElementById('postEditor');
             if (!el || typeof Quill === 'undefined') {
-                // If Quill not loaded yet, retry
                 setTimeout(initPostQuill, 300);
                 return;
             }
@@ -5196,7 +5227,6 @@
                         ]
                     }
                 });
-                // Set a default empty content to ensure editor is ready
                 if (!S.postQuill.root.innerHTML || S.postQuill.root.innerHTML === '<p><br></p>') {
                     S.postQuill.root.innerHTML = '';
                 }
@@ -5213,7 +5243,6 @@
             if (S.postQuill) {
                 content = S.postQuill.root.innerHTML;
             } else {
-                // Fallback: try to get content from the editor div
                 const editorEl = document.getElementById('postEditor');
                 if (editorEl) {
                     content = editorEl.innerHTML || '';
@@ -5235,7 +5264,6 @@
                 });
                 toast('Post created! Publish it from your dashboard.', 'success');
                 closeModal('createPostModal');
-                // Reset form
                 document.getElementById('postTitle').value = '';
                 document.getElementById('postTags').value = '';
                 document.getElementById('postImage').value = '';
@@ -5268,7 +5296,6 @@
                 const res = await apiCall(url);
                 const challenges = res.data || [];
                 renderChallenges(challenges);
-                // Update badge count
                 const badge = document.getElementById('navChallengeBadge');
                 if (badge) {
                     const activeChallenges = challenges.filter(c => c.status === 'active').length;
@@ -5328,7 +5355,7 @@
         }
 
         // ================================================================
-        // PEOPLE MODULE with follow status
+        // PEOPLE MODULE with follow status and following list
         // ================================================================
         async function loadPeople() {
             showLoading('Loading users...');
@@ -5340,7 +5367,13 @@
                 const followPromises = users.filter(u => u._id !== S.user?._id).map(async (u) => {
                     try {
                         const statusRes = await apiCall(`${FOLLOWS_API}/${u._id}/status`);
-                        S.followStatus[u._id] = statusRes.data?.isFollowing || false;
+                        const isFollowing = statusRes.data?.isFollowing || false;
+                        S.followStatus[u._id] = isFollowing;
+                        if (isFollowing) {
+                            if (!S.following.includes(u._id)) S.following.push(u._id);
+                        } else {
+                            S.following = S.following.filter(id => id !== u._id);
+                        }
                     } catch (e) { S.followStatus[u._id] = false; }
                 });
                 await Promise.all(followPromises);
@@ -5389,6 +5422,11 @@
                 const res = await apiCall(`${FOLLOWS_API}/${userId}/follow`, { method: 'POST' });
                 const isNowFollowing = res.followed;
                 S.followStatus[userId] = isNowFollowing;
+                if (isNowFollowing) {
+                    if (!S.following.includes(userId)) S.following.push(userId);
+                } else {
+                    S.following = S.following.filter(id => id !== userId);
+                }
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
                 renderPeople(S.users);
             } catch (err) { toast('Error: ' + err.message, 'error'); }
@@ -5606,6 +5644,8 @@
             loadAds('sidebar', 'adSidebar');
             loadAds('banner', 'adBannerTop');
             loadAds('in-feed', 'adFeedTop');
+            // Load following list
+            await loadPeople();
             setTimeout(() => {
                 const hash = window.location.hash.slice(1);
                 if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(() =>
@@ -7401,6 +7441,31 @@
                     `;
                     await loadAdminChallenges();
                     break;
+                case 'ads':
+                    content.innerHTML = `
+                        <div class="admin-ads-form">
+                            <h6 style="margin-bottom:.65rem">📢 Create New Ad</h6>
+                            <div class="form-group"><label class="flabel">Title</label><input type="text" class="finput" id="admAdTitle" placeholder="Ad title"/></div>
+                            <div class="form-group"><label class="flabel">Image URL</label><input type="url" class="finput" id="admAdImage" placeholder="https://..."/></div>
+                            <div class="form-group"><label class="flabel">Link URL</label><input type="url" class="finput" id="admAdLink" placeholder="https://..."/></div>
+                            <div class="form-group"><label class="flabel">Placement</label>
+                                <select class="finput" id="admAdPlacement">
+                                    <option value="sidebar">Sidebar</option>
+                                    <option value="banner">Banner</option>
+                                    <option value="in-feed">In-Feed</option>
+                                    <option value="popup">Popup</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-6"><div class="form-group"><label class="flabel">Start Date</label><input type="date" class="finput" id="admAdStart"/></div></div>
+                                <div class="col-6"><div class="form-group"><label class="flabel">End Date</label><input type="date" class="finput" id="admAdEnd"/></div></div>
+                            </div>
+                            <button class="btn btn-primary" onclick="adminCreateAd()"><i class="fas fa-plus"></i> Create Ad</button>
+                        </div>
+                        <div id="admAdsList"><p style="color:var(--text3)">Loading ads...</p></div>
+                    `;
+                    await loadAdminAds();
+                    break;
                 case 'affiliates':
                     content.innerHTML =
                         '<div class="card card-p"><h6>Top Affiliates</h6><div id="topAffiliatesList"></div></div>';
@@ -7447,9 +7512,7 @@
                 });
                 toast('✅ Challenge created successfully!', 'success');
                 loadAdminChallenges();
-                // Refresh the public challenges list
                 if (S.dp === 'challenges') loadChallenges();
-                // Clear form
                 document.getElementById('admChallengeTitle').value = '';
                 document.getElementById('admChallengeDesc').value = '';
                 document.getElementById('admChallengeStart').value = '';
@@ -7496,6 +7559,75 @@
                 toast('Challenge deleted', 'success');
                 loadAdminChallenges();
                 if (S.dp === 'challenges') loadChallenges();
+            } catch (err) { toast('Failed to delete: ' + err.message, 'error'); }
+        }
+
+        // ================================================================
+        // ADMIN ADS MANAGEMENT
+        // ================================================================
+        async function adminCreateAd() {
+            const title = document.getElementById('admAdTitle')?.value.trim();
+            const imageUrl = document.getElementById('admAdImage')?.value.trim();
+            const linkUrl = document.getElementById('admAdLink')?.value.trim();
+            const placement = document.getElementById('admAdPlacement')?.value;
+            const startDate = document.getElementById('admAdStart')?.value;
+            const endDate = document.getElementById('admAdEnd')?.value;
+            if (!title || !imageUrl || !linkUrl || !placement || !startDate || !endDate) {
+                toast('Please fill in all fields', 'error');
+                return;
+            }
+            try {
+                await apiCall('/admin/ads', {
+                    method: 'POST',
+                    body: { title, imageUrl, linkUrl, placement, startDate, endDate }
+                });
+                toast('✅ Ad created!', 'success');
+                loadAdminAds();
+                document.getElementById('admAdTitle').value = '';
+                document.getElementById('admAdImage').value = '';
+                document.getElementById('admAdLink').value = '';
+                document.getElementById('admAdStart').value = '';
+                document.getElementById('admAdEnd').value = '';
+            } catch (err) {
+                toast('Failed to create ad: ' + err.message, 'error');
+            }
+        }
+
+        async function loadAdminAds() {
+            try {
+                const res = await apiCall('/admin/ads');
+                const ads = res.data || [];
+                const listEl = document.getElementById('admAdsList');
+                if (!listEl) return;
+                if (!ads.length) {
+                    listEl.innerHTML = '<div class="empty-state"><p>No ads created yet</p></div>';
+                    return;
+                }
+                listEl.innerHTML = ads.map(ad => `
+                    <div class="admin-ads-list-item">
+                        <div>
+                            <strong>${escapeHtml(ad.title)}</strong>
+                            <span class="badge ${ad.isActive ? 'badge-success' : 'badge-dark'}" style="font-size:.55rem">${ad.isActive ? 'Active' : 'Inactive'}</span>
+                            <br><small style="color:var(--text3)">${ad.placement} · Impressions: ${ad.impressions || 0} · Clicks: ${ad.clicks || 0}</small>
+                            <br><small style="color:var(--text3)">${new Date(ad.startDate).toLocaleDateString()} → ${new Date(ad.endDate).toLocaleDateString()}</small>
+                        </div>
+                        <div style="display:flex;gap:.3rem">
+                            <button class="btn btn-ghost btn-sm" onclick="deleteAdminAd('${ad._id}')" style="color:var(--danger)"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                const listEl = document.getElementById('admAdsList');
+                if (listEl) listEl.innerHTML = '<p style="color:var(--danger)">Failed to load ads</p>';
+            }
+        }
+
+        async function deleteAdminAd(adId) {
+            if (!confirm('Delete this ad?')) return;
+            try {
+                await apiCall(`/admin/ads/${adId}`, { method: 'DELETE' });
+                toast('Ad deleted', 'success');
+                loadAdminAds();
             } catch (err) { toast('Failed to delete: ' + err.message, 'error'); }
         }
 
