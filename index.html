@@ -4279,7 +4279,7 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // API CALL
+        // API CALL – FIXED to handle absolute URLs
         // ═══════════════════════════════════════════════════════════════
         async function apiCall(endpoint, options = {}) {
             const token = localStorage.getItem('cx_accessToken');
@@ -4291,7 +4291,9 @@
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 30000);
                 fetchOptions.signal = controller.signal;
-                const response = await fetch(`${API_BASE}${endpoint}`, fetchOptions);
+                // ✅ FIX: if endpoint already starts with http, use as-is; otherwise prepend API_BASE
+                const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+                const response = await fetch(url, fetchOptions);
                 clearTimeout(timeoutId);
                 let data;
                 const ct = response.headers.get('content-type');
@@ -4837,9 +4839,13 @@
         }
 
         // ================================================================
-        // POSTS MODULE
+        // POSTS MODULE – using relative paths (no absolute URLs)
         // ================================================================
-        const POSTS_API = `${API_BASE}/posts`;
+        const POSTS_API = '/posts';
+        const CHALLENGES_API = '/challenges';
+        const FOLLOWS_API = '/follows';
+        const ADS_API = '/ads';
+        const INTERACTIVE_API = '/interactive';
 
         async function loadFeed(page = 1) {
             S.feedPage = page || 1;
@@ -5054,9 +5060,9 @@
             showLoading('Loading challenges...');
             try {
                 const filter = S.challengesFilter || 'active';
-                const url = filter === 'active' ? `${API_BASE}/challenges/active` :
-                    filter === 'upcoming' ? `${API_BASE}/challenges/upcoming` :
-                    `${API_BASE}/challenges/all?status=completed`;
+                const url = filter === 'active' ? `${CHALLENGES_API}/active` :
+                    filter === 'upcoming' ? `${CHALLENGES_API}/upcoming` :
+                    `${CHALLENGES_API}/all?status=completed`;
                 const res = await apiCall(url);
                 const challenges = res.data || [];
                 renderChallenges(challenges);
@@ -5100,7 +5106,7 @@
 
         async function joinChallenge(challengeId) {
             try {
-                const res = await apiCall(`${API_BASE}/challenges/${challengeId}/join`, { method: 'POST' });
+                const res = await apiCall(`${CHALLENGES_API}/${challengeId}/join`, { method: 'POST' });
                 toast(res.message || 'Joined challenge!', 'success');
                 loadChallenges();
             } catch (err) { toast(err.message || 'Error joining challenge', 'error'); }
@@ -5112,7 +5118,7 @@
         async function loadPeople() {
             showLoading('Loading users...');
             try {
-                const res = await apiCall(`${API_BASE}/admin/users?limit=50`);
+                const res = await apiCall('/admin/users?limit=50');
                 const users = res.data?.users || res.data || [];
                 S.users = users;
                 renderPeople(users);
@@ -5151,7 +5157,7 @@
 
         async function followUser(userId) {
             try {
-                const res = await apiCall(`${API_BASE}/follows/${userId}/follow`, { method: 'POST' });
+                const res = await apiCall(`${FOLLOWS_API}/${userId}/follow`, { method: 'POST' });
                 toast(res.message || 'Updated', 'success');
                 loadPeople();
             } catch (err) { toast('Error', 'error'); }
@@ -5162,7 +5168,7 @@
         // ================================================================
         async function loadAds(placement, containerId) {
             try {
-                const res = await apiCall(`${API_BASE}/ads/placement/${placement}`);
+                const res = await apiCall(`${ADS_API}/placement/${placement}`);
                 const ads = res.data || [];
                 const container = document.getElementById(containerId);
                 if (!container) return;
@@ -5180,11 +5186,11 @@
         }
 
         async function trackAdImpression(adId) {
-            try { await fetch(`${API_BASE}/ads/${adId}/impression`, { method: 'POST' }); } catch (e) {}
+            try { await fetch(`${API_BASE}${ADS_API}/${adId}/impression`, { method: 'POST' }); } catch (e) {}
         }
 
         async function trackAdClick(adId, url) {
-            try { await fetch(`${API_BASE}/ads/${adId}/click`, { method: 'POST' });
+            try { await fetch(`${API_BASE}${ADS_API}/${adId}/click`, { method: 'POST' });
                 window.open(url, '_blank'); } catch (e) {}
         }
 
@@ -5194,7 +5200,7 @@
         async function loadInteractiveMaterials(lessonId) {
             if (!lessonId) return;
             try {
-                const res = await apiCall(`${API_BASE}/interactive/lesson/${lessonId}`);
+                const res = await apiCall(`${INTERACTIVE_API}/lesson/${lessonId}`);
                 const materials = res.data || [];
                 S.interactiveMaterials = materials;
                 const container = document.getElementById('interactiveMaterialsContainer');
@@ -5300,7 +5306,6 @@
         }
 
         function initCodeEditor(id, html, css, js) {
-            // auto-run on first load
             setTimeout(() => runCode(id), 300);
         }
 
@@ -5534,7 +5539,6 @@
                     .currentCourseData.sections?.flatMap(s => s.lessons) || []);
                 S.currentLessonIdx = 0;
                 renderCurric();
-                // load interactive materials for first lesson
                 const firstLesson = S.currentLessons[0];
                 if (firstLesson && firstLesson._id) loadInteractiveMaterials(firstLesson._id);
             } catch (e) { toast('Could not load course: ' + e.message, 'error'); }
@@ -5877,7 +5881,6 @@
             S.lessonStartTime = Date.now();
             updateLessonInfo();
             updateAdVisibility();
-            // load interactive for current lesson
             const currentLesson = lessons[S.currentLessonIdx];
             if (currentLesson && currentLesson._id) loadInteractiveMaterials(currentLesson._id);
         }
