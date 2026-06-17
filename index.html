@@ -4216,6 +4216,7 @@
         <li><span class="nav-item active" id="nav-feed" onclick="setDP('feed')"><span class="nav-ico"><i class="fas fa-newspaper"></i></span>Feed</span></li>
         <li><span class="nav-item" id="nav-challenges" onclick="setDP('challenges')"><span class="nav-ico"><i class="fas fa-trophy"></i></span>Challenges<span class="nav-badge nav-badge-pink" id="navChallengeBadge">0</span></span></li>
         <li><span class="nav-item" id="nav-people" onclick="setDP('people')"><span class="nav-ico"><i class="fas fa-users"></i></span>People</span></li>
+        <li><span class="nav-item" id="nav-my-posts" onclick="setDP('my-posts')"><span class="nav-ico"><i class="fas fa-file-alt"></i></span>My Posts</span></li>
         <li class="nav-sec" style="margin-top:.3rem">Learning</li>
         <li><span class="nav-item" id="nav-home" onclick="setDP('home')"><span class="nav-ico"><i class="fas fa-home"></i></span>Dashboard</span></li>
         <li><span class="nav-item" id="nav-explore" onclick="setDP('explore')"><span class="nav-ico"><i class="fas fa-compass"></i></span>Explore Courses</span></li>
@@ -4256,6 +4257,9 @@
 
         <!-- PROFILE -->
         <div id="dash-profile" class="dash-sub"><div class="page-hd"><button class="btn btn-ghost btn-sm" onclick="setDP('people')"><i class="fas fa-arrow-left"></i> Back</button></div><div id="profileContent"></div></div>
+
+        <!-- MY POSTS -->
+        <div id="dash-my-posts" class="dash-sub"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📝 My Posts</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> New Post</button></div><div id="myPostsContainer"></div></div>
 
         <!-- HOME (Dashboard) -->
         <div id="dash-home" class="dash-sub"><div id="homeSkeleton" style="display:none"><div class="skeleton" style="height:120px;margin-bottom:1rem;border-radius:var(--radius)"></div><div class="row"><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div></div></div><div id="homeContent"></div></div>
@@ -4397,7 +4401,10 @@
             followStatus: {},
             following: [],
             profileUser: null,
-            challengeProgress: []
+            challengeProgress: [],
+            myPosts: [],
+            postToDelete: null,
+            courseToDelete: null
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -4596,7 +4603,8 @@
                 ai: initAI,
                 admin: () => renderAdm('dashboard'),
                 settings: initSettings,
-                profile: () => {}
+                profile: () => {},
+                'my-posts': loadMyPosts
             };
             if (map[pg]) map[pg]();
             updateAdVisibility();
@@ -4994,6 +5002,34 @@
             const fab = document.getElementById('fab');
             if (fab) fab.style.display = hasCreatorAccess ? 'block' : 'none';
             renderCurrencySelectorUI();
+            // Check subscription expiry
+            checkSubscriptionExpiry();
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // SUBSCRIPTION EXPIRY CHECK
+        // ═══════════════════════════════════════════════════════════════
+        function checkSubscriptionExpiry() {
+            if (!S.user) return;
+            const expiry = S.user.subscriptionExpires || S.user.subscriptionExpiry;
+            if (!expiry) return;
+            const expDate = new Date(expiry);
+            const now = new Date();
+            const daysLeft = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
+            if (daysLeft < 0) {
+                // Expired
+                if (S.isPremium) {
+                    S.isPremium = false;
+                    S.user.isPremium = false;
+                    localStorage.setItem('cx_user', JSON.stringify(S.user));
+                    toast('⚠️ Your Premium subscription has expired. Renew to keep benefits.', 'warning');
+                    updateUserUI();
+                    updateAdVisibility();
+                    if (S.dp === 'home') renderHomeDashboard();
+                }
+            } else if (daysLeft <= 3 && daysLeft > 0) {
+                toast(`⚠️ Your Premium subscription expires in ${daysLeft} days. Renew now!`, 'warning');
+            }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -5041,6 +5077,45 @@
         }
 
         // ================================================================
+        // SOCIAL SHARING
+        // ================================================================
+        function sharePostSocial(postId, title, url) {
+            const shareUrl = url || `${FRONTEND_URL}/post/${postId}`;
+            if (navigator.share) {
+                navigator.share({ title: title || 'Check out this post on ChangeX!', url: shareUrl }).catch(() => {});
+            } else {
+                // Fallback: copy link
+                copyToClipboard(shareUrl);
+                toast('Link copied! Share it anywhere.', 'success');
+            }
+        }
+
+        function sharePostToWhatsApp(postId, title) {
+            const url = `${FRONTEND_URL}/post/${postId}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(`${title || 'Check this out!'} - ${url}`)}`, '_blank');
+        }
+
+        function sharePostToTwitter(postId, title) {
+            const url = `${FRONTEND_URL}/post/${postId}`;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title || 'Check this out!')}&url=${encodeURIComponent(url)}`, '_blank');
+        }
+
+        function sharePostToLinkedIn(postId, title) {
+            const url = `${FRONTEND_URL}/post/${postId}`;
+            window.open(`https://www.linkedin.com/sharing/share-offscreen/?url=${encodeURIComponent(url)}`, '_blank');
+        }
+
+        function sharePostToTelegram(postId, title) {
+            const url = `${FRONTEND_URL}/post/${postId}`;
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title || 'Check this out!')}`, '_blank');
+        }
+
+        function sharePostToFacebook(postId, title) {
+            const url = `${FRONTEND_URL}/post/${postId}`;
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+        }
+
+        // ================================================================
         // POSTS MODULE
         // ================================================================
         const POSTS_API = '/posts';
@@ -5072,7 +5147,7 @@
             } finally { hideLoading(); }
         }
 
-        function renderPostCard(post) {
+        function renderPostCard(post, showDelete = false) {
             const author = post.authorId || post.author || {};
             const avatarHtml = getAvatarUrl(author) ?
                 `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
@@ -5080,6 +5155,7 @@
             const contentHtml = post.content ? (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(post.content) : post
                 .content) : '';
             const earnings = post.earnings || 0;
+            const postUrl = `${FRONTEND_URL}/post/${post.slug || post._id}`;
             return `
                 <div class="post-card card card-p" data-post-id="${post._id}">
                     <div class="post-header">
@@ -5091,6 +5167,7 @@
                             <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
                             <span class="badge badge-cyan" style="font-size:.55rem">${post.type || 'article'}</span>
                         </div>
+                        ${showDelete ? `<button class="btn-icon-sm" onclick="deleteMyPost('${post._id}')" style="color:var(--danger)"><i class="fas fa-trash"></i></button>` : ''}
                     </div>
                     <h3 class="post-title" onclick="window.open('/post/${post.slug}','_blank')">${escapeHtml(post.title)}</h3>
                     ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
@@ -5106,12 +5183,38 @@
                     <div class="post-actions">
                         <button class="btn-like ${post.userLiked ? 'liked' : ''}" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
                         <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
-                        <button class="btn-share" data-id="${post._id}" data-slug="${post.slug}"><i class="fas fa-share-alt"></i> Share</button>
+                        <button class="btn-share" data-id="${post._id}" data-slug="${post.slug}" onclick="sharePostSocial('${post._id}','${escapeHtml(post.title)}','${postUrl}')"><i class="fas fa-share-alt"></i> Share</button>
+                        <div class="social-share-dropdown" style="position:relative;display:inline-block;">
+                            <button class="btn-icon-sm" onclick="toggleShareDropdown('${post._id}')" style="font-size:.7rem"><i class="fas fa-ellipsis-v"></i></button>
+                            <div id="share-dropdown-${post._id}" style="display:none;position:absolute;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.3rem;z-index:10;min-width:140px;top:100%;left:0;">
+                                <button onclick="sharePostToWhatsApp('${post._id}','${escapeHtml(post.title)}')" style="display:block;width:100%;padding:.3rem .6rem;font-size:.7rem;text-align:left;color:var(--text2)"><i class="fab fa-whatsapp" style="color:#25d366"></i> WhatsApp</button>
+                                <button onclick="sharePostToTwitter('${post._id}','${escapeHtml(post.title)}')" style="display:block;width:100%;padding:.3rem .6rem;font-size:.7rem;text-align:left;color:var(--text2)"><i class="fab fa-twitter" style="color:#1da1f2"></i> Twitter</button>
+                                <button onclick="sharePostToFacebook('${post._id}','${escapeHtml(post.title)}')" style="display:block;width:100%;padding:.3rem .6rem;font-size:.7rem;text-align:left;color:var(--text2)"><i class="fab fa-facebook" style="color:#1877f2"></i> Facebook</button>
+                                <button onclick="sharePostToLinkedIn('${post._id}','${escapeHtml(post.title)}')" style="display:block;width:100%;padding:.3rem .6rem;font-size:.7rem;text-align:left;color:var(--text2)"><i class="fab fa-linkedin" style="color:#0a66c2"></i> LinkedIn</button>
+                                <button onclick="sharePostToTelegram('${post._id}','${escapeHtml(post.title)}')" style="display:block;width:100%;padding:.3rem .6rem;font-size:.7rem;text-align:left;color:var(--text2)"><i class="fab fa-telegram" style="color:#0088cc"></i> Telegram</button>
+                                <button onclick="copyToClipboard('${postUrl}')" style="display:block;width:100%;padding:.3rem .6rem;font-size:.7rem;text-align:left;color:var(--text2)"><i class="fas fa-copy"></i> Copy Link</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="comments-section" style="display:none;" data-post-id="${post._id}"></div>
                 </div>
             `;
         }
+
+        function toggleShareDropdown(postId) {
+            const el = document.getElementById(`share-dropdown-${postId}`);
+            if (el) {
+                // Close all others
+                document.querySelectorAll('[id^="share-dropdown-"]').forEach(d => { if (d.id !== `share-dropdown-${postId}`) d
+                        .style.display = 'none'; });
+                el.style.display = el.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.social-share-dropdown')) {
+                document.querySelectorAll('[id^="share-dropdown-"]').forEach(d => d.style.display = 'none');
+            }
+        });
 
         function renderCourseCardInFeed(course) {
             const author = course.instructorId || course.instructor || {};
@@ -5161,9 +5264,6 @@
             });
             document.querySelectorAll('.btn-comment').forEach(btn => {
                 btn.onclick = () => toggleComments(btn.dataset.id);
-            });
-            document.querySelectorAll('.btn-share').forEach(btn => {
-                btn.onclick = () => sharePost(btn.dataset.id, btn.dataset.slug);
             });
         }
 
@@ -5245,15 +5345,6 @@
             } catch (err) { toast('Error', 'error'); }
         }
 
-        async function sharePost(postId, slug) {
-            const url = `${FRONTEND_URL}/post/${slug}`;
-            try {
-                await apiCall(`${POSTS_API}/${postId}/share`, { method: 'POST' });
-                copyToClipboard(url);
-                toast('Link copied! Share it with friends.', 'success');
-            } catch (err) { toast('Could not copy link', 'error'); }
-        }
-
         async function loadFollowingFeed() {
             try {
                 const res = await apiCall('/posts/following');
@@ -5281,6 +5372,58 @@
                 return '';
             }).join('');
             attachPostEventListeners();
+        }
+
+        // ================================================================
+        // MY POSTS
+        // ================================================================
+        async function loadMyPosts() {
+            showLoading('Loading your posts...');
+            try {
+                const res = await apiCall('/posts/user/me');
+                const posts = res.data || [];
+                S.myPosts = posts;
+                renderMyPosts(posts);
+            } catch (err) {
+                toast('Failed to load your posts: ' + err.message, 'error');
+            } finally { hideLoading(); }
+        }
+
+        function renderMyPosts(posts) {
+            const container = document.getElementById('myPostsContainer');
+            if (!container) return;
+            if (!posts || !posts.length) {
+                container.innerHTML =
+                    '<div class="empty-state"><i class="fas fa-file-alt"></i><h4>No posts yet</h4><p>Create your first post to share with the community!</p></div>';
+                return;
+            }
+            container.innerHTML = posts.map(post => renderPostCard(post, true)).join('');
+            attachPostEventListeners();
+        }
+
+        async function deleteMyPost(postId) {
+            if (!confirm('Are you sure you want to delete this post?')) return;
+            try {
+                await apiCall(`${POSTS_API}/${postId}`, { method: 'DELETE' });
+                toast('Post deleted successfully', 'success');
+                loadMyPosts();
+                // Also refresh feed if on feed page
+                if (S.dp === 'feed') loadFeed();
+            } catch (err) {
+                toast('Failed to delete post: ' + err.message, 'error');
+            }
+        }
+
+        async function deleteMyCourse(courseId) {
+            if (!confirm('Are you sure you want to delete this course? This action cannot be undone.')) return;
+            try {
+                await apiCall(`/instructor/courses/${courseId}`, { method: 'DELETE' });
+                toast('Course deleted successfully', 'success');
+                if (S.dp === 'instructor') loadInstructorData();
+                if (S.dp === 'courses') renderCourseGrid(S.courseFilter);
+            } catch (err) {
+                toast('Failed to delete course: ' + err.message, 'error');
+            }
         }
 
         function openCreatePostModal() {
@@ -5360,6 +5503,7 @@
                     S.postQuill.root.innerHTML = '';
                 }
                 if (S.dp === 'feed') loadFeed();
+                if (S.dp === 'my-posts') loadMyPosts();
             } catch (err) {
                 toast('Failed to create post: ' + err.message, 'error');
             }
@@ -5406,6 +5550,10 @@
                 const isJoined = c.participants && c.participants.includes(S.user?._id);
                 const statusClass = c.status === 'active' ? 'badge-success' : c.status === 'upcoming' ? 'badge-cyan' :
                     'badge-dark';
+                // Check if user has completed this challenge
+                const progress = S.challengeProgress.find(p => p.challengeId?._id === c._id || p.challengeId === c
+                ._id);
+                const isCompleted = progress?.status === 'completed';
                 return `
                 <div class="challenge-card card card-p">
                     <div class="challenge-icon">🏆</div>
@@ -5418,9 +5566,10 @@
                         ${c.rewardPremiumDays ? `<span><i class="fas fa-crown"></i> +${c.rewardPremiumDays}d Premium</span>` : ''}
                         <span><i class="fas fa-users"></i> ${c.participants?.length || 0} joined</span>
                         <span class="badge ${statusClass}" style="font-size:.55rem">${c.status || 'active'}</span>
+                        ${isCompleted ? '<span class="badge badge-success" style="font-size:.55rem">✅ Completed</span>' : ''}
                     </div>
-                    <button class="btn-primary btn-sm" onclick="joinChallenge('${c._id}')" ${isJoined ? 'disabled' : ''}>
-                        ${isJoined ? '✅ Joined' : 'Join Challenge'}
+                    <button class="btn-primary btn-sm" onclick="joinChallenge('${c._id}')" ${isJoined || isCompleted ? 'disabled' : ''}>
+                        ${isCompleted ? '✅ Completed' : isJoined ? '✅ Joined' : 'Join Challenge'}
                     </button>
                 </div>`;
             }).join('');
@@ -5463,6 +5612,7 @@
                 const c = p.challengeId || {};
                 const statusClass = p.status === 'completed' ? 'ps-paid' : p.status === 'enrolled' ? 'ps-pend' :
                     'ps-fail';
+                const rewardsAwarded = p.rewardClaimed ? '✅ Rewards claimed' : '⏳ Pending rewards';
                 return `
                     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:.4rem;">
                         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;">
@@ -5473,6 +5623,7 @@
                         <div style="font-size:.7rem;color:var(--text3);margin-top:.3rem;">Progress: ${p.progress || 0}%</div>
                         ${p.completedAt ? `<div style="font-size:.7rem;color:var(--success);">✅ Completed ${new Date(p.completedAt).toLocaleDateString()}</div>` : ''}
                         ${p.adminNote ? `<div style="font-size:.7rem;color:var(--text3);">Note: ${escapeHtml(p.adminNote)}</div>` : ''}
+                        <div style="font-size:.65rem;color:var(--text3);margin-top:.2rem;">${rewardsAwarded}</div>
                     </div>
                 `;
             }).join('');
@@ -5869,7 +6020,7 @@
         }
 
         // ================================================================
-        // DASHBOARD - HOME
+        // DASHBOARD - HOME with earnings dashboard
         // ================================================================
         async function initHome() {
             document.getElementById('homeContent').innerHTML = '';
@@ -5911,6 +6062,15 @@
             const xpNext = level * 1000;
             const xpProgress = Math.min(100, Math.round((xp / xpNext) * 100));
             const showUpgrade = !S.isPremium && !S.user?.roles?.includes('admin');
+            // Calculate earnings stats
+            const totalEarnings = S.walletBal || 0;
+            const referralEarnings = S.user?.referralEarnings || 0;
+            const affiliateEarnings = S.user?.affiliateEarnings || 0;
+            const courseEarnings = S.user?.courseEarnings || 0;
+            const socialEarnings = S.user?.socialEarnings || 0;
+            const postCount = S.myPosts?.length || 0;
+            const followers = S.following?.length || 0;
+
             el.innerHTML =
                 `
                 <div id="homeUpgradeBanner" style="display:${showUpgrade ? 'block' : 'none'};background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,146,60,.05));border:1px solid rgba(251,191,36,.2);border-radius:var(--radius);padding:1rem;margin-bottom:1rem">
@@ -5939,12 +6099,19 @@
                     </div>
                     <div class="prog" style="height:7px"><div class="prog-fill pf-primary" style="width:${xpProgress}%"></div></div>
                 </div>
+
+                <!-- Earnings Dashboard -->
                 <div class="row mb-4">
-                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(S.walletBal)}</div><div class="sl">Wallet</div></div></div>
-                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-book-open"></i></div><div class="sv">${completedCnt}/${S.enrollments.length}</div><div class="sl">Courses</div></div></div>
-                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-users"></i></div><div class="sv">${refCnt}</div><div class="sl">Referrals</div></div></div>
-                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${S.myAffiliateLinks?.length || 0}</div><div class="sl">Affiliates</div></div></div>
+                    <div class="col-12"><h4 style="margin-bottom:.5rem">💰 Earnings Dashboard</h4></div>
+                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(totalEarnings)}</div><div class="sl">Total Balance</div></div></div>
+                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-users"></i></div><div class="sv">${fmtMoneyAPI(referralEarnings)}</div><div class="sl">Referrals</div></div></div>
+                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${fmtMoneyAPI(affiliateEarnings)}</div><div class="sl">Affiliates</div></div></div>
+                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-book"></i></div><div class="sv">${fmtMoneyAPI(courseEarnings)}</div><div class="sl">Courses</div></div></div>
+                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-gold"><i class="fas fa-chart-line"></i></div><div class="sv">${fmtMoneyAPI(socialEarnings)}</div><div class="sl">Social Engagement</div></div></div>
+                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-pink"><i class="fas fa-file-alt"></i></div><div class="sv">${postCount}</div><div class="sl">Posts</div></div></div>
+                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${followers}</div><div class="sl">Followers</div></div></div>
                 </div>
+
                 <div class="row">
                     <div class="col-12 col-md-8">
                         <div class="card card-p mb-3">
@@ -6643,7 +6810,7 @@
             document.getElementById('walletWeekChange').innerHTML = pending > 0 ?
                 `<span style="color:var(--gold)">Pending: ${fmtMoneyAPI(pending)}</span>` : '+₦0 this week';
             document.getElementById('walletBreakdown').innerHTML =
-                `<div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</span></div><div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(S.user?.courseEarnings || 0)}</span></div><div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</span></div>`;
+                `<div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</span></div><div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(S.user?.courseEarnings || 0)}</span></div><div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</span></div><div class="web-row"><span>Social Engagement</span><span style="color:var(--gold);font-weight:700">${fmtMoneyAPI(S.user?.socialEarnings || 0)}</span></div>`;
             document.getElementById('walletStatsRow').innerHTML =
                 `<div class="col-6"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</div><div class="sl">Referral Earnings</div></div></div><div class="col-6"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</div><div class="sl">Affiliate Earned</div></div></div>`;
             await loadTransactions();
@@ -6877,7 +7044,7 @@
                 const stats = data.data || {};
                 S.instructorCourses = Array.isArray(stats.courses) ? stats.courses : [];
                 document.getElementById('instCoursesTable').innerHTML =
-                    `<thead><tr><th>Course</th><th>Status</th><th>Students</th><th>Revenue</th><th>Actions</th></tr></thead><tbody>${S.instructorCourses.map(c => { const statusLabel = c.isApproved ? 'Live' : c.pendingApproval ? 'Pending' : 'Draft'; const statusClass = c.isApproved ? 'ps-paid' : c.pendingApproval ? 'ps-pend' : 'ps-fail'; return `<tr><td><div style="display:flex;align-items:center;gap:.5rem"><span>📚</span><span>${c.title || 'Course'}</span></div></td><td><span class="pstatus ${statusClass}">${statusLabel}</span></td><td>${c.totalStudents || 0}</td><td style="font-weight:700;color:var(--primary)">${fmtMoneyAPI(c.instructorEarnings || c.totalRevenue || 0)}</td><td><button class="btn btn-ghost btn-sm" onclick="editExistingCourse('${c._id}')"><i class="fas fa-edit"></i> Edit</button>${!c.isApproved && !c.pendingApproval ? `<button class="btn btn-primary btn-sm" onclick="submitExistingCourse('${c._id}')"><i class="fas fa-paper-plane"></i> Submit</button>` : ''}</td></tr>`; }).join('') || '<tr><td colspan="5" style="text-align:center">No courses yet</td></tr>'}</tbody>`;
+                    `<thead><tr><th>Course</th><th>Status</th><th>Students</th><th>Revenue</th><th>Actions</th></tr></thead><tbody>${S.instructorCourses.map(c => { const statusLabel = c.isApproved ? 'Live' : c.pendingApproval ? 'Pending' : 'Draft'; const statusClass = c.isApproved ? 'ps-paid' : c.pendingApproval ? 'ps-pend' : 'ps-fail'; return `<tr><td><div style="display:flex;align-items:center;gap:.5rem"><span>📚</span><span>${c.title || 'Course'}</span></div></td><td><span class="pstatus ${statusClass}">${statusLabel}</span></td><td>${c.totalStudents || 0}</td><td style="font-weight:700;color:var(--primary)">${fmtMoneyAPI(c.instructorEarnings || c.totalRevenue || 0)}</td><td><button class="btn btn-ghost btn-sm" onclick="editExistingCourse('${c._id}')"><i class="fas fa-edit"></i> Edit</button>${!c.isApproved && !c.pendingApproval ? `<button class="btn btn-primary btn-sm" onclick="submitExistingCourse('${c._id}')"><i class="fas fa-paper-plane"></i> Submit</button>` : ''}<button class="btn btn-danger btn-sm" onclick="deleteMyCourse('${c._id}')"><i class="fas fa-trash"></i></button></td></tr>`; }).join('') || '<tr><td colspan="5" style="text-align:center">No courses yet</td></tr>'}</tbody>`;
                 document.getElementById('instStatsRow').innerHTML =
                     `<div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-book"></i></div><div class="sv">${stats.totalCourses || S.instructorCourses.length || 0}</div><div class="sl">Courses</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-users"></i></div><div class="sv">${stats.totalStudents || 0}</div><div class="sl">Students</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(stats.totalRevenue || 0)}</div><div class="sl">Revenue</div></div></div>`;
                 if (stats.pendingQuestions > 0 && S.instructorCourses.length > 0) {
@@ -7472,8 +7639,20 @@
         }
 
         function renderSubStatus() {
+            const expiry = S.user?.subscriptionExpires || S.user?.subscriptionExpiry;
+            let expiryHtml = '';
+            if (expiry) {
+                const expDate = new Date(expiry);
+                const now = new Date();
+                const daysLeft = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
+                if (daysLeft > 0) {
+                    expiryHtml = `<span style="font-size:.75rem;color:var(--text3)">Renews in ${daysLeft} days</span>`;
+                } else {
+                    expiryHtml = `<span style="font-size:.75rem;color:var(--danger)">⚠️ Expired</span>`;
+                }
+            }
             document.getElementById('subStatusCard').innerHTML = S.isPremium ?
-                `<h5>Your Subscription</h5><div style="background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(20,184,166,.04));border:1px solid rgba(99,102,241,.2);border-radius:var(--radius-sm);padding:1rem"><span class="badge badge-premium"><i class="fas fa-crown"></i>Premium Active</span><p style="margin-top:.5rem;font-size:.82rem">₦5,000/month · 80% revenue share · Unlimited uploads · No ads</p><button class="btn btn-danger btn-sm mt-2" onclick="cancelSubscription()">Cancel Subscription</button></div>` :
+                `<h5>Your Subscription</h5><div style="background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(20,184,166,.04));border:1px solid rgba(99,102,241,.2);border-radius:var(--radius-sm);padding:1rem"><span class="badge badge-premium"><i class="fas fa-crown"></i>Premium Active</span> ${expiryHtml}<p style="margin-top:.5rem;font-size:.82rem">₦5,000/month · 80% revenue share · Unlimited uploads · No ads</p><button class="btn btn-danger btn-sm mt-2" onclick="cancelSubscription()">Cancel Subscription</button></div>` :
                 `<h5>Your Subscription</h5><div style="text-align:center;padding:1.5rem"><div style="font-size:2rem">🔒</div><h5>Free Plan</h5><p style="color:var(--text3)">Upgrade to create courses & earn more</p><button class="btn btn-primary" onclick="openModal('premiumModal')">Upgrade — ₦5,000/mo</button></div>`;
         }
 
