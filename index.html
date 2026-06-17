@@ -29,6 +29,9 @@
     </script>
     <script src="https://js.paystack.co/v1/inline.js">
     </script>
+    <!-- DOMPurify for safe HTML rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js">
+    </script>
     <meta name="google-site-verification" content="PB3lWW6G3FccAT72e65ehI6ILq12ZxNzS_RUsXDVufE" />
     <style>
         /* ===== CSS VARIABLES ===== */
@@ -4132,6 +4135,20 @@
         .profile-stats strong {
             color: var(--text);
         }
+        /* Social earnings badge on posts */
+        .post-earnings-badge {
+            background: rgba(251, 191, 36, .12);
+            color: var(--gold);
+            border: 1px solid rgba(251, 191, 36, .25);
+            border-radius: 50px;
+            padding: .1rem .5rem;
+            font-size: .6rem;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            display: inline-flex;
+            align-items: center;
+            gap: .25rem;
+        }
     </style>
 </head>
 <body>
@@ -4160,9 +4177,42 @@
 
         <section class="lsec lsec-dark"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-comments"></i> Testimonials</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Real Students. <span class="grad-text">Real Earnings</span>.</h2></div><div class="row" id="testiGrid"></div></div></section>
 
+        <!-- REVIEWS SECTION -->
+        <section id="reviews-sec" class="lsec">
+            <div class="lsec-wrap">
+                <div class="text-center mb-5 reveal">
+                    <div class="stag mb-3"><i class="fas fa-star"></i> Reviews</div>
+                    <h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">What Our <span class="grad-text">Students Say</span></h2>
+                </div>
+                <div class="row" id="reviewsList"></div>
+                <div class="row justify-center mt-5">
+                    <div class="col-12 col-md-6">
+                        <div class="card card-p">
+                            <h5>Leave a Review</h5>
+                            <div class="form-group">
+                                <label class="flabel">Your Name</label>
+                                <input type="text" class="finput" id="reviewName" placeholder="Your full name">
+                            </div>
+                            <div class="form-group">
+                                <label class="flabel">Rating</label>
+                                <div style="display:flex;gap:.3rem;font-size:1.5rem;cursor:pointer" id="reviewStars">
+                                    <span data-val="1">☆</span><span data-val="2">☆</span><span data-val="3">☆</span><span data-val="4">☆</span><span data-val="5">☆</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="flabel">Review</label>
+                                <textarea class="finput" id="reviewText" rows="3" placeholder="Your experience..."></textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="submitReview()">Submit Review</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="pricing-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-tag"></i> Pricing</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Simple, <span class="grad-text">Transparent</span> Pricing</h2></div><div class="row justify-center"><div class="col-12 col-md-4 reveal" style="transition-delay:.05s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-user"></i> Free</div><div class="p-amt">₦0<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">Perfect to get started</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>5 courses access</li><li><i class="fas fa-check chk"></i>Basic certificates</li><li><i class="fas fa-check chk"></i>Referral program</li><li><i class="fas fa-times nope"></i>Create courses</li><li><i class="fas fa-times nope"></i>Unlimited uploads</li><li><i class="fas fa-times nope"></i>No ads</li></ul><button class="btn btn-outline w-full" onclick="goPage('register')">Get Started Free</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.1s"><div class="price-card featured"><div class="stag mb-3"><i class="fas fa-crown"></i> Premium</div><div class="p-amt" style="color:var(--lime)">₦5,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For serious learners &amp; earners</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>All courses unlimited</li><li><i class="fas fa-check chk"></i>Create &amp; sell courses</li><li><i class="fas fa-check chk"></i>Affiliate dashboard</li><li><i class="fas fa-check chk"></i>Unlimited uploads</li><li><i class="fas fa-check chk"></i>No ads 🎉</li><li><i class="fas fa-check chk"></i>80% course revenue</li></ul><button class="btn btn-primary w-full" onclick="goPage('register')"><i class="fas fa-crown"></i>Go Premium</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.15s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-building"></i> Business</div><div class="p-amt">₦25,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For teams &amp; organizations</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>Everything in Premium</li><li><i class="fas fa-check chk"></i>Up to 20 seats</li><li><i class="fas fa-check chk"></i>Custom branding</li><li><i class="fas fa-check chk"></i>Analytics</li><li><i class="fas fa-check chk"></i>Dedicated manager</li></ul><button class="btn btn-outline w-full" onclick="goPage('contact')">Contact Sales</button></div></div></div></div></section>
 
-        <footer class="lfooter"><div class="lsec-wrap"><div class="row mb-4"><div class="col-12 col-md-4"><div class="logo mb-3"><div class="logo-mark">CX</div>ChangeX<span style="color:var(--primary)">.</span></div><p style="font-size:.82rem;color:var(--text3);max-width:260px;line-height:1.65">Global #1 Learn-to-Earn platform. Turning tech skills into real income.</p><div class="f-social"><div class="soc-btn"><i class="fab fa-twitter"></i></div><div class="soc-btn"><i class="fab fa-instagram"></i></div><div class="soc-btn"><i class="fab fa-linkedin"></i></div><div class="soc-btn"><i class="fab fa-youtube"></i></div><div class="soc-btn"><i class="fab fa-whatsapp"></i></div></div></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Learn</h6><ul class="f-links"><li><a onclick="goPage('register')">All Courses</a></li><li><a>Web Dev</a></li><li><a>AI &amp; Tools</a></li><li><a>Freelancing</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Earn</h6><ul class="f-links"><li><a>Referrals</a></li><li><a>Affiliates</a></li><li><a>Teach Here</a></li><li><a>Leaderboard</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Company</h6><ul class="f-links"><li><a>About</a></li><li><a onclick="goPage('contact')">Contact</a></li><li><a>Privacy</a></li><li><a>Terms</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Newsletter</h6><p style="font-size:.75rem;color:var(--text3);margin-bottom:.6rem">Weekly tips &amp; earnings updates</p><input type="email" class="finput" id="footerEmail" placeholder="your@email.com" style="margin-bottom:.4rem"/><button class="btn btn-primary btn-sm w-full" onclick="subscribeEmail()">Subscribe</button></div></div><div style="border-top:1px solid var(--border);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem"><p style="font-size:.73rem;color:var(--text3)">© 2025 ChangeX Academy. Made with ❤️ for the world.</p><p style="font-size:.73rem;color:var(--text3)">Contact: <a href="mailto:israeldewa1@gmail.com" style="color:var(--primary)">israeldewa1@gmail.com</a></p></div></div></footer>
+        <footer class="lfooter"><div class="lsec-wrap"><div class="row mb-4"><div class="col-12 col-md-4"><div class="logo mb-3"><div class="logo-mark">CX</div>ChangeX<span style="color:var(--primary)">.</span></div><p style="font-size:.82rem;color:var(--text3);max-width:260px;line-height:1.65">Global #1 Learn-to-Earn platform. Turning tech skills into real income.</p><div class="f-social"><div class="soc-btn"><i class="fab fa-twitter"></i></div><div class="soc-btn"><i class="fab fa-instagram"></i></div><div class="soc-btn"><i class="fab fa-linkedin"></i></div><div class="soc-btn"><i class="fab fa-youtube"></i></div><div class="soc-btn"><i class="fab fa-whatsapp"></i></div></div></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Learn</h6><ul class="f-links"><li><a onclick="goPage('register')">All Courses</a></li><li><a>Web Dev</a></li><li><a>AI &amp; Tools</a></li><li><a>Freelancing</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Earn</h6><ul class="f-links"><li><a>Referrals</a></li><li><a>Affiliates</a></li><li><a>Teach Here</a></li><li><a>Leaderboard</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Company</h6><ul class="f-links"><li><a>About</a></li><li><a onclick="goPage('contact')">Contact</a></li><li><a>Privacy</a></li><li><a>Terms</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Newsletter</h6><p style="font-size:.75rem;color:var(--text3);margin-bottom:.6rem">Weekly tips &amp; earnings updates</p><input type="email" class="finput" id="footerEmail" placeholder="your@email.com" style="margin-bottom:.4rem"/><button class="btn btn-primary btn-sm w-full" onclick="subscribeEmail()">Subscribe</button></div></div><div style="border-top:1px solid var(--border);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem"><p style="font-size:.73rem;color:var(--text3)">© 2025 ChangeX Academy. Made with ❤️ for the world.</p><p style="font-size:.73rem;color:var(--text3)">Contact: <a href="mailto:changexacademysupport@gmail.com" style="color:var(--primary)">changexacademysupport@gmail.com</a></p></div></div></footer>
     </div>
 
     <!-- ============================================================ -->
@@ -4180,7 +4230,7 @@
     <!-- ============================================================ -->
     <!-- CONTACT PAGE -->
     <!-- ============================================================ -->
-    <div id="page-contact" class="page"><div style="min-height:100svh;padding:2rem 1.25rem;background:var(--bg)"><div style="max-width:700px;margin:0 auto"><button class="btn btn-ghost btn-sm mb-4" onclick="goPage('landing')"><i class="fas fa-arrow-left"></i>Back to Home</button><div class="stag mb-2"><i class="fas fa-envelope"></i> Contact Us</div><h2 style="font-size:2rem;margin-bottom:.5rem">Get In <span class="grad-text">Touch</span></h2><p style="color:var(--text3);margin-bottom:2rem">We respond within 24 hours.</p><div class="row"><div class="col-12 col-md-5"><div class="card card-p mb-3"><div class="si si-primary" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-envelope"></i></div><h6 style="margin-bottom:.25rem">Email</h6><a href="mailto:israeldewa1@gmail.com" style="color:var(--primary);font-size:.88rem">israeldewa1@gmail.com</a></div><div class="card card-p"><div class="si si-g" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-map-marker-alt"></i></div><h6 style="margin-bottom:.25rem">Location</h6><p style="font-size:.84rem;color:var(--text3)">Lagos &amp; Abuja, Nigeria 🇳🇬</p></div></div><div class="col-12 col-md-7"><div class="card card-p"><h6 style="margin-bottom:1rem">Send a Message</h6><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="contactFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="contactLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><input type="email" class="finput" id="contactEmail" placeholder="you@example.com"/></div><div class="form-group"><label class="flabel">Subject</label><select class="finput" id="contactSubject"><option>General Inquiry</option><option>Technical Support</option><option>Payment Issue</option><option>Course Report</option><option>Partnership</option></select></div><div class="form-group"><label class="flabel">Message</label><textarea class="finput" id="contactMsg" style="min-height:120px;resize:vertical" placeholder="How can we help?"></textarea></div><button class="btn btn-primary" onclick="sendContact()"><i class="fas fa-paper-plane"></i>Send Message</button></div></div></div></div></div></div>
+    <div id="page-contact" class="page"><div style="min-height:100svh;padding:2rem 1.25rem;background:var(--bg)"><div style="max-width:700px;margin:0 auto"><button class="btn btn-ghost btn-sm mb-4" onclick="goPage('landing')"><i class="fas fa-arrow-left"></i>Back to Home</button><div class="stag mb-2"><i class="fas fa-envelope"></i> Contact Us</div><h2 style="font-size:2rem;margin-bottom:.5rem">Get In <span class="grad-text">Touch</span></h2><p style="color:var(--text3);margin-bottom:2rem">We respond within 24 hours.</p><div class="row"><div class="col-12 col-md-5"><div class="card card-p mb-3"><div class="si si-primary" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-envelope"></i></div><h6 style="margin-bottom:.25rem">Email</h6><a href="mailto:changexacademysupport@gmail.com" style="color:var(--primary);font-size:.88rem">changexacademysupport@gmail.com</a></div><div class="card card-p"><div class="si si-g" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-map-marker-alt"></i></div><h6 style="margin-bottom:.25rem">Location</h6><p style="font-size:.84rem;color:var(--text3)">Lagos &amp; Abuja, Nigeria 🇳🇬</p></div></div><div class="col-12 col-md-7"><div class="card card-p"><h6 style="margin-bottom:1rem">Send a Message</h6><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="contactFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="contactLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><input type="email" class="finput" id="contactEmail" placeholder="you@example.com"/></div><div class="form-group"><label class="flabel">Subject</label><select class="finput" id="contactSubject"><option>General Inquiry</option><option>Technical Support</option><option>Payment Issue</option><option>Course Report</option><option>Partnership</option></select></div><div class="form-group"><label class="flabel">Message</label><textarea class="finput" id="contactMsg" style="min-height:120px;resize:vertical" placeholder="How can we help?"></textarea></div><button class="btn btn-primary" onclick="sendContact()"><i class="fas fa-paper-plane"></i>Send Message</button></div></div></div></div></div></div>
 
     <!-- ============================================================ -->
     <!-- MODALS -->
@@ -4823,6 +4873,8 @@
             toast(isFromLogin ? `Welcome back, ${S.user?.firstName || 'User'}! 👋` :
                 `Welcome to ChangeX, ${S.user?.firstName || 'User'}! 🎉`, 'success');
             forceRedirect(targetPage);
+            // Schedule token logout
+            scheduleTokenLogout();
         }
 
         function handleGoogleLogin() { window.location.href = `${API_BASE}/auth/google`; }
@@ -4885,6 +4937,33 @@
             if (/[^a-zA-Z0-9]/.test(v)) sc++;
             const cls = sc < 2 ? 'weak' : sc < 3 ? 'fair' : 'strong';
             for (let i = 0; i < sc; i++) { if (segs[i]) segs[i].classList.add(cls); }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // JWT AUTO-LOGOUT (30 days)
+        // ═══════════════════════════════════════════════════════════════
+        function scheduleTokenLogout() {
+            const token = localStorage.getItem('cx_accessToken');
+            if (!token) return;
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const exp = payload.exp * 1000;
+                const now = Date.now();
+                const timeLeft = exp - now;
+                if (timeLeft <= 0) {
+                    doLogout();
+                    toast('Your session has expired. Please log in again.', 'warning');
+                    return;
+                }
+                const oneDay = 24 * 60 * 60 * 1000;
+                if (timeLeft < oneDay) {
+                    toast('⚠️ Your session will expire in less than 24 hours. Please log in again.', 'warning');
+                }
+                setTimeout(() => {
+                    doLogout();
+                    toast('Your session has expired. Please log in again.', 'warning');
+                }, timeLeft);
+            } catch (e) { console.warn('Token decoding failed', e); }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -5020,6 +5099,15 @@
             const fab = document.getElementById('fab');
             if (fab) fab.style.display = hasCreatorAccess ? 'block' : 'none';
             renderCurrencySelectorUI();
+            // Display bank details if saved
+            if (S.user.bankAccount) {
+                const bankSelect = document.getElementById('payoutBank');
+                if (bankSelect) bankSelect.value = S.user.bankAccount.bankName || '';
+                const accNum = document.getElementById('payoutAccNum');
+                if (accNum) accNum.value = S.user.bankAccount.accountNumber || '';
+                const accName = document.getElementById('payoutAccName');
+                if (accName) accName.value = S.user.bankAccount.accountName || '';
+            }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -5107,13 +5195,21 @@
                 }
                 return '';
             }).join('');
+            attachPostEventListeners();
         }
 
+        // ================================================================
+        // RENDER POST CARD – with DOMPurify for rich content
+        // ================================================================
         function renderPostCard(post) {
             const author = post.authorId || post.author || {};
             const avatarHtml = getAvatarUrl(author) ?
                 `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                 (author.firstName?.[0] || 'U');
+            const contentHtml = post.content ? (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(post.content) : post
+                .content) : '';
+            const earningsHtml = post.earnings ? `<span class="post-earnings-badge"><i class="fas fa-wallet"></i> +${fmtMoneyAPI(post.earnings)}</span>` :
+                '';
             return `
                 <div class="post-card card card-p" data-post-id="${post._id}">
                     <div class="post-header">
@@ -5124,21 +5220,25 @@
                             <strong>${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
                             <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
                             <span class="badge badge-cyan" style="font-size:.55rem">${post.type || 'article'}</span>
+                            ${earningsHtml}
                         </div>
                     </div>
                     <h3 class="post-title" onclick="window.open('/post/${post.slug}','_blank')">${escapeHtml(post.title)}</h3>
                     ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
-                    <div class="post-excerpt">${escapeHtml(post.excerpt || post.content?.substring(0, 200) || '')}...</div>
+                    <div class="post-content" style="font-size:.88rem;line-height:1.7;color:var(--text2);margin:.5rem 0;">
+                        ${contentHtml}
+                    </div>
                     <div class="post-stats">
                         <span class="post-likes" data-id="${post._id}"><i class="far fa-heart"></i> ${post.likes || 0}</span>
                         <span class="post-comments"><i class="far fa-comment"></i> ${post.commentsCount || 0}</span>
                         <span class="post-shares"><i class="fas fa-share-alt"></i> ${post.shares || 0}</span>
                     </div>
                     <div class="post-actions">
-                        <button class="btn-like" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
+                        <button class="btn-like ${post.userLiked ? 'liked' : ''}" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
                         <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
                         <button class="btn-share" data-id="${post._id}" data-slug="${post.slug}"><i class="fas fa-share-alt"></i> Share</button>
                     </div>
+                    <div class="comments-section" style="display:none;" data-post-id="${post._id}"></div>
                 </div>
             `;
         }
@@ -5162,7 +5262,6 @@
         async function loadFeed(page = 1) {
             S.feedPage = page || 1;
             const filter = S.feedFilter || 'all';
-            // If filter is 'following', use the dedicated endpoint
             if (filter === 'following') {
                 await loadFollowingFeed();
                 return;
@@ -5190,39 +5289,7 @@
                     '<div class="empty-state"><i class="fas fa-newspaper"></i><h4>No posts yet</h4><p>Be the first to create a post!</p></div>';
                 return;
             }
-            container.innerHTML = posts.map(post => {
-                const author = post.authorId || {};
-                const avatarHtml = getAvatarUrl(author) ?
-                    `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
-                    (author.firstName?.[0] || 'U');
-                return `
-                <div class="post-card card card-p" data-post-id="${post._id}">
-                    <div class="post-header">
-                        <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
-                            ${avatarHtml}
-                        </div>
-                        <div class="post-author-info">
-                            <strong>${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
-                            <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
-                            <span class="badge badge-cyan" style="font-size:.55rem">${post.type || 'article'}</span>
-                        </div>
-                    </div>
-                    <h3 class="post-title" onclick="window.open('/post/${post.slug}','_blank')">${escapeHtml(post.title)}</h3>
-                    ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
-                    <div class="post-excerpt">${escapeHtml(post.excerpt || post.content?.substring(0, 200) || '')}...</div>
-                    <div class="post-stats">
-                        <span class="post-likes" data-id="${post._id}"><i class="far fa-heart"></i> ${post.likes || 0}</span>
-                        <span class="post-comments"><i class="far fa-comment"></i> ${post.commentsCount || 0}</span>
-                        <span class="post-shares"><i class="fas fa-share-alt"></i> ${post.shares || 0}</span>
-                    </div>
-                    <div class="post-actions">
-                        <button class="btn-like ${post.userLiked ? 'liked' : ''}" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
-                        <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
-                        <button class="btn-share" data-id="${post._id}" data-slug="${post.slug}"><i class="fas fa-share-alt"></i> Share</button>
-                    </div>
-                    <div class="comments-section" style="display:none;" data-post-id="${post._id}"></div>
-                </div>`;
-            }).join('');
+            container.innerHTML = posts.map(post => renderPostCard(post)).join('');
             if (pagination && pagination.pages > 1) {
                 const pagEl = document.getElementById('feedPagination');
                 if (pagEl) {
@@ -5234,6 +5301,7 @@
                     pagEl.innerHTML = html;
                 }
             }
+            attachPostEventListeners();
         }
 
         function attachPostEventListeners() {
@@ -5254,7 +5322,11 @@
                 el.classList.add('active');
             }
             S.feedFilter = type;
-            loadFeed(1);
+            if (type === 'following') {
+                loadFollowingFeed();
+            } else {
+                loadFeed(1);
+            }
         }
 
         async function likePost(postId) {
@@ -5396,7 +5468,6 @@
                 return;
             }
             try {
-                // ✅ AUTO-PUBLISH: isPublished: true
                 await apiCall(POSTS_API, {
                     method: 'POST',
                     body: {
@@ -5511,7 +5582,6 @@
                 const res = await apiCall('/admin/users?limit=50');
                 const users = res.data?.users || res.data || [];
                 S.users = users;
-                // Fetch follow status for each user
                 const followPromises = users.filter(u => u._id !== S.user?._id).map(async (u) => {
                     try {
                         const statusRes = await apiCall(`${FOLLOWS_API}/${u._id}/status`);
@@ -5576,7 +5646,11 @@
                     S.following = S.following.filter(id => id !== userId);
                 }
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
-                renderPeople(S.users);
+                if (S.dp === 'people') renderPeople(S.users);
+                if (S.dp === 'profile' && S.profileUser) {
+                    const res2 = await apiCall(`/users/${S.profileUser._id}/profile`);
+                    renderUserProfile(res2.data);
+                }
             } catch (err) { toast('Error: ' + err.message, 'error'); }
         }
 
@@ -5661,7 +5735,6 @@
                     S.following = S.following.filter(id => id !== userId);
                 }
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
-                // Refresh profile
                 if (S.profileUser) {
                     const res2 = await apiCall(`/users/${userId}/profile`);
                     renderUserProfile(res2.data);
@@ -5881,13 +5954,13 @@
             loadAds('sidebar', 'adSidebar');
             loadAds('banner', 'adBannerTop');
             loadAds('in-feed', 'adFeedTop');
-            // Load following list
             await loadPeople();
             setTimeout(() => {
                 const hash = window.location.hash.slice(1);
                 if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(() =>
                         openBuyCourse(courseId), 1000); }
             }, 800);
+            scheduleTokenLogout();
         }
 
         async function fetchAnnouncements() {
@@ -5966,6 +6039,8 @@
             const xpNext = level * 1000;
             const xpProgress = Math.min(100, Math.round((xp / xpNext) * 100));
             const showUpgrade = !S.isPremium && !S.user?.roles?.includes('admin');
+            // Social earnings
+            const socialEarnings = S.user?.socialEarnings || 0;
             el.innerHTML =
                 `
                 <div id="homeUpgradeBanner" style="display:${showUpgrade ? 'block' : 'none'};background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,146,60,.05));border:1px solid rgba(251,191,36,.2);border-radius:var(--radius);padding:1rem;margin-bottom:1rem">
@@ -5999,6 +6074,7 @@
                     <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-book-open"></i></div><div class="sv">${completedCnt}/${S.enrollments.length}</div><div class="sl">Courses</div></div></div>
                     <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-users"></i></div><div class="sv">${refCnt}</div><div class="sl">Referrals</div></div></div>
                     <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${S.myAffiliateLinks?.length || 0}</div><div class="sl">Affiliates</div></div></div>
+                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-gold"><i class="fas fa-chart-line"></i></div><div class="sv">${fmtMoneyAPI(socialEarnings)}</div><div class="sl">Social Earnings</div></div></div>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-8">
@@ -6698,7 +6774,7 @@
             document.getElementById('walletWeekChange').innerHTML = pending > 0 ?
                 `<span style="color:var(--gold)">Pending: ${fmtMoneyAPI(pending)}</span>` : '+₦0 this week';
             document.getElementById('walletBreakdown').innerHTML =
-                `<div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</span></div><div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(S.user?.courseEarnings || 0)}</span></div><div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</span></div>`;
+                `<div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</span></div><div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(S.user?.courseEarnings || 0)}</span></div><div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</span></div><div class="web-row"><span>Social Earnings</span><span style="color:var(--gold);font-weight:700">${fmtMoneyAPI(S.user?.socialEarnings || 0)}</span></div>`;
             document.getElementById('walletStatsRow').innerHTML =
                 `<div class="col-6"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</div><div class="sl">Referral Earnings</div></div></div><div class="col-6"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</div><div class="sl">Affiliate Earned</div></div></div>`;
             await loadTransactions();
@@ -6728,7 +6804,7 @@
         function filterTx(type) { renderTxTable(type); }
 
         function openWithdrawModal() {
-            const hasBankDetails = S.user?.bankAccountNumber || S.user?.bankDetails?.accountNumber;
+            const hasBankDetails = S.user?.bankAccount?.accountNumber || S.user?.bankAccountNumber;
             const warningEl = document.getElementById('withdrawBankWarning');
             const submitBtn = document.getElementById('withdrawSubmitBtn');
             if (!hasBankDetails) { if (warningEl) warningEl.style.display = 'block'; if (submitBtn) submitBtn.disabled =
@@ -6739,7 +6815,7 @@
         }
 
         async function processWithdraw() {
-            const hasBankDetails = S.user?.bankAccountNumber || S.user?.bankDetails?.accountNumber || S.user?.bankName;
+            const hasBankDetails = S.user?.bankAccount?.accountNumber || S.user?.bankAccountNumber;
             if (!hasBankDetails) {
                 toast('⚠️ Add bank details in Settings → Payouts first.', 'error');
                 closeModal('withdrawModal');
@@ -7496,24 +7572,41 @@
             } catch (e) { toast(e.message, 'error'); }
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // FIX: SAVE PAYOUT SETTINGS – send bankAccount object
+        // ═══════════════════════════════════════════════════════════════
         function savePayoutSettings() {
             const bankName = document.getElementById('payoutBank')?.value;
             const accountNumber = document.getElementById('payoutAccNum')?.value.trim();
             const accountName = document.getElementById('payoutAccName')?.value.trim();
-            if (!bankName || !accountNumber) { toast('Fill in bank name and account number', 'error'); return; }
-            if (accountNumber.length !== 10) { toast('Account number must be 10 digits', 'error'); return; }
-            S.user.bankName = bankName;
-            S.user.bankAccountNumber = accountNumber;
-            S.user.bankAccountName = accountName || S.user.firstName + ' ' + S.user.lastName;
+            if (!bankName || !accountNumber) {
+                toast('Fill in bank name and account number', 'error');
+                return;
+            }
+            if (accountNumber.length !== 10) {
+                toast('Account number must be 10 digits', 'error');
+                return;
+            }
+            const bankAccount = {
+                bankName: bankName,
+                accountNumber: accountNumber,
+                accountName: accountName || (S.user.firstName + ' ' + S.user.lastName)
+            };
+            S.user.bankAccount = bankAccount;
             localStorage.setItem('cx_user', JSON.stringify(S.user));
             toast('✅ Bank details saved!', 'success');
             document.getElementById('payoutSaveStatus').innerHTML =
                 '<span style="color:var(--success)">✅ Bank details saved successfully</span>';
-            try {
-                apiCall('/users/profile', { method: 'PUT', body: { bankName, bankAccountNumber: accountNumber,
-                        bankAccountName: accountName || (S.user.firstName + ' ' + S.user.lastName) } }).catch(
-                    () => {});
-            } catch (e) {}
+
+            apiCall('/users/profile', {
+                method: 'PUT',
+                body: { bankAccount: bankAccount }
+            }).then(() => {
+                renderWallet();
+                updateUserUI();
+            }).catch(err => {
+                toast('Failed to save on server: ' + err.message, 'warning');
+            });
         }
 
         function renderSubStatus() {
@@ -7576,6 +7669,9 @@
         // ================================================================
         function renderAdm(sec) { switchAdm(sec, null); }
 
+        // ═══════════════════════════════════════════════════════════════
+        // FIX: ADMIN USERS TABLE – display bankAccount fields
+        // ═══════════════════════════════════════════════════════════════
         async function switchAdm(sec, el) {
             S.admSec = sec;
             document.querySelectorAll('#dash-admin .fpill').forEach(p => p.classList.remove('active'));
@@ -7602,7 +7698,7 @@
                         S.adminUsers = Array.isArray(res.data?.users) ? res.data.users : (Array.isArray(res.data) ? res
                             .data : []);
                         document.getElementById('admUsersTable').innerHTML =
-                            `<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminUsers.map(u => { const bankInfo = u.bankName ? `${u.bankName} - ${u.bankAccountNumber || 'N/A'} (${u.bankAccountName || 'N/A'})` : '<span style="color:var(--text3)">No bank details</span>'; return `<tr><td>${u.firstName || ''} ${u.lastName || ''}</td><td>${u.email}</td><td>${(u.roles || []).join(',') || 'user'}</td><td style="font-size:.75rem">${bankInfo}</td><td>${u.isBanned ? '<span style="color:var(--danger)">Banned</span>' : '<span style="color:var(--success)">Active</span>'}</td><td><button class="btn btn-ghost btn-sm" onclick="toggleUserBan('${u._id}',${!u.isBanned})">${u.isBanned ? 'Unban' : 'Ban'}</button>${!u.isApprovedInstructor ? `<button class="btn btn-primary btn-sm" onclick="approveInstructor('${u._id}')">Approve Instructor</button>` : ''}<button class="btn btn-ghost btn-sm" onclick="showUserDetails('${u._id}')"><i class="fas fa-eye"></i> Details</button></td></tr>`; }).join('') || '<tr><td colspan="6" style="text-align:center">No users</td></tr>'}</tbody>`;
+                            `<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminUsers.map(u => { const bankInfo = u.bankAccount?.bankName ? `${u.bankAccount.bankName} - ${u.bankAccount.accountNumber || 'N/A'} (${u.bankAccount.accountName || 'N/A'})` : '<span style="color:var(--text3)">No bank details</span>'; return `<tr><td>${u.firstName || ''} ${u.lastName || ''}</td><td>${u.email}</td><td>${(u.roles || []).join(',') || 'user'}</td><td style="font-size:.75rem">${bankInfo}</td><td>${u.isBanned ? '<span style="color:var(--danger)">Banned</span>' : '<span style="color:var(--success)">Active</span>'}</td><td><button class="btn btn-ghost btn-sm" onclick="toggleUserBan('${u._id}',${!u.isBanned})">${u.isBanned ? 'Unban' : 'Ban'}</button>${!u.isApprovedInstructor ? `<button class="btn btn-primary btn-sm" onclick="approveInstructor('${u._id}')">Approve Instructor</button>` : ''}<button class="btn btn-ghost btn-sm" onclick="showUserDetails('${u._id}')"><i class="fas fa-eye"></i> Details</button></td></tr>`; }).join('') || '<tr><td colspan="6" style="text-align:center">No users</td></tr>'}</tbody>`;
                     } catch (e) { content.innerHTML = '<p style="color:var(--danger)">Failed to load: ' + e.message +
                             '</p>'; }
                     break;
@@ -7801,7 +7897,7 @@
         }
 
         // ================================================================
-        // ADMIN CHALLENGE PARTICIPANTS
+        // ADMIN CHALLENGE PARTICIPANTS – fixed backend route
         // ================================================================
         async function viewParticipants(challengeId) {
             showLoading('Loading participants...');
@@ -8257,6 +8353,34 @@
                         ?.value, lastName: document.getElementById('contactLast')?.value } });
                 toast('Message sent! ✉️', 'success');
             } catch (e) { toast('Message sent! ✉️', 'success'); }
+        }
+
+        // ================================================================
+        // REVIEWS
+        // ================================================================
+        document.addEventListener('click', e => {
+            if (e.target.closest('#reviewStars span')) {
+                const span = e.target.closest('#reviewStars span');
+                const val = parseInt(span.dataset.val);
+                document.querySelectorAll('#reviewStars span').forEach(s => s.classList.toggle('active', parseInt(s.dataset.val) <= val));
+            }
+        });
+
+        async function submitReview() {
+            const name = document.getElementById('reviewName').value.trim();
+            const rating = parseInt(document.querySelector('#reviewStars .active')?.dataset.val) || 0;
+            const text = document.getElementById('reviewText').value.trim();
+            if (!name || !rating || !text) { toast('Please fill all fields', 'error'); return; }
+            try {
+                await apiCall('/feedback', {
+                    method: 'POST',
+                    body: { message: `Review from ${name}: ${text} (${rating}★)`, email: 'changexacademysupport@gmail.com' }
+                });
+                toast('Review submitted! Thank you.', 'success');
+                document.getElementById('reviewName').value = '';
+                document.getElementById('reviewText').value = '';
+                document.querySelectorAll('#reviewStars span').forEach(s => s.classList.remove('active'));
+            } catch (err) { toast('Failed: ' + err.message, 'error'); }
         }
 
         // ================================================================
