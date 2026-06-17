@@ -29,6 +29,7 @@
     </script>
     <script src="https://js.paystack.co/v1/inline.js">
     </script>
+    <!-- DOMPurify for safe HTML rendering -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js">
     </script>
     <meta name="google-site-verification" content="PB3lWW6G3FccAT72e65ehI6ILq12ZxNzS_RUsXDVufE" />
@@ -3691,37 +3692,12 @@
             border-radius: var(--radius-sm);
             margin: 0.75rem 0;
         }
-        .post-content {
-            font-size: .88rem;
-            line-height: 1.7;
-            color: var(--text2);
-            margin: .5rem 0;
-        }
-        .post-content img {
-            max-width: 100%;
-            border-radius: var(--radius-sm);
-            margin: .5rem 0;
-        }
-        .post-content iframe {
-            max-width: 100%;
-            border-radius: var(--radius-sm);
-            margin: .5rem 0;
-            aspect-ratio: 16/9;
-        }
-        .post-content pre {
-            background: var(--bg);
-            padding: .75rem;
-            border-radius: var(--radius-sm);
-            overflow-x: auto;
-            font-size: .82rem;
-        }
         .post-stats {
             display: flex;
             gap: 1rem;
             color: var(--text3);
             font-size: 0.85rem;
             margin: 0.75rem 0;
-            flex-wrap: wrap;
         }
         .post-actions {
             display: flex;
@@ -3797,8 +3773,6 @@
         .comment-item .comment-like:hover {
             color: var(--danger);
         }
-
-        /* ===== CHALLENGES ===== */
         .challenge-card {
             margin-bottom: 1rem;
             text-align: center;
@@ -3813,21 +3787,17 @@
             margin: 0.75rem 0;
             font-size: .82rem;
             color: var(--text2);
-            flex-wrap: wrap;
         }
-
-        /* ===== PEOPLE ===== */
         .person-card {
             display: flex;
             align-items: center;
             gap: 1rem;
             padding: 1rem;
             cursor: pointer;
-            transition: all .2s;
+            transition: background .15s;
         }
         .person-card:hover {
-            border-color: rgba(99, 102, 241, .2);
-            box-shadow: var(--glow-primary);
+            background: rgba(128, 128, 128, .04);
         }
         .person-avatar {
             width: 50px;
@@ -4125,30 +4095,27 @@
             max-width: 100%;
         }
 
-        /* ===== REVIEWS ===== */
-        #reviewStars span {
-            transition: all .2s;
-        }
-        #reviewStars span.active {
-            color: var(--gold);
-            transform: scale(1.1);
-        }
-        #reviewStars span:hover {
-            transform: scale(1.2);
-        }
-
-        /* ===== PROFILE ===== */
+        /* ===== PROFILE PAGE ===== */
         .profile-header {
             background: var(--bg2);
             padding: 1.5rem;
             border-radius: var(--radius);
             margin-bottom: 1.5rem;
-            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
         }
         .profile-avatar {
             width: 80px;
             height: 80px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
             flex-shrink: 0;
             overflow: hidden;
         }
@@ -4158,11 +4125,29 @@
             border-radius: 50%;
             object-fit: cover;
         }
-        .profile-header h2 {
-            margin-bottom: .25rem;
+        .profile-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: .85rem;
+            color: var(--text3);
+            flex-wrap: wrap;
         }
-        .profile-content h4 {
-            margin: 1.5rem 0 .75rem;
+        .profile-stats strong {
+            color: var(--text);
+        }
+        /* Social earnings badge on posts */
+        .post-earnings-badge {
+            background: rgba(251, 191, 36, .12);
+            color: var(--gold);
+            border: 1px solid rgba(251, 191, 36, .25);
+            border-radius: 50px;
+            padding: .1rem .5rem;
+            font-size: .6rem;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            display: inline-flex;
+            align-items: center;
+            gap: .25rem;
         }
     </style>
 </head>
@@ -4175,8 +4160,8 @@
     <!-- LANDING PAGE -->
     <!-- ============================================================ -->
     <div id="page-landing" class="page active">
-        <nav class="land-nav" id="landingNav"><div class="logo" onclick="goPage('landing')"><div class="logo-mark">CX</div>ChangeX<span style="color:var(--primary)">.</span></div><div class="land-nav-links"><a onclick="smoothTo('how-it-works')">How It Works</a><a onclick="smoothTo('courses-sec')">Courses</a><a onclick="smoothTo('instructors-sec')">Instructors</a><a onclick="smoothTo('pricing-sec')">Pricing</a><a onclick="smoothTo('reviews-sec')">Reviews</a><a onclick="goPage('contact')">Contact</a></div><div style="display:flex;align-items:center;gap:.4rem"><button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle dark/light mode"><i class="fas" id="themeIcon"></i></button><button class="btn btn-outline btn-sm" onclick="goPage('login')">Sign In</button><button class="btn btn-primary btn-sm" onclick="goPage('register')">Start Free</button><button class="btn-icon d-md-none" onclick="toggleMobNav()"><i class="fas fa-bars"></i></button></div></nav>
-        <div class="mob-nav-dd" id="mobNav"><a onclick="smoothTo('how-it-works');toggleMobNav()">How It Works</a><a onclick="smoothTo('courses-sec');toggleMobNav()">Courses</a><a onclick="smoothTo('instructors-sec');toggleMobNav()">Instructors</a><a onclick="smoothTo('pricing-sec');toggleMobNav()">Pricing</a><a onclick="smoothTo('reviews-sec');toggleMobNav()">Reviews</a><a onclick="goPage('contact');toggleMobNav()">Contact</a><a onclick="goPage('login')">Sign In</a><a onclick="goPage('register')" style="color:var(--primary);font-weight:600">Start Free →</a></div>
+        <nav class="land-nav" id="landingNav"><div class="logo" onclick="goPage('landing')"><div class="logo-mark">CX</div>ChangeX<span style="color:var(--primary)">.</span></div><div class="land-nav-links"><a onclick="smoothTo('how-it-works')">How It Works</a><a onclick="smoothTo('courses-sec')">Courses</a><a onclick="smoothTo('instructors-sec')">Instructors</a><a onclick="smoothTo('pricing-sec')">Pricing</a><a onclick="goPage('contact')">Contact</a></div><div style="display:flex;align-items:center;gap:.4rem"><button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle dark/light mode"><i class="fas" id="themeIcon"></i></button><button class="btn btn-outline btn-sm" onclick="goPage('login')">Sign In</button><button class="btn btn-primary btn-sm" onclick="goPage('register')">Start Free</button><button class="btn-icon d-md-none" onclick="toggleMobNav()"><i class="fas fa-bars"></i></button></div></nav>
+        <div class="mob-nav-dd" id="mobNav"><a onclick="smoothTo('how-it-works');toggleMobNav()">How It Works</a><a onclick="smoothTo('courses-sec');toggleMobNav()">Courses</a><a onclick="smoothTo('instructors-sec');toggleMobNav()">Instructors</a><a onclick="smoothTo('pricing-sec');toggleMobNav()">Pricing</a><a onclick="goPage('contact');toggleMobNav()">Contact</a><a onclick="goPage('login')">Sign In</a><a onclick="goPage('register')" style="color:var(--primary);font-weight:600">Start Free →</a></div>
 
         <section class="lhero"><div class="lhero-bg"></div><div class="lhero-wrap"><div class="row items-center"><div class="col-12 col-lg-6"><div class="hero-eyebrow"><span class="pulse-dot"></span><span>🌍 Global Learn-to-Earn Platform</span></div><h1 style="font-size:clamp(2rem,5vw,3.2rem)">Turn Tech Skills Into <span class="grad-text">Real Income</span></h1><p class="hero-desc">Learn HTML, CSS, JavaScript &amp; AI Tools — earn from course sales, referrals, affiliates &amp; bonuses. Pay online or via <strong style="color:var(--primary)">bank transfer</strong>. No experience needed.</p><div class="hero-actions"><button class="btn btn-primary btn-lg" onclick="goPage('register')"><i class="fas fa-rocket"></i>Start Earning Free</button><button class="btn btn-outline btn-lg" onclick="smoothTo('how-it-works')"><i class="fas fa-play"></i>See How</button></div><div class="trust-row"><div class="trust-item"><i class="fas fa-shield-alt"></i>Secure &amp; Verified</div><div class="trust-item"><i class="fas fa-certificate"></i>Earn Certificates</div><div class="trust-item"><i class="fas fa-bolt"></i>Instant Payouts</div><div class="trust-item"><i class="fas fa-university"></i>Bank Transfer Accepted</div></div></div><div class="col-12 col-lg-6" style="padding-top:1.5rem"><div class="hero-vis"><div class="hero-dash"><div class="hd-bar"><div class="hd-dot" style="background:#ff5f57"></div><div class="hd-dot" style="background:#febc2e;margin-left:4px"></div><div class="hd-dot" style="background:#28c840;margin-left:4px"></div><span style="font-size:.67rem;color:var(--text3);margin-left:auto;font-family:var(--font-mono)">changex.academy/dashboard</span></div><div class="hd-body"><div class="hd-earn"><div style="font-size:.7rem;color:var(--text3);margin-bottom:.2rem;font-family:var(--font-mono)">💰 TOTAL EARNINGS</div><div class="hd-amt" id="heroEarnings">₦0</div><div class="hd-minis"><div class="hd-mini"><div class="hd-mv" style="color:var(--lime)">₦0</div><div class="hd-ml">Referrals</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--cyan)">₦0</div><div class="hd-ml">Courses</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--gold)">🔥 0</div><div class="hd-ml">Streak</div></div></div></div></div></div><div class="fc fc-bot"><i class="fas fa-star" style="color:var(--gold)"></i> 4.9 · 3,200+ reviews</div><div class="fc fc-top"><i class="fas fa-user-plus"></i> 15K+ Students</div></div></div></div></div></section>
 
@@ -4287,7 +4272,7 @@
     <div class="modal-ov hidden" id="userDetailsModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👤 User Details</h5><button class="btn-icon-sm" onclick="closeModal('userDetailsModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd" id="userDetailsContent"></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('userDetailsModal')">Close</button></div></div></div>
 
     <!-- Participants Modal (Admin) -->
-    <div class="modal-ov hidden" id="participantsModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👥 Challenge Participants</h5><button class="btn-icon-sm" onclick="closeModal('participantsModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd" id="participantsContent"></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('participantsModal')">Close</button></div></div></div>
+    <div class="modal-ov hidden" id="participantsModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👥 Challenge Participants</h5><button class="btn-icon-sm" onclick="closeModal('participantsModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd" id="participantsContent"></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('participantsModal')">Close</button></div></div></div>
 
     <!-- ============================================================ -->
     <!-- NOTIFICATION PANEL -->
@@ -4307,6 +4292,7 @@
         <li><span class="nav-item active" id="nav-feed" onclick="setDP('feed')"><span class="nav-ico"><i class="fas fa-newspaper"></i></span>Feed</span></li>
         <li><span class="nav-item" id="nav-challenges" onclick="setDP('challenges')"><span class="nav-ico"><i class="fas fa-trophy"></i></span>Challenges<span class="nav-badge nav-badge-pink" id="navChallengeBadge">0</span></span></li>
         <li><span class="nav-item" id="nav-people" onclick="setDP('people')"><span class="nav-ico"><i class="fas fa-users"></i></span>People</span></li>
+        <li><span class="nav-item" id="nav-profile" onclick="setDP('profile')"><span class="nav-ico"><i class="fas fa-user-circle"></i></span>Profile</span></li>
         <li class="nav-sec" style="margin-top:.3rem">Learning</li>
         <li><span class="nav-item" id="nav-home" onclick="setDP('home')"><span class="nav-ico"><i class="fas fa-home"></i></span>Dashboard</span></li>
         <li><span class="nav-item" id="nav-explore" onclick="setDP('explore')"><span class="nav-ico"><i class="fas fa-compass"></i></span>Explore Courses</span></li>
@@ -4345,6 +4331,9 @@
         <!-- PEOPLE -->
         <div id="dash-people" class="dash-sub"><div class="page-hd"><h2 class="page-title">👥 People</h2><p class="page-sub">Connect with fellow learners &amp; instructors</p></div><div class="people-search"><input type="text" class="finput" id="peopleSearch" placeholder="Search by name..." oninput="filterPeople(this.value)"/></div><div id="peopleContainer" class="people-grid"></div></div>
 
+        <!-- PROFILE -->
+        <div id="dash-profile" class="dash-sub"><div id="profileContent"><div class="empty-state"><i class="fas fa-user-circle"></i><h4>Select a user</h4><p>Click on a user from the People tab to view their profile.</p></div></div></div>
+
         <!-- HOME (Dashboard) -->
         <div id="dash-home" class="dash-sub"><div id="homeSkeleton" style="display:none"><div class="skeleton" style="height:120px;margin-bottom:1rem;border-radius:var(--radius)"></div><div class="row"><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div></div></div><div id="homeContent"></div></div>
 
@@ -4374,9 +4363,6 @@
 
         <!-- LEADERBOARD -->
         <div id="dash-leaderboard" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Leaderboard</h2><p class="page-sub">Top earners and learners this week</p></div><div class="tabs mb-3"><button class="tab-btn active" onclick="switchLbTab('xp',this)">XP</button><button class="tab-btn" onclick="switchLbTab('earnings',this)">Earnings</button><button class="tab-btn" onclick="switchLbTab('streak',this)">Streaks</button><button class="tab-btn" onclick="switchLbTab('refs',this)">Referrals</button></div><div class="card card-p" id="lbFull"></div></div>
-
-        <!-- PROFILE -->
-        <div id="dash-profile" class="dash-sub"><div id="profileContent"></div></div>
 
         <!-- INSTRUCTOR HUB -->
         <div id="dash-instructor" class="dash-sub"><div class="d-flex items-center gap-3 mb-4 flex-wrap" style="padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)"><div class="si si-v" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-chalkboard-teacher"></i></div><div><h4 style="margin:0">Instructor Hub</h4><p style="font-size:.8rem;color:var(--text2);margin:.15rem 0 0">Publish, track, manage</p></div><div style="margin-left:auto;display:flex;gap:.4rem;flex-wrap:wrap"><span class="badge badge-violet" id="instVerifiedBadge">Verified</span><button class="btn btn-primary btn-sm" onclick="initNewCourse()"><i class="fas fa-plus"></i>New Course</button></div></div><div id="instPremiumGate" style="display:none"></div><div id="instContent"><div class="tabs mb-3"><button class="tab-btn active" onclick="switchInstTab('courses',this)">My Courses</button><button class="tab-btn" onclick="switchInstTab('sales',this)">Sales &amp; Analytics</button><button class="tab-btn" onclick="switchInstTab('earnings',this)">Earnings Breakdown</button></div><div id="inst-tab-courses"><div class="row mb-4" id="instStatsRow"></div><div class="card card-p mb-3" id="instQANotifs" style="display:none"><h6 style="margin-bottom:.65rem;color:var(--orange)">🔔 Pending Q&amp;A Questions</h6><div id="instQAList"></div></div><div class="card card-p"><h6 style="margin-bottom:.85rem">My Published Courses</h6><div class="overflow-x-auto"><table class="dtable" id="instCoursesTable"></table></div></div></div><div id="inst-tab-sales" style="display:none"><div class="card card-p"><h6 style="margin-bottom:.85rem">📊 Sales &amp; Revenue</h6><div id="instSalesContent"><div class="empty-state"><i class="fas fa-chart-line"></i><h4>Loading sales data...</h4></div></div></div></div><div id="inst-tab-earnings" style="display:none"><div class="card card-p"><h6 style="margin-bottom:.85rem">💰 Earnings Breakdown</h6><div id="instEarningsContent"><div class="empty-state"><i class="fas fa-wallet"></i><h4>Loading earnings...</h4></div></div></div></div></div></div>
@@ -4419,7 +4405,6 @@
         let autoSaveTimer = null;
         let currentPaymentType = 'course';
         let currentManualCourseId = null;
-        let authLogoutTimer = null;
 
         // ═══════════════════════════════════════════════════════════════
         // APPLICATION STATE
@@ -4488,8 +4473,7 @@
             postQuill: null,
             followStatus: {},
             following: [],
-            profileUser: null,
-            socialEarnings: 0
+            profileUser: null
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -4552,35 +4536,6 @@
                 return `<img src="${avatarUrl}" alt="${initial}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;">`;
             }
             return initial;
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // JWT AUTO-LOGOUT (30 days)
-        // ═══════════════════════════════════════════════════════════════
-        function scheduleTokenLogout() {
-            if (authLogoutTimer) { clearTimeout(authLogoutTimer);
-                authLogoutTimer = null; }
-            const token = localStorage.getItem('cx_accessToken');
-            if (!token) return;
-            try {
-                const payload = JSON.parse(atob(token.split('.')[1]));
-                const exp = payload.exp * 1000;
-                const now = Date.now();
-                const timeLeft = exp - now;
-                if (timeLeft <= 0) {
-                    doLogout();
-                    toast('Your session has expired. Please log in again.', 'warning');
-                    return;
-                }
-                const oneDay = 24 * 60 * 60 * 1000;
-                if (timeLeft < oneDay) {
-                    toast('⚠️ Your session will expire in less than 24 hours. Please log in again.', 'warning');
-                }
-                authLogoutTimer = setTimeout(() => {
-                    doLogout();
-                    toast('Your session has expired. Please log in again.', 'warning');
-                }, timeLeft);
-            } catch (e) { console.warn('Token decoding failed', e); }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -4701,6 +4656,7 @@
                 feed: loadFeed,
                 challenges: loadChallenges,
                 people: loadPeople,
+                profile: () => { if (S.profileUser) loadUserProfile(S.profileUser._id); },
                 home: initHome,
                 explore: renderExplore,
                 courses: () => renderCourseGrid(S.courseFilter),
@@ -4716,8 +4672,7 @@
                 'course-editor': initEditor,
                 ai: initAI,
                 admin: () => renderAdm('dashboard'),
-                settings: initSettings,
-                profile: () => {} // loaded via openUserProfile
+                settings: initSettings
             };
             if (map[pg]) map[pg]();
             updateAdVisibility();
@@ -4918,6 +4873,7 @@
             toast(isFromLogin ? `Welcome back, ${S.user?.firstName || 'User'}! 👋` :
                 `Welcome to ChangeX, ${S.user?.firstName || 'User'}! 🎉`, 'success');
             forceRedirect(targetPage);
+            // Schedule token logout
             scheduleTokenLogout();
         }
 
@@ -4947,8 +4903,6 @@
         }
 
         function doLogout() {
-            if (authLogoutTimer) { clearTimeout(authLogoutTimer);
-                authLogoutTimer = null; }
             if (autoSaveTimer) clearInterval(autoSaveTimer);
             if (S.loggedIn) { apiCall('/auth/logout', { method: 'POST' }).catch(() => {}); }
             if (socket) { socket.disconnect();
@@ -4983,6 +4937,33 @@
             if (/[^a-zA-Z0-9]/.test(v)) sc++;
             const cls = sc < 2 ? 'weak' : sc < 3 ? 'fair' : 'strong';
             for (let i = 0; i < sc; i++) { if (segs[i]) segs[i].classList.add(cls); }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // JWT AUTO-LOGOUT (30 days)
+        // ═══════════════════════════════════════════════════════════════
+        function scheduleTokenLogout() {
+            const token = localStorage.getItem('cx_accessToken');
+            if (!token) return;
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const exp = payload.exp * 1000;
+                const now = Date.now();
+                const timeLeft = exp - now;
+                if (timeLeft <= 0) {
+                    doLogout();
+                    toast('Your session has expired. Please log in again.', 'warning');
+                    return;
+                }
+                const oneDay = 24 * 60 * 60 * 1000;
+                if (timeLeft < oneDay) {
+                    toast('⚠️ Your session will expire in less than 24 hours. Please log in again.', 'warning');
+                }
+                setTimeout(() => {
+                    doLogout();
+                    toast('Your session has expired. Please log in again.', 'warning');
+                }, timeLeft);
+            } catch (e) { console.warn('Token decoding failed', e); }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -5118,6 +5099,15 @@
             const fab = document.getElementById('fab');
             if (fab) fab.style.display = hasCreatorAccess ? 'block' : 'none';
             renderCurrencySelectorUI();
+            // Display bank details if saved
+            if (S.user.bankAccount) {
+                const bankSelect = document.getElementById('payoutBank');
+                if (bankSelect) bankSelect.value = S.user.bankAccount.bankName || '';
+                const accNum = document.getElementById('payoutAccNum');
+                if (accNum) accNum.value = S.user.bankAccount.accountNumber || '';
+                const accName = document.getElementById('payoutAccName');
+                if (accName) accName.value = S.user.bankAccount.accountName || '';
+            }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -5173,9 +5163,109 @@
         const ADS_API = '/ads';
         const INTERACTIVE_API = '/interactive';
 
+        // ================================================================
+        // FOLLOWING FEED
+        // ================================================================
+        async function loadFollowingFeed() {
+            showLoading('Loading following feed...');
+            try {
+                const res = await apiCall('/posts/following');
+                const items = res.data || [];
+                renderFollowingFeed(items);
+            } catch (err) {
+                toast('Failed to load following feed: ' + err.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderFollowingFeed(items) {
+            const container = document.getElementById('feedContainer');
+            if (!container) return;
+            if (!items || !items.length) {
+                container.innerHTML =
+                    '<div class="empty-state"><i class="fas fa-users"></i><h4>No posts from people you follow</h4><p>Follow more users to see their content here.</p></div>';
+                return;
+            }
+            container.innerHTML = items.map(item => {
+                if (item.type === 'post') {
+                    return renderPostCard(item);
+                } else if (item.type === 'course') {
+                    return renderCourseCardInFeed(item);
+                }
+                return '';
+            }).join('');
+            attachPostEventListeners();
+        }
+
+        // ================================================================
+        // RENDER POST CARD – with DOMPurify for rich content
+        // ================================================================
+        function renderPostCard(post) {
+            const author = post.authorId || post.author || {};
+            const avatarHtml = getAvatarUrl(author) ?
+                `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                (author.firstName?.[0] || 'U');
+            const contentHtml = post.content ? (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(post.content) : post
+                .content) : '';
+            const earningsHtml = post.earnings ? `<span class="post-earnings-badge"><i class="fas fa-wallet"></i> +${fmtMoneyAPI(post.earnings)}</span>` :
+                '';
+            return `
+                <div class="post-card card card-p" data-post-id="${post._id}">
+                    <div class="post-header">
+                        <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
+                            ${avatarHtml}
+                        </div>
+                        <div class="post-author-info">
+                            <strong>${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
+                            <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
+                            <span class="badge badge-cyan" style="font-size:.55rem">${post.type || 'article'}</span>
+                            ${earningsHtml}
+                        </div>
+                    </div>
+                    <h3 class="post-title" onclick="window.open('/post/${post.slug}','_blank')">${escapeHtml(post.title)}</h3>
+                    ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
+                    <div class="post-content" style="font-size:.88rem;line-height:1.7;color:var(--text2);margin:.5rem 0;">
+                        ${contentHtml}
+                    </div>
+                    <div class="post-stats">
+                        <span class="post-likes" data-id="${post._id}"><i class="far fa-heart"></i> ${post.likes || 0}</span>
+                        <span class="post-comments"><i class="far fa-comment"></i> ${post.commentsCount || 0}</span>
+                        <span class="post-shares"><i class="fas fa-share-alt"></i> ${post.shares || 0}</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="btn-like ${post.userLiked ? 'liked' : ''}" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
+                        <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
+                        <button class="btn-share" data-id="${post._id}" data-slug="${post.slug}"><i class="fas fa-share-alt"></i> Share</button>
+                    </div>
+                    <div class="comments-section" style="display:none;" data-post-id="${post._id}"></div>
+                </div>
+            `;
+        }
+
+        function renderCourseCardInFeed(course) {
+            const author = course.instructorId || course.instructor || {};
+            return `
+                <div class="course-card" onclick="openBuyCourse('${course._id}')" style="margin-bottom:.75rem;">
+                    <div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3));">
+                        ${course.thumbnail || course.emoji || '📚'}
+                    </div>
+                    <div class="cc-body">
+                        <div style="font-weight:700;font-size:.88rem;margin-bottom:.25rem">${escapeHtml(course.title)}</div>
+                        <div style="font-size:.74rem;color:var(--text3)">By ${escapeHtml(author.firstName || 'Instructor')} · ${course.totalLessons || 0} lessons</div>
+                        <div style="font-weight:800;color:var(--lime);margin-top:.5rem">${fmtMoneyAPI(course.price || 0)}</div>
+                    </div>
+                </div>
+            `;
+        }
+
         async function loadFeed(page = 1) {
             S.feedPage = page || 1;
             const filter = S.feedFilter || 'all';
+            if (filter === 'following') {
+                await loadFollowingFeed();
+                return;
+            }
             showLoading('Loading feed...');
             try {
                 let url = `${POSTS_API}?page=${S.feedPage}&limit=10`;
@@ -5189,46 +5279,6 @@
             } catch (err) {
                 toast('Failed to load feed: ' + err.message, 'error');
             } finally { hideLoading(); }
-        }
-
-        function renderPostCard(post) {
-            const author = post.authorId || post.author || {};
-            const avatarHtml = getAvatarUrl(author) ?
-                `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
-                (author.firstName?.[0] || 'U');
-            const contentHtml = post.content ? (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(post.content) : post
-                .content) : '';
-            return `
-                <div class="post-card card card-p" data-post-id="${post._id}">
-                    <div class="post-header">
-                        <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
-                            ${avatarHtml}
-                        </div>
-                        <div class="post-author-info">
-                            <strong>${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
-                            <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
-                            <span class="badge badge-cyan" style="font-size:.55rem">${post.type || 'article'}</span>
-                        </div>
-                    </div>
-                    <h3 class="post-title" onclick="window.open('/post/${post.slug}','_blank')">${escapeHtml(post.title)}</h3>
-                    ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
-                    <div class="post-content">
-                        ${contentHtml}
-                    </div>
-                    <div class="post-stats">
-                        <span class="post-likes" data-id="${post._id}"><i class="far fa-heart"></i> ${post.likes || 0}</span>
-                        <span class="post-comments"><i class="far fa-comment"></i> ${post.commentsCount || 0}</span>
-                        <span class="post-shares"><i class="fas fa-share-alt"></i> ${post.shares || 0}</span>
-                        ${post.earnings ? `<span class="badge badge-gold" style="font-size:.6rem">🏆 +${fmtMoneyAPI(post.earnings)}</span>` : ''}
-                    </div>
-                    <div class="post-actions">
-                        <button class="btn-like ${post.userLiked ? 'liked' : ''}" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
-                        <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
-                        <button class="btn-share" data-id="${post._id}" data-slug="${post.slug}"><i class="fas fa-share-alt"></i> Share</button>
-                    </div>
-                    <div class="comments-section" style="display:none;" data-post-id="${post._id}"></div>
-                </div>
-            `;
         }
 
         function renderFeed(posts, pagination) {
@@ -5254,40 +5304,6 @@
             attachPostEventListeners();
         }
 
-        function renderFollowingFeed(items) {
-            const container = document.getElementById('feedContainer');
-            if (!container) return;
-            if (!items || !items.length) {
-                container.innerHTML =
-                    '<div class="empty-state"><i class="fas fa-users"></i><h4>No posts from people you follow</h4><p>Follow more users to see their content here.</p></div>';
-                return;
-            }
-            container.innerHTML = items.map(item => {
-                if (item.type === 'post') {
-                    return renderPostCard(item);
-                } else if (item.type === 'course') {
-                    return renderCourseCardInFeed(item);
-                }
-                return '';
-            }).join('');
-            attachPostEventListeners();
-        }
-
-        function renderCourseCardInFeed(course) {
-            return `
-                <div class="course-card" onclick="openBuyCourse('${course._id}')">
-                    <div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3));">
-                        ${course.thumbnail || course.emoji || '📚'}
-                    </div>
-                    <div class="cc-body">
-                        <div style="font-weight:700;font-size:.88rem;margin-bottom:.25rem">${escapeHtml(course.title)}</div>
-                        <div style="font-size:.74rem;color:var(--text3)">By ${course.instructorId?.firstName || 'Instructor'} · ${course.totalLessons || 0} lessons</div>
-                        <div style="font-weight:800;color:var(--lime);margin-top:.5rem">${fmtMoneyAPI(course.price || 0)}</div>
-                    </div>
-                </div>
-            `;
-        }
-
         function attachPostEventListeners() {
             document.querySelectorAll('.btn-like').forEach(btn => {
                 btn.onclick = () => likePost(btn.dataset.id);
@@ -5310,19 +5326,6 @@
                 loadFollowingFeed();
             } else {
                 loadFeed(1);
-            }
-        }
-
-        async function loadFollowingFeed() {
-            showLoading('Loading following feed...');
-            try {
-                const res = await apiCall('/posts/following');
-                const items = res.data || [];
-                renderFollowingFeed(items);
-            } catch (err) {
-                toast('Failed to load following feed: ' + err.message, 'error');
-            } finally {
-                hideLoading();
             }
         }
 
@@ -5465,7 +5468,7 @@
                 return;
             }
             try {
-                const res = await apiCall(POSTS_API, {
+                await apiCall(POSTS_API, {
                     method: 'POST',
                     body: {
                         title,
@@ -5478,7 +5481,7 @@
                         isPublished: true
                     }
                 });
-                toast('Post published!', 'success');
+                toast('Post published! 🎉', 'success');
                 closeModal('createPostModal');
                 document.getElementById('postTitle').value = '';
                 document.getElementById('postTags').value = '';
@@ -5655,6 +5658,11 @@
         // USER PROFILE
         // ================================================================
         async function openUserProfile(userId) {
+            if (userId === S.user?._id) {
+                toast('That\'s you! Go to Settings to edit your profile.', 'info');
+                setDP('settings');
+                return;
+            }
             showLoading('Loading profile...');
             try {
                 const res = await apiCall(`/users/${userId}/profile`);
@@ -5671,45 +5679,67 @@
 
         function renderUserProfile(data) {
             const container = document.getElementById('profileContent');
+            if (!container) return;
             const user = data.user;
             const posts = data.posts || [];
             const courses = data.courses || [];
-            const isFollowing = data.isFollowing || false;
-            const avatarUrl = getAvatarUrl(user);
-            const avatarHtml = avatarUrl ?
-                `<img src="${avatarUrl}" alt="${user.firstName || 'U'}">` :
+            const isFollowing = data.isFollowing;
+            const followersCount = data.followersCount || 0;
+            const followingCount = data.followingCount || 0;
+
+            const avatarHtml = getAvatarUrl(user) ?
+                `<img src="${getAvatarUrl(user)}" alt="${user.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                 (user.firstName?.[0] || 'U');
 
             container.innerHTML = `
-                <div class="page-hd">
-                    <button class="btn btn-ghost btn-sm" onclick="setDP('people')"><i class="fas fa-arrow-left"></i> Back</button>
+                <div style="margin-bottom:1rem;">
+                    <button class="btn btn-ghost btn-sm" onclick="setDP('people')"><i class="fas fa-arrow-left"></i> Back to People</button>
                 </div>
                 <div class="profile-header">
-                    <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
-                        <div class="profile-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:bold;color:#fff;">
-                            ${avatarHtml}
+                    <div class="profile-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
+                        ${avatarHtml}
+                    </div>
+                    <div style="flex:1;">
+                        <h2 style="margin-bottom:.25rem;">${escapeHtml(user.firstName || 'User')} ${escapeHtml(user.lastName || '')}</h2>
+                        <p style="color:var(--text2);margin-bottom:.5rem;">${escapeHtml(user.bio || 'No bio yet')}</p>
+                        <div class="profile-stats">
+                            <span><strong>${followersCount}</strong> followers</span>
+                            <span><strong>${followingCount}</strong> following</span>
+                            <span><strong>${posts.length}</strong> posts</span>
+                            <span><strong>${courses.length}</strong> courses</span>
                         </div>
-                        <div style="flex:1;">
-                            <h2 style="margin-bottom:.25rem;">${escapeHtml(user.firstName)} ${escapeHtml(user.lastName)}</h2>
-                            <p style="color:var(--text2);">${escapeHtml(user.bio || 'No bio yet')}</p>
-                            <div style="display:flex;gap:1rem;font-size:.85rem;color:var(--text3);flex-wrap:wrap;">
-                                <span><strong>${data.followersCount || 0}</strong> followers</span>
-                                <span><strong>${data.followingCount || 0}</strong> following</span>
-                                <span><strong>${posts.length}</strong> posts</span>
-                                <span><strong>${courses.length}</strong> courses</span>
-                            </div>
-                            ${user._id !== S.user?._id ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="followUser('${user._id}')" style="margin-top:.5rem;">${isFollowing ? 'Following' : 'Follow'}</button>` : '<span class="badge badge-primary" style="margin-top:.5rem;">This is you</span>'}
-                        </div>
+                        ${user._id !== S.user?._id ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="toggleProfileFollow('${user._id}')" style="margin-top:.5rem;">${isFollowing ? 'Following' : 'Follow'}</button>` : ''}
                     </div>
                 </div>
                 <div class="profile-content">
-                    <h4>📝 Posts</h4>
-                    <div class="row">${posts.length ? posts.map(p => `<div class="col-12 col-md-6">${renderPostCard(p)}</div>`).join('') : '<p class="text-muted">No posts yet</p>'}</div>
-                    <h4>📚 Courses</h4>
-                    <div class="row">${courses.length ? courses.map(c => `<div class="col-12 col-md-6">${renderCourseCardInFeed(c)}</div>`).join('') : '<p class="text-muted">No courses yet</p>'}</div>
+                    <h4 style="margin-top:1rem;margin-bottom:.5rem;">📝 Posts</h4>
+                    <div class="row">
+                        ${posts.length ? posts.map(p => `<div class="col-12 col-md-6">${renderPostCard(p)}</div>`).join('') : '<p class="text-muted" style="padding:.5rem 0;">No posts yet</p>'}
+                    </div>
+                    <h4 style="margin-top:1.5rem;margin-bottom:.5rem;">📚 Courses</h4>
+                    <div class="row">
+                        ${courses.length ? courses.map(c => `<div class="col-12 col-md-6">${renderCourseCardInFeed(c)}</div>`).join('') : '<p class="text-muted" style="padding:.5rem 0;">No courses yet</p>'}
+                    </div>
                 </div>
             `;
-            attachPostEventListeners();
+        }
+
+        async function toggleProfileFollow(userId) {
+            try {
+                const res = await apiCall(`${FOLLOWS_API}/${userId}/follow`, { method: 'POST' });
+                const isNowFollowing = res.followed;
+                S.followStatus[userId] = isNowFollowing;
+                if (isNowFollowing) {
+                    if (!S.following.includes(userId)) S.following.push(userId);
+                } else {
+                    S.following = S.following.filter(id => id !== userId);
+                }
+                toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
+                if (S.profileUser) {
+                    const res2 = await apiCall(`/users/${userId}/profile`);
+                    renderUserProfile(res2.data);
+                }
+            } catch (err) { toast('Error: ' + err.message, 'error'); }
         }
 
         // ================================================================
@@ -5924,13 +5954,13 @@
             loadAds('sidebar', 'adSidebar');
             loadAds('banner', 'adBannerTop');
             loadAds('in-feed', 'adFeedTop');
-            scheduleTokenLogout();
             await loadPeople();
             setTimeout(() => {
                 const hash = window.location.hash.slice(1);
                 if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(() =>
                         openBuyCourse(courseId), 1000); }
             }, 800);
+            scheduleTokenLogout();
         }
 
         async function fetchAnnouncements() {
@@ -5973,22 +6003,11 @@
             document.getElementById('homeContent').innerHTML = '';
             if (!S.user) return;
             updateUserUI();
-            try {
-                await loadEnrollments();
+            try { await loadEnrollments();
                 await loadLeaderboard();
                 await loadTransactions();
-                await loadReferralStats();
-                await loadSocialEarnings();
-            } catch (e) {}
+                await loadReferralStats(); } catch (e) {}
             renderHomeDashboard();
-        }
-
-        async function loadSocialEarnings() {
-            try {
-                const res = await apiCall('/posts/my/social-earnings');
-                const data = res.data || {};
-                S.socialEarnings = data.totalEarnings || 0;
-            } catch (e) { S.socialEarnings = 0; }
         }
 
         async function loadReferralStats() {
@@ -6020,6 +6039,8 @@
             const xpNext = level * 1000;
             const xpProgress = Math.min(100, Math.round((xp / xpNext) * 100));
             const showUpgrade = !S.isPremium && !S.user?.roles?.includes('admin');
+            // Social earnings
+            const socialEarnings = S.user?.socialEarnings || 0;
             el.innerHTML =
                 `
                 <div id="homeUpgradeBanner" style="display:${showUpgrade ? 'block' : 'none'};background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,146,60,.05));border:1px solid rgba(251,191,36,.2);border-radius:var(--radius);padding:1rem;margin-bottom:1rem">
@@ -6053,7 +6074,7 @@
                     <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-book-open"></i></div><div class="sv">${completedCnt}/${S.enrollments.length}</div><div class="sl">Courses</div></div></div>
                     <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-users"></i></div><div class="sv">${refCnt}</div><div class="sl">Referrals</div></div></div>
                     <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${S.myAffiliateLinks?.length || 0}</div><div class="sl">Affiliates</div></div></div>
-                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-gold"><i class="fas fa-chart-line"></i></div><div class="sv" id="socialEarningsDisplay">${fmtMoneyAPI(S.socialEarnings || 0)}</div><div class="sl">Social Earnings</div></div></div>
+                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-gold"><i class="fas fa-chart-line"></i></div><div class="sv">${fmtMoneyAPI(socialEarnings)}</div><div class="sl">Social Earnings</div></div></div>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-8">
@@ -6753,7 +6774,7 @@
             document.getElementById('walletWeekChange').innerHTML = pending > 0 ?
                 `<span style="color:var(--gold)">Pending: ${fmtMoneyAPI(pending)}</span>` : '+₦0 this week';
             document.getElementById('walletBreakdown').innerHTML =
-                `<div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</span></div><div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(S.user?.courseEarnings || 0)}</span></div><div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</span></div>`;
+                `<div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</span></div><div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(S.user?.courseEarnings || 0)}</span></div><div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</span></div><div class="web-row"><span>Social Earnings</span><span style="color:var(--gold);font-weight:700">${fmtMoneyAPI(S.user?.socialEarnings || 0)}</span></div>`;
             document.getElementById('walletStatsRow').innerHTML =
                 `<div class="col-6"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</div><div class="sl">Referral Earnings</div></div></div><div class="col-6"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</div><div class="sl">Affiliate Earned</div></div></div>`;
             await loadTransactions();
@@ -6794,7 +6815,7 @@
         }
 
         async function processWithdraw() {
-            const hasBankDetails = S.user?.bankAccount?.accountNumber || S.user?.bankAccountNumber || S.user?.bankName;
+            const hasBankDetails = S.user?.bankAccount?.accountNumber || S.user?.bankAccountNumber;
             if (!hasBankDetails) {
                 toast('⚠️ Add bank details in Settings → Payouts first.', 'error');
                 closeModal('withdrawModal');
@@ -7551,12 +7572,21 @@
             } catch (e) { toast(e.message, 'error'); }
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // FIX: SAVE PAYOUT SETTINGS – send bankAccount object
+        // ═══════════════════════════════════════════════════════════════
         function savePayoutSettings() {
             const bankName = document.getElementById('payoutBank')?.value;
             const accountNumber = document.getElementById('payoutAccNum')?.value.trim();
             const accountName = document.getElementById('payoutAccName')?.value.trim();
-            if (!bankName || !accountNumber) { toast('Fill in bank name and account number', 'error'); return; }
-            if (accountNumber.length !== 10) { toast('Account number must be 10 digits', 'error'); return; }
+            if (!bankName || !accountNumber) {
+                toast('Fill in bank name and account number', 'error');
+                return;
+            }
+            if (accountNumber.length !== 10) {
+                toast('Account number must be 10 digits', 'error');
+                return;
+            }
             const bankAccount = {
                 bankName: bankName,
                 accountNumber: accountNumber,
@@ -7567,11 +7597,13 @@
             toast('✅ Bank details saved!', 'success');
             document.getElementById('payoutSaveStatus').innerHTML =
                 '<span style="color:var(--success)">✅ Bank details saved successfully</span>';
+
             apiCall('/users/profile', {
                 method: 'PUT',
                 body: { bankAccount: bankAccount }
             }).then(() => {
                 renderWallet();
+                updateUserUI();
             }).catch(err => {
                 toast('Failed to save on server: ' + err.message, 'warning');
             });
@@ -7637,6 +7669,9 @@
         // ================================================================
         function renderAdm(sec) { switchAdm(sec, null); }
 
+        // ═══════════════════════════════════════════════════════════════
+        // FIX: ADMIN USERS TABLE – display bankAccount fields
+        // ═══════════════════════════════════════════════════════════════
         async function switchAdm(sec, el) {
             S.admSec = sec;
             document.querySelectorAll('#dash-admin .fpill').forEach(p => p.classList.remove('active'));
@@ -7663,12 +7698,7 @@
                         S.adminUsers = Array.isArray(res.data?.users) ? res.data.users : (Array.isArray(res.data) ? res
                             .data : []);
                         document.getElementById('admUsersTable').innerHTML =
-                            `<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminUsers.map(u => {
-                                const bankInfo = u.bankAccount?.bankName ?
-                                    `${u.bankAccount.bankName} - ${u.bankAccount.accountNumber || 'N/A'} (${u.bankAccount.accountName || 'N/A'})` :
-                                    '<span style="color:var(--text3)">No bank details</span>';
-                                return `<tr><td>${u.firstName || ''} ${u.lastName || ''}</td><td>${u.email}</td><td>${(u.roles || []).join(',') || 'user'}</td><td style="font-size:.75rem">${bankInfo}</td><td>${u.isBanned ? '<span style="color:var(--danger)">Banned</span>' : '<span style="color:var(--success)">Active</span>'}</td><td><button class="btn btn-ghost btn-sm" onclick="toggleUserBan('${u._id}',${!u.isBanned})">${u.isBanned ? 'Unban' : 'Ban'}</button>${!u.isApprovedInstructor ? `<button class="btn btn-primary btn-sm" onclick="approveInstructor('${u._id}')">Approve Instructor</button>` : ''}<button class="btn btn-ghost btn-sm" onclick="showUserDetails('${u._id}')"><i class="fas fa-eye"></i> Details</button></td></tr>`;
-                            }).join('') || '<tr><td colspan="6" style="text-align:center">No users</td></tr>'}</tbody>`;
+                            `<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminUsers.map(u => { const bankInfo = u.bankAccount?.bankName ? `${u.bankAccount.bankName} - ${u.bankAccount.accountNumber || 'N/A'} (${u.bankAccount.accountName || 'N/A'})` : '<span style="color:var(--text3)">No bank details</span>'; return `<tr><td>${u.firstName || ''} ${u.lastName || ''}</td><td>${u.email}</td><td>${(u.roles || []).join(',') || 'user'}</td><td style="font-size:.75rem">${bankInfo}</td><td>${u.isBanned ? '<span style="color:var(--danger)">Banned</span>' : '<span style="color:var(--success)">Active</span>'}</td><td><button class="btn btn-ghost btn-sm" onclick="toggleUserBan('${u._id}',${!u.isBanned})">${u.isBanned ? 'Unban' : 'Ban'}</button>${!u.isApprovedInstructor ? `<button class="btn btn-primary btn-sm" onclick="approveInstructor('${u._id}')">Approve Instructor</button>` : ''}<button class="btn btn-ghost btn-sm" onclick="showUserDetails('${u._id}')"><i class="fas fa-eye"></i> Details</button></td></tr>`; }).join('') || '<tr><td colspan="6" style="text-align:center">No users</td></tr>'}</tbody>`;
                     } catch (e) { content.innerHTML = '<p style="color:var(--danger)">Failed to load: ' + e.message +
                             '</p>'; }
                     break;
@@ -7701,7 +7731,7 @@
                         S.adminWithdrawals = Array.isArray(res.data?.withdrawals) ? res.data.withdrawals : (Array
                             .isArray(res.data) ? res.data : []);
                         content.innerHTML =
-                            `<div class="overflow-x-auto"><table class="dtable"><thead><tr><th>User</th><th>Amount</th><th>Bank</th><th>Account</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminWithdrawals.map(w => `<tr><td>${w.user?.firstName || 'User'} ${w.user?.lastName || ''}</td><td style="font-weight:800">${fmtMoneyAPI(w.amount)}</td><td style="font-size:.75rem">${w.user?.bankAccount?.bankName || w.user?.bankName || 'N/A'}</td><td style="font-size:.75rem">${w.user?.bankAccount?.accountNumber || w.user?.bankAccountNumber || 'N/A'}</td><td><span class="pstatus ${w.status === 'completed' ? 'ps-paid' : 'ps-pend'}">${w.status}</span></td><td>${w.status === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="processWithdrawalAdmin('${w._id}','approve')">Approve</button><button class="btn btn-danger btn-sm" onclick="processWithdrawalAdmin('${w._id}','reject')">Reject</button>` : '—'}</td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center">No withdrawals</td></tr>'}</tbody></table></div>`;
+                            `<div class="overflow-x-auto"><table class="dtable"><thead><tr><th>User</th><th>Amount</th><th>Bank</th><th>Account</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminWithdrawals.map(w => `<tr><td>${w.user?.firstName || 'User'} ${w.user?.lastName || ''}</td><td style="font-weight:800">${fmtMoneyAPI(w.amount)}</td><td style="font-size:.75rem">${w.user?.bankName || 'N/A'}</td><td style="font-size:.75rem">${w.user?.bankAccountNumber || 'N/A'}</td><td><span class="pstatus ${w.status === 'completed' ? 'ps-paid' : 'ps-pend'}">${w.status}</span></td><td>${w.status === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="processWithdrawalAdmin('${w._id}','approve')">Approve</button><button class="btn btn-danger btn-sm" onclick="processWithdrawalAdmin('${w._id}','reject')">Reject</button>` : '—'}</td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center">No withdrawals</td></tr>'}</tbody></table></div>`;
                     } catch (e) { content.innerHTML = '<p style="color:var(--danger)">Failed to load</p>'; }
                     break;
                 case 'manualPayments':
@@ -7845,8 +7875,8 @@
                             <br><small style="color:var(--text3)">${new Date(c.startDate).toLocaleDateString()} → ${new Date(c.endDate).toLocaleDateString()}</small>
                         </div>
                         <div style="display:flex;gap:.3rem">
-                            <button class="btn btn-ghost btn-sm" onclick="viewParticipants('${c._id}')"><i class="fas fa-users"></i> View</button>
                             <button class="btn btn-ghost btn-sm" onclick="deleteAdminChallenge('${c._id}')" style="color:var(--danger)"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-ghost btn-sm" onclick="viewParticipants('${c._id}')"><i class="fas fa-users"></i> Participants</button>
                         </div>
                     </div>
                 `).join('');
@@ -7867,36 +7897,58 @@
         }
 
         // ================================================================
-        // ADMIN PARTICIPANTS
+        // ADMIN CHALLENGE PARTICIPANTS – fixed backend route
         // ================================================================
         async function viewParticipants(challengeId) {
+            showLoading('Loading participants...');
             try {
                 const res = await apiCall(`/admin/challenges/${challengeId}/participants`);
                 const participants = res.data || [];
                 const content = document.getElementById('participantsContent');
+                if (!content) return;
                 if (!participants.length) {
-                    content.innerHTML = '<p>No participants yet.</p>';
+                    content.innerHTML = '<div class="empty-state"><p>No participants yet.</p></div>';
                 } else {
-                    content.innerHTML = participants.map(p => `
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--border)">
-                            <span>${escapeHtml(p.userId?.firstName || 'User')} ${escapeHtml(p.userId?.lastName || '')} (${p.status}) – Progress: ${p.progress || 0}%</span>
-                            ${p.status !== 'completed' ? `<button class="btn btn-primary btn-sm" onclick="completeChallenge('${challengeId}','${p.userId._id}')">Mark Complete</button>` : '<span class="badge badge-success">Completed</span>'}
+                    content.innerHTML = participants.map(p => {
+                        const user = p.userId || {};
+                        const statusClass = p.status === 'completed' ? 'ps-paid' : p.status === 'in_progress' ?
+                            'ps-pend' : 'ps-fail';
+                        return `
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.5rem;">
+                            <div>
+                                <strong>${escapeHtml(user.firstName || 'User')} ${escapeHtml(user.lastName || '')}</strong>
+                                <span class="badge badge-dark" style="font-size:.55rem">${p.status || 'enrolled'}</span>
+                                <span style="font-size:.75rem;color:var(--text3);margin-left:.5rem;">Progress: ${p.progress || 0}%</span>
+                                ${p.completedAt ? `<span style="font-size:.7rem;color:var(--text3);margin-left:.5rem;">Completed: ${new Date(p.completedAt).toLocaleDateString()}</span>` : ''}
+                            </div>
+                            ${p.status !== 'completed' ? `<button class="btn btn-primary btn-sm" onclick="completeChallenge('${challengeId}','${user._id}')"><i class="fas fa-check"></i> Mark Complete</button>` : '<span class="badge badge-success">✅ Completed</span>'}
                         </div>
-                    `).join('');
+                    `;
+                    }).join('');
                 }
                 openModal('participantsModal');
-            } catch (e) {
-                toast('Failed to load participants: ' + e.message, 'error');
+            } catch (err) {
+                toast('Failed to load participants: ' + err.message, 'error');
+            } finally {
+                hideLoading();
             }
         }
 
         async function completeChallenge(challengeId, userId) {
-            if (!confirm('Mark this user as completed? They will receive rewards.')) return;
+            if (!confirm('Mark this user as completed? They will receive rewards (XP, wallet bonus, premium days).')) return;
+            showLoading('Processing...');
             try {
-                await apiCall(`/admin/challenges/${challengeId}/complete/${userId}`, { method: 'PUT', body: { adminNote: 'Completed by admin' } });
-                toast('User completed! Rewards awarded.', 'success');
+                await apiCall(`/admin/challenges/${challengeId}/complete/${userId}`, {
+                    method: 'PUT',
+                    body: { adminNote: 'Completed by admin' }
+                });
+                toast('✅ User marked as completed! Rewards awarded.', 'success');
                 viewParticipants(challengeId);
-            } catch (e) { toast(e.message, 'error'); }
+            } catch (err) {
+                toast('Failed: ' + err.message, 'error');
+            } finally {
+                hideLoading();
+            }
         }
 
         // ================================================================
@@ -8180,35 +8232,6 @@
         }
 
         // ================================================================
-        // REVIEWS
-        // ================================================================
-        document.addEventListener('click', e => {
-            if (e.target.closest('#reviewStars span')) {
-                const span = e.target.closest('#reviewStars span');
-                const val = parseInt(span.dataset.val);
-                document.querySelectorAll('#reviewStars span').forEach(s => s.classList.toggle('active', parseInt(s
-                    .dataset.val) <= val));
-            }
-        });
-
-        async function submitReview() {
-            const name = document.getElementById('reviewName').value.trim();
-            const rating = parseInt(document.querySelector('#reviewStars .active')?.dataset.val) || 0;
-            const text = document.getElementById('reviewText').value.trim();
-            if (!name || !rating || !text) { toast('Please fill all fields', 'error'); return; }
-            try {
-                await apiCall('/feedback', {
-                    method: 'POST',
-                    body: { message: `Review from ${name}: ${text} (${rating}★)`, email: 'changexacademysupport@gmail.com' }
-                });
-                toast('Review submitted! Thank you.', 'success');
-                document.getElementById('reviewName').value = '';
-                document.getElementById('reviewText').value = '';
-                document.querySelectorAll('#reviewStars span').forEach(s => s.classList.remove('active'));
-            } catch (err) { toast('Failed: ' + err.message, 'error'); }
-        }
-
-        // ================================================================
         // LANDING PAGE FUNCTIONS
         // ================================================================
         async function initLanding() {
@@ -8325,18 +8348,39 @@
             const msg = document.getElementById('contactMsg')?.value.trim();
             if (!em || !msg) { toast('Fill in email and message', 'error'); return; }
             try {
-                await apiCall('/contact', {
-                    method: 'POST',
-                    body: {
-                        email: em,
-                        subject: document.getElementById('contactSubject')?.value,
-                        message: msg,
-                        firstName: document.getElementById('contactFirst')?.value,
-                        lastName: document.getElementById('contactLast')?.value
-                    }
-                });
+                await apiCall('/contact', { method: 'POST', body: { email: em, subject: document.getElementById(
+                            'contactSubject')?.value, message: msg, firstName: document.getElementById('contactFirst')
+                        ?.value, lastName: document.getElementById('contactLast')?.value } });
                 toast('Message sent! ✉️', 'success');
             } catch (e) { toast('Message sent! ✉️', 'success'); }
+        }
+
+        // ================================================================
+        // REVIEWS
+        // ================================================================
+        document.addEventListener('click', e => {
+            if (e.target.closest('#reviewStars span')) {
+                const span = e.target.closest('#reviewStars span');
+                const val = parseInt(span.dataset.val);
+                document.querySelectorAll('#reviewStars span').forEach(s => s.classList.toggle('active', parseInt(s.dataset.val) <= val));
+            }
+        });
+
+        async function submitReview() {
+            const name = document.getElementById('reviewName').value.trim();
+            const rating = parseInt(document.querySelector('#reviewStars .active')?.dataset.val) || 0;
+            const text = document.getElementById('reviewText').value.trim();
+            if (!name || !rating || !text) { toast('Please fill all fields', 'error'); return; }
+            try {
+                await apiCall('/feedback', {
+                    method: 'POST',
+                    body: { message: `Review from ${name}: ${text} (${rating}★)`, email: 'changexacademysupport@gmail.com' }
+                });
+                toast('Review submitted! Thank you.', 'success');
+                document.getElementById('reviewName').value = '';
+                document.getElementById('reviewText').value = '';
+                document.querySelectorAll('#reviewStars span').forEach(s => s.classList.remove('active'));
+            } catch (err) { toast('Failed: ' + err.message, 'error'); }
         }
 
         // ================================================================
@@ -8573,7 +8617,6 @@
                 localStorage.removeItem('cx_pending_ref');
             }
             populateAllBankDetailsBoxes();
-            scheduleTokenLogout();
         });
 
         // ================================================================
