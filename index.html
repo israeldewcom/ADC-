@@ -5033,6 +5033,18 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
+        // TOKEN EXPIRY CHECK (for post creation)
+        // ═══════════════════════════════════════════════════════════════
+        function isTokenExpired() {
+            const token = localStorage.getItem('cx_accessToken');
+            if (!token) return true;
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return Date.now() >= payload.exp * 1000;
+            } catch { return true; }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
         // USER UI UPDATE – with avatar support
         // ═══════════════════════════════════════════════════════════════
         function updateUserUI() {
@@ -5421,7 +5433,26 @@
             }
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // SUBMIT NEW POST (with token debug and expiry check)
+        // ═══════════════════════════════════════════════════════════════
         async function submitNewPost() {
+            // === TOKEN DEBUG CHECK ===
+            const token = localStorage.getItem('cx_accessToken');
+            if (!token) {
+                toast('You are not logged in. Please log in again.', 'error');
+                goPage('login');
+                return;
+            }
+            console.log('[Post Creation] Token present:', token.substring(0, 20) + '...');
+
+            // Check if token is expired
+            if (isTokenExpired()) {
+                toast('Your session has expired. Please log in again.', 'warning');
+                doLogout();
+                return;
+            }
+
             const title = document.getElementById('postTitle')?.value.trim();
             const type = document.getElementById('postType')?.value || 'article';
             let content = '';
@@ -5470,6 +5501,7 @@
                 if (S.dp === 'feed') loadFeed(1);
             } catch (err) {
                 toast('Failed to create post: ' + err.message, 'error');
+                console.error('[Post Creation Error]', err);
             }
         }
 
