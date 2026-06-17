@@ -29,6 +29,8 @@
     </script>
     <script src="https://js.paystack.co/v1/inline.js">
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js">
+    </script>
     <meta name="google-site-verification" content="PB3lWW6G3FccAT72e65ehI6ILq12ZxNzS_RUsXDVufE" />
     <style>
         /* ===== CSS VARIABLES ===== */
@@ -3643,7 +3645,7 @@
             flex-wrap: wrap;
         }
 
-        /* ===== NEW SOCIAL COMPONENTS ===== */
+        /* ===== SOCIAL COMPONENTS ===== */
         .post-card {
             margin-bottom: 1.5rem;
             transition: transform 0.2s;
@@ -3688,6 +3690,26 @@
             max-width: 100%;
             border-radius: var(--radius-sm);
             margin: 0.75rem 0;
+        }
+        .post-content {
+            font-size: .88rem;
+            line-height: 1.7;
+            color: var(--text2);
+            margin: .5rem 0;
+        }
+        .post-content img {
+            max-width: 100%;
+            border-radius: var(--radius-sm);
+            margin: .5rem 0;
+        }
+        .post-content iframe {
+            max-width: 100%;
+            border-radius: var(--radius-sm);
+            aspect-ratio: 16/9;
+        }
+        .post-content video {
+            max-width: 100%;
+            border-radius: var(--radius-sm);
         }
         .post-stats {
             display: flex;
@@ -3844,7 +3866,6 @@
             color: #fff;
         }
 
-        /* ===== INTERACTIVE ===== */
         .interactive-card {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -3984,7 +4005,6 @@
             color: var(--text3);
         }
 
-        /* ===== ADMIN CHALLENGE FORM ===== */
         .admin-challenge-form {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -4014,7 +4034,6 @@
             font-size: .55rem;
         }
 
-        /* ===== ADMIN ADS ===== */
         .admin-ads-form {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -4040,8 +4059,6 @@
             flex-wrap: wrap;
             gap: .5rem;
         }
-
-        /* ===== FOLLOWING BADGE ===== */
         .follow-badge {
             display: inline-flex;
             align-items: center;
@@ -4114,15 +4131,18 @@
 
         <section class="lsec lsec-dark"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-comments"></i> Testimonials</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Real Students. <span class="grad-text">Real Earnings</span>.</h2></div><div class="row" id="testiGrid"></div></div></section>
 
+        <!-- REVIEWS SECTION -->
+        <section id="reviews-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-star"></i> Reviews</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">What Our <span class="grad-text">Students Say</span></h2></div><div class="row" id="reviewsList"></div><div class="row justify-center mt-5"><div class="col-12 col-md-6"><div class="card card-p"><h5>Leave a Review</h5><div class="form-group"><label class="flabel">Your Name</label><input type="text" class="finput" id="reviewName" placeholder="Your full name"></div><div class="form-group"><label class="flabel">Rating</label><div style="display:flex;gap:.3rem;font-size:1.5rem;cursor:pointer" id="reviewStars"><span data-val="1">☆</span><span data-val="2">☆</span><span data-val="3">☆</span><span data-val="4">☆</span><span data-val="5">☆</span></div></div><div class="form-group"><label class="flabel">Review</label><textarea class="finput" id="reviewText" rows="3" placeholder="Your experience..."></textarea></div><button class="btn btn-primary" onclick="submitReview()">Submit Review</button></div></div></div></div></section>
+
         <section id="pricing-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-tag"></i> Pricing</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Simple, <span class="grad-text">Transparent</span> Pricing</h2></div><div class="row justify-center"><div class="col-12 col-md-4 reveal" style="transition-delay:.05s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-user"></i> Free</div><div class="p-amt">₦0<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">Perfect to get started</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>5 courses access</li><li><i class="fas fa-check chk"></i>Basic certificates</li><li><i class="fas fa-check chk"></i>Referral program</li><li><i class="fas fa-times nope"></i>Create courses</li><li><i class="fas fa-times nope"></i>Unlimited uploads</li><li><i class="fas fa-times nope"></i>No ads</li></ul><button class="btn btn-outline w-full" onclick="goPage('register')">Get Started Free</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.1s"><div class="price-card featured"><div class="stag mb-3"><i class="fas fa-crown"></i> Premium</div><div class="p-amt" style="color:var(--lime)">₦5,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For serious learners &amp; earners</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>All courses unlimited</li><li><i class="fas fa-check chk"></i>Create &amp; sell courses</li><li><i class="fas fa-check chk"></i>Affiliate dashboard</li><li><i class="fas fa-check chk"></i>Unlimited uploads</li><li><i class="fas fa-check chk"></i>No ads 🎉</li><li><i class="fas fa-check chk"></i>80% course revenue</li></ul><button class="btn btn-primary w-full" onclick="goPage('register')"><i class="fas fa-crown"></i>Go Premium</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.15s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-building"></i> Business</div><div class="p-amt">₦25,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For teams &amp; organizations</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>Everything in Premium</li><li><i class="fas fa-check chk"></i>Up to 20 seats</li><li><i class="fas fa-check chk"></i>Custom branding</li><li><i class="fas fa-check chk"></i>Analytics</li><li><i class="fas fa-check chk"></i>Dedicated manager</li></ul><button class="btn btn-outline w-full" onclick="goPage('contact')">Contact Sales</button></div></div></div></div></section>
 
-        <footer class="lfooter"><div class="lsec-wrap"><div class="row mb-4"><div class="col-12 col-md-4"><div class="logo mb-3"><div class="logo-mark">CX</div>ChangeX<span style="color:var(--primary)">.</span></div><p style="font-size:.82rem;color:var(--text3);max-width:260px;line-height:1.65">Global #1 Learn-to-Earn platform. Turning tech skills into real income.</p><div class="f-social"><div class="soc-btn"><i class="fab fa-twitter"></i></div><div class="soc-btn"><i class="fab fa-instagram"></i></div><div class="soc-btn"><i class="fab fa-linkedin"></i></div><div class="soc-btn"><i class="fab fa-youtube"></i></div><div class="soc-btn"><i class="fab fa-whatsapp"></i></div></div></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Learn</h6><ul class="f-links"><li><a onclick="goPage('register')">All Courses</a></li><li><a>Web Dev</a></li><li><a>AI &amp; Tools</a></li><li><a>Freelancing</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Earn</h6><ul class="f-links"><li><a>Referrals</a></li><li><a>Affiliates</a></li><li><a>Teach Here</a></li><li><a>Leaderboard</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Company</h6><ul class="f-links"><li><a>About</a></li><li><a onclick="goPage('contact')">Contact</a></li><li><a>Privacy</a></li><li><a>Terms</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Newsletter</h6><p style="font-size:.75rem;color:var(--text3);margin-bottom:.6rem">Weekly tips &amp; earnings updates</p><input type="email" class="finput" id="footerEmail" placeholder="your@email.com" style="margin-bottom:.4rem"/><button class="btn btn-primary btn-sm w-full" onclick="subscribeEmail()">Subscribe</button></div></div><div style="border-top:1px solid var(--border);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem"><p style="font-size:.73rem;color:var(--text3)">© 2025 ChangeX Academy. Made with ❤️ for the world.</p><p style="font-size:.73rem;color:var(--text3)">Contact: <a href="mailto:israeldewa1@gmail.com" style="color:var(--primary)">israeldewa1@gmail.com</a></p></div></div></footer>
+        <footer class="lfooter"><div class="lsec-wrap"><div class="row mb-4"><div class="col-12 col-md-4"><div class="logo mb-3"><div class="logo-mark">CX</div>ChangeX<span style="color:var(--primary)">.</span></div><p style="font-size:.82rem;color:var(--text3);max-width:260px;line-height:1.65">Global #1 Learn-to-Earn platform. Turning tech skills into real income.</p><div class="f-social"><div class="soc-btn"><i class="fab fa-twitter"></i></div><div class="soc-btn"><i class="fab fa-instagram"></i></div><div class="soc-btn"><i class="fab fa-linkedin"></i></div><div class="soc-btn"><i class="fab fa-youtube"></i></div><div class="soc-btn"><i class="fab fa-whatsapp"></i></div></div></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Learn</h6><ul class="f-links"><li><a onclick="goPage('register')">All Courses</a></li><li><a>Web Dev</a></li><li><a>AI &amp; Tools</a></li><li><a>Freelancing</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Earn</h6><ul class="f-links"><li><a>Referrals</a></li><li><a>Affiliates</a></li><li><a>Teach Here</a></li><li><a>Leaderboard</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Company</h6><ul class="f-links"><li><a>About</a></li><li><a onclick="goPage('contact')">Contact</a></li><li><a>Privacy</a></li><li><a>Terms</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Newsletter</h6><p style="font-size:.75rem;color:var(--text3);margin-bottom:.6rem">Weekly tips &amp; earnings updates</p><input type="email" class="finput" id="footerEmail" placeholder="your@email.com" style="margin-bottom:.4rem"/><button class="btn btn-primary btn-sm w-full" onclick="subscribeEmail()">Subscribe</button></div></div><div style="border-top:1px solid var(--border);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem"><p style="font-size:.73rem;color:var(--text3)">© 2025 ChangeX Academy. Made with ❤️ for the world.</p><p style="font-size:.73rem;color:var(--text3)">Contact: <a href="mailto:changexacademysupport@gmail.com" style="color:var(--primary)">changexacademysupport@gmail.com</a></p></div></div></footer>
     </div>
 
     <!-- ============================================================ -->
     <!-- AUTH PAGES -->
     <!-- ============================================================ -->
-    <div id="page-login" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem">CX</div><h2 style="font-size:1.6rem">Welcome Back</h2><p style="font-size:.82rem;color:var(--text3)">Sign in to continue earning</p></div><div style="display:flex;gap:.55rem;margin-bottom:.85rem"><button class="social-btn" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="loginEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="loginPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/><button class="pw-toggle" onclick="togglePw('loginPw',this)"><i class="fas fa-eye"></i></button></div></div><div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem"><input type="checkbox" id="rememberMe" style="accent-color:var(--primary)"/><label for="rememberMe" style="font-size:.78rem;color:var(--text2);cursor:pointer">Remember me for 30 days</label><a style="font-size:.78rem;color:var(--primary);cursor:pointer;margin-left:auto" onclick="handleForgotPassword()">Forgot password?</a></div><button class="btn btn-primary w-full" id="loginBtn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i>Sign In</button><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">No account? <a style="color:var(--primary);cursor:pointer" onclick="goPage('register')">Create free →</a></p><p style="text-align:center;margin-top:.4rem"><a style="font-size:.75rem;cursor:pointer;color:var(--text3)" onclick="goPage('landing')">← Back to Home</a></p></div></div></div>
+    <div id="page-login" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem">CX</div><h2 style="font-size:1.6rem">Welcome Back</h2><p style="font-size:.82rem;color:var(--text3)">Sign in to continue earning</p></div><div style="display:flex;gap:.55rem;margin-bottom:.85rem"><button class="social-btn" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="loginEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="loginPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/><button class="pw-toggle" onclick="togglePw('loginPw',this)"><i class="fas fa-eye"></i></button></div></div><div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem"><input type="checkbox" id="rememberMe" style="accent-color:var(--primary)"/><label for="rememberMe" style="font-size:.78rem;color:var(--text2);cursor:pointer">Remember me</label><a style="font-size:.78rem;color:var(--primary);cursor:pointer;margin-left:auto" onclick="handleForgotPassword()">Forgot password?</a></div><button class="btn btn-primary w-full" id="loginBtn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i>Sign In</button><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">No account? <a style="color:var(--primary);cursor:pointer" onclick="goPage('register')">Create free →</a></p><p style="text-align:center;margin-top:.4rem"><a style="font-size:.75rem;cursor:pointer;color:var(--text3)" onclick="goPage('landing')">← Back to Home</a></p></div></div></div>
 
     <div id="page-register" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box" style="max-width:460px"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem">CX</div><h2 style="font-size:1.6rem">Create Free Account</h2><p style="font-size:.82rem;color:var(--text3)">Join thousands of learners &amp; earners worldwide</p></div><div class="row" style="gap:.55rem;margin-bottom:.85rem"><button class="social-btn" style="flex:1" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" style="flex:1" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="regFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="regLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="regEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Phone</label><div class="finput-ico"><i class="fas fa-phone fii"></i><input type="tel" class="finput" id="regPhone" placeholder="+234 800 000 0000"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="regPw" placeholder="Min 8 characters" oninput="checkPwStr(this.value)"/><button class="pw-toggle" onclick="togglePw('regPw',this)"><i class="fas fa-eye"></i></button></div><div class="pw-bars"><div class="pw-bar" id="pb1"></div><div class="pw-bar" id="pb2"></div><div class="pw-bar" id="pb3"></div><div class="pw-bar" id="pb4"></div></div></div><div class="form-group"><label class="flabel">Referral Code (optional)</label><div class="finput-ico"><i class="fas fa-users fii"></i><input type="text" class="finput" id="regRef" placeholder="Enter referral code"/></div></div><div style="display:flex;align-items:flex-start;gap:.5rem;margin-bottom:1rem;font-size:.79rem"><input type="checkbox" id="termsChk" style="accent-color:var(--primary);margin-top:.15rem"/><label for="termsChk" style="color:var(--text2);cursor:pointer;line-height:1.5">I agree to the <a style="color:var(--primary)">Terms</a> and <a style="color:var(--primary)">Privacy Policy</a></label></div><button class="btn btn-primary w-full" id="registerBtn" onclick="doRegister()"><i class="fas fa-rocket"></i>Create My Free Account</button><div style="background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.14);border-radius:var(--radius-sm);padding:.65rem;margin-top:.85rem;font-size:.76rem;color:var(--text2);text-align:center">🎉 Get <strong style="color:var(--primary)">₦500 welcome bonus</strong> on first profile completion!</div><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">Already have account? <a style="color:var(--primary);cursor:pointer" onclick="goPage('login')">Sign in →</a></p></div></div></div>
 
@@ -4134,7 +4154,7 @@
     <!-- ============================================================ -->
     <!-- CONTACT PAGE -->
     <!-- ============================================================ -->
-    <div id="page-contact" class="page"><div style="min-height:100svh;padding:2rem 1.25rem;background:var(--bg)"><div style="max-width:700px;margin:0 auto"><button class="btn btn-ghost btn-sm mb-4" onclick="goPage('landing')"><i class="fas fa-arrow-left"></i>Back to Home</button><div class="stag mb-2"><i class="fas fa-envelope"></i> Contact Us</div><h2 style="font-size:2rem;margin-bottom:.5rem">Get In <span class="grad-text">Touch</span></h2><p style="color:var(--text3);margin-bottom:2rem">We respond within 24 hours.</p><div class="row"><div class="col-12 col-md-5"><div class="card card-p mb-3"><div class="si si-primary" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-envelope"></i></div><h6 style="margin-bottom:.25rem">Email</h6><a href="mailto:israeldewa1@gmail.com" style="color:var(--primary);font-size:.88rem">israeldewa1@gmail.com</a></div><div class="card card-p"><div class="si si-g" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-map-marker-alt"></i></div><h6 style="margin-bottom:.25rem">Location</h6><p style="font-size:.84rem;color:var(--text3)">Lagos &amp; Abuja, Nigeria 🇳🇬</p></div></div><div class="col-12 col-md-7"><div class="card card-p"><h6 style="margin-bottom:1rem">Send a Message</h6><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="contactFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="contactLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><input type="email" class="finput" id="contactEmail" placeholder="you@example.com"/></div><div class="form-group"><label class="flabel">Subject</label><select class="finput" id="contactSubject"><option>General Inquiry</option><option>Technical Support</option><option>Payment Issue</option><option>Course Report</option><option>Partnership</option></select></div><div class="form-group"><label class="flabel">Message</label><textarea class="finput" id="contactMsg" style="min-height:120px;resize:vertical" placeholder="How can we help?"></textarea></div><button class="btn btn-primary" onclick="sendContact()"><i class="fas fa-paper-plane"></i>Send Message</button></div></div></div></div></div></div>
+    <div id="page-contact" class="page"><div style="min-height:100svh;padding:2rem 1.25rem;background:var(--bg)"><div style="max-width:700px;margin:0 auto"><button class="btn btn-ghost btn-sm mb-4" onclick="goPage('landing')"><i class="fas fa-arrow-left"></i>Back to Home</button><div class="stag mb-2"><i class="fas fa-envelope"></i> Contact Us</div><h2 style="font-size:2rem;margin-bottom:.5rem">Get In <span class="grad-text">Touch</span></h2><p style="color:var(--text3);margin-bottom:2rem">We respond within 24 hours.</p><div class="row"><div class="col-12 col-md-5"><div class="card card-p mb-3"><div class="si si-primary" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-envelope"></i></div><h6 style="margin-bottom:.25rem">Email</h6><a href="mailto:changexacademysupport@gmail.com" style="color:var(--primary);font-size:.88rem">changexacademysupport@gmail.com</a></div><div class="card card-p"><div class="si si-g" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-map-marker-alt"></i></div><h6 style="margin-bottom:.25rem">Location</h6><p style="font-size:.84rem;color:var(--text3)">Lagos &amp; Abuja, Nigeria 🇳🇬</p></div></div><div class="col-12 col-md-7"><div class="card card-p"><h6 style="margin-bottom:1rem">Send a Message</h6><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="contactFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="contactLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><input type="email" class="finput" id="contactEmail" placeholder="you@example.com"/></div><div class="form-group"><label class="flabel">Subject</label><select class="finput" id="contactSubject"><option>General Inquiry</option><option>Technical Support</option><option>Payment Issue</option><option>Course Report</option><option>Partnership</option></select></div><div class="form-group"><label class="flabel">Message</label><textarea class="finput" id="contactMsg" style="min-height:120px;resize:vertical" placeholder="How can we help?"></textarea></div><button class="btn btn-primary" onclick="sendContact()"><i class="fas fa-paper-plane"></i>Send Message</button></div></div></div></div></div></div>
 
     <!-- ============================================================ -->
     <!-- MODALS -->
@@ -4174,6 +4194,9 @@
 
     <!-- User Details Modal (Admin) -->
     <div class="modal-ov hidden" id="userDetailsModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👤 User Details</h5><button class="btn-icon-sm" onclick="closeModal('userDetailsModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd" id="userDetailsContent"></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('userDetailsModal')">Close</button></div></div></div>
+
+    <!-- Participants Modal (Admin) -->
+    <div class="modal-ov hidden" id="participantsModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👥 Challenge Participants</h5><button class="btn-icon-sm" onclick="closeModal('participantsModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd" id="participantsContent"></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('participantsModal')">Close</button></div></div></div>
 
     <!-- ============================================================ -->
     <!-- NOTIFICATION PANEL -->
@@ -4226,10 +4249,13 @@
         <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span><span class="fpill" onclick="filterFeed('following',this)">Following</span></div><div id="feedContainer"></div><div id="feedPagination" class="d-flex justify-center mt-3"></div></div>
 
         <!-- CHALLENGES -->
-        <div id="dash-challenges" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Challenges</h2><p class="page-sub">Join challenges, earn XP &amp; win rewards</p></div><div class="d-flex gap-2 mb-3"><span class="fpill active" onclick="filterChallenges('active',this)">Active</span><span class="fpill" onclick="filterChallenges('upcoming',this)">Upcoming</span><span class="fpill" onclick="filterChallenges('completed',this)">Completed</span></div><div id="challengesContainer"></div></div>
+        <div id="dash-challenges" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Challenges</h2><p class="page-sub">Join challenges, earn XP &amp; win rewards</p></div><div class="d-flex gap-2 mb-3"><span class="fpill active" onclick="filterChallenges('active',this)">Active</span><span class="fpill" onclick="filterChallenges('upcoming',this)">Upcoming</span><span class="fpill" onclick="filterChallenges('completed',this)">Completed</span></div><div id="challengesContainer"></div><div class="mt-4"><h4>My Challenge Progress</h4><div id="myChallengeProgress"></div></div></div>
 
         <!-- PEOPLE -->
         <div id="dash-people" class="dash-sub"><div class="page-hd"><h2 class="page-title">👥 People</h2><p class="page-sub">Connect with fellow learners &amp; instructors</p></div><div class="people-search"><input type="text" class="finput" id="peopleSearch" placeholder="Search by name..." oninput="filterPeople(this.value)"/></div><div id="peopleContainer" class="people-grid"></div></div>
+
+        <!-- PROFILE -->
+        <div id="dash-profile" class="dash-sub"><div class="page-hd"><button class="btn btn-ghost btn-sm" onclick="setDP('people')"><i class="fas fa-arrow-left"></i> Back</button></div><div id="profileContent"></div></div>
 
         <!-- HOME (Dashboard) -->
         <div id="dash-home" class="dash-sub"><div id="homeSkeleton" style="display:none"><div class="skeleton" style="height:120px;margin-bottom:1rem;border-radius:var(--radius)"></div><div class="row"><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div></div></div><div id="homeContent"></div></div>
@@ -4302,6 +4328,7 @@
         let autoSaveTimer = null;
         let currentPaymentType = 'course';
         let currentManualCourseId = null;
+        let tokenExpiryTimer = null;
 
         // ═══════════════════════════════════════════════════════════════
         // APPLICATION STATE
@@ -4369,7 +4396,9 @@
             interactiveMaterials: [],
             postQuill: null,
             followStatus: {},
-            following: [] // list of user IDs the current user follows
+            following: [],
+            profileUser: null,
+            challengeProgress: []
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -4435,7 +4464,7 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // API CALL – handles absolute URLs
+        // API CALL
         // ═══════════════════════════════════════════════════════════════
         async function apiCall(endpoint, options = {}) {
             const token = localStorage.getItem('cx_accessToken');
@@ -4508,6 +4537,35 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
+        // JWT AUTO-LOGOUT
+        // ═══════════════════════════════════════════════════════════════
+        function scheduleTokenLogout() {
+            if (tokenExpiryTimer) { clearTimeout(tokenExpiryTimer);
+                tokenExpiryTimer = null; }
+            const token = localStorage.getItem('cx_accessToken');
+            if (!token) return;
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const exp = payload.exp * 1000;
+                const now = Date.now();
+                const timeLeft = exp - now;
+                if (timeLeft <= 0) {
+                    doLogout();
+                    toast('Your session has expired. Please log in again.', 'warning');
+                    return;
+                }
+                const oneDay = 24 * 60 * 60 * 1000;
+                if (timeLeft < oneDay && timeLeft > 0) {
+                    toast('⚠️ Your session will expire in less than 24 hours. Please log in again.', 'warning');
+                }
+                tokenExpiryTimer = setTimeout(() => {
+                    doLogout();
+                    toast('Your session has expired. Please log in again.', 'warning');
+                }, timeLeft);
+            } catch (e) { console.warn('Token decoding failed', e); }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
         // NAVIGATION
         // ═══════════════════════════════════════════════════════════════
         function goPage(pg) {
@@ -4567,7 +4625,8 @@
                 'course-editor': initEditor,
                 ai: initAI,
                 admin: () => renderAdm('dashboard'),
-                settings: initSettings
+                settings: initSettings,
+                profile: () => {}
             };
             if (map[pg]) map[pg]();
             updateAdVisibility();
@@ -4753,6 +4812,7 @@
             S.user.setupDone = user.setupDone === true;
             hideLoading();
             connectSocket();
+            scheduleTokenLogout();
             try { const profileData = await apiCall('/users/profile');
                 const profile = profileData.data || profileData;
                 S.user = { ...S.user, ...profile };
@@ -4796,6 +4856,8 @@
         }
 
         function doLogout() {
+            if (tokenExpiryTimer) { clearTimeout(tokenExpiryTimer);
+                tokenExpiryTimer = null; }
             if (autoSaveTimer) clearInterval(autoSaveTimer);
             if (S.loggedIn) { apiCall('/auth/logout', { method: 'POST' }).catch(() => {}); }
             if (socket) { socket.disconnect();
@@ -4913,7 +4975,7 @@
         });
 
         // ═══════════════════════════════════════════════════════════════
-        // USER UI UPDATE – with avatar support
+        // USER UI UPDATE
         // ═══════════════════════════════════════════════════════════════
         function updateUserUI() {
             if (!S.user) return;
@@ -5026,38 +5088,32 @@
             showLoading('Loading feed...');
             try {
                 let url = `${POSTS_API}?page=${S.feedPage}&limit=10`;
-                if (filter !== 'all') url += `&type=${filter}`;
+                if (filter !== 'all' && filter !== 'following') url += `&type=${filter}`;
+                if (filter === 'following') {
+                    await loadFollowingFeed();
+                    hideLoading();
+                    return;
+                }
                 const res = await apiCall(url);
                 const posts = res.data?.posts || res.data || [];
                 const pagination = res.data?.pagination || { total: 0, pages: 1 };
-                // Filter for following
-                let filteredPosts = posts;
-                if (filter === 'following') {
-                    const followingIds = S.following || [];
-                    filteredPosts = posts.filter(p => followingIds.includes(p.authorId?._id || p.authorId));
-                }
-                S.posts = filteredPosts;
-                renderFeed(filteredPosts, pagination);
+                S.posts = posts;
+                renderFeed(posts, pagination);
                 attachPostEventListeners();
             } catch (err) {
                 toast('Failed to load feed: ' + err.message, 'error');
             } finally { hideLoading(); }
         }
 
-        function renderFeed(posts, pagination) {
-            const container = document.getElementById('feedContainer');
-            if (!container) return;
-            if (!posts || !posts.length) {
-                container.innerHTML =
-                    '<div class="empty-state"><i class="fas fa-newspaper"></i><h4>No posts yet</h4><p>Be the first to create a post!</p></div>';
-                return;
-            }
-            container.innerHTML = posts.map(post => {
-                const author = post.authorId || {};
-                const avatarHtml = getAvatarUrl(author) ?
-                    `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
-                    (author.firstName?.[0] || 'U');
-                return `
+        function renderPostCard(post) {
+            const author = post.authorId || post.author || {};
+            const avatarHtml = getAvatarUrl(author) ?
+                `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                (author.firstName?.[0] || 'U');
+            const contentHtml = post.content ? (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(post.content) : post
+                .content) : '';
+            const earnings = post.earnings || 0;
+            return `
                 <div class="post-card card card-p" data-post-id="${post._id}">
                     <div class="post-header">
                         <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
@@ -5071,11 +5127,14 @@
                     </div>
                     <h3 class="post-title" onclick="window.open('/post/${post.slug}','_blank')">${escapeHtml(post.title)}</h3>
                     ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
-                    <div class="post-excerpt">${escapeHtml(post.excerpt || post.content?.substring(0, 200) || '')}...</div>
+                    <div class="post-content">
+                        ${contentHtml}
+                    </div>
                     <div class="post-stats">
                         <span class="post-likes" data-id="${post._id}"><i class="far fa-heart"></i> ${post.likes || 0}</span>
                         <span class="post-comments"><i class="far fa-comment"></i> ${post.commentsCount || 0}</span>
                         <span class="post-shares"><i class="fas fa-share-alt"></i> ${post.shares || 0}</span>
+                        ${earnings > 0 ? `<span class="badge badge-gold" style="font-size:.6rem">🏆 +${fmtMoneyAPI(earnings)}</span>` : ''}
                     </div>
                     <div class="post-actions">
                         <button class="btn-like ${post.userLiked ? 'liked' : ''}" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
@@ -5083,8 +5142,38 @@
                         <button class="btn-share" data-id="${post._id}" data-slug="${post.slug}"><i class="fas fa-share-alt"></i> Share</button>
                     </div>
                     <div class="comments-section" style="display:none;" data-post-id="${post._id}"></div>
-                </div>`;
-            }).join('');
+                </div>
+            `;
+        }
+
+        function renderCourseCardInFeed(course) {
+            const author = course.instructorId || course.instructor || {};
+            const avatarHtml = getAvatarUrl(author) ?
+                `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'I'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                (author.firstName?.[0] || 'I');
+            return `
+                <div class="course-card" onclick="openBuyCourse('${course._id}')">
+                    <div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3));">
+                        ${course.thumbnail || course.emoji || '📚'}
+                    </div>
+                    <div class="cc-body">
+                        <div style="font-weight:700;font-size:.88rem;margin-bottom:.25rem">${escapeHtml(course.title)}</div>
+                        <div style="font-size:.74rem;color:var(--text3)">By ${author.firstName || 'Instructor'} · ${course.totalLessons || 0} lessons</div>
+                        <div style="font-weight:800;color:var(--lime);margin-top:.5rem">${fmtMoneyAPI(course.price || 0)}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFeed(posts, pagination) {
+            const container = document.getElementById('feedContainer');
+            if (!container) return;
+            if (!posts || !posts.length) {
+                container.innerHTML =
+                    '<div class="empty-state"><i class="fas fa-newspaper"></i><h4>No posts yet</h4><p>Be the first to create a post!</p></div>';
+                return;
+            }
+            container.innerHTML = posts.map(post => renderPostCard(post)).join('');
             if (pagination && pagination.pages > 1) {
                 const pagEl = document.getElementById('feedPagination');
                 if (pagEl) {
@@ -5096,6 +5185,7 @@
                     pagEl.innerHTML = html;
                 }
             }
+            attachPostEventListeners();
         }
 
         function attachPostEventListeners() {
@@ -5197,6 +5287,35 @@
             } catch (err) { toast('Could not copy link', 'error'); }
         }
 
+        async function loadFollowingFeed() {
+            try {
+                const res = await apiCall('/posts/following');
+                const items = res.data || [];
+                renderFollowingFeed(items);
+            } catch (err) {
+                toast('Failed to load following feed: ' + err.message, 'error');
+            }
+        }
+
+        function renderFollowingFeed(items) {
+            const container = document.getElementById('feedContainer');
+            if (!container) return;
+            if (!items || !items.length) {
+                container.innerHTML =
+                    '<div class="empty-state"><i class="fas fa-users"></i><h4>No posts from people you follow</h4><p>Follow more users to see their content here.</p></div>';
+                return;
+            }
+            container.innerHTML = items.map(item => {
+                if (item.type === 'post') {
+                    return renderPostCard(item);
+                } else if (item.type === 'course') {
+                    return renderCourseCardInFeed(item);
+                }
+                return '';
+            }).join('');
+            attachPostEventListeners();
+        }
+
         function openCreatePostModal() {
             const modal = document.getElementById('createPostModal');
             if (modal) {
@@ -5260,9 +5379,10 @@
             try {
                 const res = await apiCall(POSTS_API, {
                     method: 'POST',
-                    body: { title, content, type, tags, featuredImage, seoTitle, seoDescription: seoDesc }
+                    body: { title, content, type, tags, featuredImage, seoTitle, seoDescription: seoDesc,
+                        isPublished: true }
                 });
-                toast('Post created! Publish it from your dashboard.', 'success');
+                toast('Post published!', 'success');
                 closeModal('createPostModal');
                 document.getElementById('postTitle').value = '';
                 document.getElementById('postTags').value = '';
@@ -5301,6 +5421,7 @@
                     const activeChallenges = challenges.filter(c => c.status === 'active').length;
                     badge.textContent = activeChallenges || 0;
                 }
+                await loadMyChallengeProgress();
             } catch (err) {
                 toast('Failed to load challenges: ' + err.message, 'error');
             } finally { hideLoading(); }
@@ -5327,6 +5448,7 @@
                         <span><i class="fas fa-calendar"></i> ${new Date(c.startDate).toLocaleDateString()} → ${new Date(c.endDate).toLocaleDateString()}</span>
                         <span><i class="fas fa-star"></i> ${c.rewardXP || 500} XP</span>
                         ${c.rewardAmount ? `<span><i class="fas fa-wallet"></i> ${fmtMoneyAPI(c.rewardAmount)}</span>` : ''}
+                        ${c.rewardPremiumDays ? `<span><i class="fas fa-crown"></i> +${c.rewardPremiumDays}d Premium</span>` : ''}
                         <span><i class="fas fa-users"></i> ${c.participants?.length || 0} joined</span>
                         <span class="badge ${statusClass}" style="font-size:.55rem">${c.status || 'active'}</span>
                     </div>
@@ -5354,8 +5476,43 @@
             } catch (err) { toast(err.message || 'Error joining challenge', 'error'); }
         }
 
+        async function loadMyChallengeProgress() {
+            try {
+                const res = await apiCall('/challenges/my-progress');
+                S.challengeProgress = res.data || [];
+                renderMyChallengeProgress();
+            } catch (err) { console.warn('Could not load challenge progress:', err); }
+        }
+
+        function renderMyChallengeProgress() {
+            const container = document.getElementById('myChallengeProgress');
+            if (!container) return;
+            if (!S.challengeProgress || !S.challengeProgress.length) {
+                container.innerHTML =
+                    '<div class="empty-state"><p>You haven\'t joined any challenges yet.</p></div>';
+                return;
+            }
+            container.innerHTML = S.challengeProgress.map(p => {
+                const c = p.challengeId || {};
+                const statusClass = p.status === 'completed' ? 'ps-paid' : p.status === 'enrolled' ? 'ps-pend' :
+                    'ps-fail';
+                return `
+                    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:.4rem;">
+                        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;">
+                            <div><strong>${escapeHtml(c.title || 'Challenge')}</strong></div>
+                            <span class="pstatus ${statusClass}">${p.status}</span>
+                        </div>
+                        <div class="prog mt-2" style="height:5px;"><div class="prog-fill pf-primary" style="width:${p.progress || 0}%"></div></div>
+                        <div style="font-size:.7rem;color:var(--text3);margin-top:.3rem;">Progress: ${p.progress || 0}%</div>
+                        ${p.completedAt ? `<div style="font-size:.7rem;color:var(--success);">✅ Completed ${new Date(p.completedAt).toLocaleDateString()}</div>` : ''}
+                        ${p.adminNote ? `<div style="font-size:.7rem;color:var(--text3);">Note: ${escapeHtml(p.adminNote)}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
         // ================================================================
-        // PEOPLE MODULE with follow status and following list
+        // PEOPLE MODULE
         // ================================================================
         async function loadPeople() {
             showLoading('Loading users...');
@@ -5363,7 +5520,6 @@
                 const res = await apiCall('/admin/users?limit=50');
                 const users = res.data?.users || res.data || [];
                 S.users = users;
-                // Fetch follow status for each user
                 const followPromises = users.filter(u => u._id !== S.user?._id).map(async (u) => {
                     try {
                         const statusRes = await apiCall(`${FOLLOWS_API}/${u._id}/status`);
@@ -5396,19 +5552,19 @@
                     `<img src="${getAvatarUrl(u)}" alt="${u.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                     (u.firstName?.[0] || 'U');
                 return `
-                <div class="person-card card card-p">
-                    <div class="person-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
-                        ${avatarHtml}
-                    </div>
-                    <div class="person-info">
-                        <strong>${escapeHtml(u.firstName || 'User')} ${escapeHtml(u.lastName || '')}</strong>
-                        <span>${escapeHtml(u.bio?.substring(0, 60) || 'No bio')}</span>
-                        ${u.isApprovedInstructor ? '<span class="badge badge-violet" style="font-size:.55rem">Instructor</span>' : ''}
-                        ${u.isPremium ? '<span class="badge badge-gold" style="font-size:.55rem">Premium</span>' : ''}
-                        ${u._id !== S.user?._id && isFollowing ? '<span class="follow-badge"><i class="fas fa-check"></i> Following</span>' : ''}
-                    </div>
-                    ${u._id !== S.user?._id ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="followUser('${u._id}')">${isFollowing ? 'Following' : 'Follow'}</button>` : '<span class="badge badge-dark">You</span>'}
-                </div>`;
+                    <div class="person-card card card-p" onclick="openUserProfile('${u._id}')">
+                        <div class="person-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
+                            ${avatarHtml}
+                        </div>
+                        <div class="person-info">
+                            <strong>${escapeHtml(u.firstName || 'User')} ${escapeHtml(u.lastName || '')}</strong>
+                            <span>${escapeHtml(u.bio?.substring(0, 60) || 'No bio')}</span>
+                            ${u.isApprovedInstructor ? '<span class="badge badge-violet" style="font-size:.55rem">Instructor</span>' : ''}
+                            ${u.isPremium ? '<span class="badge badge-gold" style="font-size:.55rem">Premium</span>' : ''}
+                            ${u._id !== S.user?._id && isFollowing ? '<span class="follow-badge"><i class="fas fa-check"></i> Following</span>' : ''}
+                        </div>
+                        ${u._id !== S.user?._id ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="event.stopPropagation();followUser('${u._id}')">${isFollowing ? 'Following' : 'Follow'}</button>` : '<span class="badge badge-dark">You</span>'}
+                    </div>`;
             }).join('');
         }
 
@@ -5428,8 +5584,68 @@
                     S.following = S.following.filter(id => id !== userId);
                 }
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
-                renderPeople(S.users);
+                if (S.dp === 'people') renderPeople(S.users);
+                if (S.dp === 'profile' && S.profileUser) {
+                    const res2 = await apiCall(`/users/${S.profileUser._id}/profile`);
+                    renderUserProfile(res2.data);
+                }
             } catch (err) { toast('Error: ' + err.message, 'error'); }
+        }
+
+        // ================================================================
+        // USER PROFILE
+        // ================================================================
+        async function openUserProfile(userId) {
+            showLoading('Loading profile...');
+            try {
+                const res = await apiCall(`/users/${userId}/profile`);
+                const data = res.data;
+                S.profileUser = data.user;
+                renderUserProfile(data);
+                setDP('profile');
+            } catch (err) {
+                toast('Failed to load profile: ' + err.message, 'error');
+            } finally { hideLoading(); }
+        }
+
+        function renderUserProfile(data) {
+            const container = document.getElementById('profileContent');
+            if (!container) return;
+            const user = data.user;
+            const posts = data.posts || [];
+            const courses = data.courses || [];
+            const isFollowing = data.isFollowing || false;
+            const avatarHtml = getAvatarUrl(user) ?
+                `<img src="${getAvatarUrl(user)}" alt="${user.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                (user.firstName?.[0] || 'U');
+
+            container.innerHTML = `
+                <div class="profile-header" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;background:var(--bg2);padding:1.5rem;border-radius:var(--radius);margin-bottom:1.5rem;">
+                    <div class="profile-avatar" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:bold;color:#fff;flex-shrink:0;overflow:hidden;">
+                        ${avatarHtml}
+                    </div>
+                    <div style="flex:1;">
+                        <h2 style="margin-bottom:.25rem;">${escapeHtml(user.firstName)} ${escapeHtml(user.lastName)}</h2>
+                        <p style="color:var(--text2);">${escapeHtml(user.bio || 'No bio yet')}</p>
+                        <div style="display:flex;gap:1rem;font-size:.85rem;color:var(--text3);flex-wrap:wrap;">
+                            <span><strong>${data.followersCount || 0}</strong> followers</span>
+                            <span><strong>${data.followingCount || 0}</strong> following</span>
+                            <span><strong>${posts.length}</strong> posts</span>
+                            <span><strong>${courses.length}</strong> courses</span>
+                            ${user.isPremium ? '<span class="badge badge-gold">Premium</span>' : ''}
+                            ${user.isApprovedInstructor ? '<span class="badge badge-violet">Instructor</span>' : ''}
+                        </div>
+                        ${user._id !== S.user?._id ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="followUser('${user._id}')" style="margin-top:.5rem;">${isFollowing ? 'Unfollow' : 'Follow'}</button>` : ''}
+                    </div>
+                </div>
+                <div class="profile-content">
+                    <h4>Posts</h4>
+                    <div class="row">${posts.length ? posts.map(p => `<div class="col-12 col-md-6">${renderPostCard(p)}</div>`).join('') : '<p class="text-muted">No posts yet</p>'}</div>
+                    <h4 class="mt-4">Courses</h4>
+                    <div class="row">${courses.length ? courses.map(c => `<div class="col-12 col-md-6">${renderCourseCardInFeed(c)}</div>`).join('') : '<p class="text-muted">No courses yet</p>'}</div>
+                </div>
+            `;
+            attachPostEventListeners();
         }
 
         // ================================================================
@@ -5612,6 +5828,7 @@
             } catch (e) {}
             if (!S.user) { doLogout(); return; }
             connectSocket();
+            scheduleTokenLogout();
             await loadExchangeRates();
             try {
                 const data = await apiCall('/users/profile');
@@ -5644,7 +5861,6 @@
             loadAds('sidebar', 'adSidebar');
             loadAds('banner', 'adBannerTop');
             loadAds('in-feed', 'adFeedTop');
-            // Load following list
             await loadPeople();
             setTimeout(() => {
                 const hash = window.location.hash.slice(1);
@@ -6491,7 +6707,7 @@
         function filterTx(type) { renderTxTable(type); }
 
         function openWithdrawModal() {
-            const hasBankDetails = S.user?.bankAccountNumber || S.user?.bankDetails?.accountNumber;
+            const hasBankDetails = S.user?.bankAccount?.accountNumber || S.user?.bankAccountNumber;
             const warningEl = document.getElementById('withdrawBankWarning');
             const submitBtn = document.getElementById('withdrawSubmitBtn');
             if (!hasBankDetails) { if (warningEl) warningEl.style.display = 'block'; if (submitBtn) submitBtn.disabled =
@@ -6502,7 +6718,7 @@
         }
 
         async function processWithdraw() {
-            const hasBankDetails = S.user?.bankAccountNumber || S.user?.bankDetails?.accountNumber || S.user?.bankName;
+            const hasBankDetails = S.user?.bankAccount?.accountNumber || S.user?.bankAccountNumber || S.user?.bankName;
             if (!hasBankDetails) {
                 toast('⚠️ Add bank details in Settings → Payouts first.', 'error');
                 closeModal('withdrawModal');
@@ -7263,20 +7479,30 @@
             const bankName = document.getElementById('payoutBank')?.value;
             const accountNumber = document.getElementById('payoutAccNum')?.value.trim();
             const accountName = document.getElementById('payoutAccName')?.value.trim();
-            if (!bankName || !accountNumber) { toast('Fill in bank name and account number', 'error'); return; }
-            if (accountNumber.length !== 10) { toast('Account number must be 10 digits', 'error'); return; }
-            S.user.bankName = bankName;
-            S.user.bankAccountNumber = accountNumber;
-            S.user.bankAccountName = accountName || S.user.firstName + ' ' + S.user.lastName;
+            if (!bankName || !accountNumber) {
+                toast('Fill in bank name and account number', 'error');
+                return;
+            }
+            if (accountNumber.length !== 10) {
+                toast('Account number must be 10 digits', 'error');
+                return;
+            }
+            const bankAccount = {
+                bankName: bankName,
+                accountNumber: accountNumber,
+                accountName: accountName || (S.user.firstName + ' ' + S.user.lastName)
+            };
+            S.user.bankAccount = bankAccount;
             localStorage.setItem('cx_user', JSON.stringify(S.user));
             toast('✅ Bank details saved!', 'success');
             document.getElementById('payoutSaveStatus').innerHTML =
                 '<span style="color:var(--success)">✅ Bank details saved successfully</span>';
-            try {
-                apiCall('/users/profile', { method: 'PUT', body: { bankName, bankAccountNumber: accountNumber,
-                        bankAccountName: accountName || (S.user.firstName + ' ' + S.user.lastName) } }).catch(
-                    () => {});
-            } catch (e) {}
+            apiCall('/users/profile', {
+                method: 'PUT',
+                body: { bankAccount: bankAccount }
+            }).then(() => { renderWallet(); }).catch(err => {
+                toast('Failed to save on server: ' + err.message, 'warning');
+            });
         }
 
         function renderSubStatus() {
@@ -7305,7 +7531,7 @@
         }
 
         // ================================================================
-        // UPLOAD AVATAR – fully working with Cloudinary
+        // UPLOAD AVATAR
         // ================================================================
         async function uploadAvatar(input) {
             const file = input.files[0];
@@ -7365,7 +7591,7 @@
                         S.adminUsers = Array.isArray(res.data?.users) ? res.data.users : (Array.isArray(res.data) ? res
                             .data : []);
                         document.getElementById('admUsersTable').innerHTML =
-                            `<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminUsers.map(u => { const bankInfo = u.bankName ? `${u.bankName} - ${u.bankAccountNumber || 'N/A'} (${u.bankAccountName || 'N/A'})` : '<span style="color:var(--text3)">No bank details</span>'; return `<tr><td>${u.firstName || ''} ${u.lastName || ''}</td><td>${u.email}</td><td>${(u.roles || []).join(',') || 'user'}</td><td style="font-size:.75rem">${bankInfo}</td><td>${u.isBanned ? '<span style="color:var(--danger)">Banned</span>' : '<span style="color:var(--success)">Active</span>'}</td><td><button class="btn btn-ghost btn-sm" onclick="toggleUserBan('${u._id}',${!u.isBanned})">${u.isBanned ? 'Unban' : 'Ban'}</button>${!u.isApprovedInstructor ? `<button class="btn btn-primary btn-sm" onclick="approveInstructor('${u._id}')">Approve Instructor</button>` : ''}<button class="btn btn-ghost btn-sm" onclick="showUserDetails('${u._id}')"><i class="fas fa-eye"></i> Details</button></td></tr>`; }).join('') || '<tr><td colspan="6" style="text-align:center">No users</td></tr>'}</tbody>`;
+                            `<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminUsers.map(u => { const bankInfo = u.bankAccount?.bankName ? `${u.bankAccount.bankName} - ${u.bankAccount.accountNumber || 'N/A'} (${u.bankAccount.accountName || 'N/A'})` : '<span style="color:var(--text3)">No bank details</span>'; return `<tr><td>${u.firstName || ''} ${u.lastName || ''}</td><td>${u.email}</td><td>${(u.roles || []).join(',') || 'user'}</td><td style="font-size:.75rem">${bankInfo}</td><td>${u.isBanned ? '<span style="color:var(--danger)">Banned</span>' : '<span style="color:var(--success)">Active</span>'}</td><td><button class="btn btn-ghost btn-sm" onclick="toggleUserBan('${u._id}',${!u.isBanned})">${u.isBanned ? 'Unban' : 'Ban'}</button>${!u.isApprovedInstructor ? `<button class="btn btn-primary btn-sm" onclick="approveInstructor('${u._id}')">Approve Instructor</button>` : ''}<button class="btn btn-ghost btn-sm" onclick="showUserDetails('${u._id}')"><i class="fas fa-eye"></i> Details</button></td></tr>`; }).join('') || '<tr><td colspan="6" style="text-align:center">No users</td></tr>'}</tbody>`;
                     } catch (e) { content.innerHTML = '<p style="color:var(--danger)">Failed to load: ' + e.message +
                             '</p>'; }
                     break;
@@ -7435,6 +7661,7 @@
                                 <div class="col-12 col-md-6"><div class="form-group"><label class="flabel">End Date</label><input type="datetime-local" class="finput" id="admChallengeEnd"/></div></div>
                             </div>
                             <div class="form-group"><label class="flabel">Reward Amount (₦, optional)</label><input type="number" class="finput" id="admChallengeReward" placeholder="e.g. 5000"/></div>
+                            <div class="form-group"><label class="flabel">Reward Premium Days</label><input type="number" class="finput" id="admChallengePremiumDays" placeholder="e.g. 7" value="0"/></div>
                             <button class="btn btn-primary" onclick="adminCreateChallenge()"><i class="fas fa-plus"></i> Create Challenge</button>
                         </div>
                         <div id="admChallengesList"><p style="color:var(--text3)">Loading challenges...</p></div>
@@ -7501,6 +7728,7 @@
             const startDate = document.getElementById('admChallengeStart')?.value;
             const endDate = document.getElementById('admChallengeEnd')?.value;
             const rewardAmount = parseInt(document.getElementById('admChallengeReward')?.value) || undefined;
+            const rewardPremiumDays = parseInt(document.getElementById('admChallengePremiumDays')?.value) || 0;
             if (!title || !description || !startDate || !endDate) {
                 toast('Please fill in all required fields', 'error');
                 return;
@@ -7508,7 +7736,7 @@
             try {
                 await apiCall('/admin/challenges', {
                     method: 'POST',
-                    body: { title, description, rewardXP, startDate, endDate, rewardAmount }
+                    body: { title, description, rewardXP, startDate, endDate, rewardAmount, rewardPremiumDays }
                 });
                 toast('✅ Challenge created successfully!', 'success');
                 loadAdminChallenges();
@@ -7518,6 +7746,7 @@
                 document.getElementById('admChallengeStart').value = '';
                 document.getElementById('admChallengeEnd').value = '';
                 document.getElementById('admChallengeReward').value = '';
+                document.getElementById('admChallengePremiumDays').value = '0';
             } catch (err) {
                 toast('Failed to create challenge: ' + err.message, 'error');
             }
@@ -7539,9 +7768,12 @@
                             <strong>${escapeHtml(c.title)}</strong>
                             <span class="badge ${c.status === 'active' ? 'badge-success' : c.status === 'upcoming' ? 'badge-cyan' : 'badge-dark'}" style="font-size:.55rem">${c.status}</span>
                             <br><small style="color:var(--text3)">${c.rewardXP || 0} XP · ${c.participants?.length || 0} joined</small>
+                            ${c.rewardAmount ? `<br><small style="color:var(--text3)">💰 ${fmtMoneyAPI(c.rewardAmount)}</small>` : ''}
+                            ${c.rewardPremiumDays ? `<br><small style="color:var(--text3)">👑 +${c.rewardPremiumDays}d Premium</small>` : ''}
                             <br><small style="color:var(--text3)">${new Date(c.startDate).toLocaleDateString()} → ${new Date(c.endDate).toLocaleDateString()}</small>
                         </div>
                         <div style="display:flex;gap:.3rem">
+                            <button class="btn btn-ghost btn-sm" onclick="viewParticipants('${c._id}')"><i class="fas fa-users"></i></button>
                             <button class="btn btn-ghost btn-sm" onclick="deleteAdminChallenge('${c._id}')" style="color:var(--danger)"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
@@ -7550,6 +7782,39 @@
                 const listEl = document.getElementById('admChallengesList');
                 if (listEl) listEl.innerHTML = '<p style="color:var(--danger)">Failed to load challenges</p>';
             }
+        }
+
+        async function viewParticipants(challengeId) {
+            try {
+                const res = await apiCall(`/admin/challenges/${challengeId}/participants`);
+                const participants = res.data || [];
+                const content = document.getElementById('participantsContent');
+                if (!content) return;
+                if (!participants.length) {
+                    content.innerHTML = '<p>No participants yet.</p>';
+                } else {
+                    content.innerHTML = participants.map(p => `
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--border)">
+                            <span>${p.userId?.firstName || 'User'} ${p.userId?.lastName || ''} (${p.status}) – Progress: ${p.progress || 0}%</span>
+                            ${p.status !== 'completed' ? `<button class="btn btn-primary btn-sm" onclick="completeChallenge('${challengeId}','${p.userId._id}')">Mark Complete</button>` : '<span class="badge badge-success">Completed</span>'}
+                        </div>
+                    `).join('');
+                }
+                openModal('participantsModal');
+            } catch (e) { toast('Failed to load participants: ' + e.message, 'error'); }
+        }
+
+        async function completeChallenge(challengeId, userId) {
+            if (!confirm('Mark this user as completed? They will receive rewards.')) return;
+            try {
+                const res = await apiCall(`/admin/challenges/${challengeId}/complete/${userId}`, {
+                    method: 'PUT',
+                    body: { adminNote: 'Completed by admin' }
+                });
+                toast(res.message || 'User completed! Rewards awarded.', 'success');
+                viewParticipants(challengeId);
+                if (S.dp === 'challenges') loadChallenges();
+            } catch (e) { toast(e.message, 'error'); }
         }
 
         async function deleteAdminChallenge(challengeId) {
@@ -7932,6 +8197,35 @@
                 ).join('');
         }
 
+        // ================================================================
+        // REVIEWS
+        // ================================================================
+        document.addEventListener('click', e => {
+            if (e.target.closest('#reviewStars span')) {
+                const span = e.target.closest('#reviewStars span');
+                const val = parseInt(span.dataset.val);
+                document.querySelectorAll('#reviewStars span').forEach(s => s.classList.toggle('active', parseInt(s
+                    .dataset.val) <= val));
+            }
+        });
+
+        async function submitReview() {
+            const name = document.getElementById('reviewName').value.trim();
+            const rating = parseInt(document.querySelector('#reviewStars .active')?.dataset.val) || 0;
+            const text = document.getElementById('reviewText').value.trim();
+            if (!name || !rating || !text) { toast('Please fill all fields', 'error'); return; }
+            try {
+                await apiCall('/feedback', {
+                    method: 'POST',
+                    body: { message: `Review from ${name}: ${text} (${rating}★)`, email: 'changexacademysupport@gmail.com' }
+                });
+                toast('Review submitted! Thank you.', 'success');
+                document.getElementById('reviewName').value = '';
+                document.getElementById('reviewText').value = '';
+                document.querySelectorAll('#reviewStars span').forEach(s => s.classList.remove('active'));
+            } catch (err) { toast('Failed: ' + err.message, 'error'); }
+        }
+
         function initReveal() {
             const obs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) e.target
                         .classList.add('on'); }); }, { threshold: 0.1 });
@@ -7959,9 +8253,16 @@
             const msg = document.getElementById('contactMsg')?.value.trim();
             if (!em || !msg) { toast('Fill in email and message', 'error'); return; }
             try {
-                await apiCall('/contact', { method: 'POST', body: { email: em, subject: document.getElementById(
-                            'contactSubject')?.value, message: msg, firstName: document.getElementById('contactFirst')
-                        ?.value, lastName: document.getElementById('contactLast')?.value } });
+                await apiCall('/contact', {
+                    method: 'POST',
+                    body: {
+                        email: em,
+                        subject: document.getElementById('contactSubject')?.value,
+                        message: msg,
+                        firstName: document.getElementById('contactFirst')?.value,
+                        lastName: document.getElementById('contactLast')?.value
+                    }
+                });
                 toast('Message sent! ✉️', 'success');
             } catch (e) { toast('Message sent! ✉️', 'success'); }
         }
@@ -8144,6 +8445,20 @@
         });
 
         // ================================================================
+        // SAVE NOTE
+        // ================================================================
+        function saveNote() {
+            const note = document.getElementById('lessonNote')?.value.trim();
+            if (!note) { toast('Nothing to save', 'warning'); return; }
+            if (S.currentCourseId && S.currentLessons[S.currentLessonIdx]?._id) {
+                const lessonId = S.currentLessons[S.currentLessonIdx]._id;
+                apiCall(`/courses/${S.currentCourseId}/lessons/${lessonId}/notes`, { method: 'POST', body: { notes: note } })
+                    .then(() => toast('Notes saved! 📝', 'success'))
+                    .catch(() => toast('Notes saved locally', 'info'));
+            } else { toast('Notes saved locally', 'info'); }
+        }
+
+        // ================================================================
         // INITIALIZATION
         // ================================================================
         window.addEventListener('load', async () => {
@@ -8172,6 +8487,7 @@
                     localStorage.setItem('cx_user', JSON.stringify(S.user));
                     updateUserUI();
                     updateAdVisibility();
+                    scheduleTokenLogout();
                     const hash = window.location.hash.slice(1);
                     if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(
                             () => openBuyCourse(courseId), 1000); } else if (hash === 'app' || hash === 'setup')
@@ -8233,6 +8549,7 @@
                             localStorage.setItem('cx_user', JSON.stringify(S.user));
                             updateUserUI();
                             updateAdVisibility();
+                            scheduleTokenLogout();
                         } catch (e) {}
                         if (S.user?.setupDone) goPage('app');
                         else goPage('setup');
