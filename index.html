@@ -4328,7 +4328,6 @@
         let autoSaveTimer = null;
         let currentPaymentType = 'course';
         let currentManualCourseId = null;
-        let tokenExpiryTimer = null;
 
         // ═══════════════════════════════════════════════════════════════
         // APPLICATION STATE
@@ -4534,35 +4533,6 @@
             const iconClass = isDark ? 'fa-sun' : 'fa-moon';
             document.querySelectorAll('#themeIcon,#themeIcon2').forEach(icon => { if (icon) icon.className = 'fas ' +
                     iconClass; });
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // JWT AUTO-LOGOUT
-        // ═══════════════════════════════════════════════════════════════
-        function scheduleTokenLogout() {
-            if (tokenExpiryTimer) { clearTimeout(tokenExpiryTimer);
-                tokenExpiryTimer = null; }
-            const token = localStorage.getItem('cx_accessToken');
-            if (!token) return;
-            try {
-                const payload = JSON.parse(atob(token.split('.')[1]));
-                const exp = payload.exp * 1000;
-                const now = Date.now();
-                const timeLeft = exp - now;
-                if (timeLeft <= 0) {
-                    doLogout();
-                    toast('Your session has expired. Please log in again.', 'warning');
-                    return;
-                }
-                const oneDay = 24 * 60 * 60 * 1000;
-                if (timeLeft < oneDay && timeLeft > 0) {
-                    toast('⚠️ Your session will expire in less than 24 hours. Please log in again.', 'warning');
-                }
-                tokenExpiryTimer = setTimeout(() => {
-                    doLogout();
-                    toast('Your session has expired. Please log in again.', 'warning');
-                }, timeLeft);
-            } catch (e) { console.warn('Token decoding failed', e); }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -4812,7 +4782,6 @@
             S.user.setupDone = user.setupDone === true;
             hideLoading();
             connectSocket();
-            scheduleTokenLogout();
             try { const profileData = await apiCall('/users/profile');
                 const profile = profileData.data || profileData;
                 S.user = { ...S.user, ...profile };
@@ -4856,8 +4825,6 @@
         }
 
         function doLogout() {
-            if (tokenExpiryTimer) { clearTimeout(tokenExpiryTimer);
-                tokenExpiryTimer = null; }
             if (autoSaveTimer) clearInterval(autoSaveTimer);
             if (S.loggedIn) { apiCall('/auth/logout', { method: 'POST' }).catch(() => {}); }
             if (socket) { socket.disconnect();
@@ -5828,7 +5795,6 @@
             } catch (e) {}
             if (!S.user) { doLogout(); return; }
             connectSocket();
-            scheduleTokenLogout();
             await loadExchangeRates();
             try {
                 const data = await apiCall('/users/profile');
@@ -8487,7 +8453,6 @@
                     localStorage.setItem('cx_user', JSON.stringify(S.user));
                     updateUserUI();
                     updateAdVisibility();
-                    scheduleTokenLogout();
                     const hash = window.location.hash.slice(1);
                     if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(
                             () => openBuyCourse(courseId), 1000); } else if (hash === 'app' || hash === 'setup')
@@ -8549,7 +8514,6 @@
                             localStorage.setItem('cx_user', JSON.stringify(S.user));
                             updateUserUI();
                             updateAdVisibility();
-                            scheduleTokenLogout();
                         } catch (e) {}
                         if (S.user?.setupDone) goPage('app');
                         else goPage('setup');
