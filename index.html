@@ -3727,6 +3727,12 @@
             color: var(--text3);
             font-size: 0.85rem;
             margin: 0.75rem 0;
+            flex-wrap: wrap;
+        }
+        .post-stats span {
+            display: flex;
+            align-items: center;
+            gap: .3rem;
         }
         .post-actions {
             display: flex;
@@ -3816,6 +3822,7 @@
             margin: 0.75rem 0;
             font-size: .82rem;
             color: var(--text2);
+            flex-wrap: wrap;
         }
         .person-card {
             display: flex;
@@ -4376,6 +4383,21 @@
             display: flex;
             gap: .4rem;
         }
+        /* Social Earnings Admin */
+        .social-earnings-admin .admin-form {
+            background: var(--bg2);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+        .social-earnings-admin .admin-form .form-group {
+            margin-bottom: 1rem;
+        }
+        /* Post Detail */
+        .post-detail .post-content {
+            font-size: 1rem;
+            line-height: 1.8;
+        }
     </style>
 </head>
 <body>
@@ -4463,7 +4485,7 @@
     <div class="modal-ov hidden" id="feedbackModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">📢 Send Feedback</h5><button class="btn-icon-sm" onclick="closeModal('feedbackModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div class="form-group"><label class="flabel">Your Message</label><textarea class="finput" id="feedbackMsg" style="min-height:120px" placeholder="Tell us what you love, what's broken, or what you'd like to see..."></textarea></div><div class="form-group"><label class="flabel">Your Email (optional, for replies)</label><input type="email" class="finput" id="feedbackEmail" placeholder="you@example.com"/></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('feedbackModal')">Cancel</button><button class="btn btn-primary" onclick="sendFeedback()">Send Feedback</button></div></div></div>
 
     <!-- Create Post Modal -->
-    <div class="modal-ov hidden" id="createPostModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">📝 Create New Post</h5><button class="btn-icon-sm" onclick="closeModal('createPostModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div class="form-group"><label class="flabel">Title</label><input type="text" class="finput" id="postTitle" placeholder="Catchy title..."/></div><div class="form-group"><label class="flabel">Type</label><select class="finput" id="postType"><option value="article">Article</option><option value="tutorial">Tutorial</option><option value="challenge">Challenge</option><option value="announcement">Announcement</option></select></div><div class="form-group"><label class="flabel">Content (Rich Text)</label><div id="postEditor" style="min-height:300px"></div></div><div class="form-group"><label class="flabel">Tags (comma separated)</label><input type="text" class="finput" id="postTags" placeholder="react, javascript, tutorial"/></div><div class="form-group"><label class="flabel">Featured Image URL</label><input type="url" class="finput" id="postImage" placeholder="https://..."/></div><div class="form-group"><label class="flabel">SEO Title (optional)</label><input type="text" class="finput" id="postSeoTitle"/></div><div class="form-group"><label class="flabel">SEO Description</label><textarea class="finput" id="postSeoDesc" rows="2"></textarea></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('createPostModal')">Cancel</button><button class="btn btn-primary" onclick="submitNewPost()"><i class="fas fa-paper-plane"></i>Publish</button></div></div></div>
+    <div class="modal-ov hidden" id="createPostModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">📝 Create New Post</h5><button class="btn-icon-sm" onclick="closeModal('createPostModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div class="form-group"><label class="flabel">Title</label><input type="text" class="finput" id="postTitle" placeholder="Catchy title..."/></div><div class="form-group"><label class="flabel">Type</label><select class="finput" id="postType"><option value="article">Article</option><option value="tutorial">Tutorial</option><option value="challenge">Challenge</option><option value="announcement">Announcement</option></select></div><div class="form-group"><label class="flabel">Content (Rich Text)</label><div id="postEditor" style="min-height:300px"></div></div><div class="form-group"><label class="flabel">Tags (comma separated)</label><input type="text" class="finput" id="postTags" placeholder="react, javascript, tutorial"/></div><div class="form-group"><label class="flabel">Featured Image URL</label><input type="url" class="finput" id="postImage" placeholder="https://..."/></div><div class="form-group"><label class="flabel">Upload Video (MP4)</label><input type="file" class="finput" id="postVideoInput" accept="video/*"/></div><div class="form-group"><label class="flabel">SEO Title (optional)</label><input type="text" class="finput" id="postSeoTitle"/></div><div class="form-group"><label class="flabel">SEO Description</label><textarea class="finput" id="postSeoDesc" rows="2"></textarea></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('createPostModal')">Cancel</button><button class="btn btn-primary" onclick="submitNewPost()"><i class="fas fa-paper-plane"></i>Publish</button></div></div></div>
 
     <!-- User Details Modal (Admin) -->
     <div class="modal-ov hidden" id="userDetailsModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👤 User Details</h5><button class="btn-icon-sm" onclick="closeModal('userDetailsModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd" id="userDetailsContent"></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('userDetailsModal')">Close</button></div></div></div>
@@ -4573,7 +4595,7 @@
         <div id="dash-instructor" class="dash-sub"><div class="d-flex items-center gap-3 mb-4 flex-wrap" style="padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)"><div class="si si-v" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-chalkboard-teacher"></i></div><div><h4 style="margin:0">Instructor Hub</h4><p style="font-size:.8rem;color:var(--text2);margin:.15rem 0 0">Publish, track, manage</p></div><div style="margin-left:auto;display:flex;gap:.4rem;flex-wrap:wrap"><span class="badge badge-violet" id="instVerifiedBadge">Verified</span><button class="btn btn-primary btn-sm" onclick="initNewCourse()"><i class="fas fa-plus"></i>New Course</button></div></div><div id="instPremiumGate" style="display:none"></div><div id="instContent"><div class="tabs mb-3"><button class="tab-btn active" onclick="switchInstTab('courses',this)">My Courses</button><button class="tab-btn" onclick="switchInstTab('sales',this)">Sales &amp; Analytics</button><button class="tab-btn" onclick="switchInstTab('earnings',this)">Earnings Breakdown</button></div><div id="inst-tab-courses"><div class="row mb-4" id="instStatsRow"></div><div class="card card-p mb-3" id="instQANotifs" style="display:none"><h6 style="margin-bottom:.65rem;color:var(--orange)">🔔 Pending Q&amp;A Questions</h6><div id="instQAList"></div></div><div class="card card-p"><h6 style="margin-bottom:.85rem">My Published Courses</h6><div class="overflow-x-auto"><table class="dtable" id="instCoursesTable"></table></div></div></div><div id="inst-tab-sales" style="display:none"><div class="card card-p"><h6 style="margin-bottom:.85rem">📊 Sales &amp; Revenue</h6><div id="instSalesContent"><div class="empty-state"><i class="fas fa-chart-line"></i><h4>Loading sales data...</h4></div></div></div></div><div id="inst-tab-earnings" style="display:none"><div class="card card-p"><h6 style="margin-bottom:.85rem">💰 Earnings Breakdown</h6><div id="instEarningsContent"><div class="empty-state"><i class="fas fa-wallet"></i><h4>Loading earnings...</h4></div></div></div></div></div></div>
 
         <!-- COURSE EDITOR -->
-        <div id="dash-course-editor" class="dash-sub"><div class="editor-shell"><div class="editor-sidebar"><div class="esc-label">COURSE SETUP</div><div class="esc-step active" id="es-1" onclick="goES(1)"><div class="esc-num">1</div><div class="esc-text">Basic Info</div></div><div class="esc-step" id="es-2" onclick="goES(2)"><div class="esc-num">2</div><div class="esc-text">Lessons</div></div><div class="esc-step" id="es-3" onclick="goES(3)"><div class="esc-num">3</div><div class="esc-text">Content</div></div><div class="esc-step" id="es-4" onclick="goES(4)"><div class="esc-num">4</div><div class="esc-text">Media</div></div><div class="esc-step" id="es-5" onclick="goES(5)"><div class="esc-num">5</div><div class="esc-text">Quiz</div></div><div class="esc-step" id="es-6" onclick="goES(6)"><div class="esc-num">6</div><div class="esc-text">Pricing</div></div><div class="esc-step" id="es-7" onclick="goES(7)"><div class="esc-num">7</div><div class="esc-text">Affiliate</div></div><div class="esc-step" id="es-8" onclick="goES(8)"><div class="esc-num">8</div><div class="esc-text">Review</div></div></div><div class="editor-main"><div class="editor-topbar"><button class="btn btn-ghost btn-sm" onclick="setDP('instructor')"><i class="fas fa-arrow-left"></i>Back</button><div class="flex-1"><div style="font-size:.8rem;font-weight:600" id="edCourseTitle">Untitled Course</div><div style="font-size:.7rem;color:var(--text3)" id="edAutoSave">Draft · Auto-saved</div></div><button class="btn btn-ghost btn-sm" onclick="saveDraftToServer()"><i class="fas fa-save"></i>Save Draft</button><button class="btn btn-primary btn-sm" onclick="goES(8)"><i class="fas fa-rocket"></i>Review</button></div><div class="editor-step-panel active" id="esp-1"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Basic Info</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1.25rem">Tell students what your course is about.</p><div class="form-group"><label class="flabel">Course Title</label><input type="text" class="finput" id="edTitle" placeholder="e.g. JavaScript Mastery: Zero to Freelancer" oninput="document.getElementById('edCourseTitle').textContent=this.value||'Untitled Course'"/></div><div class="form-group"><label class="flabel">Subtitle</label><input type="text" class="finput" id="edSubtitle" placeholder="A short powerful description..."/></div><div class="form-group"><label class="flabel">Description</label><div class="quill-wrapper"><div id="descEditorQuill" style="min-height:200px"></div></div></div><div class="row"><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Category</label><select class="finput" id="edCategory"><option>Web Development</option><option>AI &amp; Tools</option><option>Freelancing</option><option>Design</option><option>Backend</option><option>Mobile Dev</option><option>Data Science</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Level</label><select class="finput" id="edLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>All Levels</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Language</label><select class="finput" id="edLanguage"><option>English</option><option>Pidgin English</option><option>Yoruba</option><option>Igbo</option><option>Hausa</option></select></div></div></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Thumbnail Emoji</label><input type="text" class="finput" id="edEmoji" placeholder="📚" maxlength="4"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Promo Video URL (optional)</label><input type="url" class="finput" id="edPromoVideo" placeholder="https://youtube.com/..."/></div></div></div><div class="form-group"><label class="flabel">Learning Outcomes</label><div id="outcomesList" style="display:flex;flex-direction:column;gap:.35rem;margin-bottom:.45rem"></div><button class="btn btn-ghost btn-sm" onclick="addOutcome()"><i class="fas fa-plus"></i>Add Outcome</button></div><div class="d-flex items-center gap-2 p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:.5rem"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Issue Certificate on Completion</div><div style="font-size:.74rem;color:var(--text3)">Students who complete get a certificate</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" id="edCertEnabled"/></div><div style="display:flex;justify-content:flex-end;margin-top:1.5rem"><button class="btn btn-primary" onclick="goES(2)">Next: Lessons <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-2"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Course Curriculum</h4><p style="font-size:.82rem;color:var(--text3)">Minimum <strong style="color:var(--primary)">20 lessons</strong> required to publish</p></div><button class="btn btn-primary btn-sm" onclick="openModal('addLessonModal')"><i class="fas fa-plus"></i>Add Lesson</button></div><div id="lessonCountBadge" style="margin-bottom:.85rem"></div><div id="lessonBuilderList"></div><div style="background:rgba(99,102,241,.05);border:1px solid rgba(99,102,241,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.79rem;color:var(--text2);margin-bottom:1rem"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>You need at least 20 lessons with content to submit for admin approval.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(1)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(3)">Next: Content <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-3"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Lesson Content Editor</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Edit each lesson's content using the rich text editor. Content is always editable even after approval.</p><div id="lessonContentEditor"></div><div class="d-flex justify-between mt-4"><button class="btn btn-ghost" onclick="goES(2)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(4)">Next: Media <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-4"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Media &amp; Files Upload</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem" id="uploadLimitNote">Upload videos, PDFs, images, resources for your course.</p><div class="upload-zone" style="padding:2rem;margin-bottom:1rem"><input type="file" multiple id="mediaFileInput" onchange="handleMediaUpload(this)"/><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.88rem;color:var(--text2);font-weight:600">Drop any files here or click to upload</div><div style="font-size:.74rem;color:var(--text3);margin-top:.3rem" id="uploadHint">Free: max 10 files · Premium: unlimited files of any size</div></div><div id="uploadedFilesList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(3)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(5)">Next: Quiz <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-5"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Quiz Builder</h4><p style="font-size:.82rem;color:var(--text3)">Add quiz questions for this course</p></div><button class="btn btn-primary btn-sm" onclick="addQuizQ()"><i class="fas fa-plus"></i>Add Question</button></div><div id="quizBuilderList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(4)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(6)">Next: Pricing <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-6"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Pricing</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Platform takes 20%, you keep 80%.</p><div style="display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.25rem"><div class="price-type-opt selected" id="pt-paid" onclick="selectPriceType('paid')"><i class="fas fa-tag" style="color:var(--primary);width:20px"></i><div><strong>Paid Course</strong><br><small style="color:var(--text3)">Students pay to access</small></div></div><div class="price-type-opt" id="pt-free" onclick="selectPriceType('free')"><i class="fas fa-gift" style="color:var(--accent);width:20px"></i><div><strong>Free Course</strong><br><small style="color:var(--text3)">Open to all students</small></div></div><div class="price-type-opt" id="pt-sub" onclick="selectPriceType('sub')"><i class="fas fa-crown" style="color:var(--gold);width:20px"></i><div><strong>Premium Only</strong><br><small style="color:var(--text3)">Only premium subscribers</small></div></div></div><div id="pricingFields"><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Price (₦)</label><input type="number" class="finput" id="edPrice" placeholder="e.g. 15000" min="1000"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Sale Price (₦, optional)</label><input type="number" class="finput" id="edSalePrice" placeholder="e.g. 12000"/></div></div></div></div><div style="background:rgba(99,102,241,.05);border:1px solid rgba(99,102,241,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>Revenue: <strong style="color:var(--primary)">80%</strong> to you · <strong style="color:var(--text3)">20%</strong> platform fee per sale.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(5)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(7)">Next: Affiliate <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-7"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">🤝 Affiliate Program</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Let other ChangeX users promote your course and earn commissions.</p><div class="d-flex items-center gap-2 p-3 mb-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Enable Affiliate Program</div><div style="font-size:.74rem;color:var(--text3)">After admin approves, all users get notified</div></div><input type="checkbox" id="edAffEnabled" style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" onchange="toggleAffiliateFields(this.checked)"/></div><div id="affiliateFields" style="display:none"><div class="form-group"><label class="flabel">Commission Percentage (%)</label><input type="number" class="finput" id="edAffPercent" placeholder="e.g. 15" min="5" max="50" value="15"/></div><div class="form-group"><label class="flabel">Affiliate Offer Description</label><textarea class="finput" style="min-height:80px;resize:vertical" id="edAffDesc" placeholder="e.g. Promote this JS course and earn 15% commission!"></textarea></div></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(6)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(8)">Next: Review <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-8"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Review &amp; Submit</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Review your course before submitting for admin approval.</p><div id="courseReviewSummary"></div><div style="background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:var(--radius-sm);padding:.85rem;margin:1rem 0;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--accent);margin-right:.3rem"></i>After submission, admin reviews your course. On approval, all ChangeX users get a notification. You can still edit after approval — changes will be reviewed again.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(7)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary btn-lg" onclick="submitCourseForApproval()"><i class="fas fa-rocket"></i>Submit for Approval</button></div></div></div></div></div></div>
+        <div id="dash-course-editor" class="dash-sub"><div class="editor-shell"><div class="editor-sidebar"><div class="esc-label">COURSE SETUP</div><div class="esc-step active" id="es-1" onclick="goES(1)"><div class="esc-num">1</div><div class="esc-text">Basic Info</div></div><div class="esc-step" id="es-2" onclick="goES(2)"><div class="esc-num">2</div><div class="esc-text">Lessons</div></div><div class="esc-step" id="es-3" onclick="goES(3)"><div class="esc-num">3</div><div class="esc-text">Content</div></div><div class="esc-step" id="es-4" onclick="goES(4)"><div class="esc-num">4</div><div class="esc-text">Media</div></div><div class="esc-step" id="es-5" onclick="goES(5)"><div class="esc-num">5</div><div class="esc-text">Quiz</div></div><div class="esc-step" id="es-6" onclick="goES(6)"><div class="esc-num">6</div><div class="esc-text">Pricing</div></div><div class="esc-step" id="es-7" onclick="goES(7)"><div class="esc-num">7</div><div class="esc-text">Affiliate</div></div><div class="esc-step" id="es-8" onclick="goES(8)"><div class="esc-num">8</div><div class="esc-text">Review</div></div></div><div class="editor-main"><div class="editor-topbar"><button class="btn btn-ghost btn-sm" onclick="setDP('instructor')"><i class="fas fa-arrow-left"></i>Back</button><div class="flex-1"><div style="font-size:.8rem;font-weight:600" id="edCourseTitle">Untitled Course</div><div style="font-size:.7rem;color:var(--text3)" id="edAutoSave">Draft · Auto-saved</div></div><button class="btn btn-ghost btn-sm" onclick="saveDraftToServer(false)"><i class="fas fa-save"></i>Save Draft</button><button class="btn btn-primary btn-sm" onclick="goES(8)"><i class="fas fa-rocket"></i>Review</button></div><div class="editor-step-panel active" id="esp-1"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Basic Info</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1.25rem">Tell students what your course is about.</p><div class="form-group"><label class="flabel">Course Title</label><input type="text" class="finput" id="edTitle" placeholder="e.g. JavaScript Mastery: Zero to Freelancer" oninput="document.getElementById('edCourseTitle').textContent=this.value||'Untitled Course'"/></div><div class="form-group"><label class="flabel">Subtitle</label><input type="text" class="finput" id="edSubtitle" placeholder="A short powerful description..."/></div><div class="form-group"><label class="flabel">Description</label><div class="quill-wrapper"><div id="descEditorQuill" style="min-height:200px"></div></div></div><div class="row"><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Category</label><select class="finput" id="edCategory"><option>Web Development</option><option>AI &amp; Tools</option><option>Freelancing</option><option>Design</option><option>Backend</option><option>Mobile Dev</option><option>Data Science</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Level</label><select class="finput" id="edLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>All Levels</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Language</label><select class="finput" id="edLanguage"><option>English</option><option>Pidgin English</option><option>Yoruba</option><option>Igbo</option><option>Hausa</option></select></div></div></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Thumbnail Emoji</label><input type="text" class="finput" id="edEmoji" placeholder="📚" maxlength="4"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Promo Video URL (optional)</label><input type="url" class="finput" id="edPromoVideo" placeholder="https://youtube.com/..."/></div></div></div><div class="form-group"><label class="flabel">Learning Outcomes</label><div id="outcomesList" style="display:flex;flex-direction:column;gap:.35rem;margin-bottom:.45rem"></div><button class="btn btn-ghost btn-sm" onclick="addOutcome()"><i class="fas fa-plus"></i>Add Outcome</button></div><div class="d-flex items-center gap-2 p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:.5rem"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Issue Certificate on Completion</div><div style="font-size:.74rem;color:var(--text3)">Students who complete get a certificate</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" id="edCertEnabled"/></div><div style="display:flex;justify-content:flex-end;margin-top:1.5rem"><button class="btn btn-primary" onclick="goES(2)">Next: Lessons <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-2"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Course Curriculum</h4><p style="font-size:.82rem;color:var(--text3)">Minimum <strong style="color:var(--primary)">20 lessons</strong> required to publish</p></div><button class="btn btn-primary btn-sm" onclick="openModal('addLessonModal')"><i class="fas fa-plus"></i>Add Lesson</button></div><div id="lessonCountBadge" style="margin-bottom:.85rem"></div><div id="lessonBuilderList"></div><div style="background:rgba(99,102,241,.05);border:1px solid rgba(99,102,241,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.79rem;color:var(--text2);margin-bottom:1rem"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>You need at least 20 lessons with content to submit for admin approval.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(1)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(3)">Next: Content <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-3"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Lesson Content Editor</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Edit each lesson's content using the rich text editor. Content is always editable even after approval.</p><div id="lessonContentEditor"></div><div class="d-flex justify-between mt-4"><button class="btn btn-ghost" onclick="goES(2)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(4)">Next: Media <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-4"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Media &amp; Files Upload</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem" id="uploadLimitNote">Upload videos, PDFs, images, resources for your course.</p><div class="upload-zone" style="padding:2rem;margin-bottom:1rem"><input type="file" multiple id="mediaFileInput" onchange="handleMediaUpload(this)"/><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.88rem;color:var(--text2);font-weight:600">Drop any files here or click to upload</div><div style="font-size:.74rem;color:var(--text3);margin-top:.3rem" id="uploadHint">Free: max 10 files · Premium: unlimited files of any size</div></div><div id="uploadedFilesList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(3)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(5)">Next: Quiz <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-5"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Quiz Builder</h4><p style="font-size:.82rem;color:var(--text3)">Add quiz questions for this course</p></div><button class="btn btn-primary btn-sm" onclick="addQuizQ()"><i class="fas fa-plus"></i>Add Question</button></div><div id="quizBuilderList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(4)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(6)">Next: Pricing <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-6"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Pricing</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Platform takes 20%, you keep 80%.</p><div style="display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.25rem"><div class="price-type-opt selected" id="pt-paid" onclick="selectPriceType('paid')"><i class="fas fa-tag" style="color:var(--primary);width:20px"></i><div><strong>Paid Course</strong><br><small style="color:var(--text3)">Students pay to access</small></div></div><div class="price-type-opt" id="pt-free" onclick="selectPriceType('free')"><i class="fas fa-gift" style="color:var(--accent);width:20px"></i><div><strong>Free Course</strong><br><small style="color:var(--text3)">Open to all students</small></div></div><div class="price-type-opt" id="pt-sub" onclick="selectPriceType('sub')"><i class="fas fa-crown" style="color:var(--gold);width:20px"></i><div><strong>Premium Only</strong><br><small style="color:var(--text3)">Only premium subscribers</small></div></div></div><div id="pricingFields"><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Price (₦)</label><input type="number" class="finput" id="edPrice" placeholder="e.g. 15000" min="1000"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Sale Price (₦, optional)</label><input type="number" class="finput" id="edSalePrice" placeholder="e.g. 12000"/></div></div></div></div><div style="background:rgba(99,102,241,.05);border:1px solid rgba(99,102,241,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>Revenue: <strong style="color:var(--primary)">80%</strong> to you · <strong style="color:var(--text3)">20%</strong> platform fee per sale.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(5)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(7)">Next: Affiliate <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-7"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">🤝 Affiliate Program</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Let other ChangeX users promote your course and earn commissions.</p><div class="d-flex items-center gap-2 p-3 mb-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Enable Affiliate Program</div><div style="font-size:.74rem;color:var(--text3)">After admin approves, all users get notified</div></div><input type="checkbox" id="edAffEnabled" style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" onchange="toggleAffiliateFields(this.checked)"/></div><div id="affiliateFields" style="display:none"><div class="form-group"><label class="flabel">Commission Percentage (%)</label><input type="number" class="finput" id="edAffPercent" placeholder="e.g. 15" min="5" max="50" value="15"/></div><div class="form-group"><label class="flabel">Affiliate Offer Description</label><textarea class="finput" style="min-height:80px;resize:vertical" id="edAffDesc" placeholder="e.g. Promote this JS course and earn 15% commission!"></textarea></div></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(6)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(8)">Next: Review <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-8"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Review &amp; Submit</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Review your course before submitting for admin approval.</p><div id="courseReviewSummary"></div><div style="background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:var(--radius-sm);padding:.85rem;margin:1rem 0;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--accent);margin-right:.3rem"></i>After submission, admin reviews your course. On approval, all ChangeX users get a notification. You can still edit after approval — changes will be reviewed again.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(7)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary btn-lg" onclick="submitCourseForApproval()"><i class="fas fa-rocket"></i>Submit for Approval</button></div></div></div></div></div></div>
 
         <!-- AI TUTOR -->
         <div id="dash-ai" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤖 AI Tutor</h2><p class="page-sub">Your personal AI-powered learning assistant</p></div><div id="aiPlanNote" style="margin-bottom:.85rem"></div><div class="card card-p mb-3"><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.85rem"><button class="fpill active" onclick="switchAIMode('chat',this)"><i class="fas fa-comments"></i>Chat</button><button class="fpill" onclick="switchAIMode('explain',this)"><i class="fas fa-book-open"></i>Explain Code</button><button class="fpill" onclick="switchAIMode('quiz',this)"><i class="fas fa-question-circle"></i>Generate Quiz</button><button class="fpill" onclick="switchAIMode('upload',this)"><i class="fas fa-upload"></i>Upload &amp; Analyze</button></div><div id="aiMessages" style="min-height:280px;max-height:380px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.65rem;display:flex;flex-direction:column;gap:.6rem"></div><div class="d-flex gap-2"><input type="text" class="finput flex-1" id="aiInput" placeholder="Ask me anything about coding or your course..." onkeydown="if(event.key==='Enter')sendAI()"/><button class="btn btn-primary btn-sm" onclick="sendAI()"><i class="fas fa-paper-plane"></i></button></div></div><div class="card card-p" id="aiUploadPanel" style="display:none"><h6 style="margin-bottom:.65rem">📎 Upload Files for AI Analysis</h6><div id="aiUploadInfo" style="font-size:.8rem;color:var(--text3);margin-bottom:.65rem"></div><div class="upload-zone" style="padding:1.5rem"><input type="file" multiple id="aiFileInput" onchange="handleAIUpload(this)"/><div class="upload-icon"><i class="fas fa-file-upload"></i></div><div style="font-size:.84rem;color:var(--text2)">Drop any file here (PDF, image, code, etc.)</div><div style="font-size:.72rem;color:var(--text3);margin-top:.2rem" id="aiUploadLimit"></div></div><div id="aiUploadedFiles" style="margin-top:.65rem"></div></div></div>
@@ -4582,7 +4604,7 @@
         <div id="dash-settings" class="dash-sub"><div class="page-hd"><h2 class="page-title">Settings</h2><p class="page-sub">Manage your account &amp; preferences</p></div><div class="set-tabs"><div class="set-tab active" onclick="switchSet('ss-profile',this)">Profile</div><div class="set-tab" onclick="switchSet('ss-security',this)">Security</div><div class="set-tab" onclick="switchSet('ss-payout',this)">Payouts</div><div class="set-tab" onclick="switchSet('ss-subscription',this)">Subscription</div><div class="set-tab" onclick="switchSet('ss-prefs',this)">Preferences</div><div class="set-tab" onclick="switchSet('ss-notifs',this)">Notifications</div></div><div class="set-sec active" id="ss-profile"><div class="card card-p"><div class="d-flex items-center gap-3 mb-4 flex-wrap"><div class="um-av" id="settingsAv" style="width:64px;height:64px;font-size:1.4rem;background:linear-gradient(135deg,var(--primary),var(--secondary))">U</div><div><h5 style="margin-bottom:.2rem" id="settingsName">User</h5><div id="settingsRoles"><span class="badge badge-cyan">Student</span></div></div><button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="document.getElementById('avatarFileInput').click()"><i class="fas fa-camera"></i>Change Photo</button><input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)"/></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="setFirstName" value=""/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="setLastName" value=""/></div></div></div><div class="form-group"><label class="flabel">Email</label><input type="email" class="finput" id="setEmail" readonly/></div><div class="form-group"><label class="flabel">Phone</label><input type="tel" class="finput" id="setPhone" value=""/></div><div class="form-group"><label class="flabel">Bio</label><textarea class="finput" id="setBio" style="min-height:80px;resize:vertical" placeholder="Tell the world about yourself..."></textarea></div><div class="form-group"><label class="flabel">Location</label><input type="text" class="finput" id="setLocation" placeholder="e.g. Lagos, Nigeria"/></div><button class="btn btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i>Save Profile</button></div></div><div class="set-sec" id="ss-security"><div class="card card-p"><h5 style="margin-bottom:1rem">Security Settings</h5><div class="form-group"><label class="flabel">Current Password</label><input type="password" class="finput" id="secCurrentPw" placeholder="••••••••"/></div><div class="form-group"><label class="flabel">New Password</label><input type="password" class="finput" id="secNewPw" placeholder="Min 8 characters"/></div><div class="form-group"><label class="flabel">Confirm Password</label><input type="password" class="finput" id="secConfirmPw" placeholder="Repeat new password"/></div><button class="btn btn-primary" onclick="changePassword()"><i class="fas fa-lock"></i>Update Password</button></div></div><div class="set-sec" id="ss-payout"><div class="card card-p"><h5 style="margin-bottom:.7rem">Payout Settings</h5><p style="font-size:.76rem;color:var(--text3);margin-bottom:1rem">Bank details are required before you can withdraw your earnings.</p><div class="form-group"><label class="flabel">Bank</label><select class="finput" id="payoutBank"><option value="">Select Bank</option><option>GTBank</option><option>Access Bank</option><option>Zenith Bank</option><option>UBA</option><option>First Bank</option><option>Opay</option><option>Palmpay</option><option>Kuda Bank</option><option>Moniepoint</option></select></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Number</label><input type="text" class="finput" id="payoutAccNum" placeholder="0123456789" maxlength="10"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Name</label><input type="text" class="finput" id="payoutAccName" placeholder="Auto-verified..."/></div></div></div><div id="payoutSaveStatus" style="font-size:.76rem;margin-bottom:.75rem;min-height:1.2em"></div><button class="btn btn-primary" onclick="savePayoutSettings()"><i class="fas fa-save"></i>Save Bank Details</button></div></div><div class="set-sec" id="ss-subscription"><div class="card card-p" id="subStatusCard"></div></div><div class="set-sec" id="ss-prefs"><div class="card card-p"><h5 style="margin-bottom:1rem">Preferences</h5><div style="display:flex;flex-direction:column;gap:.55rem"><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Autoplay Next Lesson</div><div style="font-size:.72rem;color:var(--text3)">Continue automatically</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer"/></div><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Daily Streak Reminder</div><div style="font-size:.72rem;color:var(--text3)">Push notification daily</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer"/></div><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Preferred Currency</div><div style="font-size:.72rem;color:var(--text3)">Display earnings in</div></div><div class="currency-select"><span class="currency-opt" id="prefNGN" onclick="updateCurrencyPreference('NGN')">₦</span><span class="currency-opt" id="prefUSD" onclick="updateCurrencyPreference('USD')">$</span><span class="currency-opt" id="prefGBP" onclick="updateCurrencyPreference('GBP')">£</span><span class="currency-opt" id="prefEUR" onclick="updateCurrencyPreference('EUR')">€</span></div></div></div></div></div><div class="set-sec" id="ss-notifs"><div class="card card-p"><h5 style="margin-bottom:1rem">Notification Settings</h5><div id="notifSettingsList"></div><button class="btn btn-primary mt-4" onclick="toast('Preferences saved!','success')"><i class="fas fa-save"></i>Save</button></div></div></div>
 
         <!-- ADMIN -->
-        <div id="dash-admin" class="dash-sub"><div class="admin-hd"><div class="si si-d" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-shield-alt"></i></div><div><h4 style="margin:0">Admin Panel</h4><p style="font-size:.78rem;color:var(--text2);margin:.12rem 0 0">Super admin · All actions logged · Actions affect user dashboards live</p></div><div style="margin-left:0"><span class="badge badge-danger">SUPER ADMIN</span></div></div><div class="row"><div class="col-12"><div style="display:flex;gap:.28rem;flex-wrap:wrap;overflow-x:auto;margin-bottom:.75rem;padding-bottom:.2rem"><span class="fpill active" onclick="switchAdm('dashboard',this)">Dashboard</span><span class="fpill" onclick="switchAdm('users',this)">Users</span><span class="fpill" onclick="switchAdm('courses',this)">Courses</span><span class="fpill" onclick="switchAdm('approvals',this)">Approvals</span><span class="fpill" onclick="switchAdm('withdrawals',this)">Payouts</span><span class="fpill" onclick="switchAdm('manualPayments',this)">Manual Pay</span><span class="fpill" onclick="switchAdm('coupons',this)">Coupons</span><span class="fpill" onclick="switchAdm('announcements',this)">Announce</span><span class="fpill" onclick="switchAdm('challenges',this)">Challenges</span><span class="fpill" onclick="switchAdm('ads',this)">Ads</span><span class="fpill" onclick="switchAdm('affiliates',this)">Affiliates</span><span class="fpill" onclick="switchAdm('audit',this)">Audit</span></div><div id="adminContent"></div></div></div></div>
+        <div id="dash-admin" class="dash-sub"><div class="admin-hd"><div class="si si-d" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-shield-alt"></i></div><div><h4 style="margin:0">Admin Panel</h4><p style="font-size:.78rem;color:var(--text2);margin:.12rem 0 0">Super admin · All actions logged · Actions affect user dashboards live</p></div><div style="margin-left:0"><span class="badge badge-danger">SUPER ADMIN</span></div></div><div class="row"><div class="col-12"><div style="display:flex;gap:.28rem;flex-wrap:wrap;overflow-x:auto;margin-bottom:.75rem;padding-bottom:.2rem"><span class="fpill active" onclick="switchAdm('dashboard',this)">Dashboard</span><span class="fpill" onclick="switchAdm('users',this)">Users</span><span class="fpill" onclick="switchAdm('courses',this)">Courses</span><span class="fpill" onclick="switchAdm('approvals',this)">Approvals</span><span class="fpill" onclick="switchAdm('withdrawals',this)">Payouts</span><span class="fpill" onclick="switchAdm('manualPayments',this)">Manual Pay</span><span class="fpill" onclick="switchAdm('coupons',this)">Coupons</span><span class="fpill" onclick="switchAdm('announcements',this)">Announce</span><span class="fpill" onclick="switchAdm('challenges',this)">Challenges</span><span class="fpill" onclick="switchAdm('ads',this)">Ads</span><span class="fpill" onclick="switchAdm('affiliates',this)">Affiliates</span><span class="fpill" onclick="switchAdm('social-earnings',this)">Social Earnings</span><span class="fpill" onclick="switchAdm('audit',this)">Audit</span></div><div id="adminContent"></div></div></div></div>
     </div></div></div></div>
 
     <!-- ============================================================ -->
@@ -4682,7 +4704,10 @@
             challengeProgress: [],
             sharePostId: null,
             sharePostSlug: null,
-            planExpiryWarningShown: false
+            planExpiryWarningShown: false,
+            socialEarnings: 0,
+            poolConfig: { dailyPoolAmount: 10000 },
+            topEarningPosts: []
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -4882,7 +4907,8 @@
                 ai: initAI,
                 admin: () => renderAdm('dashboard'),
                 settings: initSettings,
-                profile: () => {}
+                profile: () => {},
+                'post-detail': () => {}
             };
             if (map[pg]) map[pg]();
             updateAdVisibility();
@@ -5405,6 +5431,7 @@
             const earnings = post.earnings || 0;
             const isAuthor = S.user?._id === author._id || S.user?._id === post.authorId?._id;
             const slug = post.slug || post._id;
+            const views = post.views || 0;
             return `
                 <div class="post-card card card-p" data-post-id="${post._id}">
                     <div class="post-header">
@@ -5424,10 +5451,12 @@
                     </div>
                     <h3 class="post-title" onclick="window.open('/post/${slug}','_blank')">${escapeHtml(post.title)}</h3>
                     ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
+                    ${post.videoUrl ? `<video controls style="max-width:100%;border-radius:var(--radius-sm);margin:.75rem 0;"><source src="${post.videoUrl}" type="video/mp4"></video>` : ''}
                     <div class="post-content">
                         ${contentHtml}
                     </div>
                     <div class="post-stats">
+                        <span><i class="fas fa-eye"></i> ${views}</span>
                         <span class="post-likes" data-id="${post._id}"><i class="far fa-heart"></i> ${post.likes || 0}</span>
                         <span class="post-comments"><i class="far fa-comment"></i> ${post.commentsCount || 0}</span>
                         <span class="post-shares"><i class="fas fa-share-alt"></i> ${post.shares || 0}</span>
@@ -5458,6 +5487,7 @@
                         <div style="font-size:.74rem;color:var(--text3)">By ${author.firstName || 'Instructor'} · ${course.totalLessons || 0} lessons</div>
                         <div style="font-weight:800;color:var(--lime);margin-top:.5rem">${fmtMoneyAPI(course.price || 0)}</div>
                         ${course.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.55rem">${course.affiliatePercent || 0}% aff</span>` : ''}
+                        <span style="font-size:.7rem;color:var(--text3)"><i class="fas fa-eye"></i> ${course.views || 0}</span>
                     </div>
                 </div>
             `;
@@ -5616,6 +5646,84 @@
         }
 
         // ================================================================
+        // POST DETAIL PAGE
+        // ================================================================
+        async function loadPostBySlug(slug) {
+            showLoading('Loading post...');
+            try {
+                const res = await apiCall(`/posts/slug/${slug}`);
+                const post = res.data;
+                const token = localStorage.getItem('cx_accessToken');
+                if (token) {
+                    await apiCall(`/posts/${post._id}/view`, { method: 'POST' }).catch(() => {});
+                }
+                renderPostDetail(post);
+                setDP('post-detail');
+            } catch (err) {
+                toast('Post not found: ' + err.message, 'error');
+                setDP('feed');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderPostDetail(post) {
+            const container = document.getElementById('postDetailContent');
+            if (!container) return;
+            const author = post.authorId || {};
+            const avatarHtml = getAvatarUrl(author) ?
+                `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                (author.firstName?.[0] || 'U');
+            const contentHtml = post.content ? (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(post.content) : post
+                .content) : '';
+            const earnings = post.earnings || 0;
+            const views = post.views || 0;
+
+            container.innerHTML = `
+                <div class="post-card card card-p">
+                    <div class="post-header">
+                        <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));" onclick="openUserProfile('${author._id}')">
+                            ${avatarHtml}
+                        </div>
+                        <div class="post-author-info">
+                            <strong onclick="openUserProfile('${author._id}')" style="cursor:pointer">${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
+                            <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
+                            <span class="badge badge-cyan" style="font-size:.55rem">${post.type || 'article'}</span>
+                            ${post.isPremiumOnly ? '<span class="badge badge-gold" style="font-size:.55rem">Premium</span>' : ''}
+                        </div>
+                    </div>
+                    <h1 class="post-title" style="font-size:1.5rem;">${escapeHtml(post.title)}</h1>
+                    ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
+                    ${post.videoUrl ? `<video controls style="max-width:100%;border-radius:var(--radius-sm);margin:.75rem 0;"><source src="${post.videoUrl}" type="video/mp4"></video>` : ''}
+                    <div class="post-content" style="font-size:1rem;line-height:1.8;color:var(--text2);margin:1rem 0;">
+                        ${contentHtml}
+                    </div>
+                    <div class="post-stats">
+                        <span><i class="fas fa-eye"></i> ${views} views</span>
+                        <span><i class="far fa-heart"></i> ${post.likes || 0}</span>
+                        <span><i class="far fa-comment"></i> ${post.commentsCount || 0}</span>
+                        <span><i class="fas fa-share-alt"></i> ${post.shares || 0}</span>
+                        ${earnings > 0 ? `<span class="badge badge-gold">🏆 +${fmtMoneyAPI(earnings)}</span>` : ''}
+                    </div>
+                    <div class="post-actions">
+                        <button class="btn-like ${post.userLiked ? 'liked' : ''}" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
+                        <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
+                        <button class="btn-share" onclick="openShareModal('${post._id}','${post.slug}')"><i class="fas fa-share-alt"></i> Share</button>
+                    </div>
+                    <div class="comments-section" data-post-id="${post._id}" style="display:block;margin-top:1rem;">
+                        <div class="comment-input">
+                            <textarea placeholder="Write a comment..." id="commentText-${post._id}"></textarea>
+                            <button class="btn-primary btn-sm" onclick="addComment('${post._id}')">Post</button>
+                        </div>
+                        <div class="comments-list" id="commentsList-${post._id}"></div>
+                    </div>
+                </div>
+            `;
+            loadComments(post._id);
+            attachPostEventListeners();
+        }
+
+        // ================================================================
         // FOLLOWING COLLECTION
         // ================================================================
         async function loadFollowingCollection() {
@@ -5654,6 +5762,7 @@
                 const clickAction = item.type === 'post' ?
                     `window.open('/post/${item.slug || item._id}','_blank')` :
                     `openBuyCourse('${item._id}')`;
+                const views = item.views || 0;
                 return `
                     <div class="following-item" onclick="${clickAction}">
                         <div class="fi-header">
@@ -5670,6 +5779,7 @@
                         </div>
                         <div class="fi-meta">
                             ${item.type === 'post' ? `<span>❤️ ${item.likes || 0}</span><span>💬 ${item.commentsCount || 0}</span>` : `<span>📖 ${item.totalLessons || 0} lessons</span>`}
+                            <span><i class="fas fa-eye"></i> ${views}</span>
                             <span><i class="far fa-clock"></i> ${new Date(item.createdAt).toLocaleDateString()}</span>
                         </div>
                     </div>
@@ -5792,6 +5902,7 @@
             const featuredImage = document.getElementById('postImage')?.value || '';
             const seoTitle = document.getElementById('postSeoTitle')?.value || '';
             const seoDesc = document.getElementById('postSeoDesc')?.value || '';
+            const videoFile = document.getElementById('postVideoInput')?.files[0];
             if (!title) { toast('Please enter a title', 'error'); return; }
             if (!content || content === '<p><br></p>' || content.trim() === '') {
                 toast('Please write some content for your post', 'error');
@@ -5803,6 +5914,17 @@
                     body: { title, content, type, tags, featuredImage, seoTitle, seoDescription: seoDesc,
                         isPublished: true }
                 });
+                const postId = res.data?._id || res._id;
+                if (postId && videoFile) {
+                    const formData = new FormData();
+                    formData.append('video', videoFile);
+                    const token = localStorage.getItem('cx_accessToken');
+                    await fetch(`${API_BASE}/posts/${postId}/video`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: formData
+                    });
+                }
                 toast('Post published!', 'success');
                 closeModal('createPostModal');
                 document.getElementById('postTitle').value = '';
@@ -5810,6 +5932,7 @@
                 document.getElementById('postImage').value = '';
                 document.getElementById('postSeoTitle').value = '';
                 document.getElementById('postSeoDesc').value = '';
+                document.getElementById('postVideoInput').value = '';
                 if (S.postQuill) {
                     S.postQuill.root.innerHTML = '';
                 }
@@ -5902,7 +6025,6 @@
                 const res = await apiCall('/challenges/my-progress');
                 S.challengeProgress = res.data || [];
                 renderMyChallengeProgress();
-                // Auto-check for completion based on progress
                 S.challengeProgress.forEach(async (p) => {
                     if (p.status === 'enrolled' && p.progress >= 100) {
                         try {
@@ -6317,11 +6439,43 @@
             loadAds('in-feed', 'adFeedTop');
             await loadPeople();
             checkPlanExpiry();
+            await loadSocialEarnings();
             setTimeout(() => {
                 const hash = window.location.hash.slice(1);
                 if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(() =>
                         openBuyCourse(courseId), 1000); }
+                if (hash.startsWith('post/')) { const slug = hash.split('/')[1]; if (slug) setTimeout(() =>
+                        loadPostBySlug(slug), 1000); }
             }, 800);
+            handleDeepLink();
+        }
+
+        // Deep link handling
+        function handleDeepLink() {
+            const path = window.location.pathname;
+            const postMatch = path.match(/^\/post\/(.+)/);
+            if (postMatch) {
+                const slug = postMatch[1];
+                const token = localStorage.getItem('cx_accessToken');
+                if (!token) {
+                    toast('Please log in to view this post.', 'warning');
+                    goPage('login');
+                    return;
+                }
+                loadPostBySlug(slug);
+            }
+            // Affiliate link handling
+            const affMatch = path.match(/^\/aff\/([^\/]+)\/([^\/]+)\/([^\/]+)/);
+            if (affMatch) {
+                const [, userId, courseId, code] = affMatch;
+                showLoading('Redirecting to course...');
+                fetch(`${API_BASE}/affiliate/track/${code}`, {
+                    method: 'GET',
+                    credentials: 'include'
+                }).catch(() => {}).finally(() => {
+                    window.location.href = `/courses/${courseId}`;
+                });
+            }
         }
 
         async function fetchAnnouncements() {
@@ -6358,6 +6512,19 @@
         }
 
         // ================================================================
+        // SOCIAL EARNINGS
+        // ================================================================
+        async function loadSocialEarnings() {
+            try {
+                const res = await apiCall('/posts/my/social-earnings');
+                const data = res.data || {};
+                S.socialEarnings = data.totalEarnings || 0;
+                const el = document.getElementById('socialEarnings');
+                if (el) el.textContent = fmtMoneyAPI(S.socialEarnings);
+            } catch (e) { console.warn('Could not load social earnings:', e); }
+        }
+
+        // ================================================================
         // DASHBOARD - HOME
         // ================================================================
         async function initHome() {
@@ -6367,7 +6534,8 @@
             try { await loadEnrollments();
                 await loadLeaderboard();
                 await loadTransactions();
-                await loadReferralStats(); } catch (e) {}
+                await loadReferralStats();
+                await loadSocialEarnings(); } catch (e) {}
             renderHomeDashboard();
             checkPlanExpiry();
         }
@@ -6404,6 +6572,7 @@
             const postCount = S.posts?.length || 0;
             const followersCount = S.following?.length || 0;
             const totalEarnings = S.user?.walletBalance || 0;
+            const socialEarnings = S.socialEarnings || 0;
 
             el.innerHTML =
                 `
@@ -6437,7 +6606,7 @@
                     <div class="earning-stat"><div class="es-icon">💰</div><div class="es-value">${fmtMoneyAPI(totalEarnings)}</div><div class="es-label">Total Earned</div></div>
                     <div class="earning-stat"><div class="es-icon">📝</div><div class="es-value">${postCount}</div><div class="es-label">Posts</div></div>
                     <div class="earning-stat"><div class="es-icon">👥</div><div class="es-value">${followersCount}</div><div class="es-label">Following</div></div>
-                    <div class="earning-stat"><div class="es-icon">📚</div><div class="es-value">${S.enrollments.length}</div><div class="es-label">Courses</div></div>
+                    <div class="earning-stat"><div class="es-icon">📊</div><div class="es-value">${fmtMoneyAPI(socialEarnings)}</div><div class="es-label">Social Earnings</div></div>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-8">
@@ -6484,7 +6653,6 @@
                 S.currentCourseData = data.data || data;
                 S.currentLessons = Array.isArray(S.currentCourseData.lessons) ? S.currentCourseData.lessons : (S
                     .currentCourseData.sections?.flatMap(s => s.lessons) || []);
-                // Display quizzes if any
                 if (S.currentCourseData.quizzes && S.currentCourseData.quizzes.length) {
                     const quizContainer = document.getElementById('quizWrap');
                     if (quizContainer) {
@@ -6544,13 +6712,19 @@
                 const price = c.displayPrice || c.price || 0;
                 const instructorName = c.instructor?.firstName || 'Instructor';
                 const lessonCount = c.totalLessons || (Array.isArray(c.lessons) ? c.lessons.length : 0);
-                return `<div class="course-card" onclick="openBuyCourse('${c._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail || c.emoji || '📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress || 0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title || 'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level || 'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent || 0}% aff</span>` : ''}</div></div></div>`;
+                const views = c.views || 0;
+                return `<div class="course-card" onclick="openBuyCourse('${c._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail || c.emoji || '📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress || 0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title || 'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level || 'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent || 0}% aff</span>` : ''}</div><div style="font-size:.7rem;color:var(--text3);margin-top:.3rem"><i class="fas fa-eye"></i> ${views}</div></div></div>`;
             }).join('');
         }
 
         function openBuyCourse(courseId) {
             const c = (S.appCourses || []).find(x => x._id === courseId);
             if (!c) return;
+            // Track view
+            const token = localStorage.getItem('cx_accessToken');
+            if (token) {
+                fetch(`${API_BASE}/courses/${c._id}/view`, { method: 'POST' }).catch(() => {});
+            }
             if ((c.price === 0 || c.price == null) && (c.salePrice === 0 || c.salePrice == null)) {
                 if (!S.loggedIn) { toast('Please log in to enroll', 'warning');
                     goPage('login'); return; }
@@ -7391,7 +7565,7 @@
                 const stats = data.data || {};
                 S.instructorCourses = Array.isArray(stats.courses) ? stats.courses : [];
                 document.getElementById('instCoursesTable').innerHTML =
-                    `<thead><tr><th>Course</th><th>Status</th><th>Students</th><th>Revenue</th><th>Actions</th></tr></thead><tbody>${S.instructorCourses.map(c => { const statusLabel = c.isApproved ? 'Live' : c.pendingApproval ? 'Pending' : 'Draft'; const statusClass = c.isApproved ? 'ps-paid' : c.pendingApproval ? 'ps-pend' : 'ps-fail'; return `<tr><td><div style="display:flex;align-items:center;gap:.5rem"><span>📚</span><span>${c.title || 'Course'}</span></div></td><td><span class="pstatus ${statusClass}">${statusLabel}</span></td><td>${c.totalStudents || 0}</td><td style="font-weight:700;color:var(--primary)">${fmtMoneyAPI(c.instructorEarnings || c.totalRevenue || 0)}</td><td><button class="btn btn-ghost btn-sm" onclick="editExistingCourse('${c._id}')"><i class="fas fa-edit"></i> Edit</button>${!c.isApproved && !c.pendingApproval ? `<button class="btn btn-primary btn-sm" onclick="submitExistingCourse('${c._id}')"><i class="fas fa-paper-plane"></i> Submit</button>` : ''}</td></tr>`; }).join('') || '<tr><td colspan="5" style="text-align:center">No courses yet</td></tr>'}</tbody>`;
+                    `<thead><tr><th>Course</th><th>Status</th><th>Students</th><th>Views</th><th>Revenue</th><th>Actions</th></tr></thead><tbody>${S.instructorCourses.map(c => { const statusLabel = c.isApproved ? 'Live' : c.pendingApproval ? 'Pending' : 'Draft'; const statusClass = c.isApproved ? 'ps-paid' : c.pendingApproval ? 'ps-pend' : 'ps-fail'; return `<tr><td><div style="display:flex;align-items:center;gap:.5rem"><span>📚</span><span>${c.title || 'Course'}</span></div></td><td><span class="pstatus ${statusClass}">${statusLabel}</span></td><td>${c.totalStudents || 0}</td><td>${c.views || 0}</td><td style="font-weight:700;color:var(--primary)">${fmtMoneyAPI(c.instructorEarnings || c.totalRevenue || 0)}</td><td><button class="btn btn-ghost btn-sm" onclick="editExistingCourse('${c._id}')"><i class="fas fa-edit"></i> Edit</button>${!c.isApproved && !c.pendingApproval ? `<button class="btn btn-primary btn-sm" onclick="submitExistingCourse('${c._id}')"><i class="fas fa-paper-plane"></i> Submit</button>` : ''}<button class="btn btn-danger btn-sm" onclick="deleteCourse('${c._id}')"><i class="fas fa-trash"></i></button></td></tr>`; }).join('') || '<tr><td colspan="6" style="text-align:center">No courses yet</td></tr>'}</tbody>`;
                 document.getElementById('instStatsRow').innerHTML =
                     `<div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-book"></i></div><div class="sv">${stats.totalCourses || S.instructorCourses.length || 0}</div><div class="sl">Courses</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-users"></i></div><div class="sv">${stats.totalStudents || 0}</div><div class="sl">Students</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(stats.totalRevenue || 0)}</div><div class="sl">Revenue</div></div></div>`;
                 if (stats.pendingQuestions > 0 && S.instructorCourses.length > 0) {
@@ -7433,6 +7607,15 @@
             document.getElementById('inst-tab-earnings').style.display = tab === 'earnings' ? 'block' : 'none';
             S.instTab = tab;
             if (tab === 'sales') loadInstructorSales();
+        }
+
+        async function deleteCourse(courseId) {
+            if (!confirm('Delete this course? This action cannot be undone.')) return;
+            try {
+                await apiCall(`/instructor/courses/${courseId}`, { method: 'DELETE' });
+                toast('Course deleted', 'success');
+                loadInstructorData();
+            } catch (e) { toast(e.message, 'error'); }
         }
 
         async function editExistingCourse(courseId) {
@@ -7500,7 +7683,12 @@
         // ================================================================
         function startAutoSave() {
             if (autoSaveTimer) clearInterval(autoSaveTimer);
-            autoSaveTimer = setInterval(() => { saveDraftToLocalStorage(); }, 30000);
+            autoSaveTimer = setInterval(() => {
+                saveDraftToLocalStorage();
+                if (S.currentCourseData?._id) {
+                    saveDraftToServer(true);
+                }
+            }, 30000);
         }
 
         function saveDraftToLocalStorage() {
@@ -7585,7 +7773,7 @@
             initQuillEditors();
         }
 
-        async function saveDraftToServer() {
+        async function saveDraftToServer(silent = false) {
             const title = document.getElementById('edTitle')?.value.trim() || 'Untitled Course';
             const subtitle = document.getElementById('edSubtitle')?.value.trim() || '';
             let desc = S.quillEditors['descEditorQuill'] ? S.quillEditors['descEditorQuill'].root.innerHTML : '';
@@ -7613,12 +7801,12 @@
             };
             try {
                 if (S.currentCourseData?._id) {
-                    await apiCall(`/courses/${S.currentCourseData._id}`, { method: 'PUT', body });
+                    await apiCall(`/instructor/courses/${S.currentCourseData._id}/draft`, { method: 'POST', body });
                 } else {
                     const res = await apiCall('/instructor/courses', { method: 'POST', body });
                     S.currentCourseData = res.data;
                 }
-                toast('💾 Draft saved to server!', 'success');
+                if (!silent) toast('💾 Draft saved to server!', 'success');
                 document.getElementById('edAutoSave').textContent = 'Draft · Saved';
                 localStorage.removeItem(`course_draft_${S.currentCourseData?._id || 'new'}`);
             } catch (e) { toast('Save failed: ' + e.message, 'error'); }
@@ -7787,7 +7975,7 @@
 
         async function handleMediaUpload(input) {
             const files = Array.from(input.files);
-            if (!S.currentCourseData?._id) { await saveDraftToServer(); if (!S.currentCourseData?._id) { toast(
+            if (!S.currentCourseData?._id) { await saveDraftToServer(true); if (!S.currentCourseData?._id) { toast(
                         'Save course draft first', 'warning'); return; } }
             for (const file of files) {
                 const formData = new FormData();
@@ -7831,7 +8019,7 @@
             const title = document.getElementById('edTitle')?.value.trim();
             if (!title) { toast('Course title is required', 'error'); return; }
             if (S.editorLessons.length < 20) { toast('Need at least 20 lessons', 'warning'); return; }
-            await saveDraftToServer();
+            await saveDraftToServer(true);
             if (!S.currentCourseData?._id) { toast('Failed to save course.', 'error'); return; }
             showLoading('Submitting course for review...');
             try {
@@ -8136,7 +8324,7 @@
                                 <div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Title</label><input type="text" class="finput" id="admChallengeTitle" placeholder="Challenge title"/></div></div>
                                 <div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Reward XP</label><input type="number" class="finput" id="admChallengeXP" placeholder="500" value="500"/></div></div>
                             </div>
-                            <div class="form-group"><label class="flabel">Description</label><textarea class="finput" id="admChallengeDesc" style="min-height:60px" placeholder="Describe the challenge..."></textarea></div>
+                            <div class="form-group"><label class="flabel">Description</label><textarea class="finput" id="admChallengeDesc" style="min-height:60px" placeholder="Describe the challenge..."/></div>
                             <div class="row">
                                 <div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Start Date</label><input type="datetime-local" class="finput" id="admChallengeStart"/></div></div>
                                 <div class="col-12 col-md-6"><div class="form-group"><label class="flabel">End Date</label><input type="datetime-local" class="finput" id="admChallengeEnd"/></div></div>
@@ -8183,6 +8371,23 @@
                         document.getElementById('topAffiliatesList').innerHTML =
                             `<div class="overflow-x-auto"><table class="dtable"><thead><tr><th>Rank</th><th>Affiliate</th><th>Earnings</th><th>Conversions</th><th>Links</th></tr></thead><tbody>${topAffiliates.map((a, i) => `<tr><td>${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</td><td>${a.displayName || a.firstName || 'User'}</td><td style="color:var(--primary);font-weight:700">${fmtMoneyAPI(a.totalAffiliateEarnings || 0)}</td><td>${a.totalAffiliateConversions || 0}</td><td>${a.affiliateLinksCount || 0}</td></tr>`).join('') || '<tr><td colspan="5" style="text-align:center">No affiliates yet</td></tr>'}</tbody></table></div>`;
                     } catch (e) {}
+                    break;
+                case 'social-earnings':
+                    content.innerHTML = `
+                        <div class="social-earnings-admin">
+                            <div class="admin-form card card-p">
+                                <h5 style="margin-bottom:1rem">📊 Social Earnings Configuration</h5>
+                                <div class="form-group"><label class="flabel">Daily Pool Amount (₦)</label><input type="number" class="finput" id="admPoolAmount" value="${S.poolConfig.dailyPoolAmount || 10000}" min="1000"/></div>
+                                <button class="btn btn-primary" onclick="updateSocialEarningsConfig()"><i class="fas fa-save"></i> Update Pool</button>
+                            </div>
+                            <div class="card card-p mt-3">
+                                <h5>🏆 Top Earning Posts</h5>
+                                <div id="topEarningPosts"><p style="color:var(--text3)">Loading...</p></div>
+                            </div>
+                        </div>
+                    `;
+                    await loadSocialEarningsConfig();
+                    await loadTopEarningPosts();
                     break;
                 case 'audit':
                     content.innerHTML = '<p style="color:var(--text3)">Loading audit logs...</p>';
@@ -8427,6 +8632,53 @@
                 toast('Payment rejected', 'info');
                 loadManualPayments();
             } catch (err) { toast('Failed: ' + err.message, 'error'); } finally { hideLoading(); }
+        }
+
+        // ================================================================
+        // ADMIN SOCIAL EARNINGS
+        // ================================================================
+        async function loadSocialEarningsConfig() {
+            try {
+                const res = await apiCall('/admin/social-earnings/config');
+                const config = res.data || {};
+                S.poolConfig = config;
+                const el = document.getElementById('admPoolAmount');
+                if (el) el.value = config.dailyPoolAmount || 10000;
+            } catch (e) { console.warn('Could not load social earnings config:', e); }
+        }
+
+        async function updateSocialEarningsConfig() {
+            const amount = document.getElementById('admPoolAmount')?.value;
+            if (!amount || amount < 1000) { toast('Enter a valid pool amount (min ₦1,000)', 'error'); return; }
+            try {
+                await apiCall('/admin/social-earnings/config', {
+                    method: 'PUT',
+                    body: { dailyPoolAmount: Number(amount) }
+                });
+                toast('Pool updated!', 'success');
+                S.poolConfig.dailyPoolAmount = Number(amount);
+            } catch (e) { toast(e.message, 'error'); }
+        }
+
+        async function loadTopEarningPosts() {
+            try {
+                const res = await apiCall('/admin/social-earnings/top-posts?limit=10');
+                const posts = res.data || [];
+                S.topEarningPosts = posts;
+                const container = document.getElementById('topEarningPosts');
+                if (!container) return;
+                if (!posts.length) {
+                    container.innerHTML = '<p style="color:var(--text3)">No posts with earnings yet.</p>';
+                } else {
+                    container.innerHTML = posts.map(p => `
+                        <div style="padding:.5rem 0; border-bottom:1px solid var(--border);">
+                            <strong>${escapeHtml(p.postId?.title || 'Untitled')}</strong>
+                            <span style="float:right;color:var(--primary);font-weight:700">${fmtMoneyAPI(p.earnings)}</span>
+                            <br><small style="color:var(--text3)">${p.views || 0} views · ❤️ ${p.likes || 0} · 💬 ${p.comments || 0}</small>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) { console.warn('Could not load top earning posts:', e); }
         }
 
         // ================================================================
@@ -8779,6 +9031,9 @@
         }
 
         async function submitRating() {
+            const token = localStorage.getItem('cx_accessToken');
+            if (!token) { toast('Please log in to rate', 'error');
+                goPage('login'); return; }
             if (!S.selectedRating) { toast('Select a rating', 'error'); return; }
             try {
                 if (S.currentCourseId) {
@@ -8971,8 +9226,9 @@
                     checkPlanExpiry();
                     const hash = window.location.hash.slice(1);
                     if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(
-                            () => openBuyCourse(courseId), 1000); } else if (hash === 'app' || hash === 'setup')
-                        goPage(hash);
+                            () => openBuyCourse(courseId), 1000); } else if (hash.startsWith('post/')) { const slug =
+                            hash.split('/')[1]; if (slug) setTimeout(() => loadPostBySlug(slug), 1000); } else if (
+                        hash === 'app' || hash === 'setup') goPage(hash);
                     else goPage('app');
                 } catch (e) {
                     localStorage.removeItem('cx_accessToken');
