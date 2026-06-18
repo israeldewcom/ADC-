@@ -4729,7 +4729,6 @@
                 if (ct && ct.includes('application/json')) { data = await response.json(); } else { data = { success: false,
                         message: 'Invalid server response' }; }
 
-                // Token expired or unauthorized
                 if (response.status === 401) {
                     localStorage.removeItem('cx_accessToken');
                     localStorage.removeItem('cx_user');
@@ -5387,7 +5386,6 @@
                 S.posts = posts;
                 renderFeed(posts, pagination);
                 attachPostEventListeners();
-                // Track views for posts in feed
                 posts.forEach(p => { if (p._id) trackPostView(p._id); });
             } catch (err) {
                 toast('Failed to load feed: ' + err.message, 'error');
@@ -5710,7 +5708,6 @@
                 if (S.postQuill) {
                     S.postQuill.root.innerHTML = '';
                 }
-                // Refresh the current feed
                 if (S.dp === 'feed') loadFeed(S.feedPage);
                 else if (S.dp === 'following') loadFollowingFeed();
                 else if (S.dp === 'profile' && S.profileUser) {
@@ -5934,7 +5931,21 @@
                 } else if (filter === 'upcoming') {
                     url = `${CHALLENGES_API}/upcoming`;
                 } else {
-                    url = `${CHALLENGES_API}/all?status=completed`;
+                    // For non-admins, completed challenges are not shown via /all
+                    // Use the active endpoint and filter on client side, or show empty
+                    // Fix: Use /challenges/all?status=completed only for admins, else show empty
+                    const isAdmin = S.user?.roles?.includes('admin') || S.user?.role === 'admin' || S.user?.role ===
+                        'superadmin';
+                    if (isAdmin) {
+                        url = `${CHALLENGES_API}/all?status=completed`;
+                    } else {
+                        // Non-admin: show a message or empty state
+                        renderChallenges([]);
+                        document.getElementById('challengesContainer').innerHTML =
+                            '<div class="empty-state"><i class="fas fa-lock"></i><h4>Completed challenges</h4><p>Only admins can view all completed challenges.</p></div>';
+                        hideLoading();
+                        return;
+                    }
                 }
                 const res = await apiCall(url);
                 const challenges = res.data || [];
@@ -5947,6 +5958,8 @@
                 await loadMyChallengeProgress();
             } catch (err) {
                 toast('Failed to load challenges: ' + err.message, 'error');
+                document.getElementById('challengesContainer').innerHTML =
+                    '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Could not load challenges. Please try again.</p></div>';
             } finally { hideLoading(); }
         }
 
@@ -6047,13 +6060,31 @@
         }
 
         // ================================================================
-        // PEOPLE MODULE
+        // PEOPLE MODULE – FIXED: non-admin users don't call admin endpoint
         // ================================================================
         async function loadPeople() {
             showLoading('Loading users...');
             try {
-                const res = await apiCall('/admin/users?limit=50');
-                const users = res.data?.users || res.data || [];
+                // Check if user is admin - only admin can view all users via /admin/users
+                const isAdmin = S.user?.roles?.includes('admin') || S.user?.role === 'admin' || S.user?.role === 'superadmin';
+                let users = [];
+                if (isAdmin) {
+                    const res = await apiCall('/admin/users?limit=50');
+                    users = res.data?.users || res.data || [];
+                } else {
+                    // Non-admin: use public endpoint or load from following
+                    // For now, try a public endpoint - if not available, show empty with message
+                    try {
+                        const res = await apiCall('/users/public?limit=50');
+                        users = res.data?.users || res.data || [];
+                    } catch (e) {
+                        // Fallback: show empty with message
+                        document.getElementById('peopleContainer').innerHTML =
+                            '<div class="empty-state"><i class="fas fa-users"></i><h4>Discover People</h4><p>Follow other learners and instructors to see their content in your feed.</p></div>';
+                        hideLoading();
+                        return;
+                    }
+                }
                 S.users = users;
                 const followPromises = users.filter(u => u._id !== S.user?._id).map(async (u) => {
                     try {
@@ -6070,7 +6101,11 @@
                 await Promise.all(followPromises);
                 renderPeople(users);
                 updateFollowingBadge();
-            } catch (err) { toast('Failed to load users: ' + err.message, 'error'); } finally { hideLoading(); }
+            } catch (err) {
+                toast('Failed to load users: ' + err.message, 'error');
+                document.getElementById('peopleContainer').innerHTML =
+                    '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Could not load users. Please try again.</p></div>';
+            } finally { hideLoading(); }
         }
 
         function renderPeople(users) {
@@ -6698,7 +6733,6 @@
         function openBuyCourse(courseId) {
             const c = (S.appCourses || []).find(x => x._id === courseId);
             if (!c) return;
-            // Track view
             const token = localStorage.getItem('cx_accessToken');
             if (token) {
                 fetch(`${API_BASE}/courses/${c._id}/view`, { method: 'POST' }).catch(() => {});
@@ -8139,18 +8173,15 @@
                 return;
             }
 
-            // ✅ FIX: Wrap bank details inside bankAccount object
             const bankAccount = {
                 bankName: bankName,
                 accountNumber: accountNumber,
                 accountName: accountName || `${S.user.firstName || ''} ${S.user.lastName || ''}`.trim()
             };
 
-            // Update local state
             S.user.bankAccount = bankAccount;
             localStorage.setItem('cx_user', JSON.stringify(S.user));
 
-            // Update server
             apiCall('/users/profile', {
                 method: 'PUT',
                 body: { bankAccount: bankAccount }
