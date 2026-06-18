@@ -728,6 +728,16 @@
             color: var(--secondary);
             border: 1px solid rgba(236, 72, 153, .25);
         }
+        .badge-success-light {
+            background: rgba(52, 211, 153, .08);
+            color: var(--success);
+            border: 1px solid rgba(52, 211, 153, .15);
+        }
+        .badge-danger-light {
+            background: rgba(248, 113, 113, .08);
+            color: var(--danger);
+            border: 1px solid rgba(248, 113, 113, .15);
+        }
 
         /* ===== CARDS ===== */
         .card {
@@ -3812,6 +3822,11 @@
             align-items: center;
             gap: 1rem;
             padding: 1rem;
+            cursor: pointer;
+        }
+        .person-card:hover {
+            background: var(--bg2);
+            border-color: var(--border2);
         }
         .person-avatar {
             width: 50px;
@@ -3853,6 +3868,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all .2s;
+            flex-shrink: 0;
         }
         .btn-follow:hover {
             background: var(--primary-dark);
@@ -4103,6 +4119,263 @@
         .ql-snow .ql-editor img {
             max-width: 100%;
         }
+
+        /* ===== FOLLOWING COLLECTION ===== */
+        .following-collection {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        @media(min-width:600px) {
+            .following-collection {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media(min-width:992px) {
+            .following-collection {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+        .following-item {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            transition: all .2s;
+        }
+        .following-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .following-item .fi-header {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            margin-bottom: .75rem;
+        }
+        .following-item .fi-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .following-item .fi-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .following-item .fi-name {
+            font-weight: 600;
+            font-size: .88rem;
+        }
+        .following-item .fi-badge {
+            font-size: .6rem;
+        }
+        .following-item .fi-content {
+            font-size: .82rem;
+            color: var(--text2);
+            line-height: 1.6;
+        }
+        .following-item .fi-content .fi-type {
+            display: inline-block;
+            font-size: .6rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            padding: .15rem .5rem;
+            border-radius: 50px;
+            background: rgba(99, 102, 241, .1);
+            color: var(--primary);
+            margin-bottom: .4rem;
+        }
+        .following-item .fi-meta {
+            display: flex;
+            gap: .75rem;
+            font-size: .7rem;
+            color: var(--text3);
+            margin-top: .5rem;
+            flex-wrap: wrap;
+        }
+
+        /* ===== EARNINGS DASHBOARD ===== */
+        .earnings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .75rem;
+        }
+        @media(min-width:600px) {
+            .earnings-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        .earning-stat {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: .85rem;
+            text-align: center;
+            transition: all .2s;
+        }
+        .earning-stat:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .earning-stat .es-icon {
+            font-size: 1.4rem;
+            margin-bottom: .3rem;
+        }
+        .earning-stat .es-value {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .earning-stat .es-label {
+            font-size: .65rem;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        /* ===== PLAN EXPIRY WARNING ===== */
+        .plan-warning {
+            background: linear-gradient(135deg, rgba(251, 191, 36, .12), rgba(251, 146, 60, .08));
+            border: 1px solid rgba(251, 191, 36, .25);
+            border-radius: var(--radius-sm);
+            padding: .75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            font-size: .82rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .plan-warning .pw-icon {
+            font-size: 1.2rem;
+        }
+        .plan-warning .pw-actions {
+            margin-left: auto;
+            display: flex;
+            gap: .5rem;
+        }
+
+        /* ===== QUIZ DISPLAY ===== */
+        .quiz-display {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .quiz-display .quiz-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: .5rem;
+        }
+        .quiz-display .quiz-question {
+            padding: .5rem 0;
+            border-bottom: 1px solid rgba(128, 128, 128, .06);
+        }
+        .quiz-display .quiz-question:last-child {
+            border-bottom: none;
+        }
+        .quiz-display .quiz-q-text {
+            font-weight: 600;
+            font-size: .88rem;
+        }
+        .quiz-display .quiz-options {
+            padding-left: 1rem;
+            font-size: .82rem;
+            color: var(--text2);
+        }
+        .quiz-display .quiz-options li {
+            list-style: none;
+            padding: .15rem 0;
+        }
+        .quiz-display .quiz-options li.correct {
+            color: var(--success);
+        }
+
+        /* ===== POST DELETE ===== */
+        .post-delete-btn {
+            color: var(--danger);
+            font-size: .75rem;
+            cursor: pointer;
+            transition: color .2s;
+            background: none;
+            border: none;
+            padding: .2rem .4rem;
+        }
+        .post-delete-btn:hover {
+            color: #ef4444;
+        }
+        .post-edit-btn {
+            color: var(--primary);
+            font-size: .75rem;
+            cursor: pointer;
+            transition: color .2s;
+            background: none;
+            border: none;
+            padding: .2rem .4rem;
+        }
+        .post-edit-btn:hover {
+            color: var(--primary-light);
+        }
+
+        /* ===== PROFILE COLLECTION ===== */
+        .profile-collection {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: .75rem;
+        }
+        @media(min-width:600px) {
+            .profile-collection {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .profile-collection .collection-item {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: .85rem;
+            transition: all .2s;
+        }
+        .profile-collection .collection-item:hover {
+            border-color: var(--primary);
+        }
+        .profile-collection .collection-item .ci-type {
+            font-size: .6rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            padding: .15rem .5rem;
+            border-radius: 50px;
+            background: rgba(99, 102, 241, .1);
+            color: var(--primary);
+            display: inline-block;
+            margin-bottom: .4rem;
+        }
+        .profile-collection .collection-item .ci-title {
+            font-weight: 600;
+            font-size: .88rem;
+            margin-bottom: .2rem;
+        }
+        .profile-collection .collection-item .ci-meta {
+            font-size: .72rem;
+            color: var(--text3);
+        }
+        .profile-collection .collection-item .ci-actions {
+            margin-top: .5rem;
+            display: flex;
+            gap: .4rem;
+        }
     </style>
 </head>
 <body>
@@ -4114,7 +4387,7 @@
     <!-- LANDING PAGE -->
     <!-- ============================================================ -->
     <div id="page-landing" class="page active">
-        <nav class="land-nav" id="landingNav"><div class="logo" onclick="goPage('landing')"><div class="logo-mark">CX</div>ChangeX<span style="color:var(--primary)">.</span></div><div class="land-nav-links"><a onclick="smoothTo('how-it-works')">How It Works</a><a onclick="smoothTo('courses-sec')">Courses</a><a onclick="smoothTo('instructors-sec')">Instructors</a><a onclick="smoothTo('pricing-sec')">Pricing</a><a onclick="goPage('contact')">Contact</a></div><div style="display:flex;align-items:center;gap:.4rem"><button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle dark/light mode"><i class="fas" id="themeIcon"></i></button><button class="btn btn-outline btn-sm" onclick="goPage('login')">Sign In</button><button class="btn btn-primary btn-sm" onclick="goPage('register')">Start Free</button><button class="btn-icon d-md-none" onclick="toggleMobNav()"><i class="fas fa-bars"></i></button></div></nav>
+        <nav class="land-nav" id="landingNav"><div class="logo" onclick="goPage('landing')"><div class="logo-mark">CX</div>ChangeX<span style="color:var(--primary)">.</span></div><div class="land-nav-links"><a onclick="smoothTo('how-it-works')">How It Works</a><a onclick="smoothTo('courses-sec')">Courses</a><a onclick="smoothTo('instructors-sec')">Instructors</a><a onclick="smoothTo('pricing-sec')">Pricing</a><a onclick="goPage('contact')">Contact</a></div><div style="display:flex;align-items:center;gap:.4rem"><button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><i class="fas" id="themeIcon"></i></button><button class="btn btn-outline btn-sm" onclick="goPage('login')">Sign In</button><button class="btn btn-primary btn-sm" onclick="goPage('register')">Start Free</button><button class="btn-icon d-md-none" onclick="toggleMobNav()"><i class="fas fa-bars"></i></button></div></nav>
         <div class="mob-nav-dd" id="mobNav"><a onclick="smoothTo('how-it-works');toggleMobNav()">How It Works</a><a onclick="smoothTo('courses-sec');toggleMobNav()">Courses</a><a onclick="smoothTo('instructors-sec');toggleMobNav()">Instructors</a><a onclick="smoothTo('pricing-sec');toggleMobNav()">Pricing</a><a onclick="goPage('contact');toggleMobNav()">Contact</a><a onclick="goPage('login')">Sign In</a><a onclick="goPage('register')" style="color:var(--primary);font-weight:600">Start Free →</a></div>
 
         <section class="lhero"><div class="lhero-bg"></div><div class="lhero-wrap"><div class="row items-center"><div class="col-12 col-lg-6"><div class="hero-eyebrow"><span class="pulse-dot"></span><span>🌍 Global Learn-to-Earn Platform</span></div><h1 style="font-size:clamp(2rem,5vw,3.2rem)">Turn Tech Skills Into <span class="grad-text">Real Income</span></h1><p class="hero-desc">Learn HTML, CSS, JavaScript &amp; AI Tools — earn from course sales, referrals, affiliates &amp; bonuses. Pay online or via <strong style="color:var(--primary)">bank transfer</strong>. No experience needed.</p><div class="hero-actions"><button class="btn btn-primary btn-lg" onclick="goPage('register')"><i class="fas fa-rocket"></i>Start Earning Free</button><button class="btn btn-outline btn-lg" onclick="smoothTo('how-it-works')"><i class="fas fa-play"></i>See How</button></div><div class="trust-row"><div class="trust-item"><i class="fas fa-shield-alt"></i>Secure &amp; Verified</div><div class="trust-item"><i class="fas fa-certificate"></i>Earn Certificates</div><div class="trust-item"><i class="fas fa-bolt"></i>Instant Payouts</div><div class="trust-item"><i class="fas fa-university"></i>Bank Transfer Accepted</div></div></div><div class="col-12 col-lg-6" style="padding-top:1.5rem"><div class="hero-vis"><div class="hero-dash"><div class="hd-bar"><div class="hd-dot" style="background:#ff5f57"></div><div class="hd-dot" style="background:#febc2e;margin-left:4px"></div><div class="hd-dot" style="background:#28c840;margin-left:4px"></div><span style="font-size:.67rem;color:var(--text3);margin-left:auto;font-family:var(--font-mono)">changex.academy/dashboard</span></div><div class="hd-body"><div class="hd-earn"><div style="font-size:.7rem;color:var(--text3);margin-bottom:.2rem;font-family:var(--font-mono)">💰 TOTAL EARNINGS</div><div class="hd-amt" id="heroEarnings">₦0</div><div class="hd-minis"><div class="hd-mini"><div class="hd-mv" style="color:var(--lime)">₦0</div><div class="hd-ml">Referrals</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--cyan)">₦0</div><div class="hd-ml">Courses</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--gold)">🔥 0</div><div class="hd-ml">Streak</div></div></div></div></div></div><div class="fc fc-bot"><i class="fas fa-star" style="color:var(--gold)"></i> 4.9 · 3,200+ reviews</div><div class="fc fc-top"><i class="fas fa-user-plus"></i> 15K+ Students</div></div></div></div></div></section>
@@ -4198,6 +4471,9 @@
     <!-- Participants Modal (Admin) -->
     <div class="modal-ov hidden" id="participantsModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👥 Challenge Participants</h5><button class="btn-icon-sm" onclick="closeModal('participantsModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd" id="participantsContent"></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('participantsModal')">Close</button></div></div></div>
 
+    <!-- Share Modal -->
+    <div class="modal-ov hidden" id="shareModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">📤 Share Post</h5><button class="btn-icon-sm" onclick="closeModal('shareModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem">Share this post with your friends and followers!</p><div id="shareLinks" style="display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:1rem"><button class="btn btn-ghost" onclick="shareVia('facebook')" style="color:#1877F2"><i class="fab fa-facebook"></i> Facebook</button><button class="btn btn-ghost" onclick="shareVia('twitter')" style="color:#1DA1F2"><i class="fab fa-twitter"></i> Twitter</button><button class="btn btn-ghost" onclick="shareVia('linkedin')" style="color:#0A66C2"><i class="fab fa-linkedin"></i> LinkedIn</button><button class="btn btn-ghost" onclick="shareVia('whatsapp')" style="color:#25D366"><i class="fab fa-whatsapp"></i> WhatsApp</button><button class="btn btn-ghost" onclick="shareVia('telegram')" style="color:#0088CC"><i class="fab fa-telegram"></i> Telegram</button><button class="btn btn-ghost" onclick="shareVia('copy')"><i class="fas fa-link"></i> Copy Link</button></div><div class="form-group"><label class="flabel">Link</label><div class="ref-box"><span class="ref-link" id="shareLink">Loading...</span><button class="btn btn-primary btn-sm" onclick="copyShareLink()"><i class="fas fa-copy"></i> Copy</button></div></div></div></div></div>
+
     <!-- ============================================================ -->
     <!-- NOTIFICATION PANEL -->
     <!-- ============================================================ -->
@@ -4207,6 +4483,8 @@
     <!-- APP (MAIN DASHBOARD) -->
     <!-- ============================================================ -->
     <div id="page-app" class="page"><div class="announcement-bar" id="announcementBar" style="display:none"><i class="fas fa-bullhorn"></i><span id="announcementText">📣 Loading announcements...</span><button style="margin-left:auto;background:none;border:none;color:var(--gold);cursor:pointer;font-size:.8rem" onclick="this.parentElement.style.display='none'"><i class="fas fa-times"></i></button></div>
+    <!-- Plan Expiry Warning -->
+    <div id="planWarning" class="plan-warning" style="display:none"><span class="pw-icon">⚠️</span><span id="planWarningText">Your Premium plan expires in 5 days. Renew now to keep earning.</span><div class="pw-actions"><button class="btn btn-gold btn-sm" onclick="openModal('premiumModal')"><i class="fas fa-crown"></i> Renew</button><span class="btn-icon-sm" onclick="this.parentElement.parentElement.style.display='none'"><i class="fas fa-times"></i></span></div></div>
     <div id="adBanner" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,146,60,.05));border-bottom:1px solid rgba(251,191,36,.2);padding:.5rem 1rem;align-items:center;gap:.5rem;font-size:.78rem"><i class="fas fa-ad" style="color:var(--gold)"></i><span style="flex:1">🎯 Upgrade to Premium — No ads, create courses, 80% revenue!</span><button class="btn btn-gold btn-sm" onclick="openModal('premiumModal')">Upgrade ₦5k/mo</button><span style="cursor:pointer;color:var(--text3);margin-left:.3rem" onclick="this.parentElement.style.display='none'">✕</span></div>
 
     <div class="app-layout"><div class="sb-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
@@ -4214,6 +4492,7 @@
     <nav class="sb-nav"><ul>
         <li class="nav-sec">Social</li>
         <li><span class="nav-item active" id="nav-feed" onclick="setDP('feed')"><span class="nav-ico"><i class="fas fa-newspaper"></i></span>Feed</span></li>
+        <li><span class="nav-item" id="nav-following" onclick="setDP('following')"><span class="nav-ico"><i class="fas fa-rss"></i></span>Following<span class="nav-badge" id="navFollowingBadge">0</span></span></li>
         <li><span class="nav-item" id="nav-challenges" onclick="setDP('challenges')"><span class="nav-ico"><i class="fas fa-trophy"></i></span>Challenges<span class="nav-badge nav-badge-pink" id="navChallengeBadge">0</span></span></li>
         <li><span class="nav-item" id="nav-people" onclick="setDP('people')"><span class="nav-ico"><i class="fas fa-users"></i></span>People</span></li>
         <li class="nav-sec" style="margin-top:.3rem">Learning</li>
@@ -4247,6 +4526,9 @@
     <div class="dash-wrap thin-scroll" id="dashWrap">
         <!-- FEED -->
         <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span><span class="fpill" onclick="filterFeed('following',this)">Following</span></div><div id="feedContainer"></div><div id="feedPagination" class="d-flex justify-center mt-3"></div></div>
+
+        <!-- FOLLOWING COLLECTION -->
+        <div id="dash-following" class="dash-sub"><div class="page-hd"><h2 class="page-title">👥 Following</h2><p class="page-sub">Posts and courses from people you follow</p></div><div id="followingContainer" class="following-collection"></div><div id="followingEmpty" class="empty-state" style="display:none"><i class="fas fa-users"></i><h4>You're not following anyone yet</h4><p>Discover people to follow in the <a style="color:var(--primary);cursor:pointer" onclick="setDP('people')">People</a> section.</p></div></div>
 
         <!-- CHALLENGES -->
         <div id="dash-challenges" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Challenges</h2><p class="page-sub">Join challenges, earn XP &amp; win rewards</p></div><div class="d-flex gap-2 mb-3"><span class="fpill active" onclick="filterChallenges('active',this)">Active</span><span class="fpill" onclick="filterChallenges('upcoming',this)">Upcoming</span><span class="fpill" onclick="filterChallenges('completed',this)">Completed</span></div><div id="challengesContainer"></div><div class="mt-4"><h4>My Challenge Progress</h4><div id="myChallengeProgress"></div></div></div>
@@ -4397,7 +4679,10 @@
             followStatus: {},
             following: [],
             profileUser: null,
-            challengeProgress: []
+            challengeProgress: [],
+            sharePostId: null,
+            sharePostSlug: null,
+            planExpiryWarningShown: false
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -4578,6 +4863,7 @@
             closeSidebar();
             const map = {
                 feed: loadFeed,
+                following: loadFollowingCollection,
                 challenges: loadChallenges,
                 people: loadPeople,
                 home: initHome,
@@ -4604,6 +4890,7 @@
             if (fab) { const hasCreatorAccess = S.isPremium || S.user?.roles?.includes('admin') || (S.user?.roles?.includes(
                         'creator') && S.user?.isApprovedInstructor);
                 fab.style.display = hasCreatorAccess ? 'block' : 'none'; }
+            checkPlanExpiry();
         }
 
         function openSidebar() { document.getElementById('sidebar')?.classList.add('open');
@@ -4622,6 +4909,9 @@
             populateAllBankDetailsBoxes();
             if (id === 'createPostModal') {
                 setTimeout(initPostQuill, 300);
+            }
+            if (id === 'shareModal') {
+                document.getElementById('shareLink').textContent = `${FRONTEND_URL}/post/${S.sharePostSlug || ''}`;
             }
         }
 
@@ -4994,6 +5284,7 @@
             const fab = document.getElementById('fab');
             if (fab) fab.style.display = hasCreatorAccess ? 'block' : 'none';
             renderCurrencySelectorUI();
+            updateFollowingBadge();
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -5041,6 +5332,38 @@
         }
 
         // ================================================================
+        // PLAN EXPIRY CHECK
+        // ================================================================
+        function checkPlanExpiry() {
+            const expiryDate = S.user?.subscriptionExpires;
+            if (!expiryDate) {
+                document.getElementById('planWarning').style.display = 'none';
+                return;
+            }
+            const expiry = new Date(expiryDate);
+            const now = new Date();
+            const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+            if (daysLeft <= 7 && daysLeft > 0) {
+                const warning = document.getElementById('planWarning');
+                warning.style.display = 'flex';
+                document.getElementById('planWarningText').textContent =
+                    `Your Premium plan expires in ${daysLeft} day${daysLeft > 1 ? 's' : ''}. Renew now to keep earning.`;
+                if (!S.planExpiryWarningShown) {
+                    toast(`⚠️ Your Premium plan expires in ${daysLeft} days!`, 'warning');
+                    S.planExpiryWarningShown = true;
+                }
+            } else if (daysLeft <= 0 && S.isPremium) {
+                const warning = document.getElementById('planWarning');
+                warning.style.display = 'flex';
+                document.getElementById('planWarningText').textContent =
+                    'Your Premium plan has expired! Renew now to continue enjoying premium features.';
+                toast('⚠️ Your Premium plan has expired!', 'warning');
+            } else {
+                document.getElementById('planWarning').style.display = 'none';
+            }
+        }
+
+        // ================================================================
         // POSTS MODULE
         // ================================================================
         const POSTS_API = '/posts';
@@ -5080,19 +5403,26 @@
             const contentHtml = post.content ? (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(post.content) : post
                 .content) : '';
             const earnings = post.earnings || 0;
+            const isAuthor = S.user?._id === author._id || S.user?._id === post.authorId?._id;
+            const slug = post.slug || post._id;
             return `
                 <div class="post-card card card-p" data-post-id="${post._id}">
                     <div class="post-header">
-                        <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
+                        <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));" onclick="openUserProfile('${author._id || post.authorId}')">
                             ${avatarHtml}
                         </div>
                         <div class="post-author-info">
-                            <strong>${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
+                            <strong onclick="openUserProfile('${author._id || post.authorId}')" style="cursor:pointer">${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
                             <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
                             <span class="badge badge-cyan" style="font-size:.55rem">${post.type || 'article'}</span>
+                            ${isAuthor ? `<span class="badge badge-dark" style="font-size:.55rem">You</span>` : ''}
+                            ${post.isPremiumOnly ? `<span class="badge badge-gold" style="font-size:.55rem">Premium</span>` : ''}
+                        </div>
+                        <div style="margin-left:auto;display:flex;gap:.2rem">
+                            ${isAuthor ? `<button class="post-delete-btn" onclick="deletePost('${post._id}')" title="Delete post"><i class="fas fa-trash"></i></button>` : ''}
                         </div>
                     </div>
-                    <h3 class="post-title" onclick="window.open('/post/${post.slug}','_blank')">${escapeHtml(post.title)}</h3>
+                    <h3 class="post-title" onclick="window.open('/post/${slug}','_blank')">${escapeHtml(post.title)}</h3>
                     ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
                     <div class="post-content">
                         ${contentHtml}
@@ -5106,7 +5436,7 @@
                     <div class="post-actions">
                         <button class="btn-like ${post.userLiked ? 'liked' : ''}" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
                         <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
-                        <button class="btn-share" data-id="${post._id}" data-slug="${post.slug}"><i class="fas fa-share-alt"></i> Share</button>
+                        <button class="btn-share" onclick="openShareModal('${post._id}','${slug}')"><i class="fas fa-share-alt"></i> Share</button>
                     </div>
                     <div class="comments-section" style="display:none;" data-post-id="${post._id}"></div>
                 </div>
@@ -5127,6 +5457,7 @@
                         <div style="font-weight:700;font-size:.88rem;margin-bottom:.25rem">${escapeHtml(course.title)}</div>
                         <div style="font-size:.74rem;color:var(--text3)">By ${author.firstName || 'Instructor'} · ${course.totalLessons || 0} lessons</div>
                         <div style="font-weight:800;color:var(--lime);margin-top:.5rem">${fmtMoneyAPI(course.price || 0)}</div>
+                        ${course.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.55rem">${course.affiliatePercent || 0}% aff</span>` : ''}
                     </div>
                 </div>
             `;
@@ -5161,9 +5492,6 @@
             });
             document.querySelectorAll('.btn-comment').forEach(btn => {
                 btn.onclick = () => toggleComments(btn.dataset.id);
-            });
-            document.querySelectorAll('.btn-share').forEach(btn => {
-                btn.onclick = () => sharePost(btn.dataset.id, btn.dataset.slug);
             });
         }
 
@@ -5245,13 +5573,17 @@
             } catch (err) { toast('Error', 'error'); }
         }
 
-        async function sharePost(postId, slug) {
-            const url = `${FRONTEND_URL}/post/${slug}`;
+        async function deletePost(postId) {
+            if (!confirm('Delete this post permanently?')) return;
             try {
-                await apiCall(`${POSTS_API}/${postId}/share`, { method: 'POST' });
-                copyToClipboard(url);
-                toast('Link copied! Share it with friends.', 'success');
-            } catch (err) { toast('Could not copy link', 'error'); }
+                await apiCall(`${POSTS_API}/${postId}`, { method: 'DELETE' });
+                toast('Post deleted', 'success');
+                if (S.dp === 'feed') loadFeed(S.feedPage);
+                if (S.dp === 'profile' && S.profileUser) {
+                    const res = await apiCall(`/users/${S.profileUser._id}/profile`);
+                    renderUserProfile(res.data);
+                }
+            } catch (err) { toast('Failed to delete: ' + err.message, 'error'); }
         }
 
         async function loadFollowingFeed() {
@@ -5283,6 +5615,128 @@
             attachPostEventListeners();
         }
 
+        // ================================================================
+        // FOLLOWING COLLECTION
+        // ================================================================
+        async function loadFollowingCollection() {
+            showLoading('Loading following collection...');
+            try {
+                const res = await apiCall('/posts/following');
+                const items = res.data || [];
+                renderFollowingCollection(items);
+                updateFollowingBadge();
+            } catch (err) {
+                toast('Failed to load following content: ' + err.message, 'error');
+            } finally { hideLoading(); }
+        }
+
+        function renderFollowingCollection(items) {
+            const container = document.getElementById('followingContainer');
+            const empty = document.getElementById('followingEmpty');
+            if (!container) return;
+            if (!items || !items.length) {
+                container.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+            container.innerHTML = items.map(item => {
+                const author = item.authorId || item.instructorId || item.instructor || {};
+                const avatarHtml = getAvatarUrl(author) ?
+                    `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                    (author.firstName?.[0] || 'U');
+                const typeLabel = item.type === 'post' ? '📝 Post' : '📚 Course';
+                const title = item.title || 'Untitled';
+                const date = new Date(item.publishedAt || item.createdAt).toLocaleDateString();
+                const contentPreview = item.type === 'post' ?
+                    (item.content ? item.content.replace(/<[^>]*>/g, '').substring(0, 120) + '...' : '') :
+                    `${item.totalLessons || 0} lessons · ${item.level || 'All levels'}`;
+                const clickAction = item.type === 'post' ?
+                    `window.open('/post/${item.slug || item._id}','_blank')` :
+                    `openBuyCourse('${item._id}')`;
+                return `
+                    <div class="following-item" onclick="${clickAction}">
+                        <div class="fi-header">
+                            <div class="fi-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">${avatarHtml}</div>
+                            <div>
+                                <div class="fi-name">${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</div>
+                                <div style="font-size:.7rem;color:var(--text3)">${date}</div>
+                            </div>
+                        </div>
+                        <div class="fi-content">
+                            <span class="fi-type">${typeLabel}</span>
+                            <div style="font-weight:600;font-size:.9rem;margin-bottom:.2rem">${escapeHtml(title)}</div>
+                            <div style="font-size:.8rem;color:var(--text3)">${contentPreview}</div>
+                        </div>
+                        <div class="fi-meta">
+                            ${item.type === 'post' ? `<span>❤️ ${item.likes || 0}</span><span>💬 ${item.commentsCount || 0}</span>` : `<span>📖 ${item.totalLessons || 0} lessons</span>`}
+                            <span><i class="far fa-clock"></i> ${new Date(item.createdAt).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateFollowingBadge() {
+            const badge = document.getElementById('navFollowingBadge');
+            if (badge) {
+                const count = S.following?.length || 0;
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'inline' : 'none';
+            }
+        }
+
+        // ================================================================
+        // SHARE MODAL
+        // ================================================================
+        function openShareModal(postId, slug) {
+            S.sharePostId = postId;
+            S.sharePostSlug = slug;
+            document.getElementById('shareLink').textContent = `${FRONTEND_URL}/post/${slug}`;
+            openModal('shareModal');
+        }
+
+        function copyShareLink() {
+            const link = document.getElementById('shareLink')?.textContent;
+            if (link) copyToClipboard(link);
+        }
+
+        function shareVia(platform) {
+            const link = document.getElementById('shareLink')?.textContent || `${FRONTEND_URL}/post/${S.sharePostSlug || ''}`;
+            const text = `Check out this post on ChangeX Academy! 🚀 Learn and earn with tech skills.`;
+            let url = '';
+            switch (platform) {
+                case 'facebook':
+                    url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}&quote=${encodeURIComponent(text)}`;
+                    break;
+                case 'twitter':
+                    url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`;
+                    break;
+                case 'linkedin':
+                    url = `https://www.linkedin.com/sharing/share-offscreen/?url=${encodeURIComponent(link)}`;
+                    break;
+                case 'whatsapp':
+                    url = `https://wa.me/?text=${encodeURIComponent(text + ' ' + link)}`;
+                    break;
+                case 'telegram':
+                    url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+                    break;
+                case 'copy':
+                default:
+                    copyToClipboard(link);
+                    toast('Link copied!', 'success');
+                    closeModal('shareModal');
+                    return;
+            }
+            if (url) {
+                window.open(url, '_blank');
+                closeModal('shareModal');
+            }
+        }
+
+        // ================================================================
+        // CREATE POST
+        // ================================================================
         function openCreatePostModal() {
             const modal = document.getElementById('createPostModal');
             if (modal) {
@@ -5448,6 +5902,17 @@
                 const res = await apiCall('/challenges/my-progress');
                 S.challengeProgress = res.data || [];
                 renderMyChallengeProgress();
+                // Auto-check for completion based on progress
+                S.challengeProgress.forEach(async (p) => {
+                    if (p.status === 'enrolled' && p.progress >= 100) {
+                        try {
+                            await apiCall(`/challenges/${p.challengeId}/complete`, { method: 'POST' });
+                            toast('🎉 Challenge completed! Rewards unlocked!', 'success');
+                            loadChallenges();
+                            renderWallet();
+                        } catch (e) { console.warn('Auto-complete failed:', e); }
+                    }
+                });
             } catch (err) { console.warn('Could not load challenge progress:', err); }
         }
 
@@ -5473,6 +5938,8 @@
                         <div style="font-size:.7rem;color:var(--text3);margin-top:.3rem;">Progress: ${p.progress || 0}%</div>
                         ${p.completedAt ? `<div style="font-size:.7rem;color:var(--success);">✅ Completed ${new Date(p.completedAt).toLocaleDateString()}</div>` : ''}
                         ${p.adminNote ? `<div style="font-size:.7rem;color:var(--text3);">Note: ${escapeHtml(p.adminNote)}</div>` : ''}
+                        ${p.status === 'completed' && c.rewardAmount ? `<div style="font-size:.7rem;color:var(--gold);">💰 +${fmtMoneyAPI(c.rewardAmount)} earned</div>` : ''}
+                        ${p.status === 'completed' && c.rewardPremiumDays ? `<div style="font-size:.7rem;color:var(--gold);">👑 +${c.rewardPremiumDays}d Premium</div>` : ''}
                     </div>
                 `;
             }).join('');
@@ -5501,6 +5968,7 @@
                 });
                 await Promise.all(followPromises);
                 renderPeople(users);
+                updateFollowingBadge();
             } catch (err) { toast('Failed to load users: ' + err.message, 'error'); } finally { hideLoading(); }
         }
 
@@ -5551,11 +6019,13 @@
                     S.following = S.following.filter(id => id !== userId);
                 }
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
+                updateFollowingBadge();
                 if (S.dp === 'people') renderPeople(S.users);
                 if (S.dp === 'profile' && S.profileUser) {
                     const res2 = await apiCall(`/users/${S.profileUser._id}/profile`);
                     renderUserProfile(res2.data);
                 }
+                if (S.dp === 'following') loadFollowingCollection();
             } catch (err) { toast('Error: ' + err.message, 'error'); }
         }
 
@@ -5606,10 +6076,28 @@
                     </div>
                 </div>
                 <div class="profile-content">
-                    <h4>Posts</h4>
-                    <div class="row">${posts.length ? posts.map(p => `<div class="col-12 col-md-6">${renderPostCard(p)}</div>`).join('') : '<p class="text-muted">No posts yet</p>'}</div>
-                    <h4 class="mt-4">Courses</h4>
-                    <div class="row">${courses.length ? courses.map(c => `<div class="col-12 col-md-6">${renderCourseCardInFeed(c)}</div>`).join('') : '<p class="text-muted">No courses yet</p>'}</div>
+                    <h4>📝 Posts</h4>
+                    <div class="profile-collection">
+                        ${posts.length ? posts.map(p => `
+                            <div class="collection-item">
+                                <span class="ci-type">${p.type || 'post'}</span>
+                                <div class="ci-title" onclick="window.open('/post/${p.slug || p._id}','_blank')" style="cursor:pointer">${escapeHtml(p.title)}</div>
+                                <div class="ci-meta">${new Date(p.publishedAt || p.createdAt).toLocaleDateString()} · ❤️ ${p.likes || 0} · 💬 ${p.commentsCount || 0}</div>
+                                ${S.user?._id === user._id ? `<div class="ci-actions"><button class="post-delete-btn" onclick="deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button></div>` : ''}
+                            </div>
+                        `).join('') : '<p style="color:var(--text3)">No posts yet</p>'}
+                    </div>
+                    <h4 class="mt-4">📚 Courses</h4>
+                    <div class="profile-collection">
+                        ${courses.length ? courses.map(c => `
+                            <div class="collection-item" onclick="openBuyCourse('${c._id}')" style="cursor:pointer">
+                                <span class="ci-type">course</span>
+                                <div class="ci-title">${escapeHtml(c.title)}</div>
+                                <div class="ci-meta">${c.totalLessons || 0} lessons · ${c.level || 'All levels'} · ${fmtMoneyAPI(c.price || 0)}</div>
+                                ${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.55rem">${c.affiliatePercent || 0}% aff</span>` : ''}
+                            </div>
+                        `).join('') : '<p style="color:var(--text3)">No courses yet</p>'}
+                    </div>
                 </div>
             `;
             attachPostEventListeners();
@@ -5828,6 +6316,7 @@
             loadAds('banner', 'adBannerTop');
             loadAds('in-feed', 'adFeedTop');
             await loadPeople();
+            checkPlanExpiry();
             setTimeout(() => {
                 const hash = window.location.hash.slice(1);
                 if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(() =>
@@ -5880,6 +6369,7 @@
                 await loadTransactions();
                 await loadReferralStats(); } catch (e) {}
             renderHomeDashboard();
+            checkPlanExpiry();
         }
 
         async function loadReferralStats() {
@@ -5911,6 +6401,10 @@
             const xpNext = level * 1000;
             const xpProgress = Math.min(100, Math.round((xp / xpNext) * 100));
             const showUpgrade = !S.isPremium && !S.user?.roles?.includes('admin');
+            const postCount = S.posts?.length || 0;
+            const followersCount = S.following?.length || 0;
+            const totalEarnings = S.user?.walletBalance || 0;
+
             el.innerHTML =
                 `
                 <div id="homeUpgradeBanner" style="display:${showUpgrade ? 'block' : 'none'};background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,146,60,.05));border:1px solid rgba(251,191,36,.2);border-radius:var(--radius);padding:1rem;margin-bottom:1rem">
@@ -5939,11 +6433,11 @@
                     </div>
                     <div class="prog" style="height:7px"><div class="prog-fill pf-primary" style="width:${xpProgress}%"></div></div>
                 </div>
-                <div class="row mb-4">
-                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(S.walletBal)}</div><div class="sl">Wallet</div></div></div>
-                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-book-open"></i></div><div class="sv">${completedCnt}/${S.enrollments.length}</div><div class="sl">Courses</div></div></div>
-                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-g"><i class="fas fa-users"></i></div><div class="sv">${refCnt}</div><div class="sl">Referrals</div></div></div>
-                    <div class="col-6 col-md-3"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${S.myAffiliateLinks?.length || 0}</div><div class="sl">Affiliates</div></div></div>
+                <div class="earnings-grid mb-4">
+                    <div class="earning-stat"><div class="es-icon">💰</div><div class="es-value">${fmtMoneyAPI(totalEarnings)}</div><div class="es-label">Total Earned</div></div>
+                    <div class="earning-stat"><div class="es-icon">📝</div><div class="es-value">${postCount}</div><div class="es-label">Posts</div></div>
+                    <div class="earning-stat"><div class="es-icon">👥</div><div class="es-value">${followersCount}</div><div class="es-label">Following</div></div>
+                    <div class="earning-stat"><div class="es-icon">📚</div><div class="es-value">${S.enrollments.length}</div><div class="es-label">Courses</div></div>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-8">
@@ -5990,6 +6484,26 @@
                 S.currentCourseData = data.data || data;
                 S.currentLessons = Array.isArray(S.currentCourseData.lessons) ? S.currentCourseData.lessons : (S
                     .currentCourseData.sections?.flatMap(s => s.lessons) || []);
+                // Display quizzes if any
+                if (S.currentCourseData.quizzes && S.currentCourseData.quizzes.length) {
+                    const quizContainer = document.getElementById('quizWrap');
+                    if (quizContainer) {
+                        const quizHtml = S.currentCourseData.quizzes.map(q => `
+                            <div class="quiz-display">
+                                <div class="quiz-title">📝 ${escapeHtml(q.title || 'Quiz')}</div>
+                                ${q.questions?.map((qu, qi) => `
+                                    <div class="quiz-question">
+                                        <div class="quiz-q-text">${qi + 1}. ${escapeHtml(qu.question)}</div>
+                                        <ul class="quiz-options">
+                                            ${qu.options?.map((opt, oi) => `<li class="${qu.correctAnswer === oi ? 'correct' : ''}">${escapeHtml(opt)} ${qu.correctAnswer === oi ? '✅' : ''}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `).join('');
+                        quizContainer.innerHTML = quizHtml;
+                    }
+                }
                 S.currentLessonIdx = 0;
                 renderCurric();
                 const firstLesson = S.currentLessons[0];
@@ -7094,7 +7608,8 @@
                     0 : 0,
                 hasAffiliate: document.getElementById('edAffEnabled')?.checked || false,
                 affiliatePercent: Number(document.getElementById('edAffPercent')?.value) || 15,
-                isPublished: false
+                isPublished: false,
+                isPremiumOnly: S.selectedPriceType === 'sub'
             };
             try {
                 if (S.currentCourseData?._id) {
@@ -8453,6 +8968,7 @@
                     localStorage.setItem('cx_user', JSON.stringify(S.user));
                     updateUserUI();
                     updateAdVisibility();
+                    checkPlanExpiry();
                     const hash = window.location.hash.slice(1);
                     if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(
                             () => openBuyCourse(courseId), 1000); } else if (hash === 'app' || hash === 'setup')
@@ -8514,6 +9030,7 @@
                             localStorage.setItem('cx_user', JSON.stringify(S.user));
                             updateUserUI();
                             updateAdVisibility();
+                            checkPlanExpiry();
                         } catch (e) {}
                         if (S.user?.setupDone) goPage('app');
                         else goPage('setup');
@@ -8532,6 +9049,7 @@
                         localStorage.setItem('cx_user', JSON.stringify(S.user));
                         updateUserUI();
                         updateAdVisibility();
+                        checkPlanExpiry();
                     } catch (e) { console.warn('Subscription verification failed:', e.message); }
                     window.history.replaceState({}, '', window.location.pathname);
                 })();
