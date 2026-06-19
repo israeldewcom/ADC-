@@ -4405,6 +4405,123 @@
             margin-right: .5rem;
             vertical-align: middle;
         }
+
+        /* ---- toast animations ---- */
+        .toast-enter {
+            animation: tIn .25s ease;
+        }
+        .toast-exit {
+            opacity: 0;
+            transform: translateX(16px);
+            transition: all .25s;
+        }
+
+        /* ---- pulse for live indicator ---- */
+        .live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 1.5s infinite;
+            margin-right: .35rem;
+        }
+
+        /* ---- skeleton shimmer fix ---- */
+        .skeleton {
+            background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 50%, var(--skeleton-base) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: var(--radius-sm);
+        }
+
+        /* ---- post card image fit ---- */
+        .post-image {
+            max-height: 400px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        /* ---- admin panel table scroll ---- */
+        .admin-table-wrap {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* ---- smooth hover transitions ---- */
+        .card,
+        .btn,
+        .nav-item,
+        .fpill,
+        .post-card {
+            transition: all var(--transition);
+        }
+
+        /* ---- custom scrollbar for feed ---- */
+        #feedContainer::-webkit-scrollbar {
+            width: 3px;
+        }
+        #feedContainer::-webkit-scrollbar-thumb {
+            background: var(--border2);
+            border-radius: 2px;
+        }
+
+        /* ---- responsive tweaks ---- */
+        @media(max-width:480px) {
+            .hero-desc {
+                font-size: .92rem;
+            }
+            .topbar-r .btn-icon {
+                width: 36px;
+                height: 36px;
+                font-size: .75rem;
+            }
+            .wallet-chip {
+                padding: .2rem .5rem;
+            }
+            .wallet-chip .wc-val {
+                font-size: .7rem;
+            }
+            .currency-select .currency-opt {
+                font-size: .6rem;
+                padding: .15rem .4rem;
+            }
+            .modal-box {
+                max-height: 96svh;
+            }
+            .modal-hd {
+                padding: .6rem .8rem;
+            }
+            .modal-bd {
+                padding: .8rem;
+            }
+        }
+
+        /* ---- admin user details card ---- */
+        .user-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .5rem 1rem;
+        }
+        @media(max-width:600px) {
+            .user-detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .user-detail-grid .detail-item {
+            padding: .3rem 0;
+            border-bottom: 1px solid rgba(128, 128, 128, .06);
+        }
+        .user-detail-grid .detail-item strong {
+            color: var(--text2);
+            font-size: .72rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            display: block;
+        }
+        .user-detail-grid .detail-item span {
+            font-size: .85rem;
+        }
     </style>
 </head>
 <body>
@@ -4722,10 +4839,13 @@
             feedAds: [],
             feedAdIndex: 0,
             feedAdInterval: null,
-            // Pagination for feed
             feedTotalPages: 1,
             feedCurrentPage: 1,
-            feedLoadingMore: false
+            feedLoadingMore: false,
+            // Post deduplication
+            displayedPostIds: new Set(),
+            // Cache for following
+            followingFetched: false
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -5019,7 +5139,8 @@
                 socket.on('new_post', (post) => {
                     if (['feed', 'following', 'home'].includes(S.dp)) {
                         const container = document.getElementById('feedContainer');
-                        if (container) {
+                        if (container && !S.displayedPostIds.has(post._id)) {
+                            S.displayedPostIds.add(post._id);
                             const html = renderPostCard(post);
                             container.insertAdjacentHTML('afterbegin', html);
                             attachPostEventListeners();
@@ -5158,12 +5279,12 @@
                 currentCurrency = S.user.preferredCurrency || localStorage.getItem('cx_currency') || 'NGN';
                 localStorage.setItem('cx_user', JSON.stringify(S.user)); } catch (e) { console.warn('Profile fetch failed:',
                     e.message); }
+            await loadUserFollowing();
             updateUserUI();
             const targetPage = isFromLogin ? 'app' : (S.user.setupDone ? 'app' : 'setup');
             toast(isFromLogin ? `Welcome back, ${S.user?.firstName || 'User'}! 👋` :
                 `Welcome to ChangeX, ${S.user?.firstName || 'User'}! 🎉`, 'success');
             forceRedirect(targetPage);
-            await loadUserFollowing();
         }
 
         function handleGoogleLogin() { window.location.href = `${API_BASE}/auth/google`; }
@@ -5204,6 +5325,7 @@
             S.walletBal = 0;
             S.enrollments = [];
             S.appCourses = [];
+            S.displayedPostIds = new Set();
             toast('See you soon! 👋', 'info');
             goPage('landing');
         }
@@ -5441,7 +5563,7 @@
         }
 
         // ================================================================
-        // POSTS MODULE – UPGRADED WITH VIEW TRACKING CACHE
+        // POSTS MODULE – UPGRADED WITH VIEW TRACKING & DEDUPLICATION
         // ================================================================
         const POSTS_API = '/posts';
         const CHALLENGES_API = '/challenges';
@@ -5471,7 +5593,7 @@
             }
         }
 
-        // ─── INFINITE SCROLL & SMART ADS ─────────────────────────────
+        // ─── INFINITE SCROLL WITH "LOAD MORE" ─────────────────────────
         let feedPage = 1;
         let feedHasMore = true;
         let feedIsLoading = false;
@@ -5485,6 +5607,7 @@
                 feedPage = 1;
                 feedHasMore = true;
                 feedIsLoading = false;
+                S.displayedPostIds = new Set();
                 const container = document.getElementById('feedContainer');
                 if (container) container.innerHTML = '';
                 if (feedSentinelObserver) { feedSentinelObserver.disconnect();
@@ -5512,22 +5635,27 @@
                 const res = await apiCall(url);
                 const posts = res.data?.posts || res.data || [];
                 const pagination = res.data?.pagination || { total: 0, pages: 1 };
+                // Deduplicate posts
+                const uniquePosts = posts.filter(p => {
+                    if (S.displayedPostIds.has(p._id)) return false;
+                    S.displayedPostIds.add(p._id);
+                    return true;
+                });
                 if (page === 1) {
-                    S.posts = posts;
-                    renderFeedPosts(posts, pagination);
+                    S.posts = uniquePosts;
+                    renderFeedPosts(uniquePosts, pagination);
                 } else {
-                    appendFeedPosts(posts);
+                    appendFeedPosts(uniquePosts);
                 }
-                if (page >= pagination.pages || posts.length < 10) feedHasMore = false;
+                if (page >= pagination.pages || uniquePosts.length < 10) feedHasMore = false;
                 else feedHasMore = true;
-                posts.forEach(p => { if (p._id) trackPostView(p._id); });
+                uniquePosts.forEach(p => { if (p._id) trackPostView(p._id); });
                 setupFeedSentinel();
                 attachPostEventListeners();
             } catch (err) {
                 toast('Failed to load feed: ' + err.message, 'error');
             } finally {
                 hideLoading();
-                // Remove loading indicator
                 const loadingEl = document.getElementById('feedLoadingMore');
                 if (loadingEl) loadingEl.remove();
             }
@@ -5553,15 +5681,16 @@
                 }
             });
             container.innerHTML = html;
-            if (pagination && pagination.pages > 1) {
-                const pagEl = document.getElementById('feedPagination');
-                if (pagEl) {
-                    let html2 = '';
-                    for (let i = 1; i <= pagination.pages; i++) {
-                        html2 +=
-                            `<button class="fpill ${i === feedPage ? 'active' : ''}" onclick="loadFeed(${i})">${i}</button>`;
-                    }
-                    pagEl.innerHTML = html2;
+            // Show "Load More" button instead of page numbers
+            const pagEl = document.getElementById('feedPagination');
+            if (pagEl) {
+                if (feedHasMore && posts.length >= 10) {
+                    pagEl.innerHTML =
+                        `<button class="btn btn-ghost btn-sm" onclick="loadFeed(feedPage + 1)" id="loadMoreBtn"><i class="fas fa-arrow-down"></i> Load More</button>`;
+                } else if (!feedHasMore && posts.length) {
+                    pagEl.innerHTML = `<span style="color:var(--text3);font-size:.78rem;">✨ You've seen all posts</span>`;
+                } else {
+                    pagEl.innerHTML = '';
                 }
             }
         }
@@ -5569,7 +5698,6 @@
         function appendFeedPosts(posts) {
             const container = document.getElementById('feedContainer');
             if (!container) return;
-            // Remove any existing "loading more" indicator before appending
             const loadingEl = document.getElementById('feedLoadingMore');
             if (loadingEl) loadingEl.remove();
             posts.forEach((post, idx) => {
@@ -5583,6 +5711,17 @@
                 }
             });
             attachPostEventListeners();
+            const pagEl = document.getElementById('feedPagination');
+            if (pagEl) {
+                if (feedHasMore && posts.length >= 10) {
+                    pagEl.innerHTML =
+                        `<button class="btn btn-ghost btn-sm" onclick="loadFeed(feedPage + 1)" id="loadMoreBtn"><i class="fas fa-arrow-down"></i> Load More</button>`;
+                } else if (!feedHasMore) {
+                    pagEl.innerHTML = `<span style="color:var(--text3);font-size:.78rem;">✨ You've seen all posts</span>`;
+                } else {
+                    pagEl.innerHTML = '';
+                }
+            }
         }
 
         function setupFeedSentinel() {
@@ -5593,31 +5732,23 @@
                 if (entries[0].isIntersecting && feedHasMore && !feedIsLoading) {
                     feedIsLoading = true;
                     feedPage++;
-                    try {
-                        const filter = S.feedFilter || 'all';
-                        let url = `${POSTS_API}?page=${feedPage}&limit=10`;
-                        if (filter !== 'all' && filter !== 'following') url += `&type=${filter}`;
-                        if (filter === 'following') { await loadFollowingFeed();
-                            feedIsLoading = false; return; }
-                        const res = await apiCall(url);
-                        const posts = res.data?.posts || res.data || [];
-                        if (posts.length) {
-                            appendFeedPosts(posts);
-                            posts.forEach(p => { if (p._id) trackPostView(p._id); });
-                        } else {
-                            feedHasMore = false;
-                        }
-                        if (posts.length < 10) feedHasMore = false;
-                    } catch (err) {
-                        toast('Failed to load more posts', 'error');
-                    } finally { feedIsLoading = false; }
+                    await loadFeed(feedPage);
+                    feedIsLoading = false;
                 }
             }, { rootMargin: '0px 0px 200px 0px' });
             feedSentinelObserver.observe(sentinel);
         }
 
         function renderPostCard(post) {
-            const author = post.authorId || post.author || {};
+            // Ensure author is an object
+            let author = post.authorId || post.author || {};
+            if (typeof author === 'string') {
+                if (post.authorId === S.user?._id) {
+                    author = S.user || { firstName: 'You', lastName: '', _id: post.authorId };
+                } else {
+                    author = { firstName: 'User', lastName: '', _id: post.authorId };
+                }
+            }
             const avatarHtml = getAvatarUrl(author) ?
                 `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                 (author.firstName?.[0] || 'U');
@@ -5639,9 +5770,10 @@
                             <span class="badge badge-cyan" style="font-size:.55rem">${post.type || 'article'}</span>
                             ${isAuthor ? `<span class="badge badge-dark" style="font-size:.55rem">You</span>` : ''}
                             ${post.isPremiumOnly ? `<span class="badge badge-gold" style="font-size:.55rem">Premium</span>` : ''}
+                            ${post.isAdminPost ? `<span class="badge badge-danger" style="font-size:.55rem">Admin</span>` : ''}
                         </div>
                         <div style="margin-left:auto;display:flex;gap:.2rem">
-                            ${isAuthor ? `<button class="post-delete-btn" onclick="deletePost('${post._id}')" title="Delete post"><i class="fas fa-trash"></i></button>` : ''}
+                            ${isAuthor || S.user?.roles?.includes('admin') ? `<button class="post-delete-btn" onclick="deletePost('${post._id}')" title="Delete post"><i class="fas fa-trash"></i></button>` : ''}
                         </div>
                     </div>
                     <h3 class="post-title" onclick="window.open('${FRONTEND_URL}/post/${slug}','_blank')">${escapeHtml(post.title)}</h3>
@@ -5720,6 +5852,7 @@
             S.feedFilter = type;
             feedPage = 1;
             feedHasMore = true;
+            S.displayedPostIds = new Set();
             const container = document.getElementById('feedContainer');
             if (container) container.innerHTML = '';
             loadFeed(1);
@@ -5799,6 +5932,7 @@
             try {
                 await apiCall(`${POSTS_API}/${postId}`, { method: 'DELETE' });
                 toast('Post deleted', 'success');
+                S.displayedPostIds.delete(postId);
                 if (S.dp === 'feed') loadFeed(feedPage);
                 if (S.dp === 'profile' && S.profileUser) {
                     const res = await apiCall(`/users/${S.profileUser._id}/profile`);
@@ -5858,7 +5992,7 @@
         }
 
         // ================================================================
-        // SUBMIT NEW POST – WITH OPTIMISTIC UPDATE
+        // SUBMIT NEW POST – WITH DEDUPLICATION & OPTIMISTIC UPDATE
         // ================================================================
         function openCreatePostModal() {
             const modal = document.getElementById('createPostModal');
@@ -5921,6 +6055,15 @@
                 toast('Please write some content for your post', 'error');
                 return;
             }
+            // Check for duplicate posts by title (simple client-side check)
+            const existingPosts = document.querySelectorAll('.post-card');
+            for (const el of existingPosts) {
+                const postTitleEl = el.querySelector('.post-title');
+                if (postTitleEl && postTitleEl.textContent.trim().toLowerCase() === title.toLowerCase()) {
+                    toast('You already have a post with this title. Please write something new.', 'warning');
+                    return;
+                }
+            }
             try {
                 const res = await apiCall(POSTS_API, {
                     method: 'POST',
@@ -5950,9 +6093,11 @@
                 if (S.postQuill) {
                     S.postQuill.root.innerHTML = '';
                 }
-                if (S.dp === 'feed' || S.dp === 'home') {
-                    const container = document.getElementById('feedContainer');
-                    if (container) {
+                // Optimistic insert – check for duplicates
+                const container = document.getElementById('feedContainer');
+                if (container && (S.dp === 'feed' || S.dp === 'home')) {
+                    if (!S.displayedPostIds.has(postId) && !container.querySelector(`[data-post-id="${postId}"]`)) {
+                        S.displayedPostIds.add(postId);
                         container.insertAdjacentHTML('afterbegin', renderPostCard(newPost));
                         attachPostEventListeners();
                     }
@@ -6053,6 +6198,7 @@
             try {
                 const res = await apiCall('/posts/following');
                 const items = res.data || [];
+                S.followingFetched = true;
                 renderFollowingCollection(items);
                 updateFollowingBadge();
             } catch (err) {
@@ -6115,6 +6261,40 @@
                 const count = S.following?.length || 0;
                 badge.textContent = count;
                 badge.style.display = count > 0 ? 'inline' : 'none';
+            }
+        }
+
+        // ================================================================
+        // FOLLOW USER – FULLY FIXED
+        // ================================================================
+        async function followUser(userId) {
+            try {
+                const data = await apiCall(`/follows/${userId}/follow`, { method: 'POST' });
+                const isNowFollowing = data.followed;
+                // Update state
+                if (isNowFollowing) {
+                    if (!S.following.includes(userId)) S.following.push(userId);
+                    S.followStatus[userId] = true;
+                } else {
+                    S.following = S.following.filter(id => id !== userId);
+                    S.followStatus[userId] = false;
+                }
+                updateFollowingBadge();
+                // Always refresh the following feed if we are on that page, or pre-fetch
+                if (S.dp === 'following') {
+                    loadFollowingCollection();
+                } else {
+                    // Pre-fetch the following list so it's ready when user navigates
+                    await loadUserFollowing();
+                }
+                if (S.dp === 'people') renderPeople(S.users);
+                if (S.dp === 'profile' && S.profileUser) {
+                    const res2 = await apiCall(`/users/${S.profileUser._id}/profile`);
+                    renderUserProfile(res2.data);
+                }
+                toast(isNowFollowing ? 'Followed!' : 'Unfollowed', 'success');
+            } catch (err) {
+                toast('Error: ' + err.message, 'error');
             }
         }
 
@@ -6323,19 +6503,20 @@
                     }
                 }
                 S.users = users;
-                const followPromises = users.filter(u => u._id !== S.user?._id).map(async (u) => {
+                // Batch fetch follow statuses
+                const statusPromises = users.filter(u => u._id !== S.user?._id).map(async (u) => {
                     try {
+                        if (S.followStatus[u._id] !== undefined) return;
                         const statusRes = await apiCall(`/follows/${u._id}/status`);
-                        const isFollowing = statusRes.data?.isFollowing || false;
-                        S.followStatus[u._id] = isFollowing;
-                        if (isFollowing) {
+                        S.followStatus[u._id] = statusRes.data?.isFollowing || false;
+                        if (S.followStatus[u._id]) {
                             if (!S.following.includes(u._id)) S.following.push(u._id);
                         } else {
                             S.following = S.following.filter(id => id !== u._id);
                         }
                     } catch (e) { S.followStatus[u._id] = false; }
                 });
-                await Promise.all(followPromises);
+                await Promise.all(statusPromises);
                 renderPeople(users);
                 updateFollowingBadge();
             } catch (err) {
@@ -6379,27 +6560,6 @@
         function filterPeople(term) {
             S.peopleSearchTerm = term;
             renderPeople(S.users);
-        }
-
-        async function followUser(userId) {
-            try {
-                const res = await apiCall(`/follows/${userId}/follow`, { method: 'POST' });
-                const isNowFollowing = res.followed;
-                S.followStatus[userId] = isNowFollowing;
-                if (isNowFollowing) {
-                    if (!S.following.includes(userId)) S.following.push(userId);
-                } else {
-                    S.following = S.following.filter(id => id !== userId);
-                }
-                toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
-                updateFollowingBadge();
-                if (S.dp === 'people') renderPeople(S.users);
-                if (S.dp === 'profile' && S.profileUser) {
-                    const res2 = await apiCall(`/users/${S.profileUser._id}/profile`);
-                    renderUserProfile(res2.data);
-                }
-                if (S.dp === 'following') loadFollowingCollection();
-            } catch (err) { toast('Error: ' + err.message, 'error'); }
         }
 
         // ================================================================
@@ -6500,11 +6660,6 @@
             `;
             attachPostEventListeners();
         }
-
-        // ================================================================
-        // ADS MODULE (already integrated in feed)
-        // ================================================================
-        // loadAds and track functions already defined above.
 
         // ================================================================
         // INTERACTIVE MATERIALS
@@ -6772,6 +6927,7 @@
                 S.following = users.map(u => u._id);
                 users.forEach(u => { S.followStatus[u._id] = true; });
                 updateFollowingBadge();
+                S.followingFetched = true;
             } catch (err) {
                 console.warn('Could not load following:', err);
                 S.following = [];
@@ -6992,7 +7148,17 @@
 
         function openBuyCourse(courseId) {
             const c = (S.appCourses || []).find(x => x._id === courseId);
-            if (!c) return;
+            if (!c) {
+                // Try to fetch from API
+                apiCall(`/courses/${courseId}`).then(data => {
+                    const course = data.data || data;
+                    if (course) {
+                        S.appCourses.push(course);
+                        openBuyCourse(courseId);
+                    }
+                }).catch(() => toast('Course not found', 'error'));
+                return;
+            }
             const token = localStorage.getItem('cx_accessToken');
             if (token) {
                 fetch(`${API_BASE}/courses/${c._id}/view`, { method: 'POST' }).catch(() => {});
@@ -7743,6 +7909,7 @@
         async function renderAffiliates() {
             showLoading('Loading affiliate offers...');
             try {
+                // Use hasAffiliate filter
                 const offersData = await apiCall('/courses?hasAffiliate=true&published=true&limit=20');
                 S.affiliateOffers = (Array.isArray(offersData.data) ? offersData.data : (Array.isArray(offersData.data
                     ?.courses) ? offersData.data.courses : []));
@@ -9276,25 +9443,21 @@
                                 <p style="color:var(--text3);margin:0">${escapeHtml(data.user.email)}</p>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
-                            <h6>Account</h6>
-                            <p><strong>Phone:</strong> ${escapeHtml(data.user.phone || '-')}</p>
-                            <p><strong>Wallet:</strong> ${fmtMoneyAPI(data.user.walletBalance)}</p>
-                            <p><strong>XP:</strong> ${data.user.xp || 0} · Level ${data.user.level || 1}</p>
-                            <p><strong>Premium:</strong> ${data.user.isPremium ? '✅' : '❌'}</p>
-                            <p><strong>Roles:</strong> ${(data.user.roles || []).join(', ') || 'student'}</p>
+                        <div class="user-detail-grid">
+                            <div class="detail-item"><strong>Phone</strong><span>${escapeHtml(data.user.phone || '-')}</span></div>
+                            <div class="detail-item"><strong>Wallet</strong><span>${fmtMoneyAPI(data.user.walletBalance)}</span></div>
+                            <div class="detail-item"><strong>XP</strong><span>${data.user.xp || 0} · Level ${data.user.level || 1}</span></div>
+                            <div class="detail-item"><strong>Premium</strong><span>${data.user.isPremium ? '✅ Yes' : '❌ No'}</span></div>
+                            <div class="detail-item"><strong>Roles</strong><span>${(data.user.roles || []).join(', ') || 'student'}</span></div>
+                            <div class="detail-item"><strong>Bank</strong><span>${data.user.bankAccount?.bankName || 'Not set'} - ${data.user.bankAccount?.accountNumber || '-'}</span></div>
+                            <div class="detail-item"><strong>Account Name</strong><span>${data.user.bankAccount?.accountName || '-'}</span></div>
+                            <div class="detail-item"><strong>Posts</strong><span>${data.stats?.posts || 0}</span></div>
+                            <div class="detail-item"><strong>Followers</strong><span>${data.stats?.followers || 0}</span></div>
+                            <div class="detail-item"><strong>Following</strong><span>${data.stats?.following || 0}</span></div>
+                            <div class="detail-item"><strong>Enrollments</strong><span>${data.stats?.enrollmentsCount || 0}</span></div>
+                            <div class="detail-item"><strong>Joined</strong><span>${new Date(data.user.createdAt).toLocaleDateString()}</span></div>
                         </div>
-                        <div class="col-12 col-md-6">
-                            <h6>Bank Account</h6>
-                            <p>${data.user.bankAccount?.bankName || 'Not set'} - ${data.user.bankAccount?.accountNumber || '-'}</p>
-                            <p><strong>Account Name:</strong> ${data.user.bankAccount?.accountName || '-'}</p>
-                        </div>
-                        <div class="col-12">
-                            <h6>Stats</h6>
-                            <p><strong>Posts:</strong> ${data.stats?.posts || 0} · <strong>Followers:</strong> ${data.stats?.followers || 0} · <strong>Following:</strong> ${data.stats?.following || 0}</p>
-                            <p><strong>Enrollments:</strong> ${data.stats?.enrollmentsCount || 0}</p>
-                        </div>
-                        <div class="col-12">
+                        <div class="col-12" style="margin-top:1rem">
                             <h6>Recent Transactions</h6>
                             ${data.recentTransactions?.length ? data.recentTransactions.map(tx => `<div class="web-row"><span>${tx.type}</span><span>${fmtMoneyAPI(tx.amount)}</span><span class="pstatus ${tx.status === 'completed' ? 'ps-paid' : 'ps-pend'}">${tx.status || 'pending'}</span></div>`).join('') : '<p>No transactions</p>'}
                         </div>
