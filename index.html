@@ -4387,6 +4387,24 @@
             height: 2px;
             width: 100%;
         }
+        /* ---- loading more indicator ---- */
+        .feed-loading-more {
+            text-align: center;
+            padding: 1rem 0;
+            color: var(--text3);
+            font-size: .82rem;
+        }
+        .feed-loading-more .spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            margin-right: .5rem;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
@@ -4535,10 +4553,10 @@
     <div class="mob-bottom-nav"><div class="mbn-item active" id="mbn-feed" onclick="setDP('feed')"><i class="fas fa-newspaper"></i><span>Feed</span></div><div class="mbn-item" id="mbn-challenges" onclick="setDP('challenges')"><i class="fas fa-trophy"></i><span>Challenges</span></div><div class="mbn-item" id="mbn-explore" onclick="setDP('explore')"><i class="fas fa-compass"></i><span>Explore</span></div><div class="mbn-item" id="mbn-wallet" onclick="setDP('wallet')"><i class="fas fa-wallet"></i><span>Wallet</span></div><div class="mbn-item" id="mbn-more" onclick="openSidebar()"><i class="fas fa-bars"></i><span>More</span></div></div>
 
     <div class="dash-wrap thin-scroll" id="dashWrap">
-        <!-- FEED (will be shown inside home dashboard as well) -->
+        <!-- FEED -->
         <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span><span class="fpill" onclick="filterFeed('following',this)">Following</span></div><div id="feedContainer"></div><div id="feedSentinel"></div><div id="feedPagination" class="d-flex justify-center mt-3"></div></div>
 
-        <!-- FOLLOWING COLLECTION -->
+        <!-- FOLLOWING -->
         <div id="dash-following" class="dash-sub"><div class="page-hd"><h2 class="page-title">👥 Following</h2><p class="page-sub">Posts and courses from people you follow</p></div><div id="followingContainer" class="following-collection"></div><div id="followingEmpty" class="empty-state" style="display:none"><i class="fas fa-users"></i><h4>You're not following anyone yet</h4><p>Discover people to follow in the <a style="color:var(--primary);cursor:pointer" onclick="setDP('people')">People</a> section.</p></div></div>
 
         <!-- CHALLENGES -->
@@ -4550,7 +4568,7 @@
         <!-- PROFILE -->
         <div id="dash-profile" class="dash-sub"><div class="page-hd"><button class="btn btn-ghost btn-sm" onclick="setDP('people')"><i class="fas fa-arrow-left"></i> Back</button></div><div id="profileContent"></div></div>
 
-        <!-- HOME (Dashboard) -->
+        <!-- HOME -->
         <div id="dash-home" class="dash-sub"><div id="homeSkeleton" style="display:none"><div class="skeleton" style="height:120px;margin-bottom:1rem;border-radius:var(--radius)"></div><div class="row"><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div></div></div><div id="homeContent"></div></div>
 
         <!-- EXPLORE -->
@@ -4698,14 +4716,16 @@
             poolConfig: { dailyPoolAmount: 10000 },
             topEarningPosts: [],
             reviewStars: 0,
-            // Infinite scroll
             feedHasMore: true,
             feedIsLoading: false,
             feedSentinelObserver: null,
-            // Ads
             feedAds: [],
             feedAdIndex: 0,
-            feedAdInterval: null
+            feedAdInterval: null,
+            // Pagination for feed
+            feedTotalPages: 1,
+            feedCurrentPage: 1,
+            feedLoadingMore: false
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -4996,7 +5016,6 @@
                             `📣 ${data.title}: ${data.content?.substring(0, 100) || ''}`; }
                     toast(data.title || 'New announcement', 'info'); });
                 socket.on('disconnect', () => { console.log('Socket disconnected'); });
-                // --- REAL-TIME NEW POST ---
                 socket.on('new_post', (post) => {
                     if (['feed', 'following', 'home'].includes(S.dp)) {
                         const container = document.getElementById('feedContainer');
@@ -5144,6 +5163,7 @@
             toast(isFromLogin ? `Welcome back, ${S.user?.firstName || 'User'}! 👋` :
                 `Welcome to ChangeX, ${S.user?.firstName || 'User'}! 🎉`, 'success');
             forceRedirect(targetPage);
+            await loadUserFollowing();
         }
 
         function handleGoogleLogin() { window.location.href = `${API_BASE}/auth/google`; }
@@ -5465,12 +5485,22 @@
                 feedPage = 1;
                 feedHasMore = true;
                 feedIsLoading = false;
-                document.getElementById('feedContainer').innerHTML = '';
+                const container = document.getElementById('feedContainer');
+                if (container) container.innerHTML = '';
                 if (feedSentinelObserver) { feedSentinelObserver.disconnect();
                     feedSentinelObserver = null; }
                 await loadFeedAds();
             }
-            showLoading('Loading feed...');
+            const container = document.getElementById('feedContainer');
+            if (!container) return;
+            // Show loading indicator if page > 1
+            if (page > 1) {
+                const loadingEl = document.createElement('div');
+                loadingEl.id = 'feedLoadingMore';
+                loadingEl.className = 'feed-loading-more';
+                loadingEl.innerHTML = `<span class="spinner"></span> Loading more...`;
+                container.appendChild(loadingEl);
+            }
             try {
                 let url = `${POSTS_API}?page=${page}&limit=10`;
                 if (filter !== 'all' && filter !== 'following') url += `&type=${filter}`;
@@ -5495,7 +5525,12 @@
                 attachPostEventListeners();
             } catch (err) {
                 toast('Failed to load feed: ' + err.message, 'error');
-            } finally { hideLoading(); }
+            } finally {
+                hideLoading();
+                // Remove loading indicator
+                const loadingEl = document.getElementById('feedLoadingMore');
+                if (loadingEl) loadingEl.remove();
+            }
         }
 
         function renderFeedPosts(posts, pagination) {
@@ -5509,7 +5544,6 @@
             let html = '';
             posts.forEach((post, idx) => {
                 html += renderPostCard(post);
-                // Insert ad after every 4th post (except if post is last)
                 if ((idx + 1) % 4 === 0 && idx < posts.length - 1) {
                     const ad = getNextFeedAd();
                     if (ad) {
@@ -5535,6 +5569,9 @@
         function appendFeedPosts(posts) {
             const container = document.getElementById('feedContainer');
             if (!container) return;
+            // Remove any existing "loading more" indicator before appending
+            const loadingEl = document.getElementById('feedLoadingMore');
+            if (loadingEl) loadingEl.remove();
             posts.forEach((post, idx) => {
                 container.insertAdjacentHTML('beforeend', renderPostCard(post));
                 if ((idx + 1) % 4 === 0 && idx < posts.length - 1) {
@@ -5683,7 +5720,8 @@
             S.feedFilter = type;
             feedPage = 1;
             feedHasMore = true;
-            document.getElementById('feedContainer').innerHTML = '';
+            const container = document.getElementById('feedContainer');
+            if (container) container.innerHTML = '';
             loadFeed(1);
         }
 
@@ -5912,7 +5950,6 @@
                 if (S.postQuill) {
                     S.postQuill.root.innerHTML = '';
                 }
-                // Optimistic update: prepend to feed if on feed/home
                 if (S.dp === 'feed' || S.dp === 'home') {
                     const container = document.getElementById('feedContainer');
                     if (container) {
@@ -6136,22 +6173,19 @@
             showLoading('Loading challenges...');
             try {
                 const filter = S.challengesFilter || 'active';
+                const isAdmin = S.user?.roles?.includes('admin') || S.user?.role === 'admin' || S.user?.role === 'superadmin';
                 let url;
                 if (filter === 'active') {
                     url = `${CHALLENGES_API}/active`;
                 } else if (filter === 'upcoming') {
                     url = `${CHALLENGES_API}/upcoming`;
+                } else if (filter === 'completed' && isAdmin) {
+                    url = `${CHALLENGES_API}/all?status=completed`;
                 } else {
-                    const isAdmin = S.user?.roles?.includes('admin') || S.user?.role === 'admin' || S.user?.role ===
-                        'superadmin';
-                    if (isAdmin) {
-                        url = `${CHALLENGES_API}/all?status=completed`;
-                    } else {
-                        renderChallenges([]);
-                        document.getElementById('challengesContainer').innerHTML =
-                            '<div class="empty-state"><i class="fas fa-lock"></i><h4>Completed challenges</h4><p>Only admins can view all completed challenges.</p></div>';
-                        hideLoading();
-                        return;
+                    url = `${CHALLENGES_API}/active`;
+                    if (filter === 'completed' && !isAdmin) {
+                        toast('Completed challenges are only visible to admins.', 'info');
+                        S.challengesFilter = 'active';
                     }
                 }
                 const res = await apiCall(url);
@@ -6279,8 +6313,8 @@
                     users = res.data?.users || res.data || [];
                 } else {
                     try {
-                        const res = await apiCall('/users/public?limit=50');
-                        users = res.data?.users || res.data || [];
+                        const res = await apiCall('/users/leaderboard?limit=50&type=xp');
+                        users = res.data || [];
                     } catch (e) {
                         document.getElementById('peopleContainer').innerHTML =
                             '<div class="empty-state"><i class="fas fa-users"></i><h4>Discover People</h4><p>Follow other learners and instructors to see their content in your feed.</p></div>';
@@ -6291,7 +6325,7 @@
                 S.users = users;
                 const followPromises = users.filter(u => u._id !== S.user?._id).map(async (u) => {
                     try {
-                        const statusRes = await apiCall(`${FOLLOWS_API}/${u._id}/status`);
+                        const statusRes = await apiCall(`/follows/${u._id}/status`);
                         const isFollowing = statusRes.data?.isFollowing || false;
                         S.followStatus[u._id] = isFollowing;
                         if (isFollowing) {
@@ -6349,7 +6383,7 @@
 
         async function followUser(userId) {
             try {
-                const res = await apiCall(`${FOLLOWS_API}/${userId}/follow`, { method: 'POST' });
+                const res = await apiCall(`/follows/${userId}/follow`, { method: 'POST' });
                 const isNowFollowing = res.followed;
                 S.followStatus[userId] = isNowFollowing;
                 if (isNowFollowing) {
@@ -6390,9 +6424,12 @@
             const user = data.user;
             const posts = data.posts || [];
             const courses = data.courses || [];
+            const challengeProgress = data.challengeProgress || [];
             const isFollowing = data.isFollowing || false;
+            const totalEarnings = posts.reduce((sum, p) => sum + (p.earnings || 0), 0);
+
             const avatarHtml = getAvatarUrl(user) ?
-                `<img src="${getAvatarUrl(user)}" alt="${user.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                `<img src="${getAvatarUrl(user)}" alt="avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                 (user.firstName?.[0] || 'U');
 
             container.innerHTML = `
@@ -6401,13 +6438,13 @@
                         ${avatarHtml}
                     </div>
                     <div style="flex:1;">
-                        <h2 style="margin-bottom:.25rem;">${escapeHtml(user.firstName)} ${escapeHtml(user.lastName)}</h2>
+                        <h2>${escapeHtml(user.firstName)} ${escapeHtml(user.lastName)}</h2>
                         <p style="color:var(--text2);">${escapeHtml(user.bio || 'No bio yet')}</p>
                         <div style="display:flex;gap:1rem;font-size:.85rem;color:var(--text3);flex-wrap:wrap;">
                             <span><strong>${data.followersCount || 0}</strong> followers</span>
                             <span><strong>${data.followingCount || 0}</strong> following</span>
                             <span><strong>${posts.length}</strong> posts</span>
-                            <span><strong>${courses.length}</strong> courses</span>
+                            <span><strong>${fmtMoneyAPI(totalEarnings)}</strong> earned from posts</span>
                             ${user.isPremium ? '<span class="badge badge-gold">Premium</span>' : ''}
                             ${user.isApprovedInstructor ? '<span class="badge badge-violet">Instructor</span>' : ''}
                         </div>
@@ -6415,16 +6452,38 @@
                     </div>
                 </div>
                 <div class="profile-content">
+                    <h4>💰 Wallet</h4>
+                    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1.5rem;">
+                        <span style="font-size:.8rem;color:var(--text3);">Balance</span>
+                        <div style="font-family:var(--font-heading);font-size:1.5rem;color:var(--lime);">${fmtMoneyAPI(user.walletBalance || 0)}</div>
+                    </div>
+                    <h4>🏆 Challenges</h4>
+                    <div style="margin-bottom:1.5rem;">
+                        ${challengeProgress.length ? challengeProgress.map(cp => `
+                            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.5rem .75rem;margin-bottom:.4rem;">
+                                <div style="display:flex;justify-content:space-between;">
+                                    <strong>${cp.challengeId?.title || 'Challenge'}</strong>
+                                    <span class="badge ${cp.status === 'completed' ? 'badge-success' : 'badge-cyan'}">${cp.status}</span>
+                                </div>
+                                <div class="prog" style="height:4px;margin-top:.3rem;"><div class="prog-fill pf-primary" style="width:${cp.progress || 0}%"></div></div>
+                                <div style="font-size:.7rem;color:var(--text3);">${cp.progress || 0}% complete</div>
+                            </div>
+                        `).join('') : '<p style="color:var(--text3);">No challenges joined.</p>'}
+                    </div>
                     <h4>📝 Posts</h4>
                     <div class="profile-collection">
                         ${posts.length ? posts.map(p => `
-                            <div class="collection-item">
+                            <div class="collection-item" onclick="window.open('${FRONTEND_URL}/post/${p.slug || p._id}','_blank')" style="cursor:pointer">
                                 <span class="ci-type">${p.type || 'post'}</span>
-                                <div class="ci-title" onclick="window.open('${FRONTEND_URL}/post/${p.slug || p._id}','_blank')" style="cursor:pointer">${escapeHtml(p.title)}</div>
-                                <div class="ci-meta">${new Date(p.publishedAt || p.createdAt).toLocaleDateString()} · ❤️ ${p.likes || 0} · 💬 ${p.commentsCount || 0}</div>
+                                <div class="ci-title">${escapeHtml(p.title)}</div>
+                                <div class="ci-meta">
+                                    ${new Date(p.publishedAt || p.createdAt).toLocaleDateString()} ·
+                                    ❤️ ${p.likes || 0} · 💬 ${p.commentsCount || 0} · 👁️ ${p.views || 0} ·
+                                    <span style="color:var(--primary);font-weight:700;">${fmtMoneyAPI(p.earnings || 0)}</span>
+                                </div>
                                 ${S.user?._id === user._id ? `<div class="ci-actions"><button class="post-delete-btn" onclick="deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button></div>` : ''}
                             </div>
-                        `).join('') : '<p style="color:var(--text3)">No posts yet</p>'}
+                        `).join('') : '<p style="color:var(--text3);">No posts yet</p>'}
                     </div>
                     <h4 class="mt-4">📚 Courses</h4>
                     <div class="profile-collection">
@@ -6435,7 +6494,7 @@
                                 <div class="ci-meta">${c.totalLessons || 0} lessons · ${c.level || 'All levels'} · ${fmtMoneyAPI(c.price || 0)}</div>
                                 ${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.55rem">${c.affiliatePercent || 0}% aff</span>` : ''}
                             </div>
-                        `).join('') : '<p style="color:var(--text3)">No courses yet</p>'}
+                        `).join('') : '<p style="color:var(--text3);">No courses yet</p>'}
                     </div>
                 </div>
             `;
@@ -6621,6 +6680,7 @@
             await loadEnrollments();
             await fetchAnnouncements();
             await fetchNotifications();
+            await loadUserFollowing();
             updateThemeIcons();
             renderNotifs();
             renderCurrencySelectorUI();
@@ -6702,6 +6762,23 @@
         }
 
         // ================================================================
+        // FOLLOWING PERSISTENCE
+        // ================================================================
+        async function loadUserFollowing() {
+            if (!S.user) return;
+            try {
+                const res = await apiCall(`/follows/${S.user._id}/following`);
+                const users = res.data || [];
+                S.following = users.map(u => u._id);
+                users.forEach(u => { S.followStatus[u._id] = true; });
+                updateFollowingBadge();
+            } catch (err) {
+                console.warn('Could not load following:', err);
+                S.following = [];
+            }
+        }
+
+        // ================================================================
         // SOCIAL EARNINGS
         // ================================================================
         async function loadSocialEarnings() {
@@ -6728,7 +6805,6 @@
                 await loadSocialEarnings(); } catch (e) {}
             renderHomeDashboard();
             checkPlanExpiry();
-            // Also load feed in the right column
             loadFeed(1);
         }
 
@@ -6821,15 +6897,8 @@
                     </div>
                 </div>
             `;
-            // Load feed directly into the container
-            if (document.getElementById('feedContainer')) {
-                // Reuse the same feed loading logic but target the container inside home
-                // For simplicity, we call loadFeed but it will render into the #feedContainer
-                // which is inside the home view as well. However we need to avoid duplicate sentinels.
-                // Let's render feed directly.
-                if (!document.querySelector('#feedContainer .post-card')) {
-                    loadFeed(1);
-                }
+            if (document.getElementById('feedContainer') && !document.querySelector('#feedContainer .post-card')) {
+                loadFeed(1);
             }
         }
 
@@ -9442,6 +9511,7 @@
                     updateUserUI();
                     updateAdVisibility();
                     checkPlanExpiry();
+                    await loadUserFollowing();
                     const hash = window.location.hash.slice(1);
                     if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(
                             () => openBuyCourse(courseId), 1000); } else if (hash.startsWith('post/')) { const slug =
@@ -9505,6 +9575,7 @@
                             updateUserUI();
                             updateAdVisibility();
                             checkPlanExpiry();
+                            await loadUserFollowing();
                         } catch (e) {}
                         if (S.user?.setupDone) goPage('app');
                         else goPage('setup');
