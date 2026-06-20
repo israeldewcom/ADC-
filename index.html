@@ -4552,7 +4552,6 @@
     <nav class="sb-nav"><ul>
         <li class="nav-sec">Social</li>
         <li><span class="nav-item active" id="nav-feed" onclick="setDP('feed')"><span class="nav-ico"><i class="fas fa-newspaper"></i></span>Feed</span></li>
-        <li><span class="nav-item" id="nav-following" onclick="setDP('following')"><span class="nav-ico"><i class="fas fa-rss"></i></span>Following<span class="nav-badge" id="navFollowingBadge">0</span></span></li>
         <li><span class="nav-item" id="nav-challenges" onclick="setDP('challenges')"><span class="nav-ico"><i class="fas fa-trophy"></i></span>Challenges<span class="nav-badge nav-badge-pink" id="navChallengeBadge">0</span></span></li>
         <li><span class="nav-item" id="nav-people" onclick="setDP('people')"><span class="nav-ico"><i class="fas fa-users"></i></span>People</span></li>
         <li class="nav-sec" style="margin-top:.3rem">Learning</li>
@@ -4585,10 +4584,7 @@
 
     <div class="dash-wrap thin-scroll" id="dashWrap">
         <!-- FEED -->
-        <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span><span class="fpill" onclick="filterFeed('following',this)">Following</span></div><div id="feedContainer"></div><div id="feedSentinel"></div><div id="feedLoadingMore" class="feed-loading-more" style="display:none"><span class="spinner"></span> Loading more posts...</div></div>
-
-        <!-- FOLLOWING -->
-        <div id="dash-following" class="dash-sub"><div class="page-hd"><h2 class="page-title">👥 Following</h2><p class="page-sub">Posts and courses from people you follow</p></div><div id="followingContainer" class="following-collection"></div><div id="followingEmpty" class="empty-state" style="display:none"><i class="fas fa-users"></i><h4>You're not following anyone yet</h4><p>Discover people to follow in the <a style="color:var(--primary);cursor:pointer" onclick="setDP('people')">People</a> section.</p></div></div>
+        <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span></div><div id="feedContainer"></div><div id="feedSentinel"></div><div id="feedLoadingMore" class="feed-loading-more" style="display:none"><span class="spinner"></span> Loading more posts...</div></div>
 
         <!-- CHALLENGES -->
         <div id="dash-challenges" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Challenges</h2><p class="page-sub">Join challenges, earn XP &amp; win rewards</p></div><div class="d-flex gap-2 mb-3"><span class="fpill active" onclick="filterChallenges('active',this)">Active</span><span class="fpill" onclick="filterChallenges('upcoming',this)">Upcoming</span><span class="fpill" onclick="filterChallenges('completed',this)">Completed</span></div><div id="challengesContainer"></div><div class="mt-4"><h4>My Challenge Progress</h4><div id="myChallengeProgress"></div></div></div>
@@ -4756,7 +4752,6 @@
             feedTotalPages: 1,
             feedCurrentPage: 1,
             feedLoadingMore: false,
-            // Track user's own post titles for duplicate detection
             myPostTitles: []
         };
 
@@ -4958,7 +4953,6 @@
             closeSidebar();
             const map = {
                 feed: loadFeed,
-                following: loadFollowingCollection,
                 challenges: loadChallenges,
                 people: loadPeople,
                 home: initHome,
@@ -5005,7 +4999,6 @@
             populateAllBankDetailsBoxes();
             if (id === 'createPostModal') {
                 setTimeout(initPostQuill, 300);
-                // Load user's existing post titles for duplicate detection
                 loadMyPostTitles();
             }
             if (id === 'shareModal') {
@@ -5054,7 +5047,6 @@
                     if (['feed', 'following', 'home'].includes(S.dp)) {
                         const container = document.getElementById('feedContainer');
                         if (container) {
-                            // Avoid duplicates: check if already rendered
                             if (!container.querySelector(`[data-post-id="${post._id}"]`)) {
                                 const html = renderPostCard(post);
                                 container.insertAdjacentHTML('afterbegin', html);
@@ -5063,7 +5055,6 @@
                             }
                         }
                     }
-                    if (S.dp === 'following') loadFollowingCollection();
                 });
             } catch (e) { console.warn('Socket init failed:', e.message); }
         }
@@ -5398,7 +5389,6 @@
             const fab = document.getElementById('fab');
             if (fab) fab.style.display = hasCreatorAccess ? 'block' : 'none';
             renderCurrencySelectorUI();
-            updateFollowingBadge();
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -5550,20 +5540,13 @@
             }
             const container = document.getElementById('feedContainer');
             if (!container) return;
-            // Show loading indicator if page > 1
             const loadingEl = document.getElementById('feedLoadingMore');
             if (page > 1 && loadingEl) {
                 loadingEl.style.display = 'block';
             }
             try {
                 let url = `${POSTS_API}?page=${page}&limit=10`;
-                if (filter !== 'all' && filter !== 'following') url += `&type=${filter}`;
-                if (filter === 'following') {
-                    await loadFollowingFeed();
-                    hideLoading();
-                    if (loadingEl) loadingEl.style.display = 'none';
-                    return;
-                }
+                if (filter !== 'all') url += `&type=${filter}`;
                 const res = await apiCall(url);
                 const posts = res.data?.posts || res.data || [];
                 const pagination = res.data?.pagination || { total: 0, pages: 1 };
@@ -5606,7 +5589,6 @@
                 }
             });
             container.innerHTML = html;
-            // We use infinite scroll instead of pagination numbers
         }
 
         function appendFeedPosts(posts) {
@@ -5615,7 +5597,6 @@
             const loadingEl = document.getElementById('feedLoadingMore');
             if (loadingEl) loadingEl.style.display = 'none';
             posts.forEach((post, idx) => {
-                // Avoid duplicates
                 if (!container.querySelector(`[data-post-id="${post._id}"]`)) {
                     container.insertAdjacentHTML('beforeend', renderPostCard(post));
                     if ((idx + 1) % 4 === 0 && idx < posts.length - 1) {
@@ -5643,9 +5624,7 @@
                     try {
                         const filter = S.feedFilter || 'all';
                         let url = `${POSTS_API}?page=${feedPage}&limit=10`;
-                        if (filter !== 'all' && filter !== 'following') url += `&type=${filter}`;
-                        if (filter === 'following') { await loadFollowingFeed();
-                            feedIsLoading = false; if (loadingEl) loadingEl.style.display = 'none'; return; }
+                        if (filter !== 'all') url += `&type=${filter}`;
                         const res = await apiCall(url);
                         const posts = res.data?.posts || res.data || [];
                         if (posts.length) {
@@ -5667,7 +5646,6 @@
         }
 
         function renderPostCard(post) {
-            // Handle author gracefully – if authorId is a string, use S.user if it's the current user's post
             let author = post.authorId || post.author || {};
             if (typeof author === 'string') {
                 if (author === S.user?._id) {
@@ -5866,56 +5844,6 @@
             } catch (err) { toast('Failed to delete: ' + err.message, 'error'); }
         }
 
-        async function loadFollowingFeed() {
-            try {
-                const res = await apiCall('/posts/following');
-                const items = res.data || [];
-                renderFollowingFeed(items);
-            } catch (err) {
-                toast('Failed to load following feed: ' + err.message, 'error');
-            }
-        }
-
-        function renderFollowingFeed(items) {
-            const container = document.getElementById('feedContainer');
-            if (!container) return;
-            if (!items || !items.length) {
-                container.innerHTML =
-                    '<div class="empty-state"><i class="fas fa-users"></i><h4>No posts from people you follow</h4><p>Follow more users to see their content here.</p></div>';
-                return;
-            }
-            container.innerHTML = items.map(item => {
-                if (item.type === 'post') {
-                    return renderPostCard(item);
-                } else if (item.type === 'course') {
-                    return renderCourseCardInFeed(item);
-                }
-                return '';
-            }).join('');
-            attachPostEventListeners();
-        }
-
-        function renderCourseCardInFeed(course) {
-            const author = course.instructorId || course.instructor || {};
-            const avatarHtml = getAvatarUrl(author) ?
-                `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'I'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
-                (author.firstName?.[0] || 'I');
-            return `
-                <div class="course-card" onclick="openBuyCourse('${course._id}')">
-                    <div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3));">
-                        ${course.thumbnail || course.emoji || '📚'}
-                    </div>
-                    <div class="cc-body">
-                        <div style="font-weight:700;font-size:.88rem;margin-bottom:.25rem">${escapeHtml(course.title)}</div>
-                        <div style="font-size:.74rem;color:var(--text3)">By ${author.firstName || 'Instructor'} · ${course.totalLessons || 0} lessons</div>
-                        <div style="font-weight:800;color:var(--lime);margin-top:.5rem">${fmtMoneyAPI(course.price || 0)}</div>
-                        ${course.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.55rem">${course.affiliatePercent || 0}% aff</span>` : ''}
-                        <span style="font-size:.7rem;color:var(--text3)"><i class="fas fa-eye"></i> ${course.views || 0}</span>
-                    </div>
-                </div>
-            `;
-        }
-
         // ================================================================
         // SUBMIT NEW POST – WITH OPTIMISTIC UPDATE & DUPLICATE CHECK
         // ================================================================
@@ -5923,7 +5851,6 @@
             const modal = document.getElementById('createPostModal');
             if (modal) {
                 openModal('createPostModal');
-                // Reset duplicate warning
                 const warning = document.getElementById('postDuplicateWarning');
                 if (warning) warning.classList.remove('show');
                 document.getElementById('postTitle').value = '';
@@ -5982,7 +5909,6 @@
             const seoDesc = document.getElementById('postSeoDesc')?.value || '';
             const videoFile = document.getElementById('postVideoInput')?.files[0];
 
-            // Duplicate check
             if (!title) { toast('Please enter a title', 'error'); return; }
             const isDuplicate = S.myPostTitles.some(t => t.toLowerCase() === title.toLowerCase());
             if (isDuplicate) {
@@ -5994,6 +5920,8 @@
                 toast('Please write some content for your post', 'error');
                 return;
             }
+            // Show loading state
+            showLoading('Publishing post...');
             try {
                 const res = await apiCall(POSTS_API, {
                     method: 'POST',
@@ -6023,228 +5951,27 @@
                 if (S.postQuill) {
                     S.postQuill.root.innerHTML = '';
                 }
-                // Optimistic update: insert the new post into the feed
+                // Optimistic update
                 if (S.dp === 'feed' || S.dp === 'home') {
                     const container = document.getElementById('feedContainer');
                     if (container) {
                         if (!container.querySelector(`[data-post-id="${postId}"]`)) {
                             container.insertAdjacentHTML('afterbegin', renderPostCard(newPost));
                             attachPostEventListeners();
-                            // Scroll to top to see the new post
                             container.scrollTop = 0;
                         }
                     } else {
                         loadFeed(1);
                     }
-                } else if (S.dp === 'following') {
-                    loadFollowingFeed();
                 } else if (S.dp === 'profile' && S.profileUser) {
                     const res2 = await apiCall(`/users/${S.profileUser._id}/profile`);
                     renderUserProfile(res2.data);
                 }
-                // Update my post titles cache
                 if (!S.myPostTitles.includes(title)) S.myPostTitles.push(title);
             } catch (err) {
                 toast('Failed to create post: ' + err.message, 'error');
-            }
-        }
-
-        // ================================================================
-        // POST DETAIL PAGE
-        // ================================================================
-        async function loadPostBySlug(slug) {
-            showLoading('Loading post...');
-            try {
-                const res = await apiCall(`/posts/slug/${slug}`);
-                const post = res.data;
-                const token = localStorage.getItem('cx_accessToken');
-                if (token) {
-                    await apiCall(`/posts/${post._id}/view`, { method: 'POST' }).catch(() => {});
-                }
-                renderPostDetail(post);
-                setDP('post-detail');
-            } catch (err) {
-                toast('Post not found: ' + err.message, 'error');
-                setDP('feed');
             } finally {
                 hideLoading();
-            }
-        }
-
-        function renderPostDetail(post) {
-            const container = document.getElementById('postDetailContent');
-            if (!container) return;
-            const author = post.authorId || {};
-            const avatarHtml = getAvatarUrl(author) ?
-                `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
-                (author.firstName?.[0] || 'U');
-            const contentHtml = post.content ? (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(post.content) : post
-                .content) : '';
-            const earnings = post.earnings || 0;
-            const views = post.views || 0;
-
-            container.innerHTML = `
-                <div class="post-card card card-p">
-                    <div class="post-header">
-                        <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));" onclick="openUserProfile('${author._id}')">
-                            ${avatarHtml}
-                        </div>
-                        <div class="post-author-info">
-                            <strong onclick="openUserProfile('${author._id}')" style="cursor:pointer">${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
-                            <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
-                            <span class="badge badge-cyan" style="font-size:.55rem">${post.type || 'article'}</span>
-                            ${post.isPremiumOnly ? '<span class="badge badge-gold" style="font-size:.55rem">Premium</span>' : ''}
-                        </div>
-                    </div>
-                    <h1 class="post-title" style="font-size:1.5rem;">${escapeHtml(post.title)}</h1>
-                    ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
-                    ${post.videoUrl ? `<video controls style="max-width:100%;border-radius:var(--radius-sm);margin:.75rem 0;"><source src="${post.videoUrl}" type="video/mp4"></video>` : ''}
-                    <div class="post-content" style="font-size:1rem;line-height:1.8;color:var(--text2);margin:1rem 0;">
-                        ${contentHtml}
-                    </div>
-                    <div class="post-stats">
-                        <span><i class="fas fa-eye"></i> ${views} views</span>
-                        <span><i class="far fa-heart"></i> ${post.likes || 0}</span>
-                        <span><i class="far fa-comment"></i> ${post.commentsCount || 0}</span>
-                        <span><i class="fas fa-share-alt"></i> ${post.shares || 0}</span>
-                        ${earnings > 0 ? `<span class="badge badge-gold">🏆 +${fmtMoneyAPI(earnings)}</span>` : ''}
-                    </div>
-                    <div class="post-actions">
-                        <button class="btn-like ${post.userLiked ? 'liked' : ''}" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
-                        <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
-                        <button class="btn-share" onclick="openShareModal('${post._id}','${post.slug}')"><i class="fas fa-share-alt"></i> Share</button>
-                    </div>
-                    <div class="comments-section" data-post-id="${post._id}" style="display:block;margin-top:1rem;">
-                        <div class="comment-input">
-                            <textarea placeholder="Write a comment..." id="commentText-${post._id}"></textarea>
-                            <button class="btn-primary btn-sm" onclick="addComment('${post._id}')">Post</button>
-                        </div>
-                        <div class="comments-list" id="commentsList-${post._id}"></div>
-                    </div>
-                </div>
-            `;
-            loadComments(post._id);
-            attachPostEventListeners();
-        }
-
-        // ================================================================
-        // FOLLOWING COLLECTION
-        // ================================================================
-        async function loadFollowingCollection() {
-            showLoading('Loading following collection...');
-            try {
-                const res = await apiCall('/posts/following');
-                const items = res.data || [];
-                renderFollowingCollection(items);
-                updateFollowingBadge();
-            } catch (err) {
-                toast('Failed to load following content: ' + err.message, 'error');
-            } finally { hideLoading(); }
-        }
-
-        function renderFollowingCollection(items) {
-            const container = document.getElementById('followingContainer');
-            const empty = document.getElementById('followingEmpty');
-            if (!container) return;
-            if (!items || !items.length) {
-                container.innerHTML = '';
-                empty.style.display = 'block';
-                return;
-            }
-            empty.style.display = 'none';
-            container.innerHTML = items.map(item => {
-                const author = item.authorId || item.instructorId || item.instructor || {};
-                const avatarHtml = getAvatarUrl(author) ?
-                    `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
-                    (author.firstName?.[0] || 'U');
-                const typeLabel = item.type === 'post' ? '📝 Post' : '📚 Course';
-                const title = item.title || 'Untitled';
-                const date = new Date(item.publishedAt || item.createdAt).toLocaleDateString();
-                const contentPreview = item.type === 'post' ?
-                    (item.content ? item.content.replace(/<[^>]*>/g, '').substring(0, 120) + '...' : '') :
-                    `${item.totalLessons || 0} lessons · ${item.level || 'All levels'}`;
-                const clickAction = item.type === 'post' ?
-                    `window.open('${FRONTEND_URL}/post/${item.slug || item._id}','_blank')` :
-                    `openBuyCourse('${item._id}')`;
-                const views = item.views || 0;
-                return `
-                    <div class="following-item" onclick="${clickAction}">
-                        <div class="fi-header">
-                            <div class="fi-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">${avatarHtml}</div>
-                            <div>
-                                <div class="fi-name">${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</div>
-                                <div style="font-size:.7rem;color:var(--text3)">${date}</div>
-                            </div>
-                        </div>
-                        <div class="fi-content">
-                            <span class="fi-type">${typeLabel}</span>
-                            <div style="font-weight:600;font-size:.9rem;margin-bottom:.2rem">${escapeHtml(title)}</div>
-                            <div style="font-size:.8rem;color:var(--text3)">${contentPreview}</div>
-                        </div>
-                        <div class="fi-meta">
-                            ${item.type === 'post' ? `<span>❤️ ${item.likes || 0}</span><span>💬 ${item.commentsCount || 0}</span>` : `<span>📖 ${item.totalLessons || 0} lessons</span>`}
-                            <span><i class="fas fa-eye"></i> ${views}</span>
-                            <span><i class="far fa-clock"></i> ${new Date(item.createdAt).toLocaleDateString()}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateFollowingBadge() {
-            const badge = document.getElementById('navFollowingBadge');
-            if (badge) {
-                const count = S.following?.length || 0;
-                badge.textContent = count;
-                badge.style.display = count > 0 ? 'inline' : 'none';
-            }
-        }
-
-        // ================================================================
-        // SHARE MODAL
-        // ================================================================
-        function openShareModal(postId, slug) {
-            S.sharePostId = postId;
-            S.sharePostSlug = slug;
-            document.getElementById('shareLink').textContent = `${FRONTEND_URL}/post/${slug}`;
-            openModal('shareModal');
-        }
-
-        function copyShareLink() {
-            const link = document.getElementById('shareLink')?.textContent;
-            if (link) copyToClipboard(link);
-        }
-
-        function shareVia(platform) {
-            const link = document.getElementById('shareLink')?.textContent || `${FRONTEND_URL}/post/${S.sharePostSlug || ''}`;
-            const text = `Check out this post on ChangeX Academy! 🚀 Learn and earn with tech skills.`;
-            let url = '';
-            switch (platform) {
-                case 'facebook':
-                    url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}&quote=${encodeURIComponent(text)}`;
-                    break;
-                case 'twitter':
-                    url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`;
-                    break;
-                case 'linkedin':
-                    url = `https://www.linkedin.com/sharing/share-offscreen/?url=${encodeURIComponent(link)}`;
-                    break;
-                case 'whatsapp':
-                    url = `https://wa.me/?text=${encodeURIComponent(text + ' ' + link)}`;
-                    break;
-                case 'telegram':
-                    url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
-                    break;
-                case 'copy':
-                default:
-                    copyToClipboard(link);
-                    toast('Link copied!', 'success');
-                    closeModal('shareModal');
-                    return;
-            }
-            if (url) {
-                window.open(url, '_blank');
-                closeModal('shareModal');
             }
         }
 
@@ -6419,7 +6146,6 @@
                 });
                 await Promise.all(followPromises);
                 renderPeople(users);
-                updateFollowingBadge();
             } catch (err) {
                 toast('Failed to load users: ' + err.message, 'error');
                 document.getElementById('peopleContainer').innerHTML =
@@ -6463,7 +6189,7 @@
             renderPeople(S.users);
         }
 
-        // ─── FOLLOW USER – FIXED: ALWAYS REFRESH FOLLOWING FEED ───────
+        // ─── FOLLOW USER ───────────────────────────────────────
         async function followUser(userId) {
             try {
                 const res = await apiCall(`/follows/${userId}/follow`, { method: 'POST' });
@@ -6475,22 +6201,10 @@
                     S.following = S.following.filter(id => id !== userId);
                 }
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
-                updateFollowingBadge();
-                // Always refresh the following collection to keep it up-to-date
-                if (S.dp === 'following') {
-                    await loadFollowingCollection();
-                } else {
-                    // Pre-fetch the following list so it's ready when user navigates
-                    await loadUserFollowing();
-                }
                 if (S.dp === 'people') renderPeople(S.users);
                 if (S.dp === 'profile' && S.profileUser) {
                     const res2 = await apiCall(`/users/${S.profileUser._id}/profile`);
                     renderUserProfile(res2.data);
-                }
-                // Also refresh feed if we're on the feed page with following filter
-                if (S.dp === 'feed' && S.feedFilter === 'following') {
-                    loadFeed(1);
                 }
             } catch (err) { toast('Error: ' + err.message, 'error'); }
         }
@@ -6595,7 +6309,7 @@
         }
 
         // ================================================================
-        // FOLLOWING PERSISTENCE
+        // FOLLOWING PERSISTENCE (kept for badge but page removed)
         // ================================================================
         async function loadUserFollowing() {
             if (!S.user) return;
@@ -6604,7 +6318,6 @@
                 const users = res.data || [];
                 S.following = users.map(u => u._id);
                 users.forEach(u => { S.followStatus[u._id] = true; });
-                updateFollowingBadge();
             } catch (err) {
                 console.warn('Could not load following:', err);
                 S.following = [];
@@ -7784,7 +7497,7 @@
         }
 
         // ================================================================
-        // COURSE EDITOR
+        // COURSE EDITOR – FIXED DRAFT SAVING
         // ================================================================
         function startAutoSave() {
             if (autoSaveTimer) clearInterval(autoSaveTimer);
@@ -7809,30 +7522,35 @@
                 quizzes: S.quizBuilderList,
                 updatedAt: new Date().toISOString()
             };
-            localStorage.setItem(`course_draft_${S.currentCourseData?._id || 'new'}`, JSON.stringify(draft));
+            const key = `course_draft_${S.currentCourseData?._id || 'new'}`;
+            localStorage.setItem(key, JSON.stringify(draft));
             const autoSaveEl = document.getElementById('edAutoSave');
             if (autoSaveEl) autoSaveEl.textContent = 'Draft · Saved locally';
         }
 
         function loadDraftFromLocalStorage(courseId = 'new') {
-            const saved = localStorage.getItem(`course_draft_${courseId}`);
+            const key = `course_draft_${courseId}`;
+            const saved = localStorage.getItem(key);
             if (saved) {
-                const draft = JSON.parse(saved);
-                if (confirm('You have an unsaved draft. Restore it?')) {
-                    document.getElementById('edTitle').value = draft.title || '';
-                    document.getElementById('edSubtitle').value = draft.subtitle || '';
-                    if (S.quillEditors['descEditorQuill']) S.quillEditors['descEditorQuill'].root.innerHTML = draft
-                        .description || '';
-                    document.getElementById('edCategory').value = draft.category || 'Web Development';
-                    document.getElementById('edLevel').value = draft.level || 'Beginner';
-                    document.getElementById('edPrice').value = draft.price || '';
-                    document.getElementById('edEmoji').value = draft.thumbnail || '📚';
-                    S.editorLessons = draft.lessons || [];
-                    S.quizBuilderList = draft.quizzes || [];
-                    renderLessonBuilderList();
-                    renderQuizBuilder();
-                    toast('Draft restored from local storage', 'success');
-                }
+                try {
+                    const draft = JSON.parse(saved);
+                    if (confirm('You have an unsaved draft. Restore it?')) {
+                        document.getElementById('edTitle').value = draft.title || '';
+                        document.getElementById('edSubtitle').value = draft.subtitle || '';
+                        if (S.quillEditors['descEditorQuill']) S.quillEditors['descEditorQuill'].root.innerHTML = draft
+                            .description || '';
+                        document.getElementById('edCategory').value = draft.category || 'Web Development';
+                        document.getElementById('edLevel').value = draft.level || 'Beginner';
+                        document.getElementById('edPrice').value = draft.price || '';
+                        document.getElementById('edEmoji').value = draft.thumbnail || '📚';
+                        S.editorLessons = draft.lessons || [];
+                        S.quizBuilderList = draft.quizzes || [];
+                        renderLessonBuilderList();
+                        renderQuizBuilder();
+                        toast('Draft restored from local storage', 'success');
+                    }
+                } catch (e) { console.warn('Could not parse draft:', e);
+                    localStorage.removeItem(key); }
             }
         }
 
@@ -7847,6 +7565,14 @@
             initQuillEditors();
             renderLessonBuilderList();
             startAutoSave();
+            // Ensure draft is loaded after editor init
+            setTimeout(() => {
+                if (S.currentCourseData?._id) {
+                    loadDraftFromLocalStorage(S.currentCourseData._id);
+                } else {
+                    loadDraftFromLocalStorage('new');
+                }
+            }, 500);
         }
 
         function initQuillEditors() {
@@ -8535,11 +8261,18 @@
         }
 
         // ================================================================
-        // ADMIN PANEL
+        // ADMIN PANEL – FIXED: DISPLAYS WITH RIGHT CREDENTIALS
         // ================================================================
         function renderAdm(sec) { switchAdm(sec, null); }
 
         async function switchAdm(sec, el) {
+            // Check admin rights
+            const isAdmin = S.user?.roles?.includes('admin') || S.user?.role === 'admin' || S.user?.role === 'superadmin';
+            if (!isAdmin) {
+                document.getElementById('adminContent').innerHTML =
+                    '<div class="empty-state"><i class="fas fa-shield-alt"></i><h4>Access Denied</h4><p>You need admin privileges to view this panel.</p></div>';
+                return;
+            }
             S.admSec = sec;
             document.querySelectorAll('#dash-admin .fpill').forEach(p => p.classList.remove('active'));
             if (el) el.classList.add('active');
@@ -8710,7 +8443,7 @@
         }
 
         // ================================================================
-        // ADMIN CHALLENGES
+        // ADMIN CHALLENGES – BUTTON VISIBLE
         // ================================================================
         async function adminCreateChallenge() {
             const title = document.getElementById('admChallengeTitle')?.value.trim();
@@ -9315,6 +9048,18 @@
         }
 
         // ================================================================
+        // ENROLLMENTS HELPER
+        // ================================================================
+        async function loadEnrollments() {
+            try {
+                const data = await apiCall('/courses/my/enrollments');
+                S.enrollments = Array.isArray(data.data) ? data.data : [];
+                const cntEl = document.getElementById('navCoursesCnt');
+                if (cntEl) cntEl.textContent = S.enrollments.length;
+            } catch (e) { S.enrollments = []; }
+        }
+
+        // ================================================================
         // INITIALIZATION
         // ================================================================
         window.addEventListener('load', async () => {
@@ -9441,6 +9186,397 @@
                 if (document.getElementById('regRef')) document.getElementById('regRef').value = refFromStorage;
             }
         })();
+
+        // ================================================================
+        // POST DETAIL PAGE
+        // ================================================================
+        async function loadPostBySlug(slug) {
+            showLoading('Loading post...');
+            try {
+                const res = await apiCall(`/posts/slug/${slug}`);
+                const post = res.data;
+                const token = localStorage.getItem('cx_accessToken');
+                if (token) {
+                    await apiCall(`/posts/${post._id}/view`, { method: 'POST' }).catch(() => {});
+                }
+                renderPostDetail(post);
+                setDP('post-detail');
+            } catch (err) {
+                toast('Post not found: ' + err.message, 'error');
+                setDP('feed');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderPostDetail(post) {
+            const container = document.getElementById('postDetailContent');
+            if (!container) return;
+            const author = post.authorId || {};
+            const avatarHtml = getAvatarUrl(author) ?
+                `<img src="${getAvatarUrl(author)}" alt="${author.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                (author.firstName?.[0] || 'U');
+            const contentHtml = post.content ? (typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(post.content) : post
+                .content) : '';
+            const earnings = post.earnings || 0;
+            const views = post.views || 0;
+
+            container.innerHTML = `
+                <div class="post-card card card-p">
+                    <div class="post-header">
+                        <div class="post-author-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));" onclick="openUserProfile('${author._id}')">
+                            ${avatarHtml}
+                        </div>
+                        <div class="post-author-info">
+                            <strong onclick="openUserProfile('${author._id}')" style="cursor:pointer">${escapeHtml(author.firstName || 'User')} ${escapeHtml(author.lastName || '')}</strong>
+                            <span class="post-date">${new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
+                            <span class="badge badge-cyan" style="font-size:.55rem">${post.type || 'article'}</span>
+                            ${post.isPremiumOnly ? '<span class="badge badge-gold" style="font-size:.55rem">Premium</span>' : ''}
+                        </div>
+                    </div>
+                    <h1 class="post-title" style="font-size:1.5rem;">${escapeHtml(post.title)}</h1>
+                    ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured">` : ''}
+                    ${post.videoUrl ? `<video controls style="max-width:100%;border-radius:var(--radius-sm);margin:.75rem 0;"><source src="${post.videoUrl}" type="video/mp4"></video>` : ''}
+                    <div class="post-content" style="font-size:1rem;line-height:1.8;color:var(--text2);margin:1rem 0;">
+                        ${contentHtml}
+                    </div>
+                    <div class="post-stats">
+                        <span><i class="fas fa-eye"></i> ${views} views</span>
+                        <span><i class="far fa-heart"></i> ${post.likes || 0}</span>
+                        <span><i class="far fa-comment"></i> ${post.commentsCount || 0}</span>
+                        <span><i class="fas fa-share-alt"></i> ${post.shares || 0}</span>
+                        ${earnings > 0 ? `<span class="badge badge-gold">🏆 +${fmtMoneyAPI(earnings)}</span>` : ''}
+                    </div>
+                    <div class="post-actions">
+                        <button class="btn-like ${post.userLiked ? 'liked' : ''}" data-id="${post._id}"><i class="far fa-heart"></i> Like</button>
+                        <button class="btn-comment" data-id="${post._id}"><i class="far fa-comment"></i> Comment</button>
+                        <button class="btn-share" onclick="openShareModal('${post._id}','${post.slug}')"><i class="fas fa-share-alt"></i> Share</button>
+                    </div>
+                    <div class="comments-section" data-post-id="${post._id}" style="display:block;margin-top:1rem;">
+                        <div class="comment-input">
+                            <textarea placeholder="Write a comment..." id="commentText-${post._id}"></textarea>
+                            <button class="btn-primary btn-sm" onclick="addComment('${post._id}')">Post</button>
+                        </div>
+                        <div class="comments-list" id="commentsList-${post._id}"></div>
+                    </div>
+                </div>
+            `;
+            loadComments(post._id);
+            attachPostEventListeners();
+        }
+
+        // ================================================================
+        // SHARE MODAL (kept)
+        // ================================================================
+        function openShareModal(postId, slug) {
+            S.sharePostId = postId;
+            S.sharePostSlug = slug;
+            document.getElementById('shareLink').textContent = `${FRONTEND_URL}/post/${slug}`;
+            openModal('shareModal');
+        }
+
+        function copyShareLink() {
+            const link = document.getElementById('shareLink')?.textContent;
+            if (link) copyToClipboard(link);
+        }
+
+        function shareVia(platform) {
+            const link = document.getElementById('shareLink')?.textContent || `${FRONTEND_URL}/post/${S.sharePostSlug || ''}`;
+            const text = `Check out this post on ChangeX Academy! 🚀 Learn and earn with tech skills.`;
+            let url = '';
+            switch (platform) {
+                case 'facebook':
+                    url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}&quote=${encodeURIComponent(text)}`;
+                    break;
+                case 'twitter':
+                    url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`;
+                    break;
+                case 'linkedin':
+                    url = `https://www.linkedin.com/sharing/share-offscreen/?url=${encodeURIComponent(link)}`;
+                    break;
+                case 'whatsapp':
+                    url = `https://wa.me/?text=${encodeURIComponent(text + ' ' + link)}`;
+                    break;
+                case 'telegram':
+                    url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+                    break;
+                case 'copy':
+                default:
+                    copyToClipboard(link);
+                    toast('Link copied!', 'success');
+                    closeModal('shareModal');
+                    return;
+            }
+            if (url) {
+                window.open(url, '_blank');
+                closeModal('shareModal');
+            }
+        }
+
+        // ================================================================
+        // INTERACTIVE MATERIALS
+        // ================================================================
+        async function loadInteractiveMaterials(lessonId) {
+            if (!lessonId) return;
+            try {
+                const res = await apiCall(`${INTERACTIVE_API}/lesson/${lessonId}`);
+                const materials = res.data || [];
+                S.interactiveMaterials = materials;
+                const container = document.getElementById('interactiveMaterialsContainer');
+                if (!container) return;
+                if (!materials.length) { container.innerHTML =
+                    '<div class="empty-state"><p>No interactive materials for this lesson</p></div>'; return; }
+                container.innerHTML = materials.map(m => renderInteractiveMaterial(m)).join('');
+                materials.forEach(m => {
+                    if (m.type === 'code_editor') initCodeEditor(m._id, m.html, m.css, m.js);
+                    if (m.type === 'calculator') initCalculator(m._id, m.config);
+                });
+            } catch (err) { console.warn('Interactive load failed', err); }
+        }
+
+        function renderInteractiveMaterial(material) {
+            switch (material.type) {
+                case 'code_editor':
+                    return `
+                        <div class="interactive-card" data-id="${material._id}">
+                            <h4>💻 Try It Yourself</h4>
+                            <div class="code-editor">
+                                <div class="code-tabs">
+                                    <button class="tab-btn active" onclick="switchCodeTab('html','${material._id}')">HTML</button>
+                                    <button class="tab-btn" onclick="switchCodeTab('css','${material._id}')">CSS</button>
+                                    <button class="tab-btn" onclick="switchCodeTab('js','${material._id}')">JS</button>
+                                    <button class="tab-btn" onclick="runCode('${material._id}')" style="background:var(--primary);color:#fff;border-radius:var(--radius-sm)">▶ Run</button>
+                                </div>
+                                <textarea id="code-html-${material._id}" class="code-area" style="display:block">${escapeHtml(material.html || '')}</textarea>
+                                <textarea id="code-css-${material._id}" class="code-area" style="display:none">${escapeHtml(material.css || '')}</textarea>
+                                <textarea id="code-js-${material._id}" class="code-area" style="display:none">${escapeHtml(material.js || '')}</textarea>
+                                <iframe id="code-output-${material._id}" class="code-output" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+                            </div>
+                        </div>
+                    `;
+                case 'calculator':
+                    return `
+                        <div class="interactive-card">
+                            <h4>🧮 Calculator</h4>
+                            <div style="background:var(--bg);border-radius:var(--radius-sm);padding:1rem;max-width:300px;margin:0 auto">
+                                <input type="text" id="calc-display-${material._id}" class="finput" readonly style="text-align:right;font-size:1.4rem;font-weight:700;font-family:var(--font-mono)">
+                                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-top:.5rem">
+                                    ${['7','8','9','+','4','5','6','-','1','2','3','*','0','.','=','/'].map(b => `<button class="btn btn-ghost btn-sm" onclick="calcPress('${b}','${material._id}')" style="font-size:1.1rem;font-family:var(--font-mono)">${b}</button>`).join('')}
+                                    <button class="btn btn-danger btn-sm" onclick="calcClear('${material._id}')" style="grid-column:span 2">C</button>
+                                    <button class="btn btn-primary btn-sm" onclick="calcEquals('${material._id}')" style="grid-column:span 2">=</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                default:
+                    return `<div class="interactive-card"><p>Interactive: ${material.type}</p></div>`;
+            }
+        }
+
+        function switchCodeTab(tab, id) {
+            document.querySelectorAll(`.code-tabs`).forEach(container => {
+                if (container.closest(`[data-id="${id}"]`) || container.closest(`.interactive-card[data-id="${id}"]`)) {
+                    container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    const btns = container.querySelectorAll('.tab-btn');
+                    const tabMap = { html: 0, css: 1, js: 2 };
+                    if (btns[tabMap[tab]]) btns[tabMap[tab]].classList.add('active');
+                    document.getElementById(`code-html-${id}`).style.display = tab === 'html' ? 'block' : 'none';
+                    document.getElementById(`code-css-${id}`).style.display = tab === 'css' ? 'block' : 'none';
+                    document.getElementById(`code-js-${id}`).style.display = tab === 'js' ? 'block' : 'none';
+                }
+            });
+        }
+
+        function runCode(id) {
+            const html = document.getElementById(`code-html-${id}`)?.value || '';
+            const css = document.getElementById(`code-css-${id}`)?.value || '';
+            const js = document.getElementById(`code-js-${id}`)?.value || '';
+            const iframe = document.getElementById(`code-output-${id}`);
+            if (!iframe) return;
+            const doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(`<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>`);
+            doc.close();
+        }
+
+        let calcDisplay = '';
+
+        function calcPress(val, id) {
+            const display = document.getElementById(`calc-display-${id}`);
+            if (!display) return;
+            if (val === '=') return calcEquals(id);
+            calcDisplay += val;
+            display.value = calcDisplay;
+        }
+
+        function calcClear(id) {
+            calcDisplay = '';
+            const display = document.getElementById(`calc-display-${id}`);
+            if (display) display.value = '';
+        }
+
+        function calcEquals(id) {
+            const display = document.getElementById(`calc-display-${id}`);
+            if (!display || !calcDisplay) return;
+            try { const result = Function('"use strict"; return (' + calcDisplay + ')')();
+                display.value = result;
+                calcDisplay = String(result); } catch (e) { display.value = 'Error';
+                calcDisplay = ''; }
+        }
+
+        function initCodeEditor(id, html, css, js) {
+            setTimeout(() => runCode(id), 300);
+        }
+
+        function initCalculator(id, config) {
+            calcDisplay = '';
+        }
+
+        // ================================================================
+        // INTERACTIVE TAB IN LESSON
+        // ================================================================
+        function switchLTab(tab, el) {
+            document.querySelectorAll('.ltab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.lesson-sub').forEach(s => s.classList.remove('active'));
+            if (el) el.classList.add('active');
+            const target = document.getElementById('ls-' + tab);
+            if (target) target.classList.add('active');
+            S.lessTab = tab;
+            if (tab === 'qa') loadQA();
+            if (tab === 'interactive') {
+                const lesson = S.currentLessons[S.currentLessonIdx];
+                if (lesson && lesson._id) loadInteractiveMaterials(lesson._id);
+            }
+        }
+
+        // ================================================================
+        // APP INIT
+        // ================================================================
+        async function initApp() {
+            try {
+                const savedUser = JSON.parse(localStorage.getItem('cx_user') || 'null');
+                if (savedUser) { S.user = savedUser;
+                    S.loggedIn = true;
+                    S.isPremium = savedUser.isPremium || savedUser.subscriptionTier === 'premium' || false;
+                    S.walletBal = savedUser.walletBalance || 0; }
+            } catch (e) {}
+            if (!S.user) { doLogout(); return; }
+            connectSocket();
+            await loadExchangeRates();
+            try {
+                const data = await apiCall('/users/profile');
+                S.user = data.data || data;
+                S.isPremium = S.user.isPremium || S.user.subscriptionTier === 'premium' || false;
+                S.walletBal = S.user.walletBalance || 0;
+                S.loggedIn = true;
+                currentCurrency = S.user.preferredCurrency || localStorage.getItem('cx_currency') || 'NGN';
+                S.myAffiliateLinks = S.user.affiliateLinks || [];
+                localStorage.setItem('cx_user', JSON.stringify(S.user));
+            } catch (e) {}
+            updateUserUI();
+            updateAdVisibility();
+            if (S.user.roles?.includes('admin') || S.user.role === 'admin' || S.user.role === 'superadmin') {
+                document.getElementById('adminNavLi').style.display = 'block';
+            }
+            const hasCreatorAccess = S.isPremium || S.user?.roles?.includes('admin') || (S.user?.roles?.includes('creator') &&
+                S.user?.isApprovedInstructor);
+            document.getElementById('nav-instructor').style.display = hasCreatorAccess ? '' : 'none';
+            document.getElementById('nav-course-editor').style.display = hasCreatorAccess ? '' : 'none';
+            const fab = document.getElementById('fab');
+            if (fab) fab.style.display = hasCreatorAccess ? 'block' : 'none';
+            await loadEnrollments();
+            await fetchAnnouncements();
+            await fetchNotifications();
+            await loadUserFollowing();
+            updateThemeIcons();
+            renderNotifs();
+            renderCurrencySelectorUI();
+            populateAllBankDetailsBoxes();
+            loadAds('sidebar', 'adSidebar');
+            loadAds('banner', 'adBannerTop');
+            loadAds('in-feed', 'adFeedTop');
+            await loadPeople();
+            checkPlanExpiry();
+            await loadSocialEarnings();
+            setTimeout(() => {
+                const hash = window.location.hash.slice(1);
+                if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(() =>
+                        openBuyCourse(courseId), 1000); }
+                if (hash.startsWith('post/')) { const slug = hash.split('/')[1]; if (slug) setTimeout(() =>
+                        loadPostBySlug(slug), 1000); }
+            }, 800);
+            handleDeepLink();
+        }
+
+        // Deep link handling
+        function handleDeepLink() {
+            const path = window.location.pathname;
+            const postMatch = path.match(/^\/post\/(.+)/);
+            if (postMatch) {
+                const slug = postMatch[1];
+                const token = localStorage.getItem('cx_accessToken');
+                if (!token) {
+                    toast('Please log in to view this post.', 'warning');
+                    goPage('login');
+                    return;
+                }
+                loadPostBySlug(slug);
+            }
+            const affMatch = path.match(/^\/aff\/([^\/]+)\/([^\/]+)\/([^\/]+)/);
+            if (affMatch) {
+                const [, userId, courseId, code] = affMatch;
+                showLoading('Redirecting to course...');
+                fetch(`${API_BASE}/affiliate/track/${code}`, {
+                    method: 'GET',
+                    credentials: 'include'
+                }).catch(() => {}).finally(() => {
+                    window.location.href = `/courses/${courseId}`;
+                });
+            }
+        }
+
+        async function fetchAnnouncements() {
+            try {
+                const res = await apiCall('/announcements/latest');
+                const list = Array.isArray(res.data) ? res.data : [];
+                if (list.length > 0) {
+                    const latest = list[0];
+                    const bar = document.getElementById('announcementBar');
+                    if (bar) { bar.style.display = 'flex';
+                        bar.onclick = () => toast(latest.title + ': ' + latest.content, 'info'); }
+                    document.getElementById('announcementText').textContent =
+                        `📣 ${latest.title}: ${latest.content?.substring(0, 100) || ''}`;
+                }
+            } catch (e) {}
+        }
+
+        async function fetchNotifications() {
+            try {
+                const res = await apiCall('/users/notifications');
+                const list = Array.isArray(res.data) ? res.data : [];
+                S.notifications = list.map(n => ({ ...n, unread: !n.read, time: new Date(n.createdAt).toLocaleTimeString(),
+                    bg: 'si-primary', ic: n.icon || 'fa-bell' }));
+            } catch (e) { console.warn('Could not fetch notifications:', e.message); }
+        }
+
+        // ================================================================
+        // ADS LOADER
+        // ================================================================
+        async function loadAds(placement, containerId) {
+            try {
+                const res = await apiCall(`/ads/placement/${placement}`);
+                const ads = res.data || [];
+                const container = document.getElementById(containerId);
+                if (container && ads.length) {
+                    container.innerHTML = ads.map(ad => `
+                        <div class="ad-sidebar" onclick="trackAdClick('${ad._id}','${ad.linkUrl}')">
+                            <img src="${ad.imageUrl}" alt="${escapeHtml(ad.title)}" loading="lazy">
+                            <div class="ad-label">${escapeHtml(ad.title)}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {}
+        }
     </script>
 </body>
 </html>
