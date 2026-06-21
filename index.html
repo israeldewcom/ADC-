@@ -4632,6 +4632,26 @@
         .book-download-btn.paid:hover {
             box-shadow: 0 4px 16px rgba(251, 191, 36, .3);
         }
+
+        /* ─── Upload Preview Styles ─── */
+        .upload-preview {
+            margin-top: .5rem;
+            display: none;
+        }
+        .upload-preview.visible {
+            display: block;
+        }
+        .upload-preview img {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+        .upload-preview .upload-preview-label {
+            font-size: .72rem;
+            color: var(--success);
+            margin-top: .2rem;
+        }
     </style>
 </head>
 <body>
@@ -4736,6 +4756,7 @@
         <li><span class="nav-item active" id="nav-feed" onclick="setDP('feed')"><span class="nav-ico"><i class="fas fa-newspaper"></i></span>Feed</span></li>
         <li><span class="nav-item" id="nav-challenges" onclick="setDP('challenges')"><span class="nav-ico"><i class="fas fa-trophy"></i></span>Challenges<span class="nav-badge nav-badge-pink" id="navChallengeBadge">0</span></span></li>
         <li><span class="nav-item" id="nav-people" onclick="setDP('people')"><span class="nav-ico"><i class="fas fa-users"></i></span>People</span></li>
+        <li><span class="nav-item" id="nav-following" onclick="setDP('following')"><span class="nav-ico"><i class="fas fa-rss"></i></span>Following<span class="nav-badge" id="navFollowingBadge">0</span></span></li>
         <li class="nav-sec" style="margin-top:.3rem">Learning</li>
         <li><span class="nav-item" id="nav-home" onclick="setDP('home')"><span class="nav-ico"><i class="fas fa-home"></i></span>Dashboard</span></li>
         <li><span class="nav-item" id="nav-explore" onclick="setDP('explore')"><span class="nav-ico"><i class="fas fa-compass"></i></span>Explore Courses</span></li>
@@ -4769,6 +4790,9 @@
     <div class="dash-wrap thin-scroll" id="dashWrap">
         <!-- FEED -->
         <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span><span class="fpill" onclick="filterFeed('personalized',this)">✨ For You</span></div><div id="feedContainer"></div><div id="feedSentinel"></div><div id="feedLoadingMore" class="feed-loading-more" style="display:none"><span class="spinner"></span> Loading more posts...</div></div>
+
+        <!-- FOLLOWING -->
+        <div id="dash-following" class="dash-sub"><div class="page-hd"><h2 class="page-title">📡 Following</h2><p class="page-sub">Posts from people you follow</p></div><div id="followingContainer"><div class="empty-state"><i class="fas fa-rss"></i><h4>No one to follow yet</h4><p>Follow other learners and instructors to see their posts here.</p><button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button></div></div></div>
 
         <!-- CHALLENGES -->
         <div id="dash-challenges" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Challenges</h2><p class="page-sub">Join challenges, earn XP &amp; win rewards</p></div><div class="d-flex gap-2 mb-3"><span class="fpill active" onclick="filterChallenges('active',this)">Active</span><span class="fpill" onclick="filterChallenges('upcoming',this)">Upcoming</span><span class="fpill" onclick="filterChallenges('completed',this)">Completed</span></div><div id="challengesContainer"></div><div class="mt-4"><h4>My Challenge Progress</h4><div id="myChallengeProgress"></div></div></div>
@@ -5145,8 +5169,8 @@
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             const ni = document.getElementById('nav-' + pg);
             if (ni) ni.classList.add('active');
-            ['feed', 'challenges', 'explore', 'wallet', 'home', 'books'].forEach(k => { const m = document.getElementById(
-                    'mbn-' + k); if (m) m.classList.toggle('active', k === pg); });
+            ['feed', 'challenges', 'explore', 'wallet', 'home', 'books', 'following'].forEach(k => { const m = document
+                    .getElementById('mbn-' + k); if (m) m.classList.toggle('active', k === pg); });
             closeSidebar();
             const map = {
                 feed: loadFeed,
@@ -5171,7 +5195,8 @@
                 books: loadBooks,
                 'book-detail': () => {},
                 profile: () => {},
-                'post-detail': () => {}
+                'post-detail': () => {},
+                following: loadFollowing
             };
             if (map[pg]) map[pg]();
             updateAdVisibility();
@@ -6229,6 +6254,35 @@
         }
 
         // ================================================================
+        // FOLLOWING PAGE
+        // ================================================================
+        async function loadFollowing() {
+            const container = document.getElementById('followingContainer');
+            if (!container) return;
+            if (!S.following || !S.following.length) {
+                container.innerHTML = `
+                    <div class="empty-state"><i class="fas fa-rss"></i><h4>No one to follow yet</h4><p>Follow other learners and instructors to see their posts here.</p><button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button></div>
+                `;
+                return;
+            }
+            showLoading('Loading following feed...');
+            try {
+                const res = await apiCall(`/posts/following?page=1&limit=20`);
+                const posts = res.data?.posts || res.data || [];
+                if (!posts.length) {
+                    container.innerHTML = `
+                        <div class="empty-state"><i class="fas fa-rss"></i><h4>No posts from people you follow</h4><p>Your followers haven't posted anything yet.</p><button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button></div>
+                    `;
+                    return;
+                }
+                container.innerHTML = posts.map(p => renderPostCard(p)).join('');
+                attachPostEventListeners();
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state"><p>Failed to load following feed: ' + err.message + '</p></div>';
+            } finally { hideLoading(); }
+        }
+
+        // ================================================================
         // CHALLENGES MODULE
         // ================================================================
         async function loadChallenges() {
@@ -6440,6 +6494,10 @@
                 const avatarHtml = getAvatarUrl(u) ?
                     `<img src="${getAvatarUrl(u)}" alt="${u.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                     (u.firstName?.[0] || 'U');
+                const navFollowingBadge = document.getElementById('navFollowingBadge');
+                if (navFollowingBadge) {
+                    navFollowingBadge.textContent = S.following.filter(id => id !== S.user?._id).length;
+                }
                 return `
                     <div class="person-card card card-p" onclick="openUserProfile('${u._id}')">
                         <div class="person-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
@@ -6582,7 +6640,7 @@
         }
 
         // ================================================================
-        // FOLLOWING PERSISTENCE (kept for badge but page removed)
+        // FOLLOWING PERSISTENCE
         // ================================================================
         async function loadUserFollowing() {
             if (!S.user) return;
@@ -6591,6 +6649,10 @@
                 const users = res.data || [];
                 S.following = users.map(u => u._id);
                 users.forEach(u => { S.followStatus[u._id] = true; });
+                const navFollowingBadge = document.getElementById('navFollowingBadge');
+                if (navFollowingBadge) {
+                    navFollowingBadge.textContent = S.following.filter(id => id !== S.user?._id).length;
+                }
             } catch (err) {
                 console.warn('Could not load following:', err);
                 S.following = [];
@@ -6657,7 +6719,7 @@
             const xpProgress = Math.min(100, Math.round((xp / xpNext) * 100));
             const showUpgrade = !S.isPremium && !S.user?.roles?.includes('admin');
             const postCount = S.posts?.length || 0;
-            const followersCount = S.following?.length || 0;
+            const followersCount = S.following?.filter(id => id !== S.user?._id).length || 0;
             const totalEarnings = S.user?.walletBalance || 0;
             const socialEarnings = S.socialEarnings || 0;
 
@@ -8936,7 +8998,18 @@
                         <div class="admin-ads-form">
                             <h6 style="margin-bottom:.65rem">📢 Create New Ad</h6>
                             <div class="form-group"><label class="flabel">Title</label><input type="text" class="finput" id="admAdTitle" placeholder="Ad title"/></div>
-                            <div class="form-group"><label class="flabel">Image URL</label><input type="url" class="finput" id="admAdImage" placeholder="https://..."/></div>
+                            <div class="form-group"><label class="flabel">Banner Image</label>
+                                <div class="upload-zone" style="padding:1rem">
+                                    <input type="file" id="admAdImageFile" accept="image/*" onchange="uploadAdImage(this)" />
+                                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                    <div style="font-size:.8rem;color:var(--text2)">Click or drop image (PNG, JPG)</div>
+                                </div>
+                                <input type="hidden" id="admAdImage" />
+                                <div id="admAdImagePreview" class="upload-preview">
+                                    <img id="admAdImagePreviewImg" />
+                                    <div class="upload-preview-label">✅ Image uploaded</div>
+                                </div>
+                            </div>
                             <div class="form-group"><label class="flabel">Link URL</label><input type="url" class="finput" id="admAdLink" placeholder="https://..."/></div>
                             <div class="form-group"><label class="flabel">Placement</label>
                                 <select class="finput" id="admAdPlacement">
@@ -8985,7 +9058,17 @@
                             <div class="form-group"><label class="flabel">Description</label><textarea class="finput" id="bookDescription" rows="3" placeholder="Book description..."></textarea></div>
                             <div class="row">
                                 <div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Cover Image URL</label><input type="url" class="finput" id="bookCoverImage" placeholder="https://..." /></div></div>
-                                <div class="col-12 col-md-6"><div class="form-group"><label class="flabel">File URL (PDF) *</label><input type="url" class="finput" id="bookFileUrl" placeholder="https://..." /></div></div>
+                                <div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Book PDF File *</label>
+                                    <div class="upload-zone" style="padding:1rem">
+                                        <input type="file" id="bookPdfFile" accept="application/pdf" onchange="uploadBookPdf(this)" />
+                                        <div class="upload-icon"><i class="fas fa-file-pdf"></i></div>
+                                        <div style="font-size:.8rem;color:var(--text2)">Upload PDF file</div>
+                                    </div>
+                                    <input type="hidden" id="bookFileUrl" />
+                                    <div id="bookPdfPreview" class="upload-preview">
+                                        <div class="upload-preview-label">✅ PDF uploaded</div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Price (₦)</label><input type="number" class="finput" id="bookPrice" placeholder="0 for free" min="0" value="0" /></div></div>
@@ -9026,6 +9109,71 @@
                     break;
                 default:
                     content.innerHTML = '<p>Select a section</p>';
+            }
+        }
+
+        // ─── ADMIN IMAGE UPLOAD ──────────────────────────────────────────
+        async function uploadAdImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('image', file);
+            showLoading('Uploading image...');
+            try {
+                const token = localStorage.getItem('cx_accessToken');
+                const res = await fetch(`${API_BASE}/admin/upload`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData,
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('admAdImage').value = data.data.url;
+                    const preview = document.getElementById('admAdImagePreview');
+                    preview.classList.add('visible');
+                    document.getElementById('admAdImagePreviewImg').src = data.data.url;
+                    toast('✅ Image uploaded!', 'success');
+                } else {
+                    toast('Upload failed: ' + data.message, 'error');
+                }
+            } catch (err) {
+                toast('Upload error: ' + err.message, 'error');
+            } finally {
+                hideLoading();
+                input.value = '';
+            }
+        }
+
+        async function uploadBookPdf(input) {
+            const file = input.files[0];
+            if (!file || file.type !== 'application/pdf') {
+                toast('Please select a PDF file', 'error');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('file', file);
+            showLoading('Uploading PDF...');
+            try {
+                const token = localStorage.getItem('cx_accessToken');
+                const res = await fetch(`${API_BASE}/admin/upload`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData,
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('bookFileUrl').value = data.data.url;
+                    const preview = document.getElementById('bookPdfPreview');
+                    preview.classList.add('visible');
+                    toast('✅ PDF uploaded!', 'success');
+                } else {
+                    toast('Upload failed: ' + data.message, 'error');
+                }
+            } catch (err) {
+                toast('Upload error: ' + err.message, 'error');
+            } finally {
+                hideLoading();
+                input.value = '';
             }
         }
 
@@ -9307,6 +9455,8 @@
                 document.getElementById('admAdLink').value = '';
                 document.getElementById('admAdStart').value = '';
                 document.getElementById('admAdEnd').value = '';
+                document.getElementById('admAdImagePreview').classList.remove('visible');
+                document.getElementById('admAdImageFile').value = '';
             } catch (err) {
                 toast('Failed to create ad: ' + err.message, 'error');
             }
