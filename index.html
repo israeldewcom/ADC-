@@ -4787,7 +4787,7 @@
     <!-- ============================================================ -->
     <!-- MODALS -->
     <!-- ============================================================ -->
-    <div class="modal-ov hidden" id="withdrawModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">💸 Withdraw Earnings</h5><button class="btn-icon-sm" onclick="closeModal('withdrawModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div style="background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.14);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:1rem;text-align:center"><div style="font-size:.7rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase">AVAILABLE BALANCE</div><div style="font-family:var(--font-heading);font-size:2rem;font-weight:800;color:var(--lime)" id="withdrawBal">₦0</div></div><div id="withdrawBankWarning" style="display:none;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1rem;font-size:.79rem;color:var(--orange)"><i class="fas fa-exclamation-triangle" style="margin-right:.35rem"></i><strong>No bank account linked!</strong> Please add your bank details in <a style="color:var(--primary);cursor:pointer;text-decoration:underline" onclick="closeModal('withdrawModal');setDP('settings');setTimeout(()=>switchSet('ss-payout'),100)">Settings → Payouts</a> before withdrawing.</div><div class="form-group"><label class="flabel">Amount (₦)</label><input type="number" class="finput" id="withdrawAmt" placeholder="Min ₦2,000"/></div><div class="form-group"><label class="flabel">Bank Account</label><select class="finput" id="withdrawBank"><option>Loading...</option></select></div><div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:var(--radius-sm);padding:.65rem;font-size:.76rem;color:var(--gold)"><i class="fas fa-info-circle" style="margin-right:.3rem"></i>Processing takes 1–3 business days. No fees.</div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('withdrawModal')">Cancel</button><button class="btn btn-primary" id="withdrawSubmitBtn" onclick="processWithdraw()"><i class="fas fa-paper-plane"></i>Submit</button></div></div></div>
+    <div class="modal-ov hidden" id="withdrawModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">💸 Withdraw Earnings</h5><button class="btn-icon-sm" onclick="closeModal('withdrawModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div style="background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.14);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:1rem;text-align:center"><div style="font-size:.7rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase">AVAILABLE BALANCE</div><div style="font-family:var(--font-heading);font-size:2rem;font-weight:800;color:var(--lime)" id="withdrawBal">₦0</div></div><div id="withdrawBankWarning" style="display:none;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1rem;font-size:.79rem;color:var(--orange)"><i class="fas fa-exclamation-triangle" style="margin-right:.35rem"></i><strong>No bank account linked!</strong> Please add your bank details in <a style="color:var(--primary);cursor:pointer;text-decoration:underline" onclick="closeModal('withdrawModal');setDP('settings');setTimeout(()=>switchSet('ss-payout'),100)">Settings → Payouts</a> before withdrawing.</div><div class="form-group"><label class="flabel">Amount (₦)</label><input type="number" class="finput" id="withdrawAmt" placeholder="Min ₦2,000"/></div><div class="form-group"><label class="flabel">Bank Account</label><select class="finput" id="withdrawBank"><option>Loading...</option></select></div><div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:var(--radius-sm);padding:.65rem;font-size:.76rem;color:var(--gold)"><i class="fas fa-info-circle" style="margin-right:.3rem"></i>Processing takes 1–3 business days. <strong>10% fee</strong> applied.</div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('withdrawModal')">Cancel</button><button class="btn btn-primary" id="withdrawSubmitBtn" onclick="processWithdraw()"><i class="fas fa-paper-plane"></i>Submit</button></div></div></div>
 
     <div class="modal-ov hidden" id="buyCourseModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">🛒 Purchase</h5><button class="btn-icon-sm" onclick="closeModal('buyCourseModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div id="buyCourseInfo" style="margin-bottom:1rem"></div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><h6 style="margin-bottom:.75rem">Order Summary</h6><div id="buyCourseSummary"></div><div class="payment-method-tabs mt-3"><div class="payment-method-tab active" onclick="toggleBuyPaymentMethod('card',this)">💳 Card Payment</div><div class="payment-method-tab" onclick="toggleBuyPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="buyCardSection"><div class="form-group mt-3"><label class="flabel">Referral / Discount Code (optional)</label><input type="text" class="finput" id="buyRefCode" placeholder="Enter code" oninput="applyBuyCode(this.value)"/></div><div id="buyCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><button class="paystack-btn" onclick="processPayment()"><i class="fas fa-lock"></i><span id="paystackBtnText">Pay with Paystack</span></button></div><div id="buyManualSection" style="display:none"><div class="bank-details-box" id="buyBankDetailsBox"></div><div class="form-group mt-3"><label class="flabel">Referral / Discount Code (optional)</label><input type="text" class="finput" id="buyManualRefCode" placeholder="Enter code" oninput="applyBuyManualCode(this.value)"/></div><div id="buyManualCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="manualRef" placeholder="e.g. TRX123456789"><small style="font-size:.7rem;color:var(--text3)">Enter the reference from your bank transfer</small></div><div class="form-group"><label class="flabel">Amount Paid (₦)</label><input type="number" class="finput" id="manualAmount" placeholder="e.g. 5000"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="manualDate"></div><div class="form-group"><label class="flabel">Upload Receipt/Screenshot</label><div class="upload-zone" style="padding:1rem"><input type="file" id="manualReceipt" accept="image/*,application/pdf" onchange="previewReceipt(this)"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt or screenshot</div></div><div id="receiptPreview" style="margin-top:.5rem;display:none"><img id="receiptPreviewImg" style="max-width:100%;max-height:150px;border-radius:var(--radius-sm)"></div></div><button class="btn btn-primary w-full" onclick="submitManualPayment()">Submit for Verification</button><div class="info-box"><i class="fas fa-info-circle" style="color:var(--primary)"></i><strong>How it works:</strong> Transfer the exact amount to the bank details above, then submit your reference and receipt. Our system will automatically verify your payment if all details match. If verification fails, an admin will review within 24 hours.</div></div></div></div></div></div>
 
@@ -4943,7 +4943,7 @@
     <div class="fab" id="fab" style="display:none"><button onclick="initNewCourse()"><i class="fas fa-plus"></i></button></div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – APPLICATION LOGIC (FULLY UPGRADED) -->
+    <!-- JAVASCRIPT – APPLICATION LOGIC (FULLY UPGRADED & PRODUCTION-READY) -->
     <!-- ============================================================ -->
     <script>
         // ═══════════════════════════════════════════════════════════════
@@ -5645,13 +5645,13 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // AD VISIBILITY – FIXED: Premium users see only in‑feed ads
+        // AD VISIBILITY – PREMIUM USERS SEE ONLY IN‑FEED ADS
         // ═══════════════════════════════════════════════════════════════
         function updateAdVisibility() {
             const isPremium = S.isPremium || (S.user && (S.user.isPremium || S.user.subscriptionTier === 'premium'));
 
-            // Hide non‑feed ads for premium users
-            const premiumHideSelectors = [
+            // ─── HIDE ALL NON‑FEED ADS FOR PREMIUM USERS ──────────────
+            const adSelectors = [
                 '.adsbygoogle',
                 '.adsense-ad',
                 '.ad-container:not(#adFeedTop)',
@@ -5664,29 +5664,24 @@
                 '.ad-card:not(.ad-feed)'
             ];
 
-            document.querySelectorAll(premiumHideSelectors.join(',')).forEach(el => {
+            document.querySelectorAll(adSelectors.join(',')).forEach(el => {
                 if (el) {
                     el.style.display = isPremium ? 'none' : '';
+                    if (isPremium) el.classList.remove('visible');
                 }
             });
 
-            // Ensure in‑feed ads are always visible
+            // ─── KEEP IN‑FEED ADS ALWAYS VISIBLE ──────────────────────
             const feedAd = document.getElementById('adFeedTop');
             if (feedAd) {
                 feedAd.style.display = 'block';
                 feedAd.classList.add('visible');
             }
 
-            // Also ensure any .ad-feed elements are visible
             document.querySelectorAll('.ad-feed').forEach(el => {
                 el.style.display = '';
+                el.classList.add('visible');
             });
-
-            // Handle the ad banner in the top bar
-            const adBanner = document.getElementById('adBanner');
-            if (adBanner) {
-                adBanner.style.display = isPremium ? 'none' : 'flex';
-            }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -7045,7 +7040,6 @@
         }
 
         function openBuyCourse(courseId) {
-            // Find the course in the global list
             const c = (S.appCourses || []).find(x => x._id === courseId);
             if (!c) {
                 toast('Course not found', 'error');
@@ -7695,7 +7689,7 @@
         }
 
         // ================================================================
-        // WALLET – WITH EARNINGS BREAKDOWN FIX
+        // WALLET – WITH FULL EARNINGS BREAKDOWN DISPLAY
         // ================================================================
         async function renderWallet() {
             try {
@@ -7715,7 +7709,7 @@
                 document.getElementById('walletWeekChange').innerHTML = pending > 0 ?
                     `<span style="color:var(--gold)">Pending: ${fmtMoneyAPI(pending)}</span>` : '+₦0 this week';
 
-                // Render breakdown with all earnings types
+                // ─── FULL BREAKDOWN ──────────────────────────────────────
                 document.getElementById('walletBreakdown').innerHTML = `
                     <div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(breakdown.referralEarnings || 0)}</span></div>
                     <div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(breakdown.courseBonuses || 0)}</span></div>
@@ -7785,7 +7779,7 @@
             showLoading('Processing...');
             try {
                 await apiCall('/payments/withdraw', { method: 'POST', body: { amount: amt } });
-                toast('💸 Withdrawal submitted!', 'success');
+                toast('💸 Withdrawal submitted! (10% fee applied)', 'success');
                 await renderWallet();
             } catch (e) { toast(e.message, 'error'); } finally { hideLoading(); }
         }
@@ -8626,7 +8620,6 @@
                 return;
             }
 
-            // Show progress
             const progressContainer = document.getElementById(`bookDownloadProgress-${bookId}`);
             const progressBar = document.getElementById(`bookProgBar-${bookId}`);
             const progressLabel = document.getElementById(`bookProgLabel-${bookId}`);
@@ -8673,7 +8666,6 @@
                 if (progressLabel) progressLabel.textContent = '✅ Download complete!';
                 toast('📥 Download complete!', 'success');
 
-                // Update download count
                 if (book.downloads !== undefined) {
                     book.downloads = (book.downloads || 0) + 1;
                     if (S.dp === 'book-detail' && S.currentBook) {
@@ -9890,7 +9882,6 @@
                 await apiCall(`/admin/manual-payments/${paymentId}/approve`, { method: 'POST', body: { adminNote: note ||
                         '' } });
                 toast('Payment approved!', 'success');
-                // Refresh wallet and relevant views
                 await renderWallet();
                 if (S.dp === 'books') loadBooks();
                 if (S.dp === 'book-detail' && S.currentBook) openBookDetail(S.currentBook._id);
