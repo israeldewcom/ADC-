@@ -4791,7 +4791,7 @@
 
     <div class="modal-ov hidden" id="buyCourseModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">🛒 Purchase</h5><button class="btn-icon-sm" onclick="closeModal('buyCourseModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div id="buyCourseInfo" style="margin-bottom:1rem"></div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><h6 style="margin-bottom:.75rem">Order Summary</h6><div id="buyCourseSummary"></div><div class="payment-method-tabs mt-3"><div class="payment-method-tab active" onclick="toggleBuyPaymentMethod('card',this)">💳 Card Payment</div><div class="payment-method-tab" onclick="toggleBuyPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="buyCardSection"><div class="form-group mt-3"><label class="flabel">Referral / Discount Code (optional)</label><input type="text" class="finput" id="buyRefCode" placeholder="Enter code" oninput="applyBuyCode(this.value)"/></div><div id="buyCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><button class="paystack-btn" onclick="processPayment()"><i class="fas fa-lock"></i><span id="paystackBtnText">Pay with Paystack</span></button></div><div id="buyManualSection" style="display:none"><div class="bank-details-box" id="buyBankDetailsBox"></div><div class="form-group mt-3"><label class="flabel">Referral / Discount Code (optional)</label><input type="text" class="finput" id="buyManualRefCode" placeholder="Enter code" oninput="applyBuyManualCode(this.value)"/></div><div id="buyManualCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="manualRef" placeholder="e.g. TRX123456789"><small style="font-size:.7rem;color:var(--text3)">Enter the reference from your bank transfer</small></div><div class="form-group"><label class="flabel">Amount Paid (₦)</label><input type="number" class="finput" id="manualAmount" placeholder="e.g. 5000"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="manualDate"></div><div class="form-group"><label class="flabel">Upload Receipt/Screenshot</label><div class="upload-zone" style="padding:1rem"><input type="file" id="manualReceipt" accept="image/*,application/pdf" onchange="previewReceipt(this)"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt or screenshot</div></div><div id="receiptPreview" style="margin-top:.5rem;display:none"><img id="receiptPreviewImg" style="max-width:100%;max-height:150px;border-radius:var(--radius-sm)"></div></div><button class="btn btn-primary w-full" onclick="submitManualPayment()">Submit for Verification</button><div class="info-box"><i class="fas fa-info-circle" style="color:var(--primary)"></i><strong>How it works:</strong> Transfer the exact amount to the bank details above, then submit your reference and receipt. Our system will automatically verify your payment if all details match. If verification fails, an admin will review within 24 hours.</div></div></div></div></div></div>
 
-    <div class="modal-ov hidden" id="premiumModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👑 Go Premium</h5><button class="btn-icon-sm" onclick="closeModal('premiumModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div style="text-align:center;margin-bottom:1.25rem"><div style="font-size:2.5rem;margin-bottom:.5rem">👑</div><h4>Unlock Full Power</h4><p style="color:var(--text3);font-size:.83rem;margin-top:.35rem">Create courses, earn affiliates, no ads!</p></div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><div class="pay-summary-row"><span>Premium Plan</span><span style="color:var(--primary);font-weight:800">₦5,000/mo</span></div><div class="pay-summary-row"><span>Setup Fee</span><span>₦0</span></div><div class="pay-summary-row"><span style="font-weight:700">Total Today</span><span style="color:var(--primary)">₦5,000</span></div><div class="payment-method-tabs mt-3"><div class="payment-method-tab active" onclick="togglePremPaymentMethod('card',this)">💳 Card Payment</div><div class="payment-method-tab" onclick="togglePremPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="premCardSection"><div class="form-group mt-3"><label class="flabel">Promo Code (optional)</label><input type="text" class="finput" id="premRefCode" placeholder="Enter discount code" oninput="applyPremCode(this.value)"/></div><div id="premCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><button class="paystack-btn" onclick="doPremiumPaystack()"><i class="fas fa-lock"></i>Pay ₦5,000 with Paystack</button></div><div id="premManualSection" style="display:none"><div class="bank-details-box" id="premBankDetailsBox"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="premManualRef" placeholder="e.g. TRX123456789"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="premManualDate"></div><div class="form-group"><label class="flabel">Upload Receipt</label><div class="upload-zone" style="padding:1rem"><input type="file" id="premManualReceipt" accept="image/*,application/pdf"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt</div></div></div><button class="btn btn-primary w-full" onclick="submitPremManualPayment()">Submit for Verification</button><div class="info-box"><i class="fas fa-info-circle" style="color:var(--primary)"></i><strong>How it works:</strong> Transfer ₦5,000 to the bank details above, then submit your reference and receipt. After submitting, our system will automatically verify your payment if all details match. If verification fails, an admin will review within 24 hours.</div></div></div></div></div></div>
+    <div class="modal-ov hidden" id="premiumModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👑 Go Premium</h5><button class="btn-icon-sm" onclick="closeModal('premiumModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div style="text-align:center;margin-bottom:1.25rem"><div style="font-size:2.5rem;margin-bottom:.5rem">👑</div><h4>Unlock Full Power</h4><p style="color:var(--text3);font-size:.83rem;margin-top:.35rem">Create courses, earn affiliates, no ads!</p></div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><div class="pay-summary-row"><span>Premium Plan</span><span style="color:var(--primary);font-weight:800">₦5,000/mo</span></div><div class="pay-summary-row"><span>Setup Fee</span><span>₦0</span></div><div class="pay-summary-row"><span style="font-weight:700">Total Today</span><span style="color:var(--primary)">₦5,000</span></div><div class="payment-method-tabs mt-3"><div class="payment-method-tab active" onclick="togglePremPaymentMethod('card',this)">💳 Card Payment</div><div class="payment-method-tab" onclick="togglePremPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="premCardSection"><div class="form-group mt-3"><label class="flabel">Referral Code (optional)</label><input type="text" class="finput" id="premReferralCode" placeholder="Enter referral code" oninput="applyPremCode(this.value)"/></div><div id="premCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><button class="paystack-btn" onclick="doPremiumPaystack()"><i class="fas fa-lock"></i>Pay ₦5,000 with Paystack</button></div><div id="premManualSection" style="display:none"><div class="bank-details-box" id="premBankDetailsBox"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="premManualRef" placeholder="e.g. TRX123456789"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="premManualDate"></div><div class="form-group"><label class="flabel">Upload Receipt</label><div class="upload-zone" style="padding:1rem"><input type="file" id="premManualReceipt" accept="image/*,application/pdf"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt</div></div></div><button class="btn btn-primary w-full" onclick="submitPremManualPayment()">Submit for Verification</button><div class="info-box"><i class="fas fa-info-circle" style="color:var(--primary)"></i><strong>How it works:</strong> Transfer ₦5,000 to the bank details above, then submit your reference and receipt. After submitting, our system will automatically verify your payment if all details match. If verification fails, an admin will review within 24 hours.</div></div></div></div></div></div>
 
     <div class="modal-ov hidden" id="rateModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">⭐ Rate This Course</h5><button class="btn-icon-sm" onclick="closeModal('rateModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><p style="color:var(--text3);font-size:.84rem;margin-bottom:1rem">Your feedback helps instructors improve and helps other students make better choices.</p><div style="text-align:center;margin-bottom:1rem"><div style="display:flex;justify-content:center;gap:.35rem;font-size:2rem;cursor:pointer" id="starRow"><span onclick="setRating(1)" class="star-pick" data-v="1">☆</span><span onclick="setRating(2)" class="star-pick" data-v="2">☆</span><span onclick="setRating(3)" class="star-pick" data-v="3">☆</span><span onclick="setRating(4)" class="star-pick" data-v="4">☆</span><span onclick="setRating(5)" class="star-pick" data-v="5">☆</span></div><p id="ratingLabel" style="font-size:.8rem;color:var(--text3);margin-top:.35rem">Tap to rate</p></div><div class="form-group"><label class="flabel">Review (optional)</label><textarea class="finput" id="rateReview" style="min-height:90px;resize:vertical" placeholder="What did you like or dislike?"></textarea></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('rateModal')">Cancel</button><button class="btn btn-primary" onclick="submitRating()"><i class="fas fa-star"></i>Submit Review</button></div></div></div>
 
@@ -4950,7 +4950,7 @@
         // CONFIGURATION
         // ═══════════════════════════════════════════════════════════════
         const API_BASE = 'https://changex-backend-1.onrender.com/api/v1';
-        const FRONTEND_URL = 'https://changex.academy';
+        const FRONTEND_URL = window.location.origin;
         const PAYSTACK_PUBLIC_KEY = 'pk_live_your_paystack_public_key';
         const CURRENCY_SYMBOLS = { NGN: '₦', USD: '$', GBP: '£', EUR: '€' };
         let currentCurrency = localStorage.getItem('cx_currency') || 'NGN';
@@ -5056,7 +5056,8 @@
             currentBook: null,
             currentBookId: null,
             adminBookFilter: 'all',
-            editingBookId: null
+            editingBookId: null,
+            earningsBreakdown: {}
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -5537,6 +5538,7 @@
             if (S.page === 'landing' || document.getElementById('page-landing').classList.contains('active')) {
                 updateLandingHeroStats();
             }
+            updateAdVisibility();
         }
 
         function handleGoogleLogin() { window.location.href = `${API_BASE}/auth/google`; }
@@ -5579,6 +5581,7 @@
             S.appCourses = [];
             toast('See you soon! 👋', 'info');
             goPage('landing');
+            updateAdVisibility();
         }
 
         function togglePw(id, btn) {
@@ -5645,13 +5648,48 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // AD VISIBILITY
+        // AD VISIBILITY – FIXED FOR PREMIUM (hide all but in‑feed)
         // ═══════════════════════════════════════════════════════════════
         function updateAdVisibility() {
-            const showAds = !S.isPremium && !S.user?.roles?.includes('admin');
-            document.querySelectorAll('.ad-container').forEach(el => el.classList.toggle('visible', showAds));
+            const isPremium = S.isPremium || (S.user && (S.user.isPremium || S.user.subscriptionTier === 'premium'));
+
+            // Hide non‑feed ads for premium
+            const premiumHideSelectors = [
+                '.adsbygoogle',
+                '.adsense-ad',
+                '.ad-container:not(#adFeedTop)',
+                '.ad-sidebar',
+                '.ad-banner',
+                '#adBanner',
+                '#adBannerTop',
+                '#adBookBanner',
+                '#adSidebar',
+                '.ad-card:not(.ad-feed)'
+            ];
+
+            document.querySelectorAll(premiumHideSelectors.join(',')).forEach(el => {
+                if (el) {
+                    el.style.display = isPremium ? 'none' : '';
+                }
+            });
+
+            // Ensure in‑feed ads are always visible
+            const feedAd = document.getElementById('adFeedTop');
+            if (feedAd) {
+                feedAd.style.display = 'block';
+                feedAd.classList.add('visible');
+            }
+
+            // Also ensure any .ad-feed elements are visible
+            document.querySelectorAll('.ad-feed').forEach(el => {
+                el.style.display = '';
+            });
+
+            // Handle adBanner separately
             const adBanner = document.getElementById('adBanner');
-            if (adBanner) adBanner.style.display = showAds ? 'flex' : 'none';
+            if (adBanner) {
+                adBanner.style.display = isPremium ? 'none' : 'flex';
+            }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -5774,6 +5812,7 @@
             if (fab) fab.style.display = hasCreatorAccess ? 'block' : 'none';
             renderCurrencySelectorUI();
             updateLandingHeroStats();
+            updateAdVisibility();
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -5918,6 +5957,17 @@
         let feedAds = [];
         let feedAdIndex = 0;
 
+        // Cache feed posts in localStorage
+        function cacheFeedPosts(posts) {
+            try {
+                const cached = JSON.parse(localStorage.getItem('cx_feed_posts') || '[]');
+                const merged = [...posts, ...cached].filter((p, i, self) =>
+                    self.findIndex(t => t._id === p._id) === i
+                );
+                localStorage.setItem('cx_feed_posts', JSON.stringify(merged.slice(0, 100)));
+            } catch (e) { /* silent */ }
+        }
+
         async function loadFeed(page = 1) {
             const filter = S.feedFilter || 'all';
             if (page === 1) {
@@ -5925,7 +5975,15 @@
                 feedHasMore = true;
                 feedIsLoading = false;
                 const container = document.getElementById('feedContainer');
-                if (container) container.innerHTML = '';
+                if (container) {
+                    // Show cached posts instantly
+                    const cached = JSON.parse(localStorage.getItem('cx_feed_posts') || '[]');
+                    if (cached.length && !container.querySelector('.post-card')) {
+                        renderFeedPosts(cached, { total: cached.length, pages: 1 });
+                    } else {
+                        container.innerHTML = '';
+                    }
+                }
                 if (feedSentinelObserver) { feedSentinelObserver.disconnect();
                     feedSentinelObserver = null; }
                 await loadFeedAds();
@@ -5950,6 +6008,7 @@
                 if (page === 1) {
                     S.posts = posts;
                     renderFeedPosts(posts, pagination, filter === 'personalized');
+                    cacheFeedPosts(posts);
                 } else {
                     appendFeedPosts(posts);
                 }
@@ -6016,6 +6075,7 @@
                 }
             });
             attachPostEventListeners();
+            cacheFeedPosts(posts);
         }
 
         function setupFeedSentinel() {
@@ -6076,6 +6136,7 @@
                 .authorId;
             const slug = post.slug || post._id;
             const views = post.views || 0;
+            const postUrl = `${FRONTEND_URL}/post/${slug}`;
             return `
                 <div class="post-card card card-p" data-post-id="${post._id}">
                     <div class="post-header">
@@ -6094,7 +6155,7 @@
                             ${isAuthor ? `<button class="post-delete-btn" onclick="deletePost('${post._id}')" title="Delete post"><i class="fas fa-trash"></i></button>` : ''}
                         </div>
                     </div>
-                    <h3 class="post-title" onclick="window.open('${FRONTEND_URL}/post/${slug}','_blank')">${escapeHtml(post.title)}</h3>
+                    <h3 class="post-title" onclick="window.location.href='${postUrl}'">${escapeHtml(post.title)}</h3>
                     ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured" loading="lazy">` : ''}
                     ${post.videoUrl ? `<video controls style="max-width:100%;border-radius:var(--radius-sm);margin:.75rem 0;"><source src="${post.videoUrl}" type="video/mp4"></video>` : ''}
                     <div class="post-content">
@@ -6392,6 +6453,11 @@
         async function loadFollowing() {
             const container = document.getElementById('followingContainer');
             if (!container) return;
+            const savedFollowing = JSON.parse(localStorage.getItem('cx_following') || '[]');
+            if (savedFollowing.length && !S.following.length) {
+                S.following = savedFollowing;
+                document.getElementById('navFollowingBadge').textContent = savedFollowing.length;
+            }
             if (!S.following || !S.following.length) {
                 container.innerHTML = `
                     <div class="empty-state"><i class="fas fa-rss"></i><h4>No one to follow yet</h4><p>Follow other learners and instructors to see their posts here.</p><button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button></div>
@@ -6606,6 +6672,10 @@
                 });
                 await Promise.all(followPromises);
                 renderPeople(users);
+                // Save following to localStorage
+                try {
+                    localStorage.setItem('cx_following', JSON.stringify(S.following));
+                } catch (e) { /* silent */ }
             } catch (err) {
                 toast('Failed to load users: ' + err.message, 'error');
                 document.getElementById('peopleContainer').innerHTML =
@@ -6664,6 +6734,9 @@
                 } else {
                     S.following = S.following.filter(id => id !== userId);
                 }
+                try {
+                    localStorage.setItem('cx_following', JSON.stringify(S.following));
+                } catch (e) { /* silent */ }
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
                 if (S.dp === 'people') renderPeople(S.users);
                 if (S.dp === 'profile' && S.profileUser) {
@@ -6744,8 +6817,11 @@
                     </div>
                     <h4>📝 Posts</h4>
                     <div class="profile-collection">
-                        ${posts.length ? posts.map(p => `
-                            <div class="collection-item" onclick="window.open('${FRONTEND_URL}/post/${p.slug || p._id}','_blank')" style="cursor:pointer">
+                        ${posts.length ? posts.map(p => {
+                            const slug = p.slug || p._id;
+                            const postUrl = `${FRONTEND_URL}/post/${slug}`;
+                            return `
+                            <div class="collection-item" onclick="window.location.href='${postUrl}'" style="cursor:pointer">
                                 <span class="ci-type">${p.type || 'post'}</span>
                                 <div class="ci-title">${escapeHtml(p.title)}</div>
                                 <div class="ci-meta">
@@ -6754,13 +6830,13 @@
                                     <span style="color:var(--primary);font-weight:700;">${fmtMoneyAPI(p.earnings || 0)}</span>
                                 </div>
                                 ${S.user?._id === user._id ? `<div class="ci-actions"><button class="post-delete-btn" onclick="deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button></div>` : ''}
-                            </div>
-                        `).join('') : '<p style="color:var(--text3);">No posts yet</p>'}
+                            </div>`;
+                        }).join('') : '<p style="color:var(--text3);">No posts yet</p>'}
                     </div>
                     <h4 class="mt-4">📚 Courses</h4>
                     <div class="profile-collection">
                         ${courses.length ? courses.map(c => `
-                            <div class="collection-item" onclick="openBuyCourse('${c._id}')" style="cursor:pointer">
+                            <div class="collection-item" onclick="window.location.href='/courses/${c._id}'" style="cursor:pointer">
                                 <span class="ci-type">course</span>
                                 <div class="ci-title">${escapeHtml(c.title)}</div>
                                 <div class="ci-meta">${c.totalLessons || 0} lessons · ${c.level || 'All levels'} · ${fmtMoneyAPI(c.price || 0)}</div>
@@ -6787,9 +6863,13 @@
                 if (navFollowingBadge) {
                     navFollowingBadge.textContent = S.following.filter(id => id !== S.user?._id).length;
                 }
+                try {
+                    localStorage.setItem('cx_following', JSON.stringify(S.following));
+                } catch (e) { /* silent */ }
             } catch (err) {
                 console.warn('Could not load following:', err);
-                S.following = [];
+                const saved = JSON.parse(localStorage.getItem('cx_following') || '[]');
+                if (saved.length) S.following = saved;
             }
         }
 
@@ -7001,12 +7081,30 @@
                 const instructorName = c.instructor?.firstName || 'Instructor';
                 const lessonCount = c.totalLessons || (Array.isArray(c.lessons) ? c.lessons.length : 0);
                 const views = c.views || 0;
-                return `<div class="course-card" onclick="openBuyCourse('${c._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail || c.emoji || '📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress || 0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title || 'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level || 'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent || 0}% aff</span>` : ''}</div><div style="font-size:.7rem;color:var(--text3);margin-top:.3rem"><i class="fas fa-eye"></i> ${views}</div></div></div>`;
+                const courseUrl = `/courses/${c._id}`;
+                return `<div class="course-card" onclick="window.location.href='${courseUrl}'"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail || c.emoji || '📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress || 0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title || 'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level || 'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent || 0}% aff</span>` : ''}</div><div style="font-size:.7rem;color:var(--text3);margin-top:.3rem"><i class="fas fa-eye"></i> ${views}</div></div></div>`;
             }).join('');
         }
 
+        // ─── COURSE DETAIL PAGE ─────────────────────────────────────
+        // (Open modal or redirect to dedicated course page)
         function openBuyCourse(courseId) {
-            const c = (S.appCourses || []).find(x => x._id === courseId);
+            // Try to find course in appCourses or fetch it
+            let c = (S.appCourses || []).find(x => x._id === courseId);
+            if (!c) {
+                // Fetch course details
+                apiCall(`/courses/${courseId}`).then(res => {
+                    const course = res.data || res;
+                    S.currentBuyCourse = course;
+                    showBuyCourseModal(course);
+                }).catch(err => toast('Course not found: ' + err.message, 'error'));
+                return;
+            }
+            S.currentBuyCourse = c;
+            showBuyCourseModal(c);
+        }
+
+        function showBuyCourseModal(c) {
             if (!c) return;
             const token = localStorage.getItem('cx_accessToken');
             if (token) {
@@ -7292,12 +7390,16 @@
             return match ? decodeURIComponent(match[1]) : null;
         }
 
+        // ─── PREMIUM SUBSCRIPTION WITH REFERRAL CODE ──────────────────
         async function doPremiumPaystack() {
             closeModal('premiumModal');
             showLoading('Redirecting...');
             try {
-                const res = await apiCall('/payments/subscribe', { method: 'POST', body: { plan: 'premium',
-                        paymentMethod: 'paystack' } });
+                const referralCode = document.getElementById('premReferralCode')?.value.trim() || '';
+                const res = await apiCall('/payments/subscribe', {
+                    method: 'POST',
+                    body: { plan: 'premium', paymentMethod: 'paystack', referralCode }
+                });
                 if (res.data?.paymentUrl) { window.location.href = res.data.paymentUrl; } else { toast(
                         'Could not initiate payment.', 'error');
                     hideLoading(); }
@@ -7647,7 +7749,7 @@
         }
 
         // ================================================================
-        // WALLET
+        // WALLET – WITH EARNINGS BREAKDOWN
         // ================================================================
         async function renderWallet() {
             try {
@@ -7655,19 +7757,35 @@
                 const wallet = walletData.data || walletData;
                 S.walletBal = wallet.balance || wallet.walletBalance || 0;
                 S.user.walletBalance = S.walletBal;
-                S.user.pendingWithdrawal = wallet.pendingWithdrawal || 0;
+                S.user.pendingWithdrawal = wallet.pending || 0;
+                S.earningsBreakdown = wallet.earningsBreakdown || {};
                 localStorage.setItem('cx_user', JSON.stringify(S.user));
-            } catch (e) {}
+            } catch (e) {
+                console.warn('Could not fetch wallet:', e);
+                // Use cached if available
+                if (S.user?.walletBalance !== undefined) {
+                    S.walletBal = S.user.walletBalance;
+                }
+            }
             document.getElementById('walletBal').textContent = fmtMoneyAPI(S.walletBal);
             document.getElementById('withdrawBal').textContent = fmtMoneyAPI(S.walletBal);
             document.getElementById('tbWallet').textContent = fmtMoneyAPI(S.walletBal);
             const pending = S.user?.pendingWithdrawal || 0;
             document.getElementById('walletWeekChange').innerHTML = pending > 0 ?
                 `<span style="color:var(--gold)">Pending: ${fmtMoneyAPI(pending)}</span>` : '+₦0 this week';
-            document.getElementById('walletBreakdown').innerHTML =
-                `<div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</span></div><div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(S.user?.courseEarnings || 0)}</span></div><div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</span></div>`;
+
+            const breakdown = S.earningsBreakdown || {};
+            document.getElementById('walletBreakdown').innerHTML = `
+                <div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(breakdown.referralEarnings || 0)}</span></div>
+                <div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(breakdown.courseBonuses || 0)}</span></div>
+                <div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(breakdown.affiliateCommissions || 0)}</span></div>
+                <div class="web-row"><span>Instructor Earnings</span><span style="color:var(--cyan);font-weight:700">${fmtMoneyAPI(breakdown.instructorEarnings || 0)}</span></div>
+                <div class="web-row"><span>Welcome Bonus</span><span style="color:var(--gold);font-weight:700">${fmtMoneyAPI(breakdown.welcomeBonus || 0)}</span></div>
+                <div class="web-row" style="border-top:2px solid var(--border);font-weight:800;font-size:.9rem"><span>Total Earnings</span><span style="color:var(--lime)">${fmtMoneyAPI(breakdown.totalEarnings || 0)}</span></div>
+            `;
+
             document.getElementById('walletStatsRow').innerHTML =
-                `<div class="col-6"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</div><div class="sl">Referral Earnings</div></div></div><div class="col-6"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</div><div class="sl">Affiliate Earned</div></div></div>`;
+                `<div class="col-6"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${fmtMoneyAPI(breakdown.referralEarnings || 0)}</div><div class="sl">Referral Earnings</div></div></div><div class="col-6"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${fmtMoneyAPI(breakdown.affiliateCommissions || 0)}</div><div class="sl">Affiliate Earned</div></div></div>`;
             await loadTransactions();
             renderTxTable();
             try {
@@ -9068,6 +9186,7 @@
                             updateUserUI(); } catch (e) { console.warn('Bonus already claimed'); } } catch (e) { console
                             .warn('Could not save wizard profile:', e.message); } }
             goPage('app');
+            updateAdVisibility();
         }
 
         // ================================================================
@@ -9113,7 +9232,7 @@
             searchTO = setTimeout(() => {
                 const matches = (S.appCourses || []).filter(c => (c.title || '').toLowerCase().includes(q));
                 document.getElementById('searchDD').innerHTML = matches.length ? matches.slice(0, 8).map(c =>
-                    `<div class="search-ri" onclick="openBuyCourse('${c._id}');document.getElementById('searchDD').classList.remove('open');document.getElementById('globalSearch').value=''"><span>📚</span><div><div style="font-size:.81rem;font-weight:600">${c.title}</div></div></div>`
+                    `<div class="search-ri" onclick="window.location.href='/courses/${c._id}';document.getElementById('searchDD').classList.remove('open');document.getElementById('globalSearch').value=''"><span>📚</span><div><div style="font-size:.81rem;font-weight:600">${c.title}</div></div></div>`
                     ).join('') : '<div style="padding:.72rem;font-size:.79rem;color:var(--text3)">No results</div>';
             }, 280);
         });
@@ -9824,9 +9943,13 @@
             showLoading('Approving payment...');
             try {
                 await apiCall(`/admin/manual-payments/${paymentId}/approve`, { method: 'POST', body: { adminNote: note ||
-                        '' } });
+                            '' } });
                 toast('Payment approved!', 'success');
                 loadManualPayments();
+                // Refresh wallet and books if needed
+                renderWallet();
+                if (S.dp === 'books') loadBooks();
+                if (S.dp === 'book-detail' && S.currentBook) openBookDetail(S.currentBook._id);
             } catch (err) { toast('Failed: ' + err.message, 'error'); } finally { hideLoading(); }
         }
 
@@ -10360,6 +10483,7 @@
                         updateUserUI();
                         updateAdVisibility();
                         checkPlanExpiry();
+                        renderWallet();
                     } catch (e) { console.warn('Subscription verification failed:', e.message); }
                     window.history.replaceState({}, '', window.location.pathname);
                 })();
@@ -10377,10 +10501,16 @@
         // ================================================================
         // POST DETAIL PAGE
         // ================================================================
-        async function loadPostBySlug(slug) {
+        async function loadPostBySlug(slugOrId) {
             showLoading('Loading post...');
             try {
-                const res = await apiCall(`/posts/slug/${slug}`);
+                let endpoint;
+                if (slugOrId && slugOrId.includes('-')) {
+                    endpoint = `/posts/slug/${slugOrId}`;
+                } else {
+                    endpoint = `/posts/${slugOrId}`;
+                }
+                const res = await apiCall(endpoint);
                 const post = res.data;
                 const token = localStorage.getItem('cx_accessToken');
                 if (token) {
