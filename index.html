@@ -4950,7 +4950,7 @@
         // CONFIGURATION
         // ═══════════════════════════════════════════════════════════════
         const API_BASE = 'https://changex-backend-1.onrender.com/api/v1';
-        const FRONTEND_URL = 'https://changex.academy';
+        const FRONTEND_URL = window.location.origin || 'https://changex.academy';
         const PAYSTACK_PUBLIC_KEY = 'pk_live_your_paystack_public_key';
         const CURRENCY_SYMBOLS = { NGN: '₦', USD: '$', GBP: '£', EUR: '€' };
         let currentCurrency = localStorage.getItem('cx_currency') || 'NGN';
@@ -5645,13 +5645,48 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // AD VISIBILITY
+        // AD VISIBILITY – FIXED: Premium users see only in‑feed ads
         // ═══════════════════════════════════════════════════════════════
         function updateAdVisibility() {
-            const showAds = !S.isPremium && !S.user?.roles?.includes('admin');
-            document.querySelectorAll('.ad-container').forEach(el => el.classList.toggle('visible', showAds));
+            const isPremium = S.isPremium || (S.user && (S.user.isPremium || S.user.subscriptionTier === 'premium'));
+
+            // Hide non‑feed ads for premium users
+            const premiumHideSelectors = [
+                '.adsbygoogle',
+                '.adsense-ad',
+                '.ad-container:not(#adFeedTop)',
+                '.ad-sidebar',
+                '.ad-banner',
+                '#adBanner',
+                '#adBannerTop',
+                '#adBookBanner',
+                '#adSidebar',
+                '.ad-card:not(.ad-feed)'
+            ];
+
+            document.querySelectorAll(premiumHideSelectors.join(',')).forEach(el => {
+                if (el) {
+                    el.style.display = isPremium ? 'none' : '';
+                }
+            });
+
+            // Ensure in‑feed ads are always visible
+            const feedAd = document.getElementById('adFeedTop');
+            if (feedAd) {
+                feedAd.style.display = 'block';
+                feedAd.classList.add('visible');
+            }
+
+            // Also ensure any .ad-feed elements are visible
+            document.querySelectorAll('.ad-feed').forEach(el => {
+                el.style.display = '';
+            });
+
+            // Handle the ad banner in the top bar
             const adBanner = document.getElementById('adBanner');
-            if (adBanner) adBanner.style.display = showAds ? 'flex' : 'none';
+            if (adBanner) {
+                adBanner.style.display = isPremium ? 'none' : 'flex';
+            }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -6076,6 +6111,7 @@
                 .authorId;
             const slug = post.slug || post._id;
             const views = post.views || 0;
+            const postUrl = `${FRONTEND_URL}/post/${slug}`;
             return `
                 <div class="post-card card card-p" data-post-id="${post._id}">
                     <div class="post-header">
@@ -6094,7 +6130,7 @@
                             ${isAuthor ? `<button class="post-delete-btn" onclick="deletePost('${post._id}')" title="Delete post"><i class="fas fa-trash"></i></button>` : ''}
                         </div>
                     </div>
-                    <h3 class="post-title" onclick="window.open('${FRONTEND_URL}/post/${slug}','_blank')">${escapeHtml(post.title)}</h3>
+                    <h3 class="post-title" onclick="window.location.href='${postUrl}'">${escapeHtml(post.title)}</h3>
                     ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured" loading="lazy">` : ''}
                     ${post.videoUrl ? `<video controls style="max-width:100%;border-radius:var(--radius-sm);margin:.75rem 0;"><source src="${post.videoUrl}" type="video/mp4"></video>` : ''}
                     <div class="post-content">
@@ -6744,8 +6780,11 @@
                     </div>
                     <h4>📝 Posts</h4>
                     <div class="profile-collection">
-                        ${posts.length ? posts.map(p => `
-                            <div class="collection-item" onclick="window.open('${FRONTEND_URL}/post/${p.slug || p._id}','_blank')" style="cursor:pointer">
+                        ${posts.length ? posts.map(p => {
+                            const slug = p.slug || p._id;
+                            const postUrl = `${FRONTEND_URL}/post/${slug}`;
+                            return `
+                            <div class="collection-item" onclick="window.location.href='${postUrl}'" style="cursor:pointer">
                                 <span class="ci-type">${p.type || 'post'}</span>
                                 <div class="ci-title">${escapeHtml(p.title)}</div>
                                 <div class="ci-meta">
@@ -6755,7 +6794,7 @@
                                 </div>
                                 ${S.user?._id === user._id ? `<div class="ci-actions"><button class="post-delete-btn" onclick="deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button></div>` : ''}
                             </div>
-                        `).join('') : '<p style="color:var(--text3);">No posts yet</p>'}
+                        `}).join('') : '<p style="color:var(--text3);">No posts yet</p>'}
                     </div>
                     <h4 class="mt-4">📚 Courses</h4>
                     <div class="profile-collection">
@@ -7006,8 +7045,12 @@
         }
 
         function openBuyCourse(courseId) {
+            // Find the course in the global list
             const c = (S.appCourses || []).find(x => x._id === courseId);
-            if (!c) return;
+            if (!c) {
+                toast('Course not found', 'error');
+                return;
+            }
             const token = localStorage.getItem('cx_accessToken');
             if (token) {
                 fetch(`${API_BASE}/courses/${c._id}/view`, { method: 'POST' }).catch(() => {});
@@ -7274,7 +7317,9 @@
                             body: { reference: response.reference, type, courseId: type === 'course' ?
                                     id : undefined, bookId: type === 'book' ? id : undefined } });
                         if (verify.success) { toast('✅ Payment successful!', 'success');
-                            closeModal('buyCourseModal'); if (type === 'course') { await loadEnrollments();
+                            closeModal('buyCourseModal');
+                            await renderWallet();
+                            if (type === 'course') { await loadEnrollments();
                                 setDP('courses'); } else if (type === 'book') { if (S.currentBook) S
                                     .currentBook.isPurchased = true;
                                 loadBooks();
@@ -7296,8 +7341,11 @@
             closeModal('premiumModal');
             showLoading('Redirecting...');
             try {
-                const res = await apiCall('/payments/subscribe', { method: 'POST', body: { plan: 'premium',
-                        paymentMethod: 'paystack' } });
+                const referralCode = document.getElementById('premRefCode')?.value.trim() || '';
+                const res = await apiCall('/payments/subscribe', {
+                    method: 'POST',
+                    body: { plan: 'premium', paymentMethod: 'paystack', referralCode }
+                });
                 if (res.data?.paymentUrl) { window.location.href = res.data.paymentUrl; } else { toast(
                         'Could not initiate payment.', 'error');
                     hideLoading(); }
@@ -7647,7 +7695,7 @@
         }
 
         // ================================================================
-        // WALLET
+        // WALLET – WITH EARNINGS BREAKDOWN FIX
         // ================================================================
         async function renderWallet() {
             try {
@@ -7655,29 +7703,45 @@
                 const wallet = walletData.data || walletData;
                 S.walletBal = wallet.balance || wallet.walletBalance || 0;
                 S.user.walletBalance = S.walletBal;
-                S.user.pendingWithdrawal = wallet.pendingWithdrawal || 0;
+                S.user.pendingWithdrawal = wallet.pending || 0;
+                const breakdown = wallet.earningsBreakdown || {};
                 localStorage.setItem('cx_user', JSON.stringify(S.user));
-            } catch (e) {}
-            document.getElementById('walletBal').textContent = fmtMoneyAPI(S.walletBal);
-            document.getElementById('withdrawBal').textContent = fmtMoneyAPI(S.walletBal);
-            document.getElementById('tbWallet').textContent = fmtMoneyAPI(S.walletBal);
-            const pending = S.user?.pendingWithdrawal || 0;
-            document.getElementById('walletWeekChange').innerHTML = pending > 0 ?
-                `<span style="color:var(--gold)">Pending: ${fmtMoneyAPI(pending)}</span>` : '+₦0 this week';
-            document.getElementById('walletBreakdown').innerHTML =
-                `<div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</span></div><div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(S.user?.courseEarnings || 0)}</span></div><div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</span></div>`;
-            document.getElementById('walletStatsRow').innerHTML =
-                `<div class="col-6"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${fmtMoneyAPI(S.user?.referralEarnings || 0)}</div><div class="sl">Referral Earnings</div></div></div><div class="col-6"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${fmtMoneyAPI(S.user?.affiliateEarnings || 0)}</div><div class="sl">Affiliate Earned</div></div></div>`;
-            await loadTransactions();
-            renderTxTable();
-            try {
-                const payoutData = await apiCall('/payments/methods');
-                const banks = Array.isArray(payoutData.data?.bankAccounts) ? payoutData.data.bankAccounts : [];
-                const bankSelect = document.getElementById('withdrawBank');
-                if (bankSelect && banks.length) bankSelect.innerHTML = banks.map(b =>
-                    `<option value="${b._id || b.accountNumber}">${b.bankName} - ${b.accountNumber}</option>`).join(
-                    '');
-            } catch (e) {}
+
+                document.getElementById('walletBal').textContent = fmtMoneyAPI(S.walletBal);
+                document.getElementById('withdrawBal').textContent = fmtMoneyAPI(S.walletBal);
+                document.getElementById('tbWallet').textContent = fmtMoneyAPI(S.walletBal);
+
+                const pending = S.user?.pendingWithdrawal || 0;
+                document.getElementById('walletWeekChange').innerHTML = pending > 0 ?
+                    `<span style="color:var(--gold)">Pending: ${fmtMoneyAPI(pending)}</span>` : '+₦0 this week';
+
+                // Render breakdown with all earnings types
+                document.getElementById('walletBreakdown').innerHTML = `
+                    <div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(breakdown.referralEarnings || 0)}</span></div>
+                    <div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(breakdown.courseBonuses || 0)}</span></div>
+                    <div class="web-row"><span>Affiliate Commissions</span><span style="color:var(--violet);font-weight:700">${fmtMoneyAPI(breakdown.affiliateCommissions || 0)}</span></div>
+                    <div class="web-row"><span>Instructor Earnings</span><span style="color:var(--gold);font-weight:700">${fmtMoneyAPI(breakdown.instructorEarnings || 0)}</span></div>
+                    <div class="web-row"><span>Welcome Bonus</span><span style="color:var(--lime);font-weight:700">${fmtMoneyAPI(breakdown.welcomeBonus || 0)}</span></div>
+                    <div class="web-row" style="border-top:2px solid var(--border);font-weight:800;font-size:.9rem"><span>Total Earnings</span><span style="color:var(--lime)">${fmtMoneyAPI(breakdown.totalEarnings || 0)}</span></div>
+                `;
+
+                document.getElementById('walletStatsRow').innerHTML =
+                    `<div class="col-6"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${fmtMoneyAPI(breakdown.referralEarnings || 0)}</div><div class="sl">Referral Earnings</div></div></div><div class="col-6"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${fmtMoneyAPI(breakdown.affiliateCommissions || 0)}</div><div class="sl">Affiliate Earned</div></div></div>`;
+
+                await loadTransactions();
+                renderTxTable();
+
+                try {
+                    const payoutData = await apiCall('/payments/methods');
+                    const banks = Array.isArray(payoutData.data?.bankAccounts) ? payoutData.data.bankAccounts : [];
+                    const bankSelect = document.getElementById('withdrawBank');
+                    if (bankSelect && banks.length) bankSelect.innerHTML = banks.map(b =>
+                        `<option value="${b._id || b.accountNumber}">${b.bankName} - ${b.accountNumber}</option>`).join(
+                        '');
+                } catch (e) {}
+            } catch (e) {
+                console.warn('Wallet render error:', e);
+            }
         }
 
         async function loadTransactions() {
@@ -9826,6 +9890,10 @@
                 await apiCall(`/admin/manual-payments/${paymentId}/approve`, { method: 'POST', body: { adminNote: note ||
                         '' } });
                 toast('Payment approved!', 'success');
+                // Refresh wallet and relevant views
+                await renderWallet();
+                if (S.dp === 'books') loadBooks();
+                if (S.dp === 'book-detail' && S.currentBook) openBookDetail(S.currentBook._id);
                 loadManualPayments();
             } catch (err) { toast('Failed: ' + err.message, 'error'); } finally { hideLoading(); }
         }
