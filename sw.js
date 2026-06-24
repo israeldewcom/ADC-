@@ -3,7 +3,6 @@ const STATIC_CACHE = `static-${CACHE_VERSION}`;
 const API_CACHE = `api-${CACHE_VERSION}`;
 const BOOK_CACHE = `books-${CACHE_VERSION}`;
 
-// Core assets to cache on install
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -16,25 +15,24 @@ const STATIC_ASSETS = [
   '/icons/icon-192x192.png',
   '/icons/icon-384x384.png',
   '/icons/icon-512x512.png',
-  // Add any other critical files (CSS, fonts if hosted locally)
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
-      .then((cache) => cache.addAll(STATIC_ASSETS))
-      .then(() => self.skipWaiting())  // ✅ correct method
+      .then(cache => cache.addAll(STATIC_ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
+    caches.keys().then(keys => {
       return Promise.all(
-        keys.filter((key) => !key.startsWith(CACHE_VERSION))
-          .map((key) => caches.delete(key))
+        keys.filter(key => !key.startsWith(CACHE_VERSION))
+          .map(key => caches.delete(key))
       );
-    }).then(() => self.clients.claim())  // ✅ correct method
+    }).then(() => self.clients.claim())
   );
 });
 
@@ -42,12 +40,11 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   const request = event.request;
 
-  // API requests – stale‑while‑revalidate
   if (url.pathname.startsWith('/api/v1/')) {
     event.respondWith(
-      caches.open(API_CACHE).then((cache) => {
-        return cache.match(request).then((cached) => {
-          const fetchPromise = fetch(request).then((response) => {
+      caches.open(API_CACHE).then(cache => {
+        return cache.match(request).then(cached => {
+          const fetchPromise = fetch(request).then(response => {
             if (response.status === 200) {
               cache.put(request, response.clone());
             }
@@ -60,12 +57,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Book files (Cloudinary URLs) – cache with fallback
   if (url.pathname.includes('/raw/upload/') || url.pathname.includes('/books/')) {
     event.respondWith(
-      caches.open(BOOK_CACHE).then((cache) => {
-        return cache.match(request).then((cached) => {
-          const fetchPromise = fetch(request).then((response) => {
+      caches.open(BOOK_CACHE).then(cache => {
+        return cache.match(request).then(cached => {
+          const fetchPromise = fetch(request).then(response => {
             if (response.status === 200) {
               cache.put(request, response.clone());
             }
@@ -78,15 +74,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets – cache first
-  if (STATIC_ASSETS.some((asset) => request.url.includes(asset))) {
+  if (STATIC_ASSETS.some(asset => request.url.includes(asset))) {
     event.respondWith(
-      caches.match(request).then((cached) => cached || fetch(request))
+      caches.match(request).then(cached => cached || fetch(request))
     );
     return;
   }
 
-  // Default – network with fallback to offline page
   event.respondWith(
     fetch(request).catch(() => {
       return caches.match('/offline.html') || caches.match('/');
