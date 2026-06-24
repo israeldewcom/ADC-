@@ -5406,9 +5406,9 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // PLATFORM BANK DETAILS
+        // PLATFORM BANK DETAILS (UPDATED ACCOUNT NUMBER)
         // ═══════════════════════════════════════════════════════════════
-        const PLATFORM_BANK_DETAILS = { bankName: 'Opay', accountName: 'Isreal Dewa Wycliffe', accountNumber: '9171806424' };
+        const PLATFORM_BANK_DETAILS = { bankName: 'Opay', accountName: 'Isreal Dewa Wycliffe', accountNumber: '9161806424' };
 
         function renderBankDetailsHTML(includeCopyBtn = true) {
             const copyBtn = includeCopyBtn ?
@@ -7136,7 +7136,7 @@
         }
 
         // ================================================================
-        // MANUAL PAYMENT SUBMISSION – FIXED: UPLOAD RECEIPT SEPARATELY + JSON
+        // MANUAL PAYMENT SUBMISSION – FIXED: DIRECT MULTIPART TO /payments/manual
         // ================================================================
         function getAffiliateCodeFromCookie() {
             const match = document.cookie.match(/(?:^|; )affiliate_code=([^;]*)/);
@@ -7156,46 +7156,21 @@
             if (!paymentDate) { toast('Select payment date', 'error'); return; }
             if (!receipt) { toast('Upload receipt', 'error'); return; }
 
-            // ─── UPLOAD RECEIPT FIRST ────────────────────────────────────
+            // ─── SEND ALL DATA AS MULTIPART/FORM-DATA ──────────────────
             const formData = new FormData();
-            formData.append('receipt', receipt);
-            let receiptUrl = '';
-            try {
-                const token = localStorage.getItem('cx_accessToken');
-                const uploadRes = await fetch(`${API_BASE}/admin/upload`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData
-                });
-                const uploadData = await uploadRes.json();
-                if (uploadData.success) {
-                    receiptUrl = uploadData.data.url;
-                } else {
-                    toast('Failed to upload receipt: ' + uploadData.message, 'error');
-                    return;
-                }
-            } catch (err) {
-                toast('Receipt upload failed: ' + err.message, 'error');
-                return;
-            }
-
-            // ─── THEN SUBMIT PAYMENT AS JSON ────────────────────────────
-            const payload = {
-                type: currentPaymentType,
-                amount: Number(amount),
-                reference: reference,
-                paymentDate: paymentDate,
-                receiptUrl: receiptUrl,
-                referralCode: referralCode || undefined,
-                affiliateCode: affiliateCode || undefined
-            };
-
+            formData.append('type', currentPaymentType);
             if (currentPaymentType === 'course' && currentManualCourseId) {
-                payload.courseId = currentManualCourseId;
+                formData.append('courseId', currentManualCourseId);
             }
             if (currentPaymentType === 'book' && currentManualBookId) {
-                payload.bookId = currentManualBookId;
+                formData.append('bookId', currentManualBookId);
             }
+            formData.append('amount', amount);
+            formData.append('reference', reference);
+            formData.append('paymentDate', paymentDate);
+            formData.append('receipt', receipt);
+            if (referralCode) formData.append('referralCode', referralCode);
+            if (affiliateCode) formData.append('affiliateCode', affiliateCode);
 
             showLoading('Submitting payment...');
             try {
@@ -7203,10 +7178,10 @@
                 const response = await fetch(`${API_BASE}/payments/manual`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
+                        'Authorization': `Bearer ${token}`
+                        // ❌ Do NOT set Content-Type – browser sets it for FormData
                     },
-                    body: JSON.stringify(payload)
+                    body: formData
                 });
                 const data = await response.json();
 
@@ -7254,49 +7229,22 @@
             if (!paymentDate) { toast('Select payment date', 'error'); return; }
             if (!receipt) { toast('Upload receipt', 'error'); return; }
 
-            // ─── UPLOAD RECEIPT ──────────────────────────────────────────
+            // ─── SEND AS MULTIPART/FORM-DATA ──────────────────────────
             const formData = new FormData();
+            formData.append('type', 'subscription');
+            formData.append('amount', '5000');
+            formData.append('reference', reference);
+            formData.append('paymentDate', paymentDate);
             formData.append('receipt', receipt);
-            let receiptUrl = '';
-            try {
-                const token = localStorage.getItem('cx_accessToken');
-                const uploadRes = await fetch(`${API_BASE}/admin/upload`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData
-                });
-                const uploadData = await uploadRes.json();
-                if (uploadData.success) {
-                    receiptUrl = uploadData.data.url;
-                } else {
-                    toast('Failed to upload receipt', 'error');
-                    return;
-                }
-            } catch (err) {
-                toast('Receipt upload failed', 'error');
-                return;
-            }
-
-            // ─── SUBMIT AS JSON ──────────────────────────────────────────
-            const payload = {
-                type: 'subscription',
-                amount: 5000,
-                reference: reference,
-                paymentDate: paymentDate,
-                receiptUrl: receiptUrl,
-                referralCode: referralCode || undefined
-            };
+            if (referralCode) formData.append('referralCode', referralCode);
 
             showLoading('Submitting payment...');
             try {
                 const token = localStorage.getItem('cx_accessToken');
                 const response = await fetch(`${API_BASE}/payments/manual`, {
                     method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
                 });
                 const data = await response.json();
                 if (data.success) {
@@ -7332,46 +7280,21 @@
             if (!receipt) { toast('Upload receipt', 'error'); return; }
 
             const formData = new FormData();
+            formData.append('type', 'subscription');
+            formData.append('amount', '5000');
+            formData.append('reference', reference);
+            formData.append('paymentDate', paymentDate);
             formData.append('receipt', receipt);
-            let receiptUrl = '';
-            try {
-                const token = localStorage.getItem('cx_accessToken');
-                const uploadRes = await fetch(`${API_BASE}/admin/upload`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData
-                });
-                const uploadData = await uploadRes.json();
-                if (uploadData.success) {
-                    receiptUrl = uploadData.data.url;
-                } else {
-                    toast('Receipt upload failed', 'error');
-                    return;
-                }
-            } catch (err) {
-                toast('Receipt upload failed', 'error');
-                return;
-            }
-
-            const payload = {
-                type: 'subscription',
-                amount: 5000,
-                reference: reference,
-                paymentDate: paymentDate,
-                receiptUrl: receiptUrl,
-                referralCode: document.getElementById('wiz-subref')?.value.trim() || undefined
-            };
+            const referralCode = document.getElementById('wiz-subref')?.value.trim();
+            if (referralCode) formData.append('referralCode', referralCode);
 
             showLoading('Submitting payment...');
             try {
                 const token = localStorage.getItem('cx_accessToken');
                 const response = await fetch(`${API_BASE}/payments/manual`, {
                     method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
                 });
                 const data = await response.json();
                 if (data.success) {
