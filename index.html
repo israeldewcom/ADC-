@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover" />
-    <meta name="theme-color" content="#0F172A" />
+    <meta name="theme-color" content="#0A0A0A" />
     <meta name="description" content="ChangeX Academy — Turn Tech Skills Into Real Income. Learn, create courses, earn from referrals & affiliates. Global #1 Learn-to-Earn platform." id="metaDescription" />
     <meta name="keywords" content="learn to earn, tech skills, online courses, affiliate, referral, coding, web development, manual payment, bank transfer, Nigeria, global, books, library, recommendations" />
     <meta name="author" content="ChangeX Academy" />
@@ -41,41 +41,50 @@
     </script>
     <meta name="google-site-verification" content="PB3lWW6G3FccAT72e65ehI6ILq12ZxNzS_RUsXDVufE" />
     <style>
-        /* ===== CSS VARIABLES ===== */
+        /* ===== CSS VARIABLES – GOLD, WHITE & BLACK THEME ===== */
         :root {
-            --bg: #0F172A;
-            --bg2: #1E293B;
-            --bg3: #334155;
-            --card: #1E293B;
-            --card2: #2D3B52;
-            --card3: #3B4A63;
-            --border: #334155;
-            --border2: #475569;
-            --primary: #6366F1;
-            --primary-dark: #4F46E5;
-            --primary-light: #818CF8;
-            --secondary: #EC4899;
-            --secondary-dark: #DB2777;
-            --accent: #14B8A6;
-            --accent-dark: #0D9488;
-            --lime: #A3E635;
-            --lime2: #84CC16;
-            --cyan: #22D3EE;
-            --violet: #8B5CF6;
-            --gold: #FBBF24;
-            --orange: #FB923C;
+            /* ─── Backgrounds ─── */
+            --bg: #0A0A0A;
+            --bg2: #141414;
+            --bg3: #1F1F1F;
+            --card: #141414;
+            --card2: #1F1F1F;
+            --card3: #2A2A2A;
+            --border: #2A2A2A;
+            --border2: #3A3A3A;
+
+            /* ─── Primary = GOLD ─── */
+            --primary: #D4AF37;
+            --primary-dark: #B8960F;
+            --primary-light: #FBBF24;
+            --secondary: #FBBF24;
+            --accent: #FBBF24;
+            --accent-dark: #D97706;
+            --lime: #FBBF24;
+            --lime2: #D97706;
+            --cyan: #FBBF24;
+            --violet: #FBBF24;
+            --gold: #D4AF37;
+            --gold-light: #FBBF24;
+            --orange: #F59E0B;
             --danger: #F87171;
             --success: #34D399;
             --warning: #FBBF24;
-            --text: #F8FAFC;
-            --text2: #94A3B8;
-            --text3: #64748B;
-            --text4: #475569;
-            --shadow: 0 12px 48px rgba(0, 0, 0, .5);
-            --shadow2: 0 4px 20px rgba(0, 0, 0, .3);
-            --glow: 0 0 40px rgba(99, 102, 241, .12);
-            --glow-cyan: 0 0 28px rgba(20, 184, 166, .08);
-            --glow-primary: 0 0 24px rgba(99, 102, 241, .15);
+
+            /* ─── Text ─── */
+            --text: #FFFFFF;
+            --text2: #E5E5E5;
+            --text3: #94A3B8;
+            --text4: #64748B;
+
+            /* ─── Shadows & Glows ─── */
+            --shadow: 0 12px 48px rgba(0, 0, 0, .6);
+            --shadow2: 0 4px 20px rgba(0, 0, 0, .4);
+            --glow: 0 0 40px rgba(212, 175, 55, .12);
+            --glow-cyan: 0 0 28px rgba(212, 175, 55, .08);
+            --glow-primary: 0 0 24px rgba(212, 175, 55, .15);
+
+            /* ─── Rest ─── */
             --radius: 20px;
             --radius-sm: 12px;
             --radius-lg: 28px;
@@ -86,29 +95,33 @@
             --font-heading: 'Space Grotesk', sans-serif;
             --font-body: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
-            --overlay-bg: rgba(15, 23, 42, .8);
-            --skeleton-base: #1E293B;
-            --skeleton-shine: #334155;
+            --overlay-bg: rgba(0, 0, 0, .8);
+            --skeleton-base: #1F1F1F;
+            --skeleton-shine: #2A2A2A;
             --loading-spinner-color: var(--primary);
         }
         [data-theme="light"] {
-            --bg: #F1F5F9;
+            --bg: #F8FAFC;
             --bg2: #FFFFFF;
-            --bg3: #E2E8F0;
+            --bg3: #F1F5F9;
             --card: #FFFFFF;
             --card2: #F8FAFC;
-            --card3: #E2E8F0;
+            --card3: #F1F5F9;
             --border: #E2E8F0;
             --border2: #CBD5E1;
             --text: #0F172A;
             --text2: #334155;
             --text3: #64748B;
             --text4: #94A3B8;
+            --primary: #D97706;
+            --primary-dark: #B8960F;
+            --primary-light: #FBBF24;
+            --gold: #D97706;
             --shadow: 0 8px 32px rgba(0, 0, 0, .08);
             --shadow2: 0 2px 12px rgba(0, 0, 0, .05);
-            --glow: 0 0 24px rgba(99, 102, 241, .1);
-            --glow-cyan: 0 0 20px rgba(20, 184, 166, .08);
-            --glow-primary: 0 0 20px rgba(99, 102, 241, .12);
+            --glow: 0 0 24px rgba(212, 175, 55, .1);
+            --glow-cyan: 0 0 20px rgba(212, 175, 55, .08);
+            --glow-primary: 0 0 20px rgba(212, 175, 55, .12);
             --overlay-bg: rgba(15, 23, 42, .4);
             --skeleton-base: #E2E8F0;
             --skeleton-shine: #CBD5E1;
@@ -145,7 +158,7 @@
             background-repeat: no-repeat;
             background-position: center center;
             background-size: 45% auto;
-            opacity: 0.035;
+            opacity: 0.025;
             pointer-events: none;
             z-index: -1;
             transition: opacity 0.5s ease;
@@ -153,17 +166,17 @@
         @media (min-width: 768px) {
             body::before {
                 background-size: 35% auto;
-                opacity: 0.04;
+                opacity: 0.03;
             }
         }
         @media (min-width: 1200px) {
             body::before {
                 background-size: 28% auto;
-                opacity: 0.045;
+                opacity: 0.035;
             }
         }
         [data-theme="light"] body::before {
-            opacity: 0.025;
+            opacity: 0.015;
         }
         .page,
         .app-layout,
@@ -196,7 +209,7 @@
         }
         ::selection {
             background: var(--primary);
-            color: #fff;
+            color: #000;
         }
         ::-webkit-scrollbar {
             width: 4px;
@@ -515,7 +528,7 @@
             border-bottom: 1px solid var(--border);
         }
         .grad-text {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), var(--gold-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -567,15 +580,15 @@
         }
         .btn-primary {
             background: var(--primary);
-            color: #fff;
+            color: #000;
             padding: .65rem 1.6rem;
             font-size: .88rem;
-            box-shadow: 0 4px 16px rgba(99, 102, 241, .25);
+            box-shadow: 0 4px 16px rgba(212, 175, 55, .25);
         }
         .btn-primary:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(99, 102, 241, .4);
+            box-shadow: 0 8px 28px rgba(212, 175, 55, .4);
         }
         .btn-outline {
             background: transparent;
@@ -585,7 +598,7 @@
             font-size: .88rem;
         }
         .btn-outline:hover {
-            background: rgba(99, 102, 241, .08);
+            background: rgba(212, 175, 55, .08);
         }
         .btn-ghost {
             background: rgba(128, 128, 128, .06);
@@ -608,36 +621,36 @@
         }
         .btn-violet {
             background: var(--violet);
-            color: #fff;
+            color: #000;
             padding: .62rem 1.6rem;
             font-size: .88rem;
         }
         .btn-cyan {
             background: var(--accent);
-            color: #04080F;
+            color: #000;
             padding: .62rem 1.6rem;
             font-size: .88rem;
         }
         .btn-success {
             background: var(--success);
-            color: #04080F;
+            color: #000;
             padding: .62rem 1.6rem;
             font-size: .88rem;
         }
         .btn-gold {
             background: var(--gold);
-            color: #04080F;
+            color: #000;
             padding: .62rem 1.6rem;
             font-size: .88rem;
         }
         .btn-pink {
             background: var(--secondary);
-            color: #fff;
+            color: #000;
             padding: .62rem 1.6rem;
             font-size: .88rem;
         }
         .btn-pink:hover {
-            background: var(--secondary-dark);
+            background: var(--primary-dark);
         }
         .btn-sm {
             padding: .38rem .9rem;
@@ -666,7 +679,7 @@
         .btn-icon:hover {
             border-color: var(--primary);
             color: var(--primary);
-            background: rgba(99, 102, 241, .06);
+            background: rgba(212, 175, 55, .06);
         }
         .btn-icon-sm {
             width: 36px;
@@ -720,24 +733,24 @@
             white-space: nowrap;
         }
         .badge-lime {
-            background: rgba(163, 230, 53, .12);
+            background: rgba(212, 175, 55, .12);
             color: var(--lime);
-            border: 1px solid rgba(163, 230, 53, .25);
+            border: 1px solid rgba(212, 175, 55, .25);
         }
         .badge-cyan {
-            background: rgba(34, 211, 238, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--cyan);
-            border: 1px solid rgba(34, 211, 238, .2);
+            border: 1px solid rgba(212, 175, 55, .2);
         }
         .badge-gold {
-            background: rgba(251, 191, 36, .12);
+            background: rgba(212, 175, 55, .12);
             color: var(--gold);
-            border: 1px solid rgba(251, 191, 36, .25);
+            border: 1px solid rgba(212, 175, 55, .25);
         }
         .badge-violet {
-            background: rgba(139, 92, 246, .12);
+            background: rgba(212, 175, 55, .12);
             color: var(--violet);
-            border: 1px solid rgba(139, 92, 246, .25);
+            border: 1px solid rgba(212, 175, 55, .25);
         }
         .badge-danger {
             background: rgba(248, 113, 113, .12);
@@ -760,19 +773,19 @@
             border: 1px solid var(--border);
         }
         .badge-premium {
-            background: linear-gradient(135deg, rgba(251, 191, 36, .2), rgba(251, 146, 60, .15));
+            background: linear-gradient(135deg, rgba(212, 175, 55, .2), rgba(251, 146, 60, .15));
             color: var(--gold);
-            border: 1px solid rgba(251, 191, 36, .4);
+            border: 1px solid rgba(212, 175, 55, .4);
         }
         .badge-primary {
-            background: rgba(99, 102, 241, .12);
+            background: rgba(212, 175, 55, .12);
             color: var(--primary);
-            border: 1px solid rgba(99, 102, 241, .25);
+            border: 1px solid rgba(212, 175, 55, .25);
         }
         .badge-pink {
-            background: rgba(236, 72, 153, .12);
+            background: rgba(251, 191, 36, .12);
             color: var(--secondary);
-            border: 1px solid rgba(236, 72, 153, .25);
+            border: 1px solid rgba(251, 191, 36, .25);
         }
         .badge-success-light {
             background: rgba(52, 211, 153, .08);
@@ -803,7 +816,7 @@
         .card-hover:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow);
-            border-color: rgba(99, 102, 241, .18);
+            border-color: rgba(212, 175, 55, .18);
         }
         .form-group {
             margin-bottom: 1rem;
@@ -830,7 +843,7 @@
         }
         .finput:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, .1);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, .1);
             outline: none;
         }
         .finput::placeholder {
@@ -898,13 +911,13 @@
             background: linear-gradient(90deg, var(--lime), var(--lime2));
         }
         .pf-cyan {
-            background: linear-gradient(90deg, var(--cyan), #0D9488);
+            background: linear-gradient(90deg, var(--cyan), #D97706);
         }
         .pf-gold {
             background: linear-gradient(90deg, var(--gold), #D97706);
         }
         .pf-violet {
-            background: linear-gradient(90deg, var(--violet), #6366F1);
+            background: linear-gradient(90deg, var(--violet), #D4AF37);
         }
         .pf-primary {
             background: linear-gradient(90deg, var(--primary), var(--accent));
@@ -966,8 +979,8 @@
             color: var(--danger);
         }
         .toast.info {
-            border-color: rgba(34, 211, 238, .3);
-            color: var(--cyan);
+            border-color: rgba(212, 175, 55, .3);
+            color: var(--gold);
         }
         .toast.warning {
             border-color: rgba(251, 191, 36, .3);
@@ -1124,14 +1137,14 @@
         .logo-mark {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), var(--gold-light));
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: .8rem;
             font-weight: 900;
-            color: #fff;
+            color: #000;
             font-family: var(--font-heading);
             flex-shrink: 0;
         }
@@ -1207,9 +1220,9 @@
         .lhero-bg {
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 60% 55% at 15% 50%, rgba(99, 102, 241, .08), transparent),
-                radial-gradient(ellipse 50% 45% at 85% 30%, rgba(20, 184, 166, .06), transparent),
-                radial-gradient(ellipse 40% 60% at 50% 80%, rgba(236, 72, 153, .05), transparent);
+            background: radial-gradient(ellipse 60% 55% at 15% 50%, rgba(212, 175, 55, .08), transparent),
+                radial-gradient(ellipse 50% 45% at 85% 30%, rgba(212, 175, 55, .06), transparent),
+                radial-gradient(ellipse 40% 60% at 50% 80%, rgba(251, 191, 36, .05), transparent);
             pointer-events: none;
             animation: bgPulse 8s ease-in-out infinite;
             z-index: 0;
@@ -1224,8 +1237,8 @@
             }
         }
         [data-theme="light"] .lhero-bg {
-            background: radial-gradient(ellipse 60% 55% at 15% 50%, rgba(99, 102, 241, .1), transparent),
-                radial-gradient(ellipse 50% 45% at 85% 30%, rgba(20, 184, 166, .08), transparent);
+            background: radial-gradient(ellipse 60% 55% at 15% 50%, rgba(212, 175, 55, .1), transparent),
+                radial-gradient(ellipse 50% 45% at 85% 30%, rgba(212, 175, 55, .08), transparent);
         }
         .lhero-wrap {
             max-width: 1200px;
@@ -1238,8 +1251,8 @@
             display: inline-flex;
             align-items: center;
             gap: .4rem;
-            background: rgba(99, 102, 241, .08);
-            border: 1px solid rgba(99, 102, 241, .2);
+            background: rgba(212, 175, 55, .08);
+            border: 1px solid rgba(212, 175, 55, .2);
             border-radius: 50px;
             padding: .35rem .85rem;
             font-size: .77rem;
@@ -1269,10 +1282,10 @@
         @keyframes pulse {
             0%,
             100% {
-                box-shadow: 0 0 0 0 rgba(99, 102, 241, .4);
+                box-shadow: 0 0 0 0 rgba(212, 175, 55, .4);
             }
             50% {
-                box-shadow: 0 0 0 6px rgba(99, 102, 241, 0);
+                box-shadow: 0 0 0 6px rgba(212, 175, 55, 0);
             }
         }
         .hero-desc {
@@ -1358,8 +1371,8 @@
             padding: 1rem;
         }
         .hd-earn {
-            background: rgba(99, 102, 241, .05);
-            border: 1px solid rgba(99, 102, 241, .14);
+            background: rgba(212, 175, 55, .05);
+            border: 1px solid rgba(212, 175, 55, .14);
             border-radius: var(--radius-sm);
             padding: .85rem;
             margin-bottom: .75rem;
@@ -1455,7 +1468,7 @@
             }
         }
         .hiw-card:hover {
-            border-color: rgba(99, 102, 241, .2);
+            border-color: rgba(212, 175, 55, .2);
             box-shadow: var(--glow-primary);
             transform: translateY(-4px);
         }
@@ -1472,9 +1485,9 @@
         }
         .ticker-outer {
             overflow: hidden;
-            background: rgba(99, 102, 241, .04);
-            border-top: 1px solid rgba(99, 102, 241, .1);
-            border-bottom: 1px solid rgba(99, 102, 241, .1);
+            background: rgba(212, 175, 55, .04);
+            border-top: 1px solid rgba(212, 175, 55, .1);
+            border-bottom: 1px solid rgba(212, 175, 55, .1);
             padding: .55rem 0;
         }
         .ticker-track {
@@ -1499,7 +1512,7 @@
             height: 22px;
             border-radius: 50%;
             background: var(--primary);
-            color: #fff;
+            color: #000;
             font-size: .58rem;
             font-weight: 800;
             display: flex;
@@ -1526,7 +1539,7 @@
         .l-cc:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow);
-            border-color: rgba(99, 102, 241, .2);
+            border-color: rgba(212, 175, 55, .2);
         }
         .l-cc-thumb {
             height: 140px;
@@ -1581,7 +1594,7 @@
             transition: all var(--transition);
         }
         .testi:hover {
-            border-color: rgba(99, 102, 241, .2);
+            border-color: rgba(212, 175, 55, .2);
             box-shadow: var(--glow-primary);
         }
         .testi-av {
@@ -1593,13 +1606,13 @@
             justify-content: center;
             font-family: var(--font-heading);
             font-weight: 800;
-            color: #fff;
+            color: #000;
             font-size: .95rem;
             flex-shrink: 0;
         }
         .earn-proof {
-            background: linear-gradient(135deg, rgba(99, 102, 241, .07), transparent);
-            border: 1px solid rgba(99, 102, 241, .18);
+            background: linear-gradient(135deg, rgba(212, 175, 55, .07), transparent);
+            border: 1px solid rgba(212, 175, 55, .18);
             border-radius: var(--radius-sm);
             padding: .4rem .68rem;
             font-size: .76rem;
@@ -1628,7 +1641,7 @@
             left: 50%;
             transform: translateX(-50%);
             background: var(--primary);
-            color: #fff;
+            color: #000;
             font-size: .6rem;
             font-family: var(--font-heading);
             font-weight: 800;
@@ -1651,8 +1664,8 @@
             margin-right: .4rem;
         }
         .bonus-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, .06), rgba(20, 184, 166, .03));
-            border: 1px solid rgba(99, 102, 241, .18);
+            background: linear-gradient(135deg, rgba(212, 175, 55, .06), rgba(20, 184, 166, .03));
+            border: 1px solid rgba(212, 175, 55, .18);
             border-radius: var(--radius);
             padding: 1.35rem;
             position: relative;
@@ -1722,7 +1735,7 @@
         .soc-btn:hover {
             border-color: var(--primary);
             color: var(--primary);
-            background: rgba(99, 102, 241, .08);
+            background: rgba(212, 175, 55, .08);
         }
         .reveal {
             opacity: 0;
@@ -1758,8 +1771,8 @@
         .auth-bg {
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 60% 50% at 25% 50%, rgba(99, 102, 241, .05), transparent),
-                radial-gradient(ellipse 50% 40% at 80% 30%, rgba(20, 184, 166, .04), transparent);
+            background: radial-gradient(ellipse 60% 50% at 25% 50%, rgba(212, 175, 55, .05), transparent),
+                radial-gradient(ellipse 50% 40% at 80% 30%, rgba(212, 175, 55, .04), transparent);
             pointer-events: none;
         }
         .auth-box {
@@ -1836,8 +1849,8 @@
         .wizard-bg {
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 70% 60% at 50% 30%, rgba(99, 102, 241, .07), transparent),
-                radial-gradient(ellipse 50% 40% at 20% 80%, rgba(20, 184, 166, .05), transparent);
+            background: radial-gradient(ellipse 70% 60% at 50% 30%, rgba(212, 175, 55, .07), transparent),
+                radial-gradient(ellipse 50% 40% at 20% 80%, rgba(212, 175, 55, .05), transparent);
             pointer-events: none;
         }
         .wizard-box {
@@ -1857,7 +1870,7 @@
         }
         .wizard-prog-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            background: linear-gradient(90deg, var(--primary), var(--gold-light));
             transition: width .5s ease;
         }
         .wizard-step {
@@ -1901,12 +1914,12 @@
             text-align: center;
         }
         .role-opt:hover {
-            border-color: rgba(99, 102, 241, .4);
-            background: rgba(99, 102, 241, .04);
+            border-color: rgba(212, 175, 55, .4);
+            background: rgba(212, 175, 55, .04);
         }
         .role-opt.selected {
             border-color: var(--primary);
-            background: rgba(99, 102, 241, .08);
+            background: rgba(212, 175, 55, .08);
         }
         .role-opt .ricon {
             font-size: 1.8rem;
@@ -2024,9 +2037,9 @@
             color: var(--text);
         }
         .nav-item.active {
-            background: rgba(99, 102, 241, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--primary);
-            border: 1px solid rgba(99, 102, 241, .14);
+            border: 1px solid rgba(212, 175, 55, .14);
         }
         .nav-item.active::before {
             content: '';
@@ -2047,7 +2060,7 @@
         .nav-badge {
             margin-left: auto;
             background: var(--primary);
-            color: #fff;
+            color: #000;
             border-radius: 50px;
             font-size: .58rem;
             font-weight: 800;
@@ -2056,18 +2069,23 @@
         }
         .nav-badge-c {
             background: var(--accent);
+            color: #000;
         }
         .nav-badge-o {
             background: var(--orange);
+            color: #000;
         }
         .nav-badge-d {
             background: var(--danger);
+            color: #fff;
         }
         .nav-badge-v {
             background: var(--violet);
+            color: #000;
         }
         .nav-badge-pink {
             background: var(--secondary);
+            color: #000;
         }
         .nav-sec {
             font-size: .6rem;
@@ -2104,7 +2122,7 @@
             font-family: var(--font-heading);
             font-weight: 800;
             font-size: .82rem;
-            color: #fff;
+            color: #000;
             flex-shrink: 0;
             overflow: hidden;
         }
@@ -2226,7 +2244,7 @@
         .top-search:focus {
             border-color: var(--primary);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, .08);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, .08);
         }
         .search-dd {
             position: absolute;
@@ -2268,15 +2286,15 @@
             display: flex;
             align-items: center;
             gap: .35rem;
-            background: rgba(99, 102, 241, .07);
-            border: 1px solid rgba(99, 102, 241, .18);
+            background: rgba(212, 175, 55, .07);
+            border: 1px solid rgba(212, 175, 55, .18);
             border-radius: 50px;
             padding: .28rem .75rem;
             cursor: pointer;
             transition: all .2s;
         }
         .wallet-chip:hover {
-            background: rgba(99, 102, 241, .12);
+            background: rgba(212, 175, 55, .12);
         }
         .wc-val {
             font-family: var(--font-heading);
@@ -2330,7 +2348,7 @@
             background: rgba(128, 128, 128, .04);
         }
         .notif-item.unread {
-            background: rgba(99, 102, 241, .03);
+            background: rgba(212, 175, 55, .03);
         }
         .si {
             width: 36px;
@@ -2343,11 +2361,11 @@
             flex-shrink: 0;
         }
         .si-l {
-            background: rgba(163, 230, 53, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--lime);
         }
         .si-c {
-            background: rgba(34, 211, 238, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--cyan);
         }
         .si-g {
@@ -2355,7 +2373,7 @@
             color: var(--success);
         }
         .si-v {
-            background: rgba(139, 92, 246, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--violet);
         }
         .si-d {
@@ -2367,15 +2385,15 @@
             color: var(--orange);
         }
         .si-gold {
-            background: rgba(251, 191, 36, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--gold);
         }
         .si-primary {
-            background: rgba(99, 102, 241, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--primary);
         }
         .si-pink {
-            background: rgba(236, 72, 153, .1);
+            background: rgba(251, 191, 36, .1);
             color: var(--secondary);
         }
         .mob-bottom-nav {
@@ -2499,8 +2517,8 @@
             color: var(--text3);
         }
         .welcome-banner {
-            background: linear-gradient(135deg, rgba(99, 102, 241, .06), rgba(20, 184, 166, .03));
-            border: 1px solid rgba(99, 102, 241, .14);
+            background: linear-gradient(135deg, rgba(212, 175, 55, .06), rgba(20, 184, 166, .03));
+            border: 1px solid rgba(212, 175, 55, .14);
             border-radius: var(--radius-lg);
             padding: 1.25rem;
             display: flex;
@@ -2521,7 +2539,7 @@
         .course-card:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow);
-            border-color: rgba(99, 102, 241, .2);
+            border-color: rgba(212, 175, 55, .2);
         }
         .cc-img {
             height: 120px;
@@ -2587,8 +2605,8 @@
             background: rgba(128, 128, 128, .04);
         }
         .lb-row.you {
-            background: rgba(99, 102, 241, .05);
-            border: 1px solid rgba(99, 102, 241, .14);
+            background: rgba(212, 175, 55, .05);
+            border: 1px solid rgba(212, 175, 55, .14);
         }
         .lb-rank {
             font-family: var(--font-heading);
@@ -2608,7 +2626,7 @@
             font-family: var(--font-heading);
             font-weight: 800;
             font-size: .85rem;
-            color: #fff;
+            color: #000;
             flex-shrink: 0;
             overflow: hidden;
         }
@@ -2681,8 +2699,8 @@
             width: 64px;
             height: 64px;
             border-radius: 50%;
-            background: rgba(99, 102, 241, .9);
-            color: #fff;
+            background: rgba(212, 175, 55, .9);
+            color: #000;
             font-size: 1.4rem;
             display: flex;
             align-items: center;
@@ -2731,12 +2749,12 @@
             background: rgba(128, 128, 128, .06);
         }
         .curric-item.active {
-            background: rgba(99, 102, 241, .08);
-            border: 1px solid rgba(99, 102, 241, .15);
+            background: rgba(212, 175, 55, .08);
+            border: 1px solid rgba(212, 175, 55, .15);
         }
         .curric-item.done .ci-num {
             background: var(--success);
-            color: #04080F;
+            color: #000;
         }
         .ci-num {
             width: 28px;
@@ -2761,15 +2779,15 @@
             flex-shrink: 0;
         }
         .lt-video {
-            background: rgba(34, 211, 238, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--cyan);
         }
         .lt-text {
-            background: rgba(99, 102, 241, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--primary);
         }
         .lt-quiz {
-            background: rgba(139, 92, 246, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--violet);
         }
         .lt-assign {
@@ -2784,7 +2802,7 @@
             margin-bottom: .6rem;
         }
         .qa-reply {
-            background: rgba(99, 102, 241, .04);
+            background: rgba(212, 175, 55, .04);
             border-left: 2px solid var(--primary);
             margin-top: .6rem;
             padding: .6rem .85rem;
@@ -2812,12 +2830,12 @@
             font-size: .88rem;
         }
         .quiz-opt:hover {
-            border-color: rgba(99, 102, 241, .3);
-            background: rgba(99, 102, 241, .04);
+            border-color: rgba(212, 175, 55, .3);
+            background: rgba(212, 175, 55, .04);
         }
         .quiz-opt.selected {
             border-color: var(--primary);
-            background: rgba(99, 102, 241, .08);
+            background: rgba(212, 175, 55, .08);
             color: var(--primary);
         }
         .quiz-opt.correct {
@@ -2831,8 +2849,8 @@
             color: var(--danger);
         }
         .wallet-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, .1), rgba(20, 184, 166, .05));
-            border: 1px solid rgba(99, 102, 241, .25);
+            background: linear-gradient(135deg, rgba(212, 175, 55, .1), rgba(20, 184, 166, .05));
+            border: 1px solid rgba(212, 175, 55, .25);
             border-radius: var(--radius-lg);
             padding: 1.5rem;
         }
@@ -2863,8 +2881,8 @@
             font-size: .76rem;
         }
         .affiliate-offer-card {
-            background: linear-gradient(135deg, rgba(139, 92, 246, .08), rgba(34, 211, 238, .04));
-            border: 1px solid rgba(139, 92, 246, .2);
+            background: linear-gradient(135deg, rgba(212, 175, 55, .08), rgba(34, 211, 238, .04));
+            border: 1px solid rgba(212, 175, 55, .2);
             border-radius: var(--radius);
             padding: .75rem;
             margin-bottom: .75rem;
@@ -2901,7 +2919,7 @@
         .inst-card:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow);
-            border-color: rgba(99, 102, 241, .2);
+            border-color: rgba(212, 175, 55, .2);
         }
         .inst-av-lg {
             width: 72px;
@@ -2913,7 +2931,7 @@
             font-family: var(--font-heading);
             font-weight: 800;
             font-size: 1.4rem;
-            color: #fff;
+            color: #000;
             margin: 0 auto .75rem;
             overflow: hidden;
         }
@@ -3005,7 +3023,7 @@
             background: rgba(128, 128, 128, .06);
         }
         .esc-step.active {
-            background: rgba(99, 102, 241, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--primary);
         }
         .esc-step.done {
@@ -3027,11 +3045,11 @@
         }
         .esc-step.active .esc-num {
             background: var(--primary);
-            color: #fff;
+            color: #000;
         }
         .esc-step.done .esc-num {
             background: var(--success);
-            color: #04080F;
+            color: #000;
         }
         .esc-text {
             font-size: .79rem;
@@ -3057,8 +3075,8 @@
             overflow: hidden;
         }
         .upload-zone:hover {
-            border-color: rgba(99, 102, 241, .4);
-            background: rgba(99, 102, 241, .02);
+            border-color: rgba(212, 175, 55, .4);
+            background: rgba(212, 175, 55, .02);
         }
         .upload-zone input[type=file] {
             position: absolute;
@@ -3072,8 +3090,8 @@
             width: 48px;
             height: 48px;
             border-radius: var(--radius);
-            background: rgba(99, 102, 241, .1);
-            border: 1px solid rgba(99, 102, 241, .2);
+            background: rgba(212, 175, 55, .1);
+            border: 1px solid rgba(212, 175, 55, .2);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -3153,10 +3171,10 @@
         }
         .price-type-opt.selected {
             border-color: var(--primary);
-            background: rgba(99, 102, 241, .05);
+            background: rgba(212, 175, 55, .05);
         }
         .price-type-opt:hover {
-            border-color: rgba(99, 102, 241, .3);
+            border-color: rgba(212, 175, 55, .3);
         }
         .dtable {
             width: 100%;
@@ -3284,9 +3302,9 @@
             border-color: var(--border2);
         }
         .fpill.active {
-            background: rgba(99, 102, 241, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--primary);
-            border-color: rgba(99, 102, 241, .25);
+            border-color: rgba(212, 175, 55, .25);
         }
         .cert-card {
             background: linear-gradient(135deg, var(--card), var(--card2));
@@ -3346,7 +3364,7 @@
         }
         .mc-bar {
             flex: 1;
-            background: rgba(99, 102, 241, .3);
+            background: rgba(212, 175, 55, .3);
             border-radius: 2px 2px 0 0;
             min-width: 4px;
             transition: background .2s;
@@ -3356,8 +3374,8 @@
             background: var(--primary);
         }
         .paystack-btn {
-            background: linear-gradient(135deg, #34D399, #10B981);
-            color: #fff;
+            background: linear-gradient(135deg, var(--primary), var(--gold-light));
+            color: #000;
             border: none;
             border-radius: 50px;
             padding: .75rem 2rem;
@@ -3375,7 +3393,7 @@
         }
         .paystack-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(16, 185, 129, .3);
+            box-shadow: 0 8px 24px rgba(212, 175, 55, .3);
         }
         .pay-summary-row {
             display: flex;
@@ -3391,8 +3409,8 @@
             font-family: var(--font-heading);
         }
         .announcement-bar {
-            background: linear-gradient(135deg, rgba(251, 191, 36, .12), rgba(251, 146, 60, .08));
-            border-bottom: 1px solid rgba(251, 191, 36, .25);
+            background: linear-gradient(135deg, rgba(212, 175, 55, .12), rgba(251, 146, 60, .08));
+            border-bottom: 1px solid rgba(212, 175, 55, .25);
             padding: .5rem 1rem;
             display: flex;
             align-items: center;
@@ -3402,7 +3420,7 @@
             cursor: pointer;
         }
         .announcement-bar:hover {
-            background: linear-gradient(135deg, rgba(251, 191, 36, .18), rgba(251, 146, 60, .1));
+            background: linear-gradient(135deg, rgba(212, 175, 55, .18), rgba(251, 146, 60, .1));
         }
         .web-row {
             display: flex;
@@ -3497,7 +3515,7 @@
         }
         .currency-opt.active {
             background: var(--primary);
-            color: #fff;
+            color: #000;
         }
         .ad-container {
             display: none;
@@ -3558,7 +3576,7 @@
             height: 56px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, .3);
             background: var(--primary);
-            color: #fff;
+            color: #000;
             font-size: 1.2rem;
         }
         .fab button:hover {
@@ -3588,11 +3606,11 @@
         }
         .payment-method-tab.active {
             background: var(--primary);
-            color: #fff;
+            color: #000;
         }
         .info-box {
-            background: rgba(99, 102, 241, .05);
-            border: 1px solid rgba(99, 102, 241, .15);
+            background: rgba(212, 175, 55, .05);
+            border: 1px solid rgba(212, 175, 55, .15);
             border-radius: var(--radius-sm);
             padding: .75rem;
             font-size: .75rem;
@@ -3601,8 +3619,8 @@
             line-height: 1.5;
         }
         .bank-details-box {
-            background: rgba(34, 211, 238, .06);
-            border: 2px solid rgba(34, 211, 238, .2);
+            background: rgba(212, 175, 55, .06);
+            border: 2px solid rgba(212, 175, 55, .2);
             border-radius: var(--radius);
             padding: 1rem;
             margin-bottom: 1rem;
@@ -3633,10 +3651,10 @@
         }
         .btn-lime:focus-visible,
         .btn-outline:focus-visible {
-            box-shadow: 0 0 0 3px rgba(163, 230, 53, .5);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, .5);
         }
         .card-p:hover {
-            border-color: rgba(99, 102, 241, .15);
+            border-color: rgba(212, 175, 55, .15);
         }
         .land-nav-links a:hover {
             text-decoration: underline;
@@ -3649,8 +3667,8 @@
             background-size: cover;
         }
         .premium-gate-overlay {
-            background: linear-gradient(135deg, rgba(251, 191, 36, .08), rgba(251, 146, 60, .05));
-            border: 1px solid rgba(251, 191, 36, .2);
+            background: linear-gradient(135deg, rgba(212, 175, 55, .08), rgba(251, 146, 60, .05));
+            border: 1px solid rgba(212, 175, 55, .2);
             border-radius: var(--radius-lg);
             padding: 2rem;
             text-align: center;
@@ -3686,7 +3704,7 @@
             justify-content: center;
             font-size: 1.2rem;
             font-weight: bold;
-            color: #fff;
+            color: #000;
             flex-shrink: 0;
             overflow: hidden;
         }
@@ -3852,7 +3870,7 @@
             justify-content: center;
             font-size: 1.2rem;
             font-weight: bold;
-            color: #fff;
+            color: #000;
             flex-shrink: 0;
             overflow: hidden;
         }
@@ -3875,7 +3893,7 @@
         }
         .btn-follow {
             background: var(--primary);
-            color: #fff;
+            color: #000;
             border: none;
             border-radius: 50px;
             padding: .3rem .9rem;
@@ -3928,7 +3946,7 @@
         }
         .code-tabs .tab-btn.active {
             background: var(--primary);
-            color: #fff;
+            color: #000;
             border-radius: var(--radius-sm) var(--radius-sm) 0 0;
         }
         .code-area {
@@ -4172,7 +4190,7 @@
             justify-content: center;
             font-size: 1rem;
             font-weight: 700;
-            color: #fff;
+            color: #000;
             flex-shrink: 0;
             overflow: hidden;
         }
@@ -4201,7 +4219,7 @@
             letter-spacing: .05em;
             padding: .15rem .5rem;
             border-radius: 50px;
-            background: rgba(99, 102, 241, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--primary);
             margin-bottom: .4rem;
         }
@@ -4357,7 +4375,7 @@
             letter-spacing: .05em;
             padding: .15rem .5rem;
             border-radius: 50px;
-            background: rgba(99, 102, 241, .1);
+            background: rgba(212, 175, 55, .1);
             color: var(--primary);
             display: inline-block;
             margin-bottom: .4rem;
@@ -4399,7 +4417,7 @@
             transition: all .2s;
         }
         .ad-card:hover {
-            border-color: rgba(99, 102, 241, .25);
+            border-color: rgba(212, 175, 55, .25);
         }
         .ad-card .ad-label {
             font-size: .55rem;
@@ -4560,7 +4578,7 @@
         .book-card:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow);
-            border-color: rgba(99, 102, 241, .2);
+            border-color: rgba(212, 175, 55, .2);
         }
         .book-card .book-cover {
             height: 160px;
@@ -4647,14 +4665,14 @@
             font-size: .6rem;
             font-weight: 700;
             font-family: var(--font-heading);
-            background: rgba(99, 102, 241, .08);
+            background: rgba(212, 175, 55, .08);
             color: var(--primary);
-            border: 1px solid rgba(99, 102, 241, .15);
+            border: 1px solid rgba(212, 175, 55, .15);
         }
         .score-badge.high {
-            background: rgba(163, 230, 53, .08);
+            background: rgba(212, 175, 55, .08);
             color: var(--lime);
-            border-color: rgba(163, 230, 53, .2);
+            border-color: rgba(212, 175, 55, .2);
         }
         .score-badge.medium {
             background: rgba(251, 191, 36, .08);
@@ -4668,7 +4686,7 @@
         }
         .book-download-btn {
             background: var(--success);
-            color: #fff;
+            color: #000;
             border: none;
             border-radius: 50px;
             padding: .4rem 1.2rem;
@@ -4687,10 +4705,10 @@
         }
         .book-download-btn.paid {
             background: var(--gold);
-            color: #04080F;
+            color: #000;
         }
         .book-download-btn.paid:hover {
-            box-shadow: 0 4px 16px rgba(251, 191, 36, .3);
+            box-shadow: 0 4px 16px rgba(212, 175, 55, .3);
         }
         .upload-preview {
             margin-top: .5rem;
@@ -4737,7 +4755,7 @@
         }
         .book-purchase-btn {
             background: var(--primary);
-            color: #fff;
+            color: #000;
             border: none;
             border-radius: 50px;
             padding: .4rem 1.2rem;
@@ -4752,7 +4770,7 @@
         }
         .book-purchase-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(99, 102, 241, .3);
+            box-shadow: 0 4px 16px rgba(212, 175, 55, .3);
         }
         .book-purchase-btn.purchased {
             background: var(--success);
@@ -4905,7 +4923,7 @@
             border-left: 3px solid var(--primary);
             padding: 0.5rem 1rem;
             margin: 0.5rem 0;
-            background: rgba(99, 102, 241, .05);
+            background: rgba(212, 175, 55, .05);
             border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
             color: var(--text2);
         }
@@ -4952,7 +4970,7 @@
         /* Following badge count */
         .following-badge-count {
             background: var(--primary);
-            color: #fff;
+            color: #000;
             border-radius: 50%;
             font-size: 0.6rem;
             font-weight: 700;
@@ -5010,12 +5028,12 @@
     <!-- ============================================================ -->
     <div id="page-login" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem;border-radius:12px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div><h2 style="font-size:1.6rem">Welcome Back</h2><p style="font-size:.82rem;color:var(--text3)">Sign in to continue earning</p></div><div style="display:flex;gap:.55rem;margin-bottom:.85rem"><button class="social-btn" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="loginEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="loginPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/><button class="pw-toggle" onclick="togglePw('loginPw',this)"><i class="fas fa-eye"></i></button></div></div><div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem"><input type="checkbox" id="rememberMe" style="accent-color:var(--primary)"/><label for="rememberMe" style="font-size:.78rem;color:var(--text2);cursor:pointer">Remember me</label><a style="font-size:.78rem;color:var(--primary);cursor:pointer;margin-left:auto" onclick="handleForgotPassword()">Forgot password?</a></div><button class="btn btn-primary w-full" id="loginBtn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i>Sign In</button><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">No account? <a style="color:var(--primary);cursor:pointer" onclick="goPage('register')">Create free →</a></p><p style="text-align:center;margin-top:.4rem"><a style="font-size:.75rem;cursor:pointer;color:var(--text3)" onclick="goPage('landing')">← Back to Home</a></p></div></div></div>
 
-    <div id="page-register" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box" style="max-width:460px"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem;border-radius:12px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div><h2 style="font-size:1.6rem">Create Free Account</h2><p style="font-size:.82rem;color:var(--text3)">Join thousands of learners &amp; earners worldwide</p></div><div class="row" style="gap:.55rem;margin-bottom:.85rem"><button class="social-btn" style="flex:1" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" style="flex:1" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="regFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="regLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="regEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Phone</label><div class="finput-ico"><i class="fas fa-phone fii"></i><input type="tel" class="finput" id="regPhone" placeholder="+234 800 000 0000"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="regPw" placeholder="Min 8 characters" oninput="checkPwStr(this.value)"/><button class="pw-toggle" onclick="togglePw('regPw',this)"><i class="fas fa-eye"></i></button></div><div class="pw-bars"><div class="pw-bar" id="pb1"></div><div class="pw-bar" id="pb2"></div><div class="pw-bar" id="pb3"></div><div class="pw-bar" id="pb4"></div></div></div><div class="form-group"><label class="flabel">Referral Code (optional)</label><div class="finput-ico"><i class="fas fa-users fii"></i><input type="text" class="finput" id="regRef" placeholder="Enter referral code"/></div></div><div style="display:flex;align-items:flex-start;gap:.5rem;margin-bottom:1rem;font-size:.79rem"><input type="checkbox" id="termsChk" style="accent-color:var(--primary);margin-top:.15rem"/><label for="termsChk" style="color:var(--text2);cursor:pointer;line-height:1.5">I agree to the <a style="color:var(--primary)">Terms</a> and <a style="color:var(--primary)">Privacy Policy</a></label></div><button class="btn btn-primary w-full" id="registerBtn" onclick="doRegister()"><i class="fas fa-rocket"></i>Create My Free Account</button><div style="background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.14);border-radius:var(--radius-sm);padding:.65rem;margin-top:.85rem;font-size:.76rem;color:var(--text2);text-align:center">🎉 Get <strong style="color:var(--primary)">₦500 welcome bonus</strong> on first profile completion!</div><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">Already have account? <a style="color:var(--primary);cursor:pointer" onclick="goPage('login')">Sign in →</a></p></div></div></div>
+    <div id="page-register" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box" style="max-width:460px"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem;border-radius:12px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div><h2 style="font-size:1.6rem">Create Free Account</h2><p style="font-size:.82rem;color:var(--text3)">Join thousands of learners &amp; earners worldwide</p></div><div class="row" style="gap:.55rem;margin-bottom:.85rem"><button class="social-btn" style="flex:1" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" style="flex:1" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="regFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="regLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="regEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Phone</label><div class="finput-ico"><i class="fas fa-phone fii"></i><input type="tel" class="finput" id="regPhone" placeholder="+234 800 000 0000"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="regPw" placeholder="Min 8 characters" oninput="checkPwStr(this.value)"/><button class="pw-toggle" onclick="togglePw('regPw',this)"><i class="fas fa-eye"></i></button></div><div class="pw-bars"><div class="pw-bar" id="pb1"></div><div class="pw-bar" id="pb2"></div><div class="pw-bar" id="pb3"></div><div class="pw-bar" id="pb4"></div></div></div><div class="form-group"><label class="flabel">Referral Code (optional)</label><div class="finput-ico"><i class="fas fa-users fii"></i><input type="text" class="finput" id="regRef" placeholder="Enter referral code"/></div></div><div style="display:flex;align-items:flex-start;gap:.5rem;margin-bottom:1rem;font-size:.79rem"><input type="checkbox" id="termsChk" style="accent-color:var(--primary);margin-top:.15rem"/><label for="termsChk" style="color:var(--text2);cursor:pointer;line-height:1.5">I agree to the <a style="color:var(--primary)">Terms</a> and <a style="color:var(--primary)">Privacy Policy</a></label></div><button class="btn btn-primary w-full" id="registerBtn" onclick="doRegister()"><i class="fas fa-rocket"></i>Create My Free Account</button><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.14);border-radius:var(--radius-sm);padding:.65rem;margin-top:.85rem;font-size:.76rem;color:var(--text2);text-align:center">🎉 Get <strong style="color:var(--primary)">₦500 welcome bonus</strong> on first profile completion!</div><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">Already have account? <a style="color:var(--primary);cursor:pointer" onclick="goPage('login')">Sign in →</a></p></div></div></div>
 
     <!-- ============================================================ -->
     <!-- SETUP WIZARD -->
     <!-- ============================================================ -->
-    <div id="page-setup" class="page"><div class="wizard-wrap"><div class="wizard-bg"></div><div class="wizard-box"><div class="wizard-prog-bar"><div class="wizard-prog-fill" id="wizProg" style="width:0%"></div></div><div class="wizard-step active wizard-congrats" id="wiz-0"><span class="confetti-emoji">🎉</span><h2 style="font-size:1.8rem;margin:.75rem 0 .35rem">Congratulations!</h2><p style="color:var(--text2);font-size:.95rem;margin-bottom:.4rem">Welcome to ChangeX Academy, <strong id="wizName" style="color:var(--primary)">User</strong>! 🚀</p><p style="color:var(--text3);font-size:.84rem;margin-bottom:1.5rem">Complete your profile to unlock your referral code &amp; start earning!</p><div style="background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.18);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.5rem;text-align:left"><p style="font-size:.82rem;color:var(--text2);margin-bottom:.5rem"><strong style="color:var(--primary)">🎁 Welcome Bonus:</strong></p><div style="display:flex;flex-direction:column;gap:.35rem;font-size:.8rem;color:var(--text2)"><div>✅ <strong style="color:var(--primary)">₦500</strong> added to your wallet</div><div>⚡ Complete profile to unlock referral code</div><div>🏆 Earn badges for each step completed</div></div></div><button class="btn btn-primary btn-lg w-full" onclick="nextWizStep()"><i class="fas fa-arrow-right"></i>Complete My Profile</button></div><div class="wizard-step" id="wiz-1" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">Choose Your Role</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Select all that apply — you can change anytime in settings</p><div class="role-options"><div class="role-opt" id="role-student" onclick="toggleRole('student')"><div class="ricon">🎓</div><div class="rtitle">Student</div><div class="rdesc">Learn &amp; earn certificates</div></div><div class="role-opt" id="role-instructor" onclick="toggleRole('instructor')"><div class="ricon">👨‍🏫</div><div class="rtitle">Instructor</div><div class="rdesc">Create &amp; sell courses</div></div><div class="role-opt" id="role-affiliate" onclick="toggleRole('affiliate')"><div class="ricon">🤝</div><div class="rtitle">Affiliate</div><div class="rdesc">Promote &amp; earn commissions</div></div><div class="role-opt" id="role-all" onclick="toggleRole('all')"><div class="ricon">⚡</div><div class="rtitle">All of Above</div><div class="rdesc">Student + Instructor + Affiliate</div></div></div><div class="d-flex gap-2 mt-4"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Next →</button></div></div><div class="wizard-step" id="wiz-2" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">Personal Information</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Tell us a bit about yourself</p><div class="form-group"><label class="flabel">Bio / About You</label><textarea class="finput" id="wiz-bio" style="min-height:80px;resize:vertical" placeholder="e.g. Full-stack developer from Lagos passionate about AI &amp; freelancing."></textarea></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Location</label><input type="text" class="finput" id="wiz-loc" placeholder="e.g. Lagos, Nigeria"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Website (optional)</label><input type="url" class="finput" id="wiz-web" placeholder="https://yoursite.com"/></div></div></div><div class="form-group"><label class="flabel">Skills (comma separated)</label><input type="text" class="finput" id="wiz-skills" placeholder="e.g. HTML, CSS, JavaScript, React"/></div><div class="d-flex gap-2 mt-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Next →</button></div></div><div class="wizard-step" id="wiz-3" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">💳 Bank Details</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">For receiving your earnings (you can skip and add later)</p><div class="form-group"><label class="flabel">Bank Name</label><select class="finput" id="wiz-bank"><option value="">Select Bank</option><option>GTBank</option><option>Access Bank</option><option>Zenith Bank</option><option>UBA</option><option>First Bank</option><option>Opay</option><option>Palmpay</option><option>Kuda Bank</option><option>Moniepoint</option><option>Sterling Bank</option></select></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Number</label><input type="text" class="finput" id="wiz-accnum" placeholder="0123456789" maxlength="10" oninput="verifyAccount(this.value)"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Name</label><input type="text" class="finput" id="wiz-accname" placeholder="Enter your full name"/></div></div></div><div id="accVerifyStatus" style="font-size:.76rem;margin-bottom:.75rem;display:none"></div><div style="background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:var(--radius-sm);padding:.6rem .85rem;font-size:.76rem;color:var(--text3);margin-bottom:1rem"><i class="fas fa-shield-alt" style="color:var(--cyan);margin-right:.3rem"></i>Your bank info is encrypted and only used for payouts</div><div class="d-flex gap-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-ghost btn-sm" onclick="nextWizStep(true)">Skip</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Save &amp; Next →</button></div></div><div class="wizard-step" id="wiz-4" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">⚡ Unlock Premium</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Create courses, earn affiliates, no ads!</p><div style="background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(20,184,166,.04));border:1px solid rgba(99,102,241,.2);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem"><div class="d-flex items-center justify-between mb-3"><span class="badge badge-premium"><i class="fas fa-crown"></i>Premium Plan</span><div><span style="font-family:var(--font-heading);font-size:1.6rem;font-weight:800;color:var(--primary)">₦5,000</span><span style="color:var(--text3);font-size:.8rem">/month</span></div></div><div style="display:flex;flex-direction:column;gap:.4rem;font-size:.82rem;margin-bottom:1rem"><div>✅ Create &amp; sell unlimited courses</div><div>✅ 80% revenue share</div><div>✅ Affiliate dashboard &amp; links</div><div>✅ Unlimited AI Tutor file uploads</div><div>✅ No ads, priority support</div></div><div class="form-group"><label class="flabel">Referral / Discount Code</label><input type="text" class="finput" id="premRefCode" placeholder="Enter referral code for bonus" oninput="applyPremCode(this.value)"/><div id="premCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div></div><div class="payment-method-tabs"><div class="payment-method-tab active" onclick="toggleWizPaymentMethod('card',this)">💳 Card</div><div class="payment-method-tab" onclick="toggleWizPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="wizCardPayment"><button class="paystack-btn" onclick="doPremiumPaystack()"><i class="fas fa-lock"></i>Pay with Paystack — ₦5,000/mo</button></div><div id="wizManualPayment" style="display:none"><div class="bank-details-box" id="wizBankDetailsBox"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="wizManualRef" placeholder="e.g. TRX123456789"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="wizManualDate"></div><div class="form-group"><label class="flabel">Upload Receipt</label><div class="upload-zone" style="padding:1rem"><input type="file" id="wizManualReceipt" accept="image/*,application/pdf"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt</div></div></div><button class="btn btn-primary w-full" onclick="submitWizManualPayment()"><i class="fas fa-paper-plane"></i>Submit for Verification</button></div></div><div class="d-flex gap-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-ghost btn-sm" onclick="finishWizard(false)">Stay Free</button></div></div><div class="wizard-step wizard-congrats" id="wiz-5"><span class="confetti-emoji">🚀</span><h2 style="font-size:1.8rem;margin:.75rem 0 .35rem">You're All Set!</h2><p style="color:var(--text2);font-size:.95rem;margin-bottom:1rem">Profile complete! Your referral code is ready.</p><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1rem;font-family:var(--font-mono);font-size:.9rem;color:var(--primary);text-align:center" id="wizRefCode">LOADING...</div><p style="font-size:.78rem;color:var(--text3);margin-bottom:1.5rem">Share this code to earn ₦500 per referral that subscribes!</p><button class="btn btn-primary btn-lg w-full" onclick="goPage('app')"><i class="fas fa-home"></i>Go to Dashboard</button></div></div></div></div>
+    <div id="page-setup" class="page"><div class="wizard-wrap"><div class="wizard-bg"></div><div class="wizard-box"><div class="wizard-prog-bar"><div class="wizard-prog-fill" id="wizProg" style="width:0%"></div></div><div class="wizard-step active wizard-congrats" id="wiz-0"><span class="confetti-emoji">🎉</span><h2 style="font-size:1.8rem;margin:.75rem 0 .35rem">Congratulations!</h2><p style="color:var(--text2);font-size:.95rem;margin-bottom:.4rem">Welcome to ChangeX Academy, <strong id="wizName" style="color:var(--primary)">User</strong>! 🚀</p><p style="color:var(--text3);font-size:.84rem;margin-bottom:1.5rem">Complete your profile to unlock your referral code &amp; start earning!</p><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.18);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.5rem;text-align:left"><p style="font-size:.82rem;color:var(--text2);margin-bottom:.5rem"><strong style="color:var(--primary)">🎁 Welcome Bonus:</strong></p><div style="display:flex;flex-direction:column;gap:.35rem;font-size:.8rem;color:var(--text2)"><div>✅ <strong style="color:var(--primary)">₦500</strong> added to your wallet</div><div>⚡ Complete profile to unlock referral code</div><div>🏆 Earn badges for each step completed</div></div></div><button class="btn btn-primary btn-lg w-full" onclick="nextWizStep()"><i class="fas fa-arrow-right"></i>Complete My Profile</button></div><div class="wizard-step" id="wiz-1" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">Choose Your Role</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Select all that apply — you can change anytime in settings</p><div class="role-options"><div class="role-opt" id="role-student" onclick="toggleRole('student')"><div class="ricon">🎓</div><div class="rtitle">Student</div><div class="rdesc">Learn &amp; earn certificates</div></div><div class="role-opt" id="role-instructor" onclick="toggleRole('instructor')"><div class="ricon">👨‍🏫</div><div class="rtitle">Instructor</div><div class="rdesc">Create &amp; sell courses</div></div><div class="role-opt" id="role-affiliate" onclick="toggleRole('affiliate')"><div class="ricon">🤝</div><div class="rtitle">Affiliate</div><div class="rdesc">Promote &amp; earn commissions</div></div><div class="role-opt" id="role-all" onclick="toggleRole('all')"><div class="ricon">⚡</div><div class="rtitle">All of Above</div><div class="rdesc">Student + Instructor + Affiliate</div></div></div><div class="d-flex gap-2 mt-4"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Next →</button></div></div><div class="wizard-step" id="wiz-2" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">Personal Information</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Tell us a bit about yourself</p><div class="form-group"><label class="flabel">Bio / About You</label><textarea class="finput" id="wiz-bio" style="min-height:80px;resize:vertical" placeholder="e.g. Full-stack developer from Lagos passionate about AI &amp; freelancing."></textarea></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Location</label><input type="text" class="finput" id="wiz-loc" placeholder="e.g. Lagos, Nigeria"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Website (optional)</label><input type="url" class="finput" id="wiz-web" placeholder="https://yoursite.com"/></div></div></div><div class="form-group"><label class="flabel">Skills (comma separated)</label><input type="text" class="finput" id="wiz-skills" placeholder="e.g. HTML, CSS, JavaScript, React"/></div><div class="d-flex gap-2 mt-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Next →</button></div></div><div class="wizard-step" id="wiz-3" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">💳 Bank Details</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">For receiving your earnings (you can skip and add later)</p><div class="form-group"><label class="flabel">Bank Name</label><select class="finput" id="wiz-bank"><option value="">Select Bank</option><option>GTBank</option><option>Access Bank</option><option>Zenith Bank</option><option>UBA</option><option>First Bank</option><option>Opay</option><option>Palmpay</option><option>Kuda Bank</option><option>Moniepoint</option><option>Sterling Bank</option></select></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Number</label><input type="text" class="finput" id="wiz-accnum" placeholder="0123456789" maxlength="10" oninput="verifyAccount(this.value)"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Name</label><input type="text" class="finput" id="wiz-accname" placeholder="Enter your full name"/></div></div></div><div id="accVerifyStatus" style="font-size:.76rem;margin-bottom:.75rem;display:none"></div><div style="background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:var(--radius-sm);padding:.6rem .85rem;font-size:.76rem;color:var(--text3);margin-bottom:1rem"><i class="fas fa-shield-alt" style="color:var(--cyan);margin-right:.3rem"></i>Your bank info is encrypted and only used for payouts</div><div class="d-flex gap-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-ghost btn-sm" onclick="nextWizStep(true)">Skip</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Save &amp; Next →</button></div></div><div class="wizard-step" id="wiz-4" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">⚡ Unlock Premium</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Create courses, earn affiliates, no ads!</p><div style="background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(20,184,166,.04));border:1px solid rgba(212,175,55,.2);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem"><div class="d-flex items-center justify-between mb-3"><span class="badge badge-premium"><i class="fas fa-crown"></i>Premium Plan</span><div><span style="font-family:var(--font-heading);font-size:1.6rem;font-weight:800;color:var(--primary)">₦5,000</span><span style="color:var(--text3);font-size:.8rem">/month</span></div></div><div style="display:flex;flex-direction:column;gap:.4rem;font-size:.82rem;margin-bottom:1rem"><div>✅ Create &amp; sell unlimited courses</div><div>✅ 80% revenue share</div><div>✅ Affiliate dashboard &amp; links</div><div>✅ Unlimited AI Tutor file uploads</div><div>✅ No ads, priority support</div></div><div class="form-group"><label class="flabel">Referral / Discount Code</label><input type="text" class="finput" id="premRefCode" placeholder="Enter referral code for bonus" oninput="applyPremCode(this.value)"/><div id="premCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div></div><div class="payment-method-tabs"><div class="payment-method-tab active" onclick="toggleWizPaymentMethod('card',this)">💳 Card</div><div class="payment-method-tab" onclick="toggleWizPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="wizCardPayment"><button class="paystack-btn" onclick="doPremiumPaystack()"><i class="fas fa-lock"></i>Pay with Paystack — ₦5,000/mo</button></div><div id="wizManualPayment" style="display:none"><div class="bank-details-box" id="wizBankDetailsBox"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="wizManualRef" placeholder="e.g. TRX123456789"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="wizManualDate"></div><div class="form-group"><label class="flabel">Upload Receipt</label><div class="upload-zone" style="padding:1rem"><input type="file" id="wizManualReceipt" accept="image/*,application/pdf"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt</div></div></div><button class="btn btn-primary w-full" onclick="submitWizManualPayment()"><i class="fas fa-paper-plane"></i>Submit for Verification</button></div></div><div class="d-flex gap-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-ghost btn-sm" onclick="finishWizard(false)">Stay Free</button></div></div><div class="wizard-step wizard-congrats" id="wiz-5"><span class="confetti-emoji">🚀</span><h2 style="font-size:1.8rem;margin:.75rem 0 .35rem">You're All Set!</h2><p style="color:var(--text2);font-size:.95rem;margin-bottom:1rem">Profile complete! Your referral code is ready.</p><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1rem;font-family:var(--font-mono);font-size:.9rem;color:var(--primary);text-align:center" id="wizRefCode">LOADING...</div><p style="font-size:.78rem;color:var(--text3);margin-bottom:1.5rem">Share this code to earn ₦500 per referral that subscribes!</p><button class="btn btn-primary btn-lg w-full" onclick="goPage('app')"><i class="fas fa-home"></i>Go to Dashboard</button></div></div></div></div>
 
     <!-- ============================================================ -->
     <!-- CONTACT PAGE -->
@@ -5025,7 +5043,7 @@
     <!-- ============================================================ -->
     <!-- MODALS -->
     <!-- ============================================================ -->
-    <div class="modal-ov hidden" id="withdrawModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">💸 Withdraw Earnings</h5><button class="btn-icon-sm" onclick="closeModal('withdrawModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div style="background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.14);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:1rem;text-align:center"><div style="font-size:.7rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase">AVAILABLE BALANCE</div><div style="font-family:var(--font-heading);font-size:2rem;font-weight:800;color:var(--lime)" id="withdrawBal">₦0</div></div><div id="withdrawBankWarning" style="display:none;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1rem;font-size:.79rem;color:var(--orange)"><i class="fas fa-exclamation-triangle" style="margin-right:.35rem"></i><strong>No bank account linked!</strong> Please add your bank details in <a style="color:var(--primary);cursor:pointer;text-decoration:underline" onclick="closeModal('withdrawModal');setDP('settings');setTimeout(()=>switchSet('ss-payout'),100)">Settings → Payouts</a> before withdrawing.</div><div class="form-group"><label class="flabel">Amount (₦)</label><input type="number" class="finput" id="withdrawAmt" placeholder="Min ₦2,000"/></div><div class="form-group"><label class="flabel">Bank Account</label><select class="finput" id="withdrawBank"><option>Loading...</option></select></div><div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:var(--radius-sm);padding:.65rem;font-size:.76rem;color:var(--gold)"><i class="fas fa-info-circle" style="margin-right:.3rem"></i>Processing takes 1–3 business days. <strong>10% fee</strong> applied.</div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('withdrawModal')">Cancel</button><button class="btn btn-primary" id="withdrawSubmitBtn" onclick="processWithdraw()"><i class="fas fa-paper-plane"></i>Submit</button></div></div></div>
+    <div class="modal-ov hidden" id="withdrawModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">💸 Withdraw Earnings</h5><button class="btn-icon-sm" onclick="closeModal('withdrawModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.14);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:1rem;text-align:center"><div style="font-size:.7rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase">AVAILABLE BALANCE</div><div style="font-family:var(--font-heading);font-size:2rem;font-weight:800;color:var(--lime)" id="withdrawBal">₦0</div></div><div id="withdrawBankWarning" style="display:none;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1rem;font-size:.79rem;color:var(--orange)"><i class="fas fa-exclamation-triangle" style="margin-right:.35rem"></i><strong>No bank account linked!</strong> Please add your bank details in <a style="color:var(--primary);cursor:pointer;text-decoration:underline" onclick="closeModal('withdrawModal');setDP('settings');setTimeout(()=>switchSet('ss-payout'),100)">Settings → Payouts</a> before withdrawing.</div><div class="form-group"><label class="flabel">Amount (₦)</label><input type="number" class="finput" id="withdrawAmt" placeholder="Min ₦2,000"/></div><div class="form-group"><label class="flabel">Bank Account</label><select class="finput" id="withdrawBank"><option>Loading...</option></select></div><div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:var(--radius-sm);padding:.65rem;font-size:.76rem;color:var(--gold)"><i class="fas fa-info-circle" style="margin-right:.3rem"></i>Processing takes 1–3 business days. <strong>10% fee</strong> applied.</div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('withdrawModal')">Cancel</button><button class="btn btn-primary" id="withdrawSubmitBtn" onclick="processWithdraw()"><i class="fas fa-paper-plane"></i>Submit</button></div></div></div>
 
     <div class="modal-ov hidden" id="buyCourseModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">🛒 Purchase</h5><button class="btn-icon-sm" onclick="closeModal('buyCourseModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div id="buyCourseInfo" style="margin-bottom:1rem"></div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><h6 style="margin-bottom:.75rem">Order Summary</h6><div id="buyCourseSummary"></div><div class="payment-method-tabs mt-3"><div class="payment-method-tab active" onclick="toggleBuyPaymentMethod('card',this)">💳 Card Payment</div><div class="payment-method-tab" onclick="toggleBuyPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="buyCardSection"><div class="form-group mt-3"><label class="flabel">Referral Code (optional)</label><input type="text" class="finput" id="buyRefCode" placeholder="Enter referral code" oninput="applyBuyCode(this.value)"/></div><div id="buyCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><button class="paystack-btn" onclick="processPayment()"><i class="fas fa-lock"></i><span id="paystackBtnText">Pay with Paystack</span></button></div><div id="buyManualSection" style="display:none"><div class="bank-details-box" id="buyBankDetailsBox"></div><div class="form-group mt-3"><label class="flabel">Referral Code (optional)</label><input type="text" class="finput" id="buyManualRefCode" placeholder="Enter referral code" oninput="applyBuyManualCode(this.value)"/></div><div id="buyManualCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="manualRef" placeholder="e.g. TRX123456789"><small style="font-size:.7rem;color:var(--text3)">Enter the reference from your bank transfer</small></div><div class="form-group"><label class="flabel">Amount Paid (₦)</label><input type="number" class="finput" id="manualAmount" placeholder="e.g. 5000"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="manualDate"></div><div class="form-group"><label class="flabel">Upload Receipt/Screenshot</label><div class="upload-zone" style="padding:1rem"><input type="file" id="manualReceipt" accept="image/*,application/pdf" onchange="previewReceipt(this)"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt or screenshot</div></div><div id="receiptPreview" style="margin-top:.5rem;display:none"><img id="receiptPreviewImg" style="max-width:100%;max-height:150px;border-radius:var(--radius-sm)"></div></div><button class="btn btn-primary w-full" onclick="submitManualPayment()">Submit for Verification</button><div class="info-box"><i class="fas fa-info-circle" style="color:var(--primary)"></i><strong>How it works:</strong> Transfer the exact amount to the bank details above, then submit your reference and receipt. Our system will automatically verify your payment if all details match. If verification fails, an admin will review within 24 hours.</div></div></div></div></div></div>
 
@@ -5038,7 +5056,7 @@
 
     <div class="modal-ov hidden" id="rateModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">⭐ Rate This Course</h5><button class="btn-icon-sm" onclick="closeModal('rateModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><p style="color:var(--text3);font-size:.84rem;margin-bottom:1rem">Your feedback helps instructors improve and helps other students make better choices.</p><div style="text-align:center;margin-bottom:1rem"><div style="display:flex;justify-content:center;gap:.35rem;font-size:2rem;cursor:pointer" id="starRow"><span onclick="setRating(1)" class="star-pick" data-v="1">☆</span><span onclick="setRating(2)" class="star-pick" data-v="2">☆</span><span onclick="setRating(3)" class="star-pick" data-v="3">☆</span><span onclick="setRating(4)" class="star-pick" data-v="4">☆</span><span onclick="setRating(5)" class="star-pick" data-v="5">☆</span></div><p id="ratingLabel" style="font-size:.8rem;color:var(--text3);margin-top:.35rem">Tap to rate</p></div><div class="form-group"><label class="flabel">Review (optional)</label><textarea class="finput" id="rateReview" style="min-height:90px;resize:vertical" placeholder="What did you like or dislike?"></textarea></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('rateModal')">Cancel</button><button class="btn btn-primary" onclick="submitRating()"><i class="fas fa-star"></i>Submit Review</button></div></div></div>
 
-    <div class="modal-ov hidden" id="addLessonModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">Add Lesson</h5><button class="btn-icon-sm" onclick="closeModal('addLessonModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div class="form-group"><label class="flabel">Lesson Title</label><input type="text" class="finput" id="newLessonTitle" placeholder="e.g. Introduction to Variables"/></div><div class="form-group"><label class="flabel">Lesson Type</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.35rem" id="lessonTypeGrid"><div class="lesson-type-opt selected" data-type="video" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid rgba(34,211,238,.3);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-video"><i class="fas fa-play"></i></div><div><div style="font-size:.84rem;font-weight:600;color:var(--cyan)">Video</div><div style="font-size:.7rem;color:var(--text3)">Upload or link</div></div></div><div class="lesson-type-opt" data-type="text" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-text"><i class="fas fa-file-alt"></i></div><div><div style="font-size:.84rem;font-weight:600">Article</div><div style="font-size:.7rem;color:var(--text3)">Rich text</div></div></div><div class="lesson-type-opt" data-type="quiz" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-quiz"><i class="fas fa-question-circle"></i></div><div><div style="font-size:.84rem;font-weight:600">Quiz</div><div style="font-size:.7rem;color:var(--text3)">MCQ, T/F</div></div></div><div class="lesson-type-opt" data-type="assignment" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-assign"><i class="fas fa-tasks"></i></div><div><div style="font-size:.84rem;font-weight:600">Assignment</div><div style="font-size:.7rem;color:var(--text3)">Project</div></div></div></div></div><div class="form-group"><label class="flabel">Duration (mins)</label><input type="number" class="finput" id="newLessonDur" placeholder="e.g. 20"/></div><div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem"><input type="checkbox" id="lessonPreview" style="accent-color:var(--primary)"/><label for="lessonPreview" style="color:var(--text2);cursor:pointer">Allow free preview</label></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('addLessonModal')">Cancel</button><button class="btn btn-primary" onclick="confirmAddLesson()"><i class="fas fa-plus"></i>Add Lesson</button></div></div></div>
+    <div class="modal-ov hidden" id="addLessonModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">Add Lesson</h5><button class="btn-icon-sm" onclick="closeModal('addLessonModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div class="form-group"><label class="flabel">Lesson Title</label><input type="text" class="finput" id="newLessonTitle" placeholder="e.g. Introduction to Variables"/></div><div class="form-group"><label class="flabel">Lesson Type</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.35rem" id="lessonTypeGrid"><div class="lesson-type-opt selected" data-type="video" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid rgba(212,175,55,.3);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-video"><i class="fas fa-play"></i></div><div><div style="font-size:.84rem;font-weight:600;color:var(--cyan)">Video</div><div style="font-size:.7rem;color:var(--text3)">Upload or link</div></div></div><div class="lesson-type-opt" data-type="text" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-text"><i class="fas fa-file-alt"></i></div><div><div style="font-size:.84rem;font-weight:600">Article</div><div style="font-size:.7rem;color:var(--text3)">Rich text</div></div></div><div class="lesson-type-opt" data-type="quiz" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-quiz"><i class="fas fa-question-circle"></i></div><div><div style="font-size:.84rem;font-weight:600">Quiz</div><div style="font-size:.7rem;color:var(--text3)">MCQ, T/F</div></div></div><div class="lesson-type-opt" data-type="assignment" onclick="selectLType(this)" style="display:flex;align-items:center;gap:.6rem;padding:.75rem .9rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer"><div class="lesson-type-badge lt-assign"><i class="fas fa-tasks"></i></div><div><div style="font-size:.84rem;font-weight:600">Assignment</div><div style="font-size:.7rem;color:var(--text3)">Project</div></div></div></div></div><div class="form-group"><label class="flabel">Duration (mins)</label><input type="number" class="finput" id="newLessonDur" placeholder="e.g. 20"/></div><div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem"><input type="checkbox" id="lessonPreview" style="accent-color:var(--primary)"/><label for="lessonPreview" style="color:var(--text2);cursor:pointer">Allow free preview</label></div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('addLessonModal')">Cancel</button><button class="btn btn-primary" onclick="confirmAddLesson()"><i class="fas fa-plus"></i>Add Lesson</button></div></div></div>
 
     <div class="modal-ov hidden" id="affiliateModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">🤝 Affiliate Offer</h5><button class="btn-icon-sm" onclick="closeModal('affiliateModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd" id="affiliateModalBody"></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('affiliateModal')">Decline</button><button class="btn btn-violet" onclick="acceptAffiliateOffer()"><i class="fas fa-handshake"></i>Accept &amp; Get Link</button></div></div></div>
 
@@ -5071,7 +5089,7 @@
         <div id="adBannerTop" class="ad-container" style="display:none;"></div>
         <div class="announcement-bar" id="announcementBar" style="display:none"><i class="fas fa-bullhorn"></i><span id="announcementText">📣 Loading announcements...</span><button style="margin-left:auto;background:none;border:none;color:var(--gold);cursor:pointer;font-size:.8rem" onclick="this.parentElement.style.display='none'"><i class="fas fa-times"></i></button></div>
         <div id="planWarning" class="plan-warning" style="display:none"><span class="pw-icon">⚠️</span><span id="planWarningText">Your Premium plan expires in 5 days. Renew now to keep earning.</span><div class="pw-actions"><button class="btn btn-gold btn-sm" onclick="openModal('premiumModal')"><i class="fas fa-crown"></i> Renew</button><span class="btn-icon-sm" onclick="this.parentElement.parentElement.style.display='none'"><i class="fas fa-times"></i></span></div></div>
-        <div id="adBanner" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,146,60,.05));border-bottom:1px solid rgba(251,191,36,.2);padding:.5rem 1rem;align-items:center;gap:.5rem;font-size:.78rem"><i class="fas fa-ad" style="color:var(--gold)"></i><span style="flex:1">🎯 Upgrade to Premium — No ads, create courses, 80% revenue!</span><button class="btn btn-gold btn-sm" onclick="openModal('premiumModal')">Upgrade ₦5k/mo</button><span style="cursor:pointer;color:var(--text3);margin-left:.3rem" onclick="this.parentElement.style.display='none'">✕</span></div>
+        <div id="adBanner" style="display:none;background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(251,146,60,.05));border-bottom:1px solid rgba(212,175,55,.2);padding:.5rem 1rem;align-items:center;gap:.5rem;font-size:.78rem"><i class="fas fa-ad" style="color:var(--gold)"></i><span style="flex:1">🎯 Upgrade to Premium — No ads, create courses, 80% revenue!</span><button class="btn btn-gold btn-sm" onclick="openModal('premiumModal')">Upgrade ₦5k/mo</button><span style="cursor:pointer;color:var(--text3);margin-left:.3rem" onclick="this.parentElement.style.display='none'">✕</span></div>
 
         <div class="app-layout"><div class="sb-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
             <aside class="sidebar" id="sidebar"><div class="sb-hd"><div class="logo" style="font-size:1rem"><div class="logo-mark" style="width:28px;height:28px;border-radius:8px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div>ChangeX<span style="color:var(--primary)">.</span></div><button class="sb-close" onclick="closeSidebar()"><i class="fas fa-times"></i></button></div>
@@ -5165,7 +5183,7 @@
                     <div id="dash-instructor" class="dash-sub"><div class="d-flex items-center gap-3 mb-4 flex-wrap" style="padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)"><div class="si si-v" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-chalkboard-teacher"></i></div><div><h4 style="margin:0">Instructor Hub</h4><p style="font-size:.8rem;color:var(--text2);margin:.15rem 0 0">Publish, track, manage</p></div><div style="margin-left:auto;display:flex;gap:.4rem;flex-wrap:wrap"><span class="badge badge-violet" id="instVerifiedBadge">Verified</span><button class="btn btn-primary btn-sm" onclick="initNewCourse()"><i class="fas fa-plus"></i>New Course</button></div></div><div id="instPremiumGate" style="display:none"></div><div id="instContent"><div class="tabs mb-3"><button class="tab-btn active" onclick="switchInstTab('courses',this)">My Courses</button><button class="tab-btn" onclick="switchInstTab('sales',this)">Sales &amp; Analytics</button><button class="tab-btn" onclick="switchInstTab('earnings',this)">Earnings Breakdown</button></div><div id="inst-tab-courses"><div class="row mb-4" id="instStatsRow"></div><div class="card card-p mb-3" id="instQANotifs" style="display:none"><h6 style="margin-bottom:.65rem;color:var(--orange)">🔔 Pending Q&amp;A Questions</h6><div id="instQAList"></div></div><div class="card card-p"><h6 style="margin-bottom:.85rem">My Published Courses</h6><div class="overflow-x-auto"><table class="dtable" id="instCoursesTable"></table></div></div></div><div id="inst-tab-sales" style="display:none"><div class="card card-p"><h6 style="margin-bottom:.85rem">📊 Sales &amp; Revenue</h6><div id="instSalesContent"><div class="empty-state"><i class="fas fa-chart-line"></i><h4>Loading sales data...</h4></div></div></div></div><div id="inst-tab-earnings" style="display:none"><div class="card card-p"><h6 style="margin-bottom:.85rem">💰 Earnings Breakdown</h6><div id="instEarningsContent"><div class="empty-state"><i class="fas fa-wallet"></i><h4>Loading earnings...</h4></div></div></div></div></div></div>
 
                     <!-- COURSE EDITOR -->
-                    <div id="dash-course-editor" class="dash-sub"><div class="editor-shell"><div class="editor-sidebar"><div class="esc-label">COURSE SETUP</div><div class="esc-step active" id="es-1" onclick="goES(1)"><div class="esc-num">1</div><div class="esc-text">Basic Info</div></div><div class="esc-step" id="es-2" onclick="goES(2)"><div class="esc-num">2</div><div class="esc-text">Lessons</div></div><div class="esc-step" id="es-3" onclick="goES(3)"><div class="esc-num">3</div><div class="esc-text">Content</div></div><div class="esc-step" id="es-4" onclick="goES(4)"><div class="esc-num">4</div><div class="esc-text">Media</div></div><div class="esc-step" id="es-5" onclick="goES(5)"><div class="esc-num">5</div><div class="esc-text">Quiz</div></div><div class="esc-step" id="es-6" onclick="goES(6)"><div class="esc-num">6</div><div class="esc-text">Pricing</div></div><div class="esc-step" id="es-7" onclick="goES(7)"><div class="esc-num">7</div><div class="esc-text">Affiliate</div></div><div class="esc-step" id="es-8" onclick="goES(8)"><div class="esc-num">8</div><div class="esc-text">Review</div></div></div><div class="editor-main"><div class="editor-topbar"><button class="btn btn-ghost btn-sm" onclick="setDP('instructor')"><i class="fas fa-arrow-left"></i>Back</button><div class="flex-1"><div style="font-size:.8rem;font-weight:600" id="edCourseTitle">Untitled Course</div><div style="font-size:.7rem;color:var(--text3)" id="edAutoSave">Draft · Auto-saved</div></div><button class="btn btn-ghost btn-sm" onclick="saveDraftToServer(false)"><i class="fas fa-save"></i>Save Draft</button><button class="btn btn-primary btn-sm" onclick="goES(8)"><i class="fas fa-rocket"></i>Review</button></div><div class="editor-step-panel active" id="esp-1"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Basic Info</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1.25rem">Tell students what your course is about.</p><div class="form-group"><label class="flabel">Course Title</label><input type="text" class="finput" id="edTitle" placeholder="e.g. JavaScript Mastery: Zero to Freelancer" oninput="document.getElementById('edCourseTitle').textContent=this.value||'Untitled Course'"/></div><div class="form-group"><label class="flabel">Subtitle</label><input type="text" class="finput" id="edSubtitle" placeholder="A short powerful description..."/></div><div class="form-group"><label class="flabel">Description</label><div class="quill-wrapper"><div id="descEditorQuill" style="min-height:200px"></div></div></div><div class="row"><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Category</label><select class="finput" id="edCategory"><option>Web Development</option><option>AI &amp; Tools</option><option>Freelancing</option><option>Design</option><option>Backend</option><option>Mobile Dev</option><option>Data Science</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Level</label><select class="finput" id="edLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>All Levels</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Language</label><select class="finput" id="edLanguage"><option>English</option><option>Pidgin English</option><option>Yoruba</option><option>Igbo</option><option>Hausa</option></select></div></div></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Thumbnail Emoji</label><input type="text" class="finput" id="edEmoji" placeholder="📚" maxlength="4"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Promo Video URL (optional)</label><input type="url" class="finput" id="edPromoVideo" placeholder="https://youtube.com/..."/></div></div></div><div class="form-group"><label class="flabel">Learning Outcomes</label><div id="outcomesList" style="display:flex;flex-direction:column;gap:.35rem;margin-bottom:.45rem"></div><button class="btn btn-ghost btn-sm" onclick="addOutcome()"><i class="fas fa-plus"></i>Add Outcome</button></div><div class="d-flex items-center gap-2 p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:.5rem"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Issue Certificate on Completion</div><div style="font-size:.74rem;color:var(--text3)">Students who complete get a certificate</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" id="edCertEnabled"/></div><div style="display:flex;justify-content:flex-end;margin-top:1.5rem"><button class="btn btn-primary" onclick="goES(2)">Next: Lessons <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-2"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Course Curriculum</h4><p style="font-size:.82rem;color:var(--text3)">Minimum <strong style="color:var(--primary)">20 lessons</strong> required to publish</p></div><button class="btn btn-primary btn-sm" onclick="openModal('addLessonModal')"><i class="fas fa-plus"></i>Add Lesson</button></div><div id="lessonCountBadge" style="margin-bottom:.85rem"></div><div id="lessonBuilderList"></div><div style="background:rgba(99,102,241,.05);border:1px solid rgba(99,102,241,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.79rem;color:var(--text2);margin-bottom:1rem"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>You need at least 20 lessons with content to submit for admin approval.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(1)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(3)">Next: Content <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-3"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Lesson Content Editor</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Edit each lesson's content using the rich text editor. Content is always editable even after approval.</p><div id="lessonContentEditor"></div><div class="d-flex justify-between mt-4"><button class="btn btn-ghost" onclick="goES(2)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(4)">Next: Media <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-4"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Media &amp; Files Upload</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem" id="uploadLimitNote">Upload videos, PDFs, images, resources for your course.</p><div class="upload-zone" style="padding:2rem;margin-bottom:1rem"><input type="file" multiple id="mediaFileInput" onchange="handleMediaUpload(this)"/><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.88rem;color:var(--text2);font-weight:600">Drop any files here or click to upload</div><div style="font-size:.74rem;color:var(--text3);margin-top:.3rem" id="uploadHint">Free: max 10 files · Premium: unlimited files of any size</div></div><div id="uploadedFilesList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(3)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(5)">Next: Quiz <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-5"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Quiz Builder</h4><p style="font-size:.82rem;color:var(--text3)">Add quiz questions for this course</p></div><button class="btn btn-primary btn-sm" onclick="addQuizQ()"><i class="fas fa-plus"></i>Add Question</button></div><div id="quizBuilderList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(4)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(6)">Next: Pricing <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-6"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Pricing</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Platform takes 20%, you keep 80%.</p><div style="display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.25rem"><div class="price-type-opt selected" id="pt-paid" onclick="selectPriceType('paid')"><i class="fas fa-tag" style="color:var(--primary);width:20px"></i><div><strong>Paid Course</strong><br><small style="color:var(--text3)">Students pay to access</small></div></div><div class="price-type-opt" id="pt-free" onclick="selectPriceType('free')"><i class="fas fa-gift" style="color:var(--accent);width:20px"></i><div><strong>Free Course</strong><br><small style="color:var(--text3)">Open to all students</small></div></div><div class="price-type-opt" id="pt-sub" onclick="selectPriceType('sub')"><i class="fas fa-crown" style="color:var(--gold);width:20px"></i><div><strong>Premium Only</strong><br><small style="color:var(--text3)">Only premium subscribers</small></div></div></div><div id="pricingFields"><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Price (₦)</label><input type="number" class="finput" id="edPrice" placeholder="e.g. 15000" min="1000"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Sale Price (₦, optional)</label><input type="number" class="finput" id="edSalePrice" placeholder="e.g. 12000"/></div></div></div></div><div style="background:rgba(99,102,241,.05);border:1px solid rgba(99,102,241,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>Revenue: <strong style="color:var(--primary)">80%</strong> to you · <strong style="color:var(--text3)">20%</strong> platform fee per sale.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(5)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(7)">Next: Affiliate <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-7"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">🤝 Affiliate Program</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Let other ChangeX users promote your course and earn commissions.</p><div class="d-flex items-center gap-2 p-3 mb-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Enable Affiliate Program</div><div style="font-size:.74rem;color:var(--text3)">After admin approves, all users get notified</div></div><input type="checkbox" id="edAffEnabled" style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" onchange="toggleAffiliateFields(this.checked)"/></div><div id="affiliateFields" style="display:none"><div class="form-group"><label class="flabel">Commission Percentage (%)</label><input type="number" class="finput" id="edAffPercent" placeholder="e.g. 15" min="5" max="50" value="15"/></div><div class="form-group"><label class="flabel">Affiliate Offer Description</label><textarea class="finput" style="min-height:80px;resize:vertical" id="edAffDesc" placeholder="e.g. Promote this JS course and earn 15% commission!"></textarea></div></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(6)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(8)">Next: Review <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-8"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Review &amp; Submit</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Review your course before submitting for admin approval.</p><div id="courseReviewSummary"></div><div style="background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:var(--radius-sm);padding:.85rem;margin:1rem 0;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--accent);margin-right:.3rem"></i>After submission, admin reviews your course. On approval, all ChangeX users get a notification. You can still edit after approval — changes will be reviewed again.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(7)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary btn-lg" onclick="submitCourseForApproval()"><i class="fas fa-rocket"></i>Submit for Approval</button></div></div></div></div></div></div>
+                    <div id="dash-course-editor" class="dash-sub"><div class="editor-shell"><div class="editor-sidebar"><div class="esc-label">COURSE SETUP</div><div class="esc-step active" id="es-1" onclick="goES(1)"><div class="esc-num">1</div><div class="esc-text">Basic Info</div></div><div class="esc-step" id="es-2" onclick="goES(2)"><div class="esc-num">2</div><div class="esc-text">Lessons</div></div><div class="esc-step" id="es-3" onclick="goES(3)"><div class="esc-num">3</div><div class="esc-text">Content</div></div><div class="esc-step" id="es-4" onclick="goES(4)"><div class="esc-num">4</div><div class="esc-text">Media</div></div><div class="esc-step" id="es-5" onclick="goES(5)"><div class="esc-num">5</div><div class="esc-text">Quiz</div></div><div class="esc-step" id="es-6" onclick="goES(6)"><div class="esc-num">6</div><div class="esc-text">Pricing</div></div><div class="esc-step" id="es-7" onclick="goES(7)"><div class="esc-num">7</div><div class="esc-text">Affiliate</div></div><div class="esc-step" id="es-8" onclick="goES(8)"><div class="esc-num">8</div><div class="esc-text">Review</div></div></div><div class="editor-main"><div class="editor-topbar"><button class="btn btn-ghost btn-sm" onclick="setDP('instructor')"><i class="fas fa-arrow-left"></i>Back</button><div class="flex-1"><div style="font-size:.8rem;font-weight:600" id="edCourseTitle">Untitled Course</div><div style="font-size:.7rem;color:var(--text3)" id="edAutoSave">Draft · Auto-saved</div></div><button class="btn btn-ghost btn-sm" onclick="saveDraftToServer(false)"><i class="fas fa-save"></i>Save Draft</button><button class="btn btn-primary btn-sm" onclick="goES(8)"><i class="fas fa-rocket"></i>Review</button></div><div class="editor-step-panel active" id="esp-1"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Basic Info</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1.25rem">Tell students what your course is about.</p><div class="form-group"><label class="flabel">Course Title</label><input type="text" class="finput" id="edTitle" placeholder="e.g. JavaScript Mastery: Zero to Freelancer" oninput="document.getElementById('edCourseTitle').textContent=this.value||'Untitled Course'"/></div><div class="form-group"><label class="flabel">Subtitle</label><input type="text" class="finput" id="edSubtitle" placeholder="A short powerful description..."/></div><div class="form-group"><label class="flabel">Description</label><div class="quill-wrapper"><div id="descEditorQuill" style="min-height:200px"></div></div></div><div class="row"><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Category</label><select class="finput" id="edCategory"><option>Web Development</option><option>AI &amp; Tools</option><option>Freelancing</option><option>Design</option><option>Backend</option><option>Mobile Dev</option><option>Data Science</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Level</label><select class="finput" id="edLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>All Levels</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Language</label><select class="finput" id="edLanguage"><option>English</option><option>Pidgin English</option><option>Yoruba</option><option>Igbo</option><option>Hausa</option></select></div></div></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Thumbnail Emoji</label><input type="text" class="finput" id="edEmoji" placeholder="📚" maxlength="4"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Promo Video URL (optional)</label><input type="url" class="finput" id="edPromoVideo" placeholder="https://youtube.com/..."/></div></div></div><div class="form-group"><label class="flabel">Learning Outcomes</label><div id="outcomesList" style="display:flex;flex-direction:column;gap:.35rem;margin-bottom:.45rem"></div><button class="btn btn-ghost btn-sm" onclick="addOutcome()"><i class="fas fa-plus"></i>Add Outcome</button></div><div class="d-flex items-center gap-2 p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:.5rem"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Issue Certificate on Completion</div><div style="font-size:.74rem;color:var(--text3)">Students who complete get a certificate</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" id="edCertEnabled"/></div><div style="display:flex;justify-content:flex-end;margin-top:1.5rem"><button class="btn btn-primary" onclick="goES(2)">Next: Lessons <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-2"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Course Curriculum</h4><p style="font-size:.82rem;color:var(--text3)">Minimum <strong style="color:var(--primary)">20 lessons</strong> required to publish</p></div><button class="btn btn-primary btn-sm" onclick="openModal('addLessonModal')"><i class="fas fa-plus"></i>Add Lesson</button></div><div id="lessonCountBadge" style="margin-bottom:.85rem"></div><div id="lessonBuilderList"></div><div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.79rem;color:var(--text2);margin-bottom:1rem"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>You need at least 20 lessons with content to submit for admin approval.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(1)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(3)">Next: Content <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-3"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Lesson Content Editor</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Edit each lesson's content using the rich text editor. Content is always editable even after approval.</p><div id="lessonContentEditor"></div><div class="d-flex justify-between mt-4"><button class="btn btn-ghost" onclick="goES(2)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(4)">Next: Media <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-4"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Media &amp; Files Upload</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem" id="uploadLimitNote">Upload videos, PDFs, images, resources for your course.</p><div class="upload-zone" style="padding:2rem;margin-bottom:1rem"><input type="file" multiple id="mediaFileInput" onchange="handleMediaUpload(this)"/><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.88rem;color:var(--text2);font-weight:600">Drop any files here or click to upload</div><div style="font-size:.74rem;color:var(--text3);margin-top:.3rem" id="uploadHint">Free: max 10 files · Premium: unlimited files of any size</div></div><div id="uploadedFilesList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(3)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(5)">Next: Quiz <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-5"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Quiz Builder</h4><p style="font-size:.82rem;color:var(--text3)">Add quiz questions for this course</p></div><button class="btn btn-primary btn-sm" onclick="addQuizQ()"><i class="fas fa-plus"></i>Add Question</button></div><div id="quizBuilderList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(4)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(6)">Next: Pricing <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-6"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Pricing</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Platform takes 20%, you keep 80%.</p><div style="display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.25rem"><div class="price-type-opt selected" id="pt-paid" onclick="selectPriceType('paid')"><i class="fas fa-tag" style="color:var(--primary);width:20px"></i><div><strong>Paid Course</strong><br><small style="color:var(--text3)">Students pay to access</small></div></div><div class="price-type-opt" id="pt-free" onclick="selectPriceType('free')"><i class="fas fa-gift" style="color:var(--accent);width:20px"></i><div><strong>Free Course</strong><br><small style="color:var(--text3)">Open to all students</small></div></div><div class="price-type-opt" id="pt-sub" onclick="selectPriceType('sub')"><i class="fas fa-crown" style="color:var(--gold);width:20px"></i><div><strong>Premium Only</strong><br><small style="color:var(--text3)">Only premium subscribers</small></div></div></div><div id="pricingFields"><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Price (₦)</label><input type="number" class="finput" id="edPrice" placeholder="e.g. 15000" min="1000"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Sale Price (₦, optional)</label><input type="number" class="finput" id="edSalePrice" placeholder="e.g. 12000"/></div></div></div></div><div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>Revenue: <strong style="color:var(--primary)">80%</strong> to you · <strong style="color:var(--text3)">20%</strong> platform fee per sale.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(5)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(7)">Next: Affiliate <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-7"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">🤝 Affiliate Program</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Let other ChangeX users promote your course and earn commissions.</p><div class="d-flex items-center gap-2 p-3 mb-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Enable Affiliate Program</div><div style="font-size:.74rem;color:var(--text3)">After admin approves, all users get notified</div></div><input type="checkbox" id="edAffEnabled" style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" onchange="toggleAffiliateFields(this.checked)"/></div><div id="affiliateFields" style="display:none"><div class="form-group"><label class="flabel">Commission Percentage (%)</label><input type="number" class="finput" id="edAffPercent" placeholder="e.g. 15" min="5" max="50" value="15"/></div><div class="form-group"><label class="flabel">Affiliate Offer Description</label><textarea class="finput" style="min-height:80px;resize:vertical" id="edAffDesc" placeholder="e.g. Promote this JS course and earn 15% commission!"></textarea></div></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(6)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(8)">Next: Review <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-8"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Review &amp; Submit</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Review your course before submitting for admin approval.</p><div id="courseReviewSummary"></div><div style="background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:var(--radius-sm);padding:.85rem;margin:1rem 0;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--accent);margin-right:.3rem"></i>After submission, admin reviews your course. On approval, all ChangeX users get a notification. You can still edit after approval — changes will be reviewed again.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(7)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary btn-lg" onclick="submitCourseForApproval()"><i class="fas fa-rocket"></i>Submit for Approval</button></div></div></div></div></div></div>
 
                     <!-- AI TUTOR -->
                     <div id="dash-ai" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤖 AI Tutor</h2><p class="page-sub">Your personal AI-powered learning assistant</p></div><div id="aiPlanNote" style="margin-bottom:.85rem"></div><div class="card card-p mb-3"><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.85rem"><button class="fpill active" onclick="switchAIMode('chat',this)"><i class="fas fa-comments"></i>Chat</button><button class="fpill" onclick="switchAIMode('explain',this)"><i class="fas fa-book-open"></i>Explain Code</button><button class="fpill" onclick="switchAIMode('quiz',this)"><i class="fas fa-question-circle"></i>Generate Quiz</button><button class="fpill" onclick="switchAIMode('upload',this)"><i class="fas fa-upload"></i>Upload &amp; Analyze</button></div><div id="aiMessages" style="min-height:280px;max-height:380px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.65rem;display:flex;flex-direction:column;gap:.6rem"></div><div class="d-flex gap-2"><input type="text" class="finput flex-1" id="aiInput" placeholder="Ask me anything about coding or your course..." onkeydown="if(event.key==='Enter')sendAI()"/><button class="btn btn-primary btn-sm" onclick="sendAI()"><i class="fas fa-paper-plane"></i></button></div></div><div class="card card-p" id="aiUploadPanel" style="display:none"><h6 style="margin-bottom:.65rem">📎 Upload Files for AI Analysis</h6><div id="aiUploadInfo" style="font-size:.8rem;color:var(--text3);margin-bottom:.65rem"></div><div class="upload-zone" style="padding:1.5rem"><input type="file" multiple id="aiFileInput" onchange="handleAIUpload(this)"/><div class="upload-icon"><i class="fas fa-file-upload"></i></div><div style="font-size:.84rem;color:var(--text2)">Drop any file here (PDF, image, code, etc.)</div><div style="font-size:.72rem;color:var(--text3);margin-top:.2rem" id="aiUploadLimit"></div></div><div id="aiUploadedFiles" style="margin-top:.65rem"></div></div></div>
@@ -6415,6 +6433,7 @@
             const earnings = post.earnings || 0;
             const isAuthor = S.user?._id === author._id || S.user?._id === post.authorId?._id || S.user?._id === post
                 .authorId;
+            const isAdmin = S.user?.roles?.includes('admin');
             const slug = post.slug || post._id;
             const views = post.views || 0;
             const postUrl = `${FRONTEND_URL}/post/${slug}`;
@@ -6433,7 +6452,8 @@
                             ${scoreBadge}
                         </div>
                         <div style="margin-left:auto;display:flex;gap:.2rem">
-                            ${isAuthor ? `<button class="post-delete-btn" onclick="deletePost('${post._id}')" title="Delete post"><i class="fas fa-trash"></i></button>` : ''}
+                            ${isAuthor || isAdmin ? `<button class="post-delete-btn" onclick="deletePost('${post._id}')" title="Delete post"><i class="fas fa-trash"></i></button>` : ''}
+                            ${isAuthor ? `<button class="post-edit-btn" onclick="editPost('${post._id}')" title="Edit post"><i class="fas fa-edit"></i></button>` : ''}
                         </div>
                     </div>
                     <h3 class="post-title" onclick="window.location.href='${postUrl}'">${escapeHtml(post.title)}</h3>
@@ -6603,6 +6623,11 @@
                     renderUserProfile(res.data);
                 }
             } catch (err) { toast('Failed to delete: ' + err.message, 'error'); }
+        }
+
+        // ─── EDIT POST (placeholder) ──────────────────────────────────────
+        function editPost(postId) {
+            toast('Edit functionality coming soon!', 'info');
         }
 
         // ================================================================
@@ -7067,7 +7092,7 @@
 
             container.innerHTML = `
                 <div class="profile-header" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;background:var(--bg2);padding:1.5rem;border-radius:var(--radius);margin-bottom:1.5rem;">
-                    <div class="profile-avatar" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:bold;color:#fff;flex-shrink:0;overflow:hidden;">
+                    <div class="profile-avatar" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:bold;color:#000;flex-shrink:0;overflow:hidden;">
                         ${avatarHtml}
                     </div>
                     <div style="flex:1;">
@@ -7108,6 +7133,7 @@
                         ${posts.length ? posts.map(p => {
                             const slug = p.slug || p._id;
                             const postUrl = `${FRONTEND_URL}/post/${slug}`;
+                            const isAdmin = S.user?.roles?.includes('admin');
                             return `
                             <div class="collection-item" onclick="window.location.href='${postUrl}'" style="cursor:pointer">
                                 <span class="ci-type">${p.type || 'post'}</span>
@@ -7117,7 +7143,7 @@
                                     ❤️ ${p.likes || 0} · 💬 ${p.commentsCount || 0} · 👁️ ${p.views || 0} ·
                                     <span style="color:var(--primary);font-weight:700;">${fmtMoneyAPI(p.earnings || 0)}</span>
                                 </div>
-                                ${S.user?._id === user._id ? `<div class="ci-actions"><button class="post-delete-btn" onclick="deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button></div>` : ''}
+                                ${(S.user?._id === user._id || isAdmin) ? `<div class="ci-actions"><button class="post-delete-btn" onclick="deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button></div>` : ''}
                             </div>
                         `}).join('') : '<p style="color:var(--text3);">No posts yet</p>'}
                     </div>
@@ -7146,10 +7172,12 @@
                 const res = await apiCall(`/follows/${S.user._id}/following`);
                 const users = res.data || [];
                 S.following = users.map(u => u._id);
+                S.followingUsers = users;
                 users.forEach(u => { S.followStatus[u._id] = true; });
                 // Cache following list
                 try {
                     localStorage.setItem('cx_following', JSON.stringify(S.following));
+                    localStorage.setItem('cx_followingUsers', JSON.stringify(users));
                 } catch (e) {}
                 const navFollowingBadge = document.getElementById('navFollowingBadge');
                 if (navFollowingBadge) {
@@ -7161,8 +7189,10 @@
                 // Try to load from cache
                 try {
                     const cached = JSON.parse(localStorage.getItem('cx_following') || '[]');
+                    const users = JSON.parse(localStorage.getItem('cx_followingUsers') || '[]');
                     if (cached.length) {
                         S.following = cached;
+                        S.followingUsers = users;
                         S.following.forEach(id => { S.followStatus[id] = true; });
                         const navFollowingBadge = document.getElementById('navFollowingBadge');
                         if (navFollowingBadge) {
@@ -7242,7 +7272,7 @@
             el.innerHTML = `
                 <div class="dash-grid">
                     <div class="dash-left">
-                        <div id="homeUpgradeBanner" style="display:${showUpgrade ? 'block' : 'none'};background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,146,60,.05));border:1px solid rgba(251,191,36,.2);border-radius:var(--radius);padding:1rem;margin-bottom:1rem">
+                        <div id="homeUpgradeBanner" style="display:${showUpgrade ? 'block' : 'none'};background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(251,146,60,.05));border:1px solid rgba(212,175,55,.2);border-radius:var(--radius);padding:1rem;margin-bottom:1rem">
                             <div class="d-flex items-center gap-3 flex-wrap">
                                 <div class="si si-gold"><i class="fas fa-crown"></i></div>
                                 <div style="flex:1"><strong style="font-size:.88rem">Unlock Course Creation!</strong><br><span style="font-size:.76rem;color:var(--text3)">Go Premium to create courses, earn affiliates & remove ads</span></div>
@@ -7342,6 +7372,8 @@
                         quizContainer.innerHTML = quizHtml;
                     }
                 }
+                // Display course ratings
+                displayCourseRatings();
                 S.currentLessonIdx = 0;
                 renderCurric();
                 const firstLesson = S.currentLessons[0];
@@ -7353,6 +7385,37 @@
                     thumbnail: S.currentCourseData.thumbnail || S.currentCourseData.emoji
                 });
             } catch (e) { toast('Could not load course: ' + e.message, 'error'); }
+        }
+
+        // ─── DISPLAY COURSE RATINGS ──────────────────────────────────────
+        function displayCourseRatings() {
+            const container = document.getElementById('courseRatingsContainer');
+            if (!container) return;
+            const ratings = S.currentCourseData?.ratings || [];
+            if (!ratings.length) {
+                container.innerHTML = '<p style="color:var(--text3);font-size:.85rem;">No reviews yet. Be the first to rate this course!</p>';
+                return;
+            }
+            const avg = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+            const totalReviews = ratings.length;
+            const fullStars = Math.floor(avg);
+            const halfStar = avg - fullStars >= 0.5 ? 1 : 0;
+            const emptyStars = 5 - fullStars - halfStar;
+            const starsHtml = '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars);
+            let html = `<div style="margin-bottom:.75rem">
+                <span class="rating-average">${avg.toFixed(1)}</span> <span class="rating-stars">${starsHtml}</span>
+                <span class="rating-count">(${totalReviews} review${totalReviews > 1 ? 's' : ''})</span>
+            </div>`;
+            ratings.forEach(r => {
+                const userStars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                html += `<div style="padding:.5rem 0;border-bottom:1px solid var(--border);">
+                    <div class="rating-stars">${userStars}</div>
+                    <div style="font-weight:600;font-size:.85rem;">${escapeHtml(r.userId?.firstName || 'User')} ${escapeHtml(r.userId?.lastName || '')}</div>
+                    ${r.review ? `<div style="font-size:.85rem;color:var(--text2);margin-top:.2rem;">${escapeHtml(r.review)}</div>` : ''}
+                    <div style="font-size:.7rem;color:var(--text3);margin-top:.1rem;">${new Date(r.createdAt).toLocaleDateString()}</div>
+                </div>`;
+            });
+            container.innerHTML = html;
         }
 
         // ================================================================
@@ -8756,7 +8819,7 @@
 
         function selectLType(el) {
             document.querySelectorAll('.lesson-type-opt').forEach(o => { o.style.borderColor = 'var(--border)'; });
-            el.style.borderColor = 'rgba(99,102,241,.4)';
+            el.style.borderColor = 'rgba(212,175,55,.4)';
             S.currentLessonType = el.dataset.type;
         }
 
@@ -8944,7 +9007,7 @@
             if (!inp?.value.trim()) return;
             const q = inp.value.trim();
             msgs.innerHTML +=
-                `<div style="display:flex;justify-content:flex-end;margin-bottom:.5rem"><div style="background:rgba(99,102,241,.12);border-radius:var(--radius-sm);padding:.6rem;font-size:.82rem;max-width:85%">${q}</div></div>`;
+                `<div style="display:flex;justify-content:flex-end;margin-bottom:.5rem"><div style="background:rgba(212,175,55,.12);border-radius:var(--radius-sm);padding:.6rem;font-size:.82rem;max-width:85%">${q}</div></div>`;
             msgs.innerHTML +=
                 `<div id="aiTyping" style="display:flex;gap:.5rem"><div class="si si-c" style="width:28px;height:28px"><i class="fas fa-robot"></i></div><div style="background:var(--bg3);border-radius:var(--radius-sm);padding:.6rem;font-size:.82rem;color:var(--text3)">Thinking...</div></div>`;
             inp.value = '';
@@ -9508,7 +9571,7 @@
 
         function renderSubStatus() {
             document.getElementById('subStatusCard').innerHTML = S.isPremium ?
-                `<h5>Your Subscription</h5><div style="background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(20,184,166,.04));border:1px solid rgba(99,102,241,.2);border-radius:var(--radius-sm);padding:1rem"><span class="badge badge-premium"><i class="fas fa-crown"></i>Premium Active</span><p style="margin-top:.5rem;font-size:.82rem">₦5,000/month · 80% revenue share · Unlimited uploads · No ads</p><button class="btn btn-danger btn-sm mt-2" onclick="cancelSubscription()">Cancel Subscription</button></div>` :
+                `<h5>Your Subscription</h5><div style="background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(20,184,166,.04));border:1px solid rgba(212,175,55,.2);border-radius:var(--radius-sm);padding:1rem"><span class="badge badge-premium"><i class="fas fa-crown"></i>Premium Active</span><p style="margin-top:.5rem;font-size:.82rem">₦5,000/month · 80% revenue share · Unlimited uploads · No ads</p><button class="btn btn-danger btn-sm mt-2" onclick="cancelSubscription()">Cancel Subscription</button></div>` :
                 `<h5>Your Subscription</h5><div style="text-align:center;padding:1.5rem"><div style="font-size:2rem">🔒</div><h5>Free Plan</h5><p style="color:var(--text3)">Upgrade to create courses & earn more</p><button class="btn btn-primary" onclick="openModal('premiumModal')">Upgrade — ₦5,000/mo</button></div>`;
         }
 
@@ -10611,7 +10674,7 @@
                 if (!content) return;
                 const avatarHtml = getAvatarUrl(data.user) ?
                     `<img src="${getAvatarUrl(data.user)}" alt="avatar" style="width:60px;height:60px;border-radius:50%;object-fit:cover;">` :
-                    '<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff;">' + (data
+                    '<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#000;">' + (data
                         .user.firstName?.[0] || 'U') + '</div>';
                 content.innerHTML = `
                     <div class="row">
@@ -11169,7 +11232,7 @@
                                     <button class="tab-btn active" onclick="switchCodeTab('html','${material._id}')">HTML</button>
                                     <button class="tab-btn" onclick="switchCodeTab('css','${material._id}')">CSS</button>
                                     <button class="tab-btn" onclick="switchCodeTab('js','${material._id}')">JS</button>
-                                    <button class="tab-btn" onclick="runCode('${material._id}')" style="background:var(--primary);color:#fff;border-radius:var(--radius-sm)">▶ Run</button>
+                                    <button class="tab-btn" onclick="runCode('${material._id}')" style="background:var(--primary);color:#000;border-radius:var(--radius-sm)">▶ Run</button>
                                 </div>
                                 <textarea id="code-html-${material._id}" class="code-area" style="display:block">${escapeHtml(material.html || '')}</textarea>
                                 <textarea id="code-css-${material._id}" class="code-area" style="display:none">${escapeHtml(material.css || '')}</textarea>
@@ -11423,6 +11486,9 @@
         console.log('🔍 SEO meta tags dynamically updated for posts and courses.');
         console.log('📖 Book downloads permanently unlocked after purchase approval.');
         console.log('💰 Course completion bonus: ₦300.');
+        console.log('🎨 Gold, White & Black premium theme applied.');
+        console.log('📢 Smart ads rotation implemented.');
+        console.log('🗑️ Admin can delete any post.');
     </script>
 </body>
 </html>
