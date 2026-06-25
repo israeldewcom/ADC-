@@ -16,7 +16,7 @@
     <meta name="twitter:description" content="Global #1 Learn-to-Earn platform. Learn tech skills and earn real money. Card or bank transfer accepted." />
     <link rel="canonical" href="https://changex.academy" id="canonicalLink" />
 
-    <!-- PWA: Static manifest (served from root) -->
+    <!-- ===== PWA: Static manifest (served from root) ===== -->
     <link rel="manifest" href="/manifest.json" />
     <!-- iOS specific -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -3513,7 +3513,7 @@
         .ad-container.visible {
             display: block;
         }
-        /* ===== PWA INSTALL BANNER ===== */
+        /* ===== PWA INSTALL BANNER – 7‑day dismissal ===== */
         .install-banner {
             position: fixed;
             bottom: 80px;
@@ -4848,12 +4848,10 @@
             background: rgba(255, 255, 255, .6);
             border: 1px solid rgba(0, 0, 0, .05);
         }
-        /* Scrollable containers with smooth scrolling */
         .smooth-scroll {
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
         }
-        /* Focus-visible for keyboard navigation */
         button:focus-visible,
         input:focus-visible,
         select:focus-visible,
@@ -4861,7 +4859,6 @@
             outline: 2px solid var(--primary);
             outline-offset: 2px;
         }
-        /* Print styles */
         @media print {
             .no-print {
                 display: none !important;
@@ -4880,7 +4877,7 @@
 <body>
     <div id="toastBox"></div>
     <div id="loadingOverlay" class="loading-overlay" style="display:none"><div class="loading-spinner"></div><div class="loading-text" id="loadingText">Loading...</div></div>
-    <!-- ===== PWA INSTALL BANNER – fully controlled ===== -->
+    <!-- ===== PWA INSTALL BANNER – 7‑day dismissal ===== -->
     <div id="installBanner" class="install-banner hidden"><div style="font-size:1.5rem">📲</div><div style="flex:1"><div style="font-weight:700;font-size:.84rem">Install ChangeX Academy</div><div style="font-size:.72rem;color:var(--text3)">Get faster access, offline learning & instant notifications</div></div><button class="btn btn-primary btn-sm" id="installBtn" onclick="installPWA()">Install</button><button class="btn-icon-sm" onclick="dismissInstallBanner()"><i class="fas fa-times"></i></button></div>
 
     <!-- ============================================================ -->
@@ -5117,7 +5114,8 @@
         let socket = null;
         let searchTO;
         let deferredPrompt = null;
-        const INSTALL_BANNER_DISMISSED = 'cx_install_dismissed';
+        const INSTALL_BANNER_KEY = 'cx_install_banner_dismissed_at';
+        const BANNER_HIDE_DAYS = 7;
         let autoSaveTimer = null;
         let currentPaymentType = 'course';
         let currentManualCourseId = null;
@@ -5844,26 +5842,21 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // PWA – FULLY INSTALLABLE (Static manifest, SW, iOS meta)
+        // PWA – FULLY INSTALLABLE WITH 7‑DAY BANNER DISMISSAL
         // ═══════════════════════════════════════════════════════════════
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js', { scope: '/' })
-                .then(() => console.log('✅ Service Worker registered'))
-                .catch((err) => console.warn('⚠️ SW registration failed:', err));
+        function shouldShowInstallBanner() {
+            if (window.matchMedia('(display-mode: standalone)').matches) return false;
+            const dismissedAt = localStorage.getItem(INSTALL_BANNER_KEY);
+            if (!dismissedAt) return true;
+            const daysSince = (Date.now() - parseInt(dismissedAt)) / (1000 * 60 * 60 * 24);
+            return daysSince >= BANNER_HIDE_DAYS;
         }
 
-        // ─── PWA INSTALL BANNER CONTROL – PERMANENT DISMISS ──────────
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-            const dismissed = localStorage.getItem(INSTALL_BANNER_DISMISSED) === 'true';
+        function dismissInstallBanner() {
             const banner = document.getElementById('installBanner');
-            if (banner && !isStandalone && !dismissed) {
-                banner.classList.remove('hidden');
-            }
-        });
+            if (banner) banner.classList.add('hidden');
+            localStorage.setItem(INSTALL_BANNER_KEY, Date.now().toString());
+        }
 
         function installPWA() {
             if (deferredPrompt) {
@@ -5871,41 +5864,40 @@
                 deferredPrompt.userChoice.then((result) => {
                     if (result.outcome === 'accepted') {
                         toast('App installed! 🎉', 'success');
+                        const banner = document.getElementById('installBanner');
+                        if (banner) banner.classList.add('hidden');
+                        localStorage.setItem(INSTALL_BANNER_KEY, Date.now().toString());
                     }
                     deferredPrompt = null;
                 });
             } else {
-                alert('To install:\n- Android: Tap "Add to Home Screen"\n- iOS: Tap Share → "Add to Home Screen"');
+                toast('Tap the share icon and select "Add to Home Screen"', 'info');
             }
         }
 
-        function dismissInstallBanner() {
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
             const banner = document.getElementById('installBanner');
-            if (banner) banner.classList.add('hidden');
-            localStorage.setItem(INSTALL_BANNER_DISMISSED, 'true');
-        }
+            if (banner && shouldShowInstallBanner()) {
+                banner.classList.remove('hidden');
+            }
+        });
 
         window.addEventListener('appinstalled', () => {
             deferredPrompt = null;
             const banner = document.getElementById('installBanner');
             if (banner) banner.classList.add('hidden');
-            localStorage.setItem(INSTALL_BANNER_DISMISSED, 'true');
+            localStorage.setItem(INSTALL_BANNER_KEY, Date.now().toString());
             toast('App installed! 🎉', 'success');
         });
 
-        // On load – hide banner if already installed or dismissed
-        document.addEventListener('DOMContentLoaded', () => {
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-            const dismissed = localStorage.getItem(INSTALL_BANNER_DISMISSED) === 'true';
-            const banner = document.getElementById('installBanner');
-            if (banner) {
-                if (isStandalone || dismissed) {
-                    banner.classList.add('hidden');
-                } else {
-                    banner.classList.remove('hidden');
-                }
-            }
-        });
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                .then(() => console.log('✅ Service Worker registered'))
+                .catch((err) => console.warn('⚠️ SW registration failed:', err));
+        }
 
         // ═══════════════════════════════════════════════════════════════
         // USER UI UPDATE
@@ -10681,15 +10673,11 @@
             const urlRef = urlParams.get('ref');
             if (urlRef) localStorage.setItem('cx_pending_ref', urlRef.toUpperCase());
 
-            // ─── PWA BANNER CHECK ───────────────────────────────────────
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-            const dismissed = localStorage.getItem(INSTALL_BANNER_DISMISSED) === 'true';
+            // ─── PWA BANNER – 7‑day dismissal ──────────────────────────
             const banner = document.getElementById('installBanner');
             if (banner) {
-                if (isStandalone || dismissed) {
+                if (!shouldShowInstallBanner()) {
                     banner.classList.add('hidden');
-                } else {
-                    banner.classList.remove('hidden');
                 }
             }
 
@@ -11216,6 +11204,7 @@
         // The container #adBannerTop is now in the HTML and updateAdVisibility() handles it.
         console.log('🚀 ChangeX Academy — Production Ready');
         console.log('📚 Learn, Earn, and Grow with ChangeX!');
+        console.log('📱 PWA: Install banner hides for 7 days after dismissal.');
     </script>
 </body>
 </html>
