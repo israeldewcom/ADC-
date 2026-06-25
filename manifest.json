@@ -8,6 +8,7 @@
   "orientation": "portrait",
   "theme_color": "#0F172A",
   "background_color": "#0F172A",
+  "categories": ["education", "learning", "technology"],
   "icons": [
     { "src": "/logo.png", "sizes": "72x72", "type": "image/png", "purpose": "any maskable" },
     { "src": "/logo.png", "sizes": "96x96", "type": "image/png", "purpose": "any maskable" },
