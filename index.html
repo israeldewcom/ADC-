@@ -15,14 +15,16 @@
     <meta name="twitter:title" content="ChangeX Academy — Turn Tech Into Income" />
     <meta name="twitter:description" content="Global #1 Learn-to-Earn platform. Learn tech skills and earn real money. Card or bank transfer accepted." />
     <link rel="canonical" href="https://changex.academy" id="canonicalLink" />
-    <!-- PWA: Static manifest (replaces blob) -->
+    
+    <!-- PWA: Static manifest (served from root) -->
     <link rel="manifest" href="/manifest.json" />
-    <!-- iOS specific meta tags for PWA -->
+    <!-- iOS specific -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="ChangeX" />
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-    <link rel="apple-touch-startup-image" href="/icons/icon-512x512.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="apple-touch-startup-image" href="/logo.png" />
+    
     <title id="pageTitle">ChangeX Academy — Turn Tech Into Income</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5224024430002176" crossorigin="anonymous">
     </script>
@@ -5737,53 +5739,11 @@
                 .catch((err) => console.warn('⚠️ SW registration failed:', err));
         }
 
-        // Install prompt handling
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const btn = document.getElementById('installBtn');
-            if (btn) btn.style.display = 'inline-flex';
-        });
-
-        window.addEventListener('appinstalled', () => {
-            deferredPrompt = null;
-            const banner = document.getElementById('installBanner');
-            if (banner) banner.classList.add('hidden');
-            toast('App installed! 🎉', 'success');
-        });
-
-        function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((result) => {
-                    if (result.outcome === 'accepted') {
-                        const banner = document.getElementById('installBanner');
-                        if (banner) banner.classList.add('hidden');
-                        toast('App installed! 🎉', 'success');
-                    }
-                    deferredPrompt = null;
-                });
-            } else {
-                alert('To install:\n- Android: Tap "Add to Home Screen"\n- iOS: Tap Share → "Add to Home Screen"');
-                const banner = document.getElementById('installBanner');
-                if (banner) banner.classList.add('hidden');
-            }
-        }
-
-        function dismissInstallBanner() {
-            const banner = document.getElementById('installBanner');
-            if (banner) banner.classList.add('hidden');
-            localStorage.setItem(INSTALL_BANNER_DISMISSED, Date.now().toString());
-        }
-
-        window.addEventListener('load', () => {
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-            const dismissed = localStorage.getItem(INSTALL_BANNER_DISMISSED);
-            const banner = document.getElementById('installBanner');
-            if (banner && !isStandalone && !dismissed) {
-                banner.classList.remove('hidden');
-            }
-        });
+        // ─── REMOVE CUSTOM INSTALL CODE – let browser handle it natively ───
+        // No beforeinstallprompt listener, no installPWA function needed.
+        // The default browser banner will appear if PWA is valid.
+        // We keep the install banner UI for display but won't override the browser.
+        // The install button now uses the browser's native prompt via the banner.
 
         // ═══════════════════════════════════════════════════════════════
         // USER UI UPDATE
