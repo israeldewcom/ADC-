@@ -2,7 +2,6 @@
   "rewrites": [
     { "source": "/aff/(.*)", "destination": "/" },
     { "source": "/courses/(.*)", "destination": "/" },
-    { "source": "/icons/(.*)", "destination": "/icons/$1" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
