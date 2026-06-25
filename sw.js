@@ -3,13 +3,11 @@ const STATIC_CACHE = `static-${CACHE_VERSION}`;
 const API_CACHE = `api-${CACHE_VERSION}`;
 const BOOK_CACHE = `books-${CACHE_VERSION}`;
 
-// Core assets to cache on install – includes logo.png at root
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/logo.png',
-  // Add any other critical assets (e.g., CSS, fonts)
+  '/logo.png'
 ];
 
 // ─── INSTALL ──────────────────────────────────────────────
@@ -29,7 +27,7 @@ self.addEventListener('activate', (event) => {
         keys.filter((key) => !key.startsWith('changex-v'))
           .map((key) => caches.delete(key))
       );
-    }).then(() => self.clients.claim())
+    }).then(() => self.clients.claim()) // 👈 takes control
   );
 });
 
@@ -38,7 +36,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   const request = event.request;
 
-  // API requests – stale-while-revalidate
+  // API – stale‑while‑revalidate
   if (url.pathname.startsWith('/api/v1/')) {
     event.respondWith(
       caches.open(API_CACHE).then((cache) => {
@@ -56,7 +54,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Book files (Cloudinary / raw uploads)
+  // Books – cache with fallback
   if (url.pathname.includes('/raw/upload/') || url.pathname.includes('/books/')) {
     event.respondWith(
       caches.open(BOOK_CACHE).then((cache) => {
