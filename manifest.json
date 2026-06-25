@@ -3,75 +3,19 @@
   "short_name": "ChangeX",
   "description": "Learn tech skills and earn real money",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#0F172A",
   "background_color": "#0F172A",
-  "categories": ["education", "learning", "technology"],
   "icons": [
-    {
-      "src": "/logo.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/logo.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/logo.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/logo.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/logo.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/logo.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/logo.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/logo.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Feed",
-      "short_name": "Feed",
-      "description": "View your feed",
-      "url": "/?feed",
-      "icons": [{ "src": "/logo.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "Explore",
-      "short_name": "Explore",
-      "description": "Browse courses",
-      "url": "/?explore",
-      "icons": [{ "src": "/logo.png", "sizes": "96x96" }]
-    }
+    { "src": "/logo.png", "sizes": "72x72", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/logo.png", "sizes": "96x96", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/logo.png", "sizes": "128x128", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/logo.png", "sizes": "144x144", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/logo.png", "sizes": "152x152", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/logo.png", "sizes": "384x384", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }
