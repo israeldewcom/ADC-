@@ -4872,6 +4872,96 @@
                 box-shadow: none !important;
             }
         }
+        /* ===== SEO ENHANCEMENTS ===== */
+        .seo-article {
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+        .seo-article h1,
+        .seo-article h2,
+        .seo-article h3 {
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .seo-article ul,
+        .seo-article ol {
+            padding-left: 1.5rem;
+            margin: 0.5rem 0;
+        }
+        .seo-article a {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .seo-article a:hover {
+            color: var(--primary-light);
+        }
+        .seo-article img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius-sm);
+            margin: 0.5rem 0;
+        }
+        .seo-article blockquote {
+            border-left: 3px solid var(--primary);
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            background: rgba(99, 102, 241, .05);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            color: var(--text2);
+        }
+        .seo-article pre {
+            background: var(--bg2);
+            padding: 0.75rem;
+            border-radius: var(--radius-sm);
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+        }
+        .seo-article code {
+            background: var(--bg2);
+            padding: 0.1rem 0.3rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+            color: var(--primary-light);
+        }
+        .seo-article pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text);
+        }
+        /* Course rating display */
+        .rating-stars {
+            color: var(--gold);
+            font-size: 1.1rem;
+            letter-spacing: 0.05rem;
+        }
+        .rating-stars-empty {
+            color: var(--text3);
+        }
+        .rating-average {
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: var(--font-heading);
+        }
+        .rating-count {
+            font-size: 0.8rem;
+            color: var(--text3);
+        }
+        /* Following badge count */
+        .following-badge-count {
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.1rem 0.4rem;
+            margin-left: 0.3rem;
+            display: inline-block;
+            min-width: 18px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -4897,7 +4987,7 @@
 
         <section id="books-landing" class="lsec lsec-dark"><div class="lsec-wrap"><div class="d-flex items-center justify-between mb-4 reveal flex-wrap" style="gap:.75rem"><div><div class="stag mb-2"><i class="fas fa-book"></i> Library</div><h2 style="font-size:1.85rem">Explore Our <span class="grad-text">Digital Books</span></h2></div><button class="btn btn-outline btn-sm" onclick="goPage('register')">Browse All <i class="fas fa-arrow-right"></i></button></div><div class="row" id="landingBooksGrid"></div></div></section>
 
-        <section class="lsec"><div class="lsec-wrap"><div class="row items-center"><div class="col-12 col-md-6 reveal"><div class="stag mb-3"><i class="fas fa-fire"></i> Live Activity</div><h3 style="font-size:1.4rem;margin-bottom:.85rem">Students Earning <span class="grad-text">Right Now</span></h3><div id="landingFeed"></div></div><div class="col-12 col-md-6 reveal-r"><div class="bonus-card"><div class="stag mb-3"><i class="fas fa-wallet"></i> 4 Income Streams</div><h4 style="margin-bottom:.85rem">Earn Multiple Ways on ChangeX</h4><div style="display:flex;flex-direction:column;gap:.55rem;font-size:.83rem"><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-primary" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-book"></i></div><div><strong>Course Sales</strong> — 80% revenue share to you</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-c" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-users"></i></div><div><strong>Referrals</strong> — ₦500 per signup that subscribes</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-v" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-handshake"></i></div><div><strong>Affiliates</strong> — Promote others, earn % commission</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-g" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-trophy"></i></div><div><strong>Completion Bonuses</strong> — ₦1,000 per course done</div></div></div><button class="btn btn-primary btn-sm mt-4" onclick="goPage('register')"><i class="fas fa-rocket"></i>Start Earning Now</button></div></div></div></div></section>
+        <section class="lsec"><div class="lsec-wrap"><div class="row items-center"><div class="col-12 col-md-6 reveal"><div class="stag mb-3"><i class="fas fa-fire"></i> Live Activity</div><h3 style="font-size:1.4rem;margin-bottom:.85rem">Students Earning <span class="grad-text">Right Now</span></h3><div id="landingFeed"></div></div><div class="col-12 col-md-6 reveal-r"><div class="bonus-card"><div class="stag mb-3"><i class="fas fa-wallet"></i> 4 Income Streams</div><h4 style="margin-bottom:.85rem">Earn Multiple Ways on ChangeX</h4><div style="display:flex;flex-direction:column;gap:.55rem;font-size:.83rem"><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-primary" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-book"></i></div><div><strong>Course Sales</strong> — 80% revenue share to you</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-c" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-users"></i></div><div><strong>Referrals</strong> — ₦500 per signup that subscribes</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-v" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-handshake"></i></div><div><strong>Affiliates</strong> — Promote others, earn % commission</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-g" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-trophy"></i></div><div><strong>Completion Bonuses</strong> — ₦300 per course done</div></div></div><button class="btn btn-primary btn-sm mt-4" onclick="goPage('register')"><i class="fas fa-rocket"></i>Start Earning Now</button></div></div></div></div></section>
 
         <section id="instructors-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-chalkboard-teacher"></i> Educators</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Learn From <span class="grad-text">Nigeria's Best</span></h2></div><div class="row" id="landingInstructors"></div></div></section>
 
@@ -5047,7 +5137,7 @@
                     <div id="dash-courses" class="dash-sub"><div class="page-hd"><h2 class="page-title">My Courses</h2><p class="page-sub">Track your learning progress</p></div><div style="display:flex;gap:.28rem;flex-wrap:nowrap;overflow-x:auto;margin-bottom:1rem;padding-bottom:.15rem"><span class="fpill active" onclick="filterCourses('all',this)">All</span><span class="fpill" onclick="filterCourses('progress',this)">In Progress</span><span class="fpill" onclick="filterCourses('completed',this)">Completed</span><span class="fpill" onclick="filterCourses('new',this)">Not Started</span></div><div class="courses-grid" id="coursesGrid"></div></div>
 
                     <!-- LESSON -->
-                    <div id="dash-lesson" class="dash-sub"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><button class="btn btn-ghost btn-sm" onclick="setDP('courses')"><i class="fas fa-arrow-left"></i>Back</button><div class="d-flex gap-2"><button class="btn btn-ghost btn-sm" onclick="openModal('rateModal')"><i class="fas fa-star"></i>Rate</button><button class="btn btn-primary btn-sm" onclick="completeLessonAndNext()"><i class="fas fa-check"></i>Mark Done &amp; Next</button></div></div><div id="interactiveContainer"></div><div class="lesson-layout"><div><div class="video-wrap mb-3" id="lessonVideoWrap"><div style="text-align:center"><div class="play-btn" onclick="toast('Playing lesson video...','info')"><i class="fas fa-play"></i></div><div style="font-size:.78rem;color:var(--text2);margin-top:.75rem" id="currentLessonTitle">Select a course</div><div style="font-size:.7rem;color:var(--text3);margin-top:.2rem" id="currentCourseTitle">Loading...</div></div></div><div class="d-flex justify-between mb-3 gap-2"><button class="btn btn-ghost btn-sm" id="prevLessonBtn" onclick="navigateLesson(-1)"><i class="fas fa-arrow-left"></i>Previous</button><span style="font-size:.78rem;color:var(--text3);padding:.35rem .5rem" id="lessonNavIndicator">—</span><button class="btn btn-primary btn-sm" id="nextLessonBtn" onclick="navigateLesson(1)">Next<i class="fas fa-arrow-right"></i></button></div><div class="lesson-tabs"><div class="ltab active" onclick="switchLTab('overview',this)">Overview</div><div class="ltab" onclick="switchLTab('notes',this)">📝 Notes</div><div class="ltab" onclick="switchLTab('resources',this)">📎 Resources</div><div class="ltab" onclick="switchLTab('qa',this)">💬 Q&amp;A</div><div class="ltab" onclick="switchLTab('interactive',this)">⚡ Try It</div></div><div class="lesson-sub active" id="ls-overview"><h5 style="margin-bottom:.5rem" id="lessonOverviewTitle">Loading...</h5><p style="font-size:.84rem;color:var(--text2);line-height:1.7" id="lessonOverviewDesc">Please select a course.</p></div><div class="lesson-sub" id="ls-notes"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">My Notes</h6><button class="btn btn-primary btn-sm" onclick="saveNote()"><i class="fas fa-save"></i>Save</button></div><textarea class="finput" id="lessonNote" style="min-height:200px;resize:vertical" placeholder="Write your personal notes... They auto-save."></textarea></div><div class="lesson-sub" id="ls-resources"><h6 style="margin-bottom:.75rem">📎 Resources</h6><div id="lessonResourcesList"></div></div><div class="lesson-sub" id="ls-qa"><h6 style="margin-bottom:.75rem">💬 Questions &amp; Answers</h6><div style="margin-bottom:.85rem"><textarea class="finput" id="qaInput" style="min-height:80px;resize:vertical" placeholder="Ask a question about this lesson..."></textarea><button class="btn btn-primary btn-sm mt-2" onclick="submitQuestion()"><i class="fas fa-paper-plane"></i>Ask Question</button></div><div id="qaList"></div></div><div class="lesson-sub" id="ls-interactive"><h6 style="margin-bottom:.75rem">⚡ Try It Yourself</h6><div id="interactiveMaterialsContainer"></div></div></div><div><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">Curriculum</h6><span style="font-size:.73rem;color:var(--text3)" id="curricProgress">0/0</span></div><div class="prog mb-3" style="height:5px"><div class="prog-fill pf-primary" id="curricBar" style="width:0%"></div></div><div id="curricList" class="thin-scroll" style="max-height:420px;overflow-y:auto"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">📊 Your Progress</h6><div><div class="web-row"><span>Lessons Done</span><strong id="lpLessonsDone">0/0</strong></div><div class="web-row"><span>XP Earned</span><strong style="color:var(--gold)">+0</strong></div><div class="web-row"><span>Quiz Score Avg</span><strong style="color:var(--primary)">—</strong></div><div class="web-row"><span>Time Spent</span><strong>0h 0m</strong></div></div></div></div></div></div>
+                    <div id="dash-lesson" class="dash-sub"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><button class="btn btn-ghost btn-sm" onclick="setDP('courses')"><i class="fas fa-arrow-left"></i>Back</button><div class="d-flex gap-2"><button class="btn btn-ghost btn-sm" onclick="openModal('rateModal')"><i class="fas fa-star"></i>Rate</button><button class="btn btn-primary btn-sm" onclick="completeLessonAndNext()"><i class="fas fa-check"></i>Mark Done &amp; Next</button></div></div><div id="interactiveContainer"></div><div class="lesson-layout"><div><div class="video-wrap mb-3" id="lessonVideoWrap"><div style="text-align:center"><div class="play-btn" onclick="toast('Playing lesson video...','info')"><i class="fas fa-play"></i></div><div style="font-size:.78rem;color:var(--text2);margin-top:.75rem" id="currentLessonTitle">Select a course</div><div style="font-size:.7rem;color:var(--text3);margin-top:.2rem" id="currentCourseTitle">Loading...</div></div></div><div class="d-flex justify-between mb-3 gap-2"><button class="btn btn-ghost btn-sm" id="prevLessonBtn" onclick="navigateLesson(-1)"><i class="fas fa-arrow-left"></i>Previous</button><span style="font-size:.78rem;color:var(--text3);padding:.35rem .5rem" id="lessonNavIndicator">—</span><button class="btn btn-primary btn-sm" id="nextLessonBtn" onclick="navigateLesson(1)">Next<i class="fas fa-arrow-right"></i></button></div><div class="lesson-tabs"><div class="ltab active" onclick="switchLTab('overview',this)">Overview</div><div class="ltab" onclick="switchLTab('notes',this)">📝 Notes</div><div class="ltab" onclick="switchLTab('resources',this)">📎 Resources</div><div class="ltab" onclick="switchLTab('qa',this)">💬 Q&amp;A</div><div class="ltab" onclick="switchLTab('reviews',this)">⭐ Reviews</div><div class="ltab" onclick="switchLTab('interactive',this)">⚡ Try It</div></div><div class="lesson-sub active" id="ls-overview"><h5 style="margin-bottom:.5rem" id="lessonOverviewTitle">Loading...</h5><p style="font-size:.84rem;color:var(--text2);line-height:1.7" id="lessonOverviewDesc">Please select a course.</p><div id="courseRatingsContainer"></div></div><div class="lesson-sub" id="ls-notes"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">My Notes</h6><button class="btn btn-primary btn-sm" onclick="saveNote()"><i class="fas fa-save"></i>Save</button></div><textarea class="finput" id="lessonNote" style="min-height:200px;resize:vertical" placeholder="Write your personal notes... They auto-save."></textarea></div><div class="lesson-sub" id="ls-resources"><h6 style="margin-bottom:.75rem">📎 Resources</h6><div id="lessonResourcesList"></div></div><div class="lesson-sub" id="ls-qa"><h6 style="margin-bottom:.75rem">💬 Questions &amp; Answers</h6><div style="margin-bottom:.85rem"><textarea class="finput" id="qaInput" style="min-height:80px;resize:vertical" placeholder="Ask a question about this lesson..."></textarea><button class="btn btn-primary btn-sm mt-2" onclick="submitQuestion()"><i class="fas fa-paper-plane"></i>Ask Question</button></div><div id="qaList"></div></div><div class="lesson-sub" id="ls-reviews"><h6 style="margin-bottom:.75rem">⭐ Course Reviews</h6><div id="reviewsListContainer"></div></div><div class="lesson-sub" id="ls-interactive"><h6 style="margin-bottom:.75rem">⚡ Try It Yourself</h6><div id="interactiveMaterialsContainer"></div></div></div><div><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">Curriculum</h6><span style="font-size:.73rem;color:var(--text3)" id="curricProgress">0/0</span></div><div class="prog mb-3" style="height:5px"><div class="prog-fill pf-primary" id="curricBar" style="width:0%"></div></div><div id="curricList" class="thin-scroll" style="max-height:420px;overflow-y:auto"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">📊 Your Progress</h6><div><div class="web-row"><span>Lessons Done</span><strong id="lpLessonsDone">0/0</strong></div><div class="web-row"><span>XP Earned</span><strong style="color:var(--gold)">+0</strong></div><div class="web-row"><span>Quiz Score Avg</span><strong style="color:var(--primary)">—</strong></div><div class="web-row"><span>Time Spent</span><strong>0h 0m</strong></div></div></div></div></div></div>
 
                     <!-- QUIZ -->
                     <div id="dash-quiz" class="dash-sub"><div class="page-hd"><h2 class="page-title">Quizzes</h2><p class="page-sub">Test your knowledge and earn XP</p></div><div class="quiz-wrap" id="quizWrap"></div></div>
@@ -5189,6 +5279,7 @@
             postQuill: null,
             followStatus: {},
             following: [],
+            followingUsers: [],
             profileUser: null,
             challengeProgress: [],
             sharePostId: null,
@@ -6032,6 +6123,44 @@
         }
 
         // ================================================================
+        // SEO – Dynamic Meta Updates
+        // ================================================================
+        function updateSEO(data) {
+            const title = data?.title || 'ChangeX Academy';
+            const description = data?.description || data?.excerpt || 'Learn tech skills and earn real money on ChangeX Academy.';
+            const image = data?.featuredImage || data?.coverImage || data?.thumbnail || '/icons/icon-512x512.png';
+            const url = window.location.href;
+
+            document.title = `${title} | ChangeX Academy`;
+            document.getElementById('pageTitle').textContent = document.title;
+
+            // Meta tags
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) metaDesc.setAttribute('content', description);
+
+            const ogTitle = document.querySelector('meta[property="og:title"]');
+            if (ogTitle) ogTitle.setAttribute('content', title);
+
+            const ogDesc = document.querySelector('meta[property="og:description"]');
+            if (ogDesc) ogDesc.setAttribute('content', description);
+
+            const ogImage = document.querySelector('meta[property="og:image"]');
+            if (ogImage) ogImage.setAttribute('content', image);
+
+            const ogUrl = document.querySelector('meta[property="og:url"]');
+            if (ogUrl) ogUrl.setAttribute('content', url);
+
+            const twTitle = document.querySelector('meta[name="twitter:title"]');
+            if (twTitle) twTitle.setAttribute('content', title);
+
+            const twDesc = document.querySelector('meta[name="twitter:description"]');
+            if (twDesc) twDesc.setAttribute('content', description);
+
+            const twImage = document.querySelector('meta[name="twitter:image"]');
+            if (twImage) twImage.setAttribute('content', image);
+        }
+
+        // ================================================================
         // POSTS MODULE – UPGRADED WITH VIEW TRACKING CACHE & DUPLICATE DETECTION
         // ================================================================
         const POSTS_API = '/posts';
@@ -6571,6 +6700,8 @@
                         body: formData
                     });
                 }
+                // Update SEO
+                updateSEO(newPost);
                 toast('✅ Post published!', 'success');
                 closeModal('createPostModal');
                 document.getElementById('postTitle').value = '';
@@ -6791,7 +6922,7 @@
         }
 
         // ================================================================
-        // PEOPLE MODULE
+        // PEOPLE MODULE – WITH FOLLOWING FIX
         // ================================================================
         async function loadPeople() {
             showLoading('Loading users...');
@@ -6874,21 +7005,24 @@
             renderPeople(S.users);
         }
 
-        // ─── FOLLOW USER ───────────────────────────────────────
+        // ─── FOLLOW USER – UPDATED WITH IMMEDIATE UI ───────────────────
         async function followUser(userId) {
             try {
                 const res = await apiCall(`/follows/${userId}/follow`, { method: 'POST' });
                 const isNowFollowing = res.followed;
                 S.followStatus[userId] = isNowFollowing;
                 if (isNowFollowing) {
-                    if (!S.following.includes(userId)) S.following.push(userId);
+                    if (!S.following.includes(userId)) {
+                        S.following.push(userId);
+                    }
                 } else {
                     S.following = S.following.filter(id => id !== userId);
                 }
-                // Cache following list
+                // Save to localStorage for persistence
                 try {
-                    localStorage.setItem('cx_following', JSON.stringify(S.following.filter(id => id !== S.user?._id)));
+                    localStorage.setItem('cx_following', JSON.stringify(S.following));
                 } catch (e) {}
+                document.getElementById('navFollowingBadge').textContent = S.following.length;
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
                 if (S.dp === 'people') renderPeople(S.users);
                 if (S.dp === 'profile' && S.profileUser) {
@@ -6896,12 +7030,9 @@
                     renderUserProfile(res2.data);
                 }
                 if (S.dp === 'following') loadFollowing();
-                // Update badge
-                const navFollowingBadge = document.getElementById('navFollowingBadge');
-                if (navFollowingBadge) {
-                    navFollowingBadge.textContent = S.following.filter(id => id !== S.user?._id).length;
-                }
-            } catch (err) { toast('Error: ' + err.message, 'error'); }
+            } catch (err) {
+                toast('Error: ' + err.message, 'error');
+            }
         }
 
         // ================================================================
@@ -7007,7 +7138,7 @@
         }
 
         // ================================================================
-        // FOLLOWING PERSISTENCE
+        // FOLLOWING PERSISTENCE – UPDATED
         // ================================================================
         async function loadUserFollowing() {
             if (!S.user) return;
@@ -7018,12 +7149,13 @@
                 users.forEach(u => { S.followStatus[u._id] = true; });
                 // Cache following list
                 try {
-                    localStorage.setItem('cx_following', JSON.stringify(S.following.filter(id => id !== S.user?._id)));
+                    localStorage.setItem('cx_following', JSON.stringify(S.following));
                 } catch (e) {}
                 const navFollowingBadge = document.getElementById('navFollowingBadge');
                 if (navFollowingBadge) {
-                    navFollowingBadge.textContent = S.following.filter(id => id !== S.user?._id).length;
+                    navFollowingBadge.textContent = S.following.length;
                 }
+                console.log('✅ Following loaded:', S.following.length, 'users');
             } catch (err) {
                 console.warn('Could not load following:', err);
                 // Try to load from cache
@@ -7038,7 +7170,6 @@
                         }
                     }
                 } catch (e) {}
-                S.following = [];
             }
         }
 
@@ -7070,6 +7201,8 @@
             renderHomeDashboard();
             checkPlanExpiry();
             loadFeed(1);
+            // Update SEO for home
+            updateSEO({ title: 'ChangeX Academy Dashboard', description: 'Learn tech skills and earn real money on ChangeX Academy.' });
         }
 
         async function loadReferralStats() {
@@ -7102,7 +7235,7 @@
             const xpProgress = Math.min(100, Math.round((xp / xpNext) * 100));
             const showUpgrade = !S.isPremium && !S.user?.roles?.includes('admin');
             const postCount = S.posts?.length || 0;
-            const followersCount = S.following?.filter(id => id !== S.user?._id).length || 0;
+            const followersCount = S.following?.length || 0;
             const totalEarnings = S.user?.walletBalance || 0;
             const socialEarnings = S.socialEarnings || 0;
 
@@ -7213,6 +7346,12 @@
                 renderCurric();
                 const firstLesson = S.currentLessons[0];
                 if (firstLesson && firstLesson._id) loadInteractiveMaterials(firstLesson._id);
+                // Update SEO with course data
+                updateSEO({
+                    title: S.currentCourseData.title,
+                    description: S.currentCourseData.subtitle || S.currentCourseData.description?.substring(0, 160),
+                    thumbnail: S.currentCourseData.thumbnail || S.currentCourseData.emoji
+                });
             } catch (e) { toast('Could not load course: ' + e.message, 'error'); }
         }
 
@@ -7712,6 +7851,41 @@
             updateAdVisibility();
             const currentLesson = lessons[S.currentLessonIdx];
             if (currentLesson && currentLesson._id) loadInteractiveMaterials(currentLesson._id);
+            // Render ratings in overview
+            if (S.currentCourseData?.ratings) {
+                document.getElementById('courseRatingsContainer').innerHTML = renderCourseRatings(S.currentCourseData.ratings);
+            }
+            // Also render in reviews tab
+            if (S.currentCourseData?.ratings) {
+                document.getElementById('reviewsListContainer').innerHTML = renderCourseRatings(S.currentCourseData.ratings);
+            }
+        }
+
+        // ─── RENDER COURSE RATINGS ────────────────────────────────────
+        function renderCourseRatings(ratings) {
+            if (!ratings || !ratings.length) {
+                return '<p style="color:var(--text3);font-size:.85rem;">No reviews yet. Be the first to rate this course!</p>';
+            }
+            const avg = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+            const totalReviews = ratings.length;
+            const fullStars = Math.floor(avg);
+            const halfStar = avg - fullStars >= 0.5 ? 1 : 0;
+            const emptyStars = 5 - fullStars - halfStar;
+            const starsHtml = '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars);
+            let html = `<div style="margin-bottom:.75rem">
+                <span class="rating-average">${avg.toFixed(1)}</span> <span class="rating-stars">${starsHtml}</span>
+                <span class="rating-count">(${totalReviews} review${totalReviews > 1 ? 's' : ''})</span>
+            </div>`;
+            ratings.forEach(r => {
+                const userStars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                html += `<div style="padding:.5rem 0;border-bottom:1px solid var(--border);">
+                    <div class="rating-stars">${userStars}</div>
+                    <div style="font-weight:600;font-size:.85rem;">${escapeHtml(r.userId?.firstName || 'User')} ${escapeHtml(r.userId?.lastName || '')}</div>
+                    ${r.review ? `<div style="font-size:.85rem;color:var(--text2);margin-top:.2rem;">${escapeHtml(r.review)}</div>` : ''}
+                    <div style="font-size:.7rem;color:var(--text3);margin-top:.1rem;">${new Date(r.createdAt).toLocaleDateString()}</div>
+                </div>`;
+            });
+            return html;
         }
 
         function updateLessonInfo() {
@@ -7787,7 +7961,7 @@
             }
             const nextIdx = S.currentLessonIdx + 1;
             if (nextIdx < S.currentLessons.length) { S.currentLessonIdx = nextIdx; } else {
-                toast('🎉 Course complete! Certificate ready! +₦100', 'success');
+                toast('🎉 Course complete! Certificate ready! +₦300', 'success');
                 setDP('certs');
                 renderWallet();
             }
@@ -8344,6 +8518,8 @@
                 loadDraftFromLocalStorage(courseId);
                 setTimeout(() => { if (S.quillEditors['descEditorQuill']) { S.quillEditors['descEditorQuill'].root
                             .innerHTML = S.currentCourseData.description || ''; } }, 300);
+                // Update SEO
+                updateSEO({ title: S.currentCourseData.title, description: S.currentCourseData.subtitle });
                 toast('Course loaded for editing', 'success');
             } catch (e) { toast('Failed to load course: ' + e.message, 'error'); }
         }
@@ -8859,6 +9035,12 @@
                 S.currentBook = book;
                 renderBookDetail(book);
                 setDP('book-detail');
+                // Update SEO
+                updateSEO({
+                    title: book.title,
+                    description: book.description,
+                    thumbnail: book.coverImage
+                });
             } catch (err) {
                 toast('Failed to load book: ' + err.message, 'error');
                 setDP('books');
@@ -9396,20 +9578,44 @@
 
         async function submitRating() {
             const token = localStorage.getItem('cx_accessToken');
-            if (!token) { toast('Please log in to rate', 'error');
-                goPage('login'); return; }
-            if (!window.selectedRating) { toast('Select a rating', 'error'); return; }
+            if (!token) {
+                toast('Please log in to rate', 'error');
+                goPage('login');
+                return;
+            }
+            if (!window.selectedRating) {
+                toast('Select a rating', 'error');
+                return;
+            }
+            const review = document.getElementById('rateReview')?.value || '';
+            const courseId = S.currentCourseId;
+            if (!courseId) {
+                toast('No course selected to rate', 'error');
+                return;
+            }
+            showLoading('Submitting rating...');
             try {
-                if (S.currentCourseId) {
-                    await apiCall(`/courses/${S.currentCourseId}/rate`, {
-                        method: 'POST',
-                        body: { rating: window.selectedRating, review: document.getElementById('rateReview')?.value || '' }
-                    });
+                const res = await apiCall(`/courses/${courseId}/rate`, {
+                    method: 'POST',
+                    body: { rating: window.selectedRating, review }
+                });
+                if (res.success) {
+                    toast(`⭐ Thanks! You rated ${window.selectedRating}/5`, 'success');
+                    closeModal('rateModal');
+                    // Refresh course data to show updated rating
+                    if (S.currentCourseId) {
+                        loadCourseForLesson(S.currentCourseId);
+                    }
+                } else {
+                    toast(res.message || 'Failed to submit rating', 'error');
                 }
-            } catch (e) { console.warn('Rating submission:', e.message); }
-            closeModal('rateModal');
-            toast(`⭐ Thanks! You rated ${window.selectedRating}/5`, 'success');
-            window.selectedRating = 0;
+            } catch (err) {
+                toast(err.message || 'Error submitting rating', 'error');
+            } finally {
+                hideLoading();
+                window.selectedRating = 0;
+                document.getElementById('rateReview').value = '';
+            }
         }
 
         // ================================================================
@@ -10469,6 +10675,8 @@
             updateThemeIcons();
             updateAdVisibility();
             updateLandingHeroStats();
+            // Update SEO for landing page
+            updateSEO({ title: 'ChangeX Academy — Learn, Earn, and Grow', description: 'Turn tech skills into real income. Join the #1 Learn-to-Earn platform.' });
         }
 
         async function fetchLandingStats() {
@@ -10813,6 +11021,8 @@
                 if (token) {
                     await apiCall(`/posts/${post._id}/view`, { method: 'POST' }).catch(() => {});
                 }
+                // Update SEO
+                updateSEO(post);
                 renderPostDetail(post);
                 setDP('post-detail');
             } catch (err) {
@@ -11057,6 +11267,9 @@
             if (target) target.classList.add('active');
             S.lessTab = tab;
             if (tab === 'qa') loadQA();
+            if (tab === 'reviews' && S.currentCourseData?.ratings) {
+                document.getElementById('reviewsListContainer').innerHTML = renderCourseRatings(S.currentCourseData.ratings);
+            }
             if (tab === 'interactive') {
                 const lesson = S.currentLessons[S.currentLessonIdx];
                 if (lesson && lesson._id) loadInteractiveMaterials(lesson._id);
@@ -11205,6 +11418,11 @@
         console.log('🚀 ChangeX Academy — Production Ready');
         console.log('📚 Learn, Earn, and Grow with ChangeX!');
         console.log('📱 PWA: Install banner hides for 7 days after dismissal.');
+        console.log('⭐ Rating system fully integrated with course reviews.');
+        console.log('👥 Following system fixed with proper localStorage persistence.');
+        console.log('🔍 SEO meta tags dynamically updated for posts and courses.');
+        console.log('📖 Book downloads permanently unlocked after purchase approval.');
+        console.log('💰 Course completion bonus: ₦300.');
     </script>
 </body>
 </html>
