@@ -1,4 +1,12 @@
 {
+  "headers": [
+    {
+      "source": "/manifest.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" }
+      ]
+    }
+  ],
   "rewrites": [
     { "source": "/aff/(.*)", "destination": "/" },
     { "source": "/courses/(.*)", "destination": "/" },
