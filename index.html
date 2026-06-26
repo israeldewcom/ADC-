@@ -5844,7 +5844,8 @@
             S.enrollments = [];
             S.appCourses = [];
             toast('See you soon! 👋', 'info');
-            goPage('landing');
+            // Force full reload to clear all state
+            window.location.href = '/';
         }
 
         function togglePw(id, btn) {
@@ -6818,7 +6819,12 @@
                 }
                 const res = await apiCall(url);
                 const challenges = res.data || [];
-                renderChallenges(challenges);
+                if (!challenges || challenges.length === 0) {
+                    document.getElementById('challengesContainer').innerHTML =
+                        '<div class="empty-state"><i class="fas fa-trophy"></i><h4>No challenges</h4><p>Check back soon for new challenges!</p></div>';
+                } else {
+                    renderChallenges(challenges);
+                }
                 const badge = document.getElementById('navChallengeBadge');
                 if (badge) {
                     const activeChallenges = challenges.filter(c => c.status === 'active').length;
@@ -7039,13 +7045,22 @@
                 if (isNowFollowing) {
                     if (!S.following.includes(userId)) {
                         S.following.push(userId);
+                        // Optionally fetch user details to update S.followingUsers
+                        try {
+                            const userRes = await apiCall(`/users/${userId}/profile`);
+                            if (userRes.data) {
+                                S.followingUsers = [...S.followingUsers, userRes.data.user];
+                            }
+                        } catch (_) {}
                     }
                 } else {
                     S.following = S.following.filter(id => id !== userId);
+                    S.followingUsers = S.followingUsers.filter(u => u._id !== userId);
                 }
                 // Save to localStorage for persistence
                 try {
                     localStorage.setItem('cx_following', JSON.stringify(S.following));
+                    localStorage.setItem('cx_followingUsers', JSON.stringify(S.followingUsers));
                 } catch (e) {}
                 document.getElementById('navFollowingBadge').textContent = S.following.length;
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
@@ -8380,6 +8395,10 @@
         function renderLB() {
             const el = document.getElementById('lbFull');
             if (!el) return;
+            if (!S.leaderboard || S.leaderboard.length === 0) {
+                el.innerHTML = '<div class="empty-state"><i class="fas fa-trophy"></i><h4>No data yet</h4><p>Start learning and earning to appear on the leaderboard!</p></div>';
+                return;
+            }
             el.innerHTML = S.leaderboard.map((u, i) => {
                 let value;
                 switch (S.lbTab) {
