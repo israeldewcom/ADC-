@@ -26,8 +26,6 @@
     <link rel="apple-touch-startup-image" href="/logo.png" />
 
     <title id="pageTitle">ChangeX Academy — Turn Tech Into Income</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5224024430002176" crossorigin="anonymous">
-    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
@@ -3517,20 +3515,6 @@
             background: var(--primary);
             color: #000;
         }
-        .ad-container {
-            display: none;
-            text-align: center;
-            margin: 1rem 0;
-            padding: .5rem;
-            background: var(--bg2);
-            border: 1px dashed var(--border);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            min-height: 90px;
-        }
-        .ad-container.visible {
-            display: block;
-        }
         /* ===== PWA INSTALL BANNER – 7‑day dismissal ===== */
         .install-banner {
             position: fixed;
@@ -3974,36 +3958,6 @@
             right: 16px;
             z-index: 100;
         }
-        .ad-sidebar {
-            padding: .75rem;
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        .ad-sidebar img {
-            max-width: 100%;
-            border-radius: var(--radius-sm);
-        }
-        .ad-sidebar .ad-label {
-            font-size: .6rem;
-            color: var(--text3);
-            margin-top: .25rem;
-        }
-        .ad-banner {
-            padding: .5rem;
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            margin: .75rem 0;
-            text-align: center;
-        }
-        .ad-banner img {
-            max-width: 100%;
-            max-height: 90px;
-            border-radius: var(--radius-sm);
-        }
         .people-search {
             margin-bottom: 1rem;
         }
@@ -4407,37 +4361,6 @@
             font-size: 1rem;
             line-height: 1.8;
         }
-        .ad-card {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: .75rem;
-            margin: .75rem 0 1rem;
-            text-align: center;
-            transition: all .2s;
-        }
-        .ad-card:hover {
-            border-color: rgba(212, 175, 55, .25);
-        }
-        .ad-card .ad-label {
-            font-size: .55rem;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: var(--text3);
-            margin-bottom: .3rem;
-        }
-        .ad-card img {
-            max-width: 100%;
-            max-height: 120px;
-            border-radius: var(--radius-sm);
-            object-fit: contain;
-        }
-        .ad-card .ad-title {
-            font-size: .78rem;
-            font-weight: 600;
-            margin-top: .25rem;
-            color: var(--text2);
-        }
         .dash-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -4728,31 +4651,6 @@
             color: var(--success);
             margin-top: .2rem;
         }
-        .adsense-ad {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 1.5rem 0;
-            padding: 0.5rem;
-            min-height: 90px;
-            background: var(--bg2);
-            border-radius: var(--radius-sm);
-            border: 1px dashed var(--border2);
-            overflow: hidden;
-        }
-        .adsense-ad ins {
-            display: block;
-            width: 100%;
-            max-width: 100%;
-        }
-        .adsense-label {
-            font-size: .55rem;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: var(--text3);
-            text-align: center;
-            margin-bottom: .3rem;
-        }
         .book-purchase-btn {
             background: var(--primary);
             color: #000;
@@ -5005,7 +4903,7 @@
 
         <section id="books-landing" class="lsec lsec-dark"><div class="lsec-wrap"><div class="d-flex items-center justify-between mb-4 reveal flex-wrap" style="gap:.75rem"><div><div class="stag mb-2"><i class="fas fa-book"></i> Library</div><h2 style="font-size:1.85rem">Explore Our <span class="grad-text">Digital Books</span></h2></div><button class="btn btn-outline btn-sm" onclick="goPage('register')">Browse All <i class="fas fa-arrow-right"></i></button></div><div class="row" id="landingBooksGrid"></div></div></section>
 
-        <section class="lsec"><div class="lsec-wrap"><div class="row items-center"><div class="col-12 col-md-6 reveal"><div class="stag mb-3"><i class="fas fa-fire"></i> Live Activity</div><h3 style="font-size:1.4rem;margin-bottom:.85rem">Students Earning <span class="grad-text">Right Now</span></h3><div id="landingFeed"></div></div><div class="col-12 col-md-6 reveal-r"><div class="bonus-card"><div class="stag mb-3"><i class="fas fa-wallet"></i> 4 Income Streams</div><h4 style="margin-bottom:.85rem">Earn Multiple Ways on ChangeX</h4><div style="display:flex;flex-direction:column;gap:.55rem;font-size:.83rem"><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-primary" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-book"></i></div><div><strong>Course Sales</strong> — 80% revenue share to you</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-c" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-users"></i></div><div><strong>Referrals</strong> — ₦500 per signup that subscribes</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-v" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-handshake"></i></div><div><strong>Affiliates</strong> — Promote others, earn % commission</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-g" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-trophy"></i></div><div><strong>Completion Bonuses</strong> — ₦300 per course done</div></div></div><button class="btn btn-primary btn-sm mt-4" onclick="goPage('register')"><i class="fas fa-rocket"></i>Start Earning Now</button></div></div></div></div></section>
+        <section class="lsec"><div class="lsec-wrap"><div class="row items-center"><div class="col-12 col-md-6 reveal"><div class="stag mb-3"><i class="fas fa-fire"></i> Live Activity</div><h3 style="font-size:1.4rem;margin-bottom:.85rem">Students Earning <span class="grad-text">Right Now</span></h3><div id="landingFeed"></div></div><div class="col-12 col-md-6 reveal-r"><div class="bonus-card"><div class="stag mb-3"><i class="fas fa-wallet"></i> 4 Income Streams</div><h4 style="margin-bottom:.85rem">Earn Multiple Ways on ChangeX</h4><div style="display:flex;flex-direction:column;gap:.55rem;font-size:.83rem"><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-primary" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-book"></i></div><div><strong>Course Sales</strong> — 80% revenue share to you</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-c" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-users"></i></div><div><strong>Referrals</strong> — ₦500 per signup that subscribes</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-v" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-handshake"></i></div><div><strong>Affiliates</strong> — Promote others, earn % commission</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-g" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-trophy"></i></div><div><strong>Completion Bonuses</strong> — ₦100 per course done</div></div></div><button class="btn btn-primary btn-sm mt-4" onclick="goPage('register')"><i class="fas fa-rocket"></i>Start Earning Now</button></div></div></div></div></section>
 
         <section id="instructors-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-chalkboard-teacher"></i> Educators</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Learn From <span class="grad-text">Nigeria's Best</span></h2></div><div class="row" id="landingInstructors"></div></div></section>
 
@@ -5013,14 +4911,9 @@
 
         <section id="reviews-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-star"></i> Reviews</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">What Our <span class="grad-text">Students Say</span></h2></div><div class="row" id="reviewsList"></div><div class="row justify-center mt-5"><div class="col-12 col-md-6"><div class="card card-p"><h5>Leave a Review</h5><div class="form-group"><label class="flabel">Your Name</label><input type="text" class="finput" id="reviewName" placeholder="Your full name"></div><div class="form-group"><label class="flabel">Rating</label><div style="display:flex;gap:.3rem;font-size:1.5rem;cursor:pointer" id="reviewStars"><span data-val="1" onclick="setReviewStar(1)">☆</span><span data-val="2" onclick="setReviewStar(2)">☆</span><span data-val="3" onclick="setReviewStar(3)">☆</span><span data-val="4" onclick="setReviewStar(4)">☆</span><span data-val="5" onclick="setReviewStar(5)">☆</span></div></div><div class="form-group"><label class="flabel">Review</label><textarea class="finput" id="reviewText" rows="3" placeholder="Your experience..."></textarea></div><button class="btn btn-primary" onclick="submitReview()">Submit Review</button></div></div></div></div></section>
 
-        <!-- AdSense: Below Reviews -->
-        <div class="adsense-ad"><div class="adsense-label">📢 Sponsored</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5224024430002176" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
-
         <section id="pricing-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-tag"></i> Pricing</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Simple, <span class="grad-text">Transparent</span> Pricing</h2></div><div class="row justify-center"><div class="col-12 col-md-4 reveal" style="transition-delay:.05s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-user"></i> Free</div><div class="p-amt">₦0<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">Perfect to get started</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>5 courses access</li><li><i class="fas fa-check chk"></i>Basic certificates</li><li><i class="fas fa-check chk"></i>Referral program</li><li><i class="fas fa-times nope"></i>Create courses</li><li><i class="fas fa-times nope"></i>Unlimited uploads</li><li><i class="fas fa-times nope"></i>No ads</li></ul><button class="btn btn-outline w-full" onclick="goPage('register')">Get Started Free</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.1s"><div class="price-card featured"><div class="stag mb-3"><i class="fas fa-crown"></i> Premium</div><div class="p-amt" style="color:var(--lime)">₦5,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For serious learners &amp; earners</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>All courses unlimited</li><li><i class="fas fa-check chk"></i>Create &amp; sell courses</li><li><i class="fas fa-check chk"></i>Affiliate dashboard</li><li><i class="fas fa-check chk"></i>Unlimited uploads</li><li><i class="fas fa-check chk"></i>No ads 🎉</li><li><i class="fas fa-check chk"></i>80% course revenue</li></ul><button class="btn btn-primary w-full" onclick="goPage('register')"><i class="fas fa-crown"></i>Go Premium</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.15s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-building"></i> Business</div><div class="p-amt">₦25,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For teams &amp; organizations</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>Everything in Premium</li><li><i class="fas fa-check chk"></i>Up to 20 seats</li><li><i class="fas fa-check chk"></i>Custom branding</li><li><i class="fas fa-check chk"></i>Analytics</li><li><i class="fas fa-check chk"></i>Dedicated manager</li></ul><button class="btn btn-outline w-full" onclick="goPage('contact')">Contact Sales</button></div></div></div></div></section>
 
         <footer class="lfooter"><div class="lsec-wrap"><div class="row mb-4"><div class="col-12 col-md-4"><div class="logo mb-3"><div class="logo-mark"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;border-radius:8px;object-fit:cover;" /></div>ChangeX<span style="color:var(--primary)">.</span></div><p style="font-size:.82rem;color:var(--text3);max-width:260px;line-height:1.65">Global #1 Learn-to-Earn platform. Turning tech skills into real income.</p><div class="f-social"><div class="soc-btn"><i class="fab fa-twitter"></i></div><div class="soc-btn"><i class="fab fa-instagram"></i></div><div class="soc-btn"><i class="fab fa-linkedin"></i></div><div class="soc-btn"><i class="fab fa-youtube"></i></div><div class="soc-btn"><i class="fab fa-whatsapp"></i></div></div></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Learn</h6><ul class="f-links"><li><a onclick="goPage('register')">All Courses</a></li><li><a>Web Dev</a></li><li><a>AI &amp; Tools</a></li><li><a>Freelancing</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Earn</h6><ul class="f-links"><li><a>Referrals</a></li><li><a>Affiliates</a></li><li><a>Teach Here</a></li><li><a>Leaderboard</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Company</h6><ul class="f-links"><li><a>About</a></li><li><a onclick="goPage('contact')">Contact</a></li><li><a>Privacy</a></li><li><a>Terms</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Newsletter</h6><p style="font-size:.75rem;color:var(--text3);margin-bottom:.6rem">Weekly tips &amp; earnings updates</p><input type="email" class="finput" id="footerEmail" placeholder="your@email.com" style="margin-bottom:.4rem"/><button class="btn btn-primary btn-sm w-full" onclick="subscribeEmail()">Subscribe</button></div></div><div style="border-top:1px solid var(--border);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem"><p style="font-size:.73rem;color:var(--text3)">© 2025 ChangeX Academy. Made with ❤️ for the world.</p><p style="font-size:.73rem;color:var(--text3)">Contact: <a href="mailto:changexacademysupport@gmail.com" style="color:var(--primary)">changexacademysupport@gmail.com</a></p></div></div></footer>
-        <!-- AdSense: Below Landing Page Footer -->
-        <div class="adsense-ad"><div class="adsense-label">📢 Sponsored</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5224024430002176" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
     </div>
 
     <!-- ============================================================ -->
@@ -5085,11 +4978,8 @@
     <!-- APP (MAIN DASHBOARD) -->
     <!-- ============================================================ -->
     <div id="page-app" class="page">
-        <!-- Banner Ad Container – visible for free users on all pages -->
-        <div id="adBannerTop" class="ad-container" style="display:none;"></div>
         <div class="announcement-bar" id="announcementBar" style="display:none"><i class="fas fa-bullhorn"></i><span id="announcementText">📣 Loading announcements...</span><button style="margin-left:auto;background:none;border:none;color:var(--gold);cursor:pointer;font-size:.8rem" onclick="this.parentElement.style.display='none'"><i class="fas fa-times"></i></button></div>
         <div id="planWarning" class="plan-warning" style="display:none"><span class="pw-icon">⚠️</span><span id="planWarningText">Your Premium plan expires in 5 days. Renew now to keep earning.</span><div class="pw-actions"><button class="btn btn-gold btn-sm" onclick="openModal('premiumModal')"><i class="fas fa-crown"></i> Renew</button><span class="btn-icon-sm" onclick="this.parentElement.parentElement.style.display='none'"><i class="fas fa-times"></i></span></div></div>
-        <div id="adBanner" style="display:none;background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(251,146,60,.05));border-bottom:1px solid rgba(212,175,55,.2);padding:.5rem 1rem;align-items:center;gap:.5rem;font-size:.78rem"><i class="fas fa-ad" style="color:var(--gold)"></i><span style="flex:1">🎯 Upgrade to Premium — No ads, create courses, 80% revenue!</span><button class="btn btn-gold btn-sm" onclick="openModal('premiumModal')">Upgrade ₦5k/mo</button><span style="cursor:pointer;color:var(--text3);margin-left:.3rem" onclick="this.parentElement.style.display='none'">✕</span></div>
 
         <div class="app-layout"><div class="sb-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
             <aside class="sidebar" id="sidebar"><div class="sb-hd"><div class="logo" style="font-size:1rem"><div class="logo-mark" style="width:28px;height:28px;border-radius:8px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div>ChangeX<span style="color:var(--primary)">.</span></div><button class="sb-close" onclick="closeSidebar()"><i class="fas fa-times"></i></button></div>
@@ -5131,7 +5021,7 @@
 
                 <div class="dash-wrap thin-scroll" id="dashWrap">
                     <!-- FEED -->
-                    <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span><span class="fpill" onclick="filterFeed('personalized',this)">✨ For You</span></div><div id="feedContainer"></div><div id="feedSentinel"></div><div id="feedLoadingMore" class="feed-loading-more" style="display:none"><span class="spinner"></span> Loading more posts...</div></div>
+                    <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span><span class="fpill" onclick="filterFeed('personalized',this)">✨ For You</span></div><div id="feedContainer"></div><div id="feedSentinel"></div><div id="feedLoadingMore" class="feed-loading-more" style="display:none"><span class="spinner"></span> Loading more posts...</div></div>
 
                     <!-- FOLLOWING -->
                     <div id="dash-following" class="dash-sub"><div class="page-hd"><h2 class="page-title">📡 Following</h2><p class="page-sub">Posts from people you follow</p></div><div id="followingContainer"><div class="empty-state"><i class="fas fa-rss"></i><h4>No one to follow yet</h4><p>Follow other learners and instructors to see their posts here.</p><button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button></div></div></div>
@@ -5159,19 +5049,15 @@
 
                     <!-- QUIZ -->
                     <div id="dash-quiz" class="dash-sub"><div class="page-hd"><h2 class="page-title">Quizzes</h2><p class="page-sub">Test your knowledge and earn XP</p></div><div class="quiz-wrap" id="quizWrap"></div></div>
-                    <!-- AdSense: Below Quiz -->
-                    <div class="adsense-ad"><div class="adsense-label">📢 Sponsored</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5224024430002176" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
 
                     <!-- CERTS -->
                     <div id="dash-certs" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 My Certificates</h2><p class="page-sub">Your earned achievements &amp; credentials</p></div><div class="row" id="certsGrid"></div></div>
 
                     <!-- WALLET -->
                     <div id="dash-wallet" class="dash-sub"><div class="page-hd"><h2 class="page-title">My Wallet</h2><p class="page-sub">Earnings, payouts &amp; transaction history</p></div><div class="row mb-4"><div class="col-12 col-md-4"><div class="wallet-card"><div style="font-size:.7rem;color:var(--text2);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem">💰 Available Balance</div><div class="wallet-bal" id="walletBal">₦0</div><div style="font-size:.74rem;color:var(--text3)" id="walletWeekChange">+₦0 this week</div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-top:.75rem" id="walletBreakdown"></div><div class="d-flex gap-2 mt-3"><button class="btn btn-primary btn-sm flex-1" onclick="openWithdrawModal()"><i class="fas fa-paper-plane"></i>Withdraw</button><button class="btn btn-ghost btn-sm flex-1" onclick="setDP('settings');setTimeout(()=>switchSet('ss-payout'),50)"><i class="fas fa-university"></i>Bank</button></div></div></div><div class="col-12 col-md-8"><div class="row" id="walletStatsRow"></div></div></div><div class="card card-p"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><h6 style="margin:0">Transaction History</h6><select class="finput" style="width:auto;height:32px;font-size:.76rem" onchange="filterTx(this.value)"><option>All</option><option>Referral</option><option>Affiliate</option><option>Instructor</option><option>Bonus</option><option>Withdrawal</option></select></div><div class="overflow-x-auto"><table class="dtable" id="txTable"></table></div></div></div>
-                    <!-- AdSense: Below Wallet -->
-                    <div class="adsense-ad"><div class="adsense-label">📢 Sponsored</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5224024430002176" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
 
                     <!-- AFFILIATES -->
-                    <div id="dash-affiliates" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤝 Affiliate Dashboard</h2><p class="page-sub">Promote courses and earn commissions</p></div><button class="btn btn-ghost btn-sm mb-3" onclick="renderAffiliates()"><i class="fas fa-sync-alt"></i> Refresh Offers</button><div class="row mb-4" id="affStatsRow"></div><div class="card card-p mb-3"><h6 style="margin-bottom:.65rem">📣 Available Affiliate Offers</h6><p style="font-size:.81rem;color:var(--text3);margin-bottom:.85rem">Accept any offer to get your unique affiliate link &amp; code for that course</p><div id="affiliateOffers"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">🔗 My Active Affiliate Links</h6><div id="myAffiliateLinks"></div></div></div>
+                    <div id="dash-affiliates" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤝 Affiliate Dashboard</h2><p class="page-sub">Promote courses and earn commissions</p></div><button class="btn btn-ghost btn-sm mb-3" onclick="renderAffiliates(true)"><i class="fas fa-sync-alt"></i> Refresh Offers</button><div class="row mb-4" id="affStatsRow"></div><div class="card card-p mb-3"><h6 style="margin-bottom:.65rem">📣 Available Affiliate Offers</h6><p style="font-size:.81rem;color:var(--text3);margin-bottom:.85rem">Accept any offer to get your unique affiliate link &amp; code for that course</p><div id="affiliateOffers"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">🔗 My Active Affiliate Links</h6><div id="myAffiliateLinks"></div></div></div>
 
                     <!-- REFERRALS -->
                     <div id="dash-referrals" class="dash-sub"><div class="page-hd"><h2 class="page-title">Referral Program</h2><p class="page-sub">Earn ₦500 for every friend who subscribes</p></div><div class="row mb-4" id="refStatsRow"></div><div class="card card-p mb-3"><div style="font-size:.7rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">Your Referral Link</div><div class="ref-box"><i class="fas fa-link" style="color:var(--accent);flex-shrink:0"></i><span class="ref-link" id="refLink">Loading...</span><button class="btn btn-primary btn-sm" onclick="copyRefLink()"><i class="fas fa-copy"></i>Copy</button></div><div style="display:flex;align-items:center;gap:.5rem;margin-top:.6rem"><span style="font-size:.76rem;color:var(--text3)">Your code:</span><span style="font-family:var(--font-mono);font-size:.85rem;color:var(--primary);font-weight:700" id="refCode">—</span><button class="btn btn-ghost btn-sm" onclick="copyRefCode()"><i class="fas fa-copy"></i></button></div><div class="d-flex gap-2 mt-3 flex-wrap"><button class="btn btn-ghost btn-sm" onclick="shareWhatsApp()"><i class="fab fa-whatsapp" style="color:#25d366"></i>WhatsApp</button><button class="btn btn-ghost btn-sm" onclick="shareOnSocial('twitter')"><i class="fab fa-twitter" style="color:#1da1f2"></i>Twitter</button><button class="btn btn-ghost btn-sm" onclick="shareOnSocial('telegram')"><i class="fab fa-telegram" style="color:#0088cc"></i>Telegram</button></div></div><div class="card card-p"><h6 style="margin-bottom:.85rem">Recent Referrals</h6><div class="overflow-x-auto"><table class="dtable" id="referralTable"></table></div></div></div>
@@ -5189,7 +5075,7 @@
                     <div id="dash-ai" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤖 AI Tutor</h2><p class="page-sub">Your personal AI-powered learning assistant</p></div><div id="aiPlanNote" style="margin-bottom:.85rem"></div><div class="card card-p mb-3"><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.85rem"><button class="fpill active" onclick="switchAIMode('chat',this)"><i class="fas fa-comments"></i>Chat</button><button class="fpill" onclick="switchAIMode('explain',this)"><i class="fas fa-book-open"></i>Explain Code</button><button class="fpill" onclick="switchAIMode('quiz',this)"><i class="fas fa-question-circle"></i>Generate Quiz</button><button class="fpill" onclick="switchAIMode('upload',this)"><i class="fas fa-upload"></i>Upload &amp; Analyze</button></div><div id="aiMessages" style="min-height:280px;max-height:380px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.65rem;display:flex;flex-direction:column;gap:.6rem"></div><div class="d-flex gap-2"><input type="text" class="finput flex-1" id="aiInput" placeholder="Ask me anything about coding or your course..." onkeydown="if(event.key==='Enter')sendAI()"/><button class="btn btn-primary btn-sm" onclick="sendAI()"><i class="fas fa-paper-plane"></i></button></div></div><div class="card card-p" id="aiUploadPanel" style="display:none"><h6 style="margin-bottom:.65rem">📎 Upload Files for AI Analysis</h6><div id="aiUploadInfo" style="font-size:.8rem;color:var(--text3);margin-bottom:.65rem"></div><div class="upload-zone" style="padding:1.5rem"><input type="file" multiple id="aiFileInput" onchange="handleAIUpload(this)"/><div class="upload-icon"><i class="fas fa-file-upload"></i></div><div style="font-size:.84rem;color:var(--text2)">Drop any file here (PDF, image, code, etc.)</div><div style="font-size:.72rem;color:var(--text3);margin-top:.2rem" id="aiUploadLimit"></div></div><div id="aiUploadedFiles" style="margin-top:.65rem"></div></div></div>
 
                     <!-- BOOKS -->
-                    <div id="dash-books" class="dash-sub"><div class="page-hd"><h2 class="page-title">📚 Digital Library</h2><p class="page-sub">Browse, read and download books</p></div><div id="adBookBanner" class="ad-container"></div><div id="booksGrid" class="courses-grid"></div></div>
+                    <div id="dash-books" class="dash-sub"><div class="page-hd"><h2 class="page-title">📚 Digital Library</h2><p class="page-sub">Browse, read and download books</p></div><div id="booksGrid" class="courses-grid"></div></div>
 
                     <!-- BOOK DETAIL -->
                     <div id="dash-book-detail" class="dash-sub"><div class="page-hd"><button class="btn btn-ghost btn-sm" onclick="setDP('books')"><i class="fas fa-arrow-left"></i> Back to Library</button></div><div id="bookDetailContent"></div></div>
@@ -5207,7 +5093,7 @@
     <div class="fab" id="fab" style="display:none"><button onclick="initNewCourse()"><i class="fas fa-plus"></i></button></div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – APPLICATION LOGIC (FULLY UPGRADED) -->
+    <!-- JAVASCRIPT – APPLICATION LOGIC (PRODUCTION READY) -->
     <!-- ============================================================ -->
     <script>
         // ═══════════════════════════════════════════════════════════════
@@ -5522,7 +5408,7 @@
                     .getElementById('mbn-' + k); if (m) m.classList.toggle('active', k === pg); });
             closeSidebar();
             const map = {
-                feed: loadFeed,
+                feed: () => { loadFeed(1); },
                 challenges: loadChallenges,
                 people: loadPeople,
                 home: initHome,
@@ -5534,8 +5420,9 @@
                 certs: renderCerts,
                 wallet: renderWallet,
                 referrals: renderRefs,
-                leaderboard: renderLB,
-                affiliates: renderAffiliates,
+                leaderboard: async () => { await loadLeaderboard();
+                    renderLB(); },
+                affiliates: (force = false) => renderAffiliates(force),
                 instructor: renderInstHub,
                 'course-editor': initEditor,
                 ai: initAI,
@@ -5548,7 +5435,6 @@
                 following: loadFollowing
             };
             if (map[pg]) map[pg]();
-            updateAdVisibility();
             const fab = document.getElementById('fab');
             if (fab) { const hasCreatorAccess = S.isPremium || S.user?.roles?.includes('admin') || (S.user?.roles?.includes(
                         'creator') && S.user?.isApprovedInstructor);
@@ -5912,46 +5798,6 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // AD VISIBILITY – PREMIUM USERS SEE ONLY IN‑FEED ADS
-        // ═══════════════════════════════════════════════════════════════
-        function updateAdVisibility() {
-            const isPremium = S.isPremium || (S.user && (S.user.isPremium || S.user.subscriptionTier === 'premium'));
-
-            // ─── HIDE ALL NON‑FEED ADS FOR PREMIUM USERS ──────────────
-            const adSelectors = [
-                '.adsbygoogle',
-                '.adsense-ad',
-                '.ad-container:not(#adFeedTop)',
-                '.ad-sidebar',
-                '.ad-banner',
-                '#adBanner',
-                '#adBannerTop',
-                '#adBookBanner',
-                '#adSidebar',
-                '.ad-card:not(.ad-feed)'
-            ];
-
-            document.querySelectorAll(adSelectors.join(',')).forEach(el => {
-                if (el) {
-                    el.style.display = isPremium ? 'none' : '';
-                    if (isPremium) el.classList.remove('visible');
-                }
-            });
-
-            // ─── KEEP IN‑FEED ADS ALWAYS VISIBLE ──────────────────────
-            const feedAd = document.getElementById('adFeedTop');
-            if (feedAd) {
-                feedAd.style.display = 'block';
-                feedAd.classList.add('visible');
-            }
-
-            document.querySelectorAll('.ad-feed').forEach(el => {
-                el.style.display = '';
-                el.classList.add('visible');
-            });
-        }
-
-        // ═══════════════════════════════════════════════════════════════
         // PWA – FULLY INSTALLABLE WITH 7‑DAY BANNER DISMISSAL
         // ═══════════════════════════════════════════════════════════════
         function shouldShowInstallBanner() {
@@ -6096,6 +5942,8 @@
             S.notifications.forEach(n => n.unread = false);
             try { await apiCall('/users/notifications/read-all', { method: 'PUT' }); } catch (e) {}
             renderNotifs();
+            const dot = document.getElementById('notifDot');
+            if (dot) dot.style.display = 'none';
             toast('All marked as read', 'success');
         }
 
@@ -6153,7 +6001,6 @@
             document.title = `${title} | ChangeX Academy`;
             document.getElementById('pageTitle').textContent = document.title;
 
-            // Meta tags
             const metaDesc = document.querySelector('meta[name="description"]');
             if (metaDesc) metaDesc.setAttribute('content', description);
 
@@ -6214,11 +6061,11 @@
         // ─── DUPLICATE POST DETECTION ─────────────────────────────
         async function loadMyPostTitles() {
             try {
-                const res = await apiCall('/posts/my/titles');
+                const res = await apiCall('/posts/my/titles?includeDrafts=true');
                 S.myPostTitles = res.data || [];
             } catch (e) {
                 try {
-                    const postsRes = await apiCall('/posts/my?limit=50');
+                    const postsRes = await apiCall('/posts/my?limit=50&includeDrafts=true');
                     const posts = postsRes.data?.posts || postsRes.data || [];
                     S.myPostTitles = posts.map(p => p.title).filter(Boolean);
                 } catch (e2) { S.myPostTitles = []; }
@@ -6237,7 +6084,7 @@
             }
         }
 
-        // ─── INFINITE SCROLL & SMART ADS ─────────────────────────────
+        // ─── INFINITE SCROLL ─────────────────────────────────────────
         let feedPage = 1;
         let feedHasMore = true;
         let feedIsLoading = false;
@@ -6245,7 +6092,6 @@
         let feedAds = [];
         let feedAdIndex = 0;
 
-        // ─── FEED CACHING ──────────────────────────────────────────────
         function cacheFeedPosts(posts) {
             if (!posts || !posts.length) return;
             try {
@@ -6276,7 +6122,6 @@
                 feedIsLoading = false;
                 const container = document.getElementById('feedContainer');
                 if (container) {
-                    // Try to load cached feed first for instant display
                     if (!loadCachedFeed()) {
                         container.innerHTML = '';
                     }
@@ -6302,7 +6147,6 @@
                 const res = await apiCall(url);
                 const posts = res.data?.posts || res.data || [];
                 const pagination = res.data?.pagination || { total: 0, pages: 1 };
-                // Cache posts for offline/instant display
                 if (page === 1 && posts.length) {
                     cacheFeedPosts(posts);
                 }
@@ -6607,10 +6451,13 @@
             } catch (err) { toast('Error', 'error'); }
         }
 
+        // ─── DELETE POST – ADMIN OVERRIDE ──────────────────────────────
         async function deletePost(postId) {
             if (!confirm('Delete this post permanently?')) return;
             try {
-                await apiCall(`${POSTS_API}/${postId}`, { method: 'DELETE' });
+                const isAdmin = S.user?.roles?.includes('admin');
+                const endpoint = isAdmin ? `/admin/posts/${postId}` : `${POSTS_API}/${postId}`;
+                await apiCall(endpoint, { method: 'DELETE' });
                 toast('Post deleted', 'success');
                 // Remove from cache
                 try {
@@ -6623,10 +6470,12 @@
                     const res = await apiCall(`/users/${S.profileUser._id}/profile`);
                     renderUserProfile(res.data);
                 }
+                if (S.dp === 'admin' && S.admSec === 'users') {
+                    switchAdm('users', document.querySelector('#dash-admin .fpill.active'));
+                }
             } catch (err) { toast('Failed to delete: ' + err.message, 'error'); }
         }
 
-        // ─── EDIT POST (placeholder) ──────────────────────────────────────
         function editPost(postId) {
             toast('Edit functionality coming soon!', 'info');
         }
@@ -6726,7 +6575,6 @@
                         body: formData
                     });
                 }
-                // Update SEO
                 updateSEO(newPost);
                 toast('✅ Post published!', 'success');
                 closeModal('createPostModal');
@@ -6739,7 +6587,6 @@
                 if (S.postQuill) {
                     S.postQuill.root.innerHTML = '';
                 }
-                // Update cache
                 cacheFeedPosts([newPost]);
                 if (S.dp === 'feed' || S.dp === 'home') {
                     const container = document.getElementById('feedContainer');
@@ -6770,26 +6617,51 @@
         async function loadFollowing() {
             const container = document.getElementById('followingContainer');
             if (!container) return;
+            // Display followed users
+            let html = `<h4 style="margin-bottom:1rem">People you follow (${S.followingUsers?.length || S.following?.length || 0})</h4>`;
+            if (S.followingUsers && S.followingUsers.length) {
+                html += `<div class="following-collection" style="margin-bottom:1.5rem">`;
+                S.followingUsers.forEach(u => {
+                    const avatarHtml = getAvatarUrl(u) ?
+                        `<img src="${getAvatarUrl(u)}" alt="${u.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                        (u.firstName?.[0] || 'U');
+                    html += `
+                        <div class="following-item" onclick="openUserProfile('${u._id}')">
+                            <div class="fi-header">
+                                <div class="fi-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">${avatarHtml}</div>
+                                <div class="fi-name">${escapeHtml(u.firstName || 'User')} ${escapeHtml(u.lastName || '')}</div>
+                                ${u.isPremium ? '<span class="badge badge-gold" style="font-size:.55rem">Premium</span>' : ''}
+                            </div>
+                            <div class="fi-content">${escapeHtml(u.bio?.substring(0, 80) || 'No bio')}</div>
+                        </div>
+                    `;
+                });
+                html += `</div><hr style="margin:1rem 0;">`;
+            } else {
+                html +=
+                    `<div class="empty-state" style="padding:1rem 0;"><p>You aren't following anyone yet. Discover people to follow!</p><button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button></div><hr style="margin:1rem 0;">`;
+            }
+
             if (!S.following || !S.following.length) {
-                container.innerHTML = `
-                    <div class="empty-state"><i class="fas fa-rss"></i><h4>No one to follow yet</h4><p>Follow other learners and instructors to see their posts here.</p><button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button></div>
-                `;
+                container.innerHTML = html +
+                    `<div class="empty-state"><i class="fas fa-rss"></i><h4>No posts from people you follow</h4></div>`;
                 return;
             }
+
             showLoading('Loading following feed...');
             try {
                 const res = await apiCall(`/posts/following?page=1&limit=20`);
                 const posts = res.data?.posts || res.data || [];
                 if (!posts.length) {
-                    container.innerHTML = `
-                        <div class="empty-state"><i class="fas fa-rss"></i><h4>No posts from people you follow</h4><p>Your followers haven't posted anything yet.</p><button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button></div>
-                    `;
+                    container.innerHTML = html +
+                        `<div class="empty-state"><i class="fas fa-rss"></i><h4>No posts from people you follow</h4><p>Your followers haven't posted anything yet.</p></div>`;
                     return;
                 }
-                container.innerHTML = posts.map(p => renderPostCard(p)).join('');
+                container.innerHTML = html + posts.map(p => renderPostCard(p)).join('');
                 attachPostEventListeners();
             } catch (err) {
-                container.innerHTML = '<div class="empty-state"><p>Failed to load following feed: ' + err.message + '</p></div>';
+                container.innerHTML = html +
+                    '<div class="empty-state"><p>Failed to load following feed: ' + err.message + '</p></div>';
             } finally { hideLoading(); }
         }
 
@@ -6806,16 +6678,17 @@
                     url = `${CHALLENGES_API}/active`;
                 } else if (filter === 'upcoming') {
                     url = `${CHALLENGES_API}/upcoming`;
-                } else if (filter === 'completed' && isAdmin) {
+                } else if (filter === 'completed') {
+                    if (!isAdmin) {
+                        toast('Completed challenges are only visible to admins.', 'info');
+                        S.challengesFilter = 'active';
+                        document.querySelector('#dash-challenges .fpill[onclick*="active"]')?.click();
+                        hideLoading();
+                        return;
+                    }
                     url = `${CHALLENGES_API}/all?status=completed`;
                 } else {
                     url = `${CHALLENGES_API}/active`;
-                    if (filter === 'completed' && !isAdmin) {
-                        toast('Completed challenges are only visible to admins.', 'info');
-                        S.challengesFilter = 'active';
-                        document.querySelectorAll('#dash-challenges .fpill').forEach(p => p.classList.remove('active'));
-                        document.querySelector('#dash-challenges .fpill[onclick*="active"]')?.classList.add('active');
-                    }
                 }
                 const res = await apiCall(url);
                 const challenges = res.data || [];
@@ -7045,11 +6918,13 @@
                 if (isNowFollowing) {
                     if (!S.following.includes(userId)) {
                         S.following.push(userId);
-                        // Optionally fetch user details to update S.followingUsers
                         try {
                             const userRes = await apiCall(`/users/${userId}/profile`);
                             if (userRes.data) {
-                                S.followingUsers = [...S.followingUsers, userRes.data.user];
+                                const user = userRes.data.user || userRes.data;
+                                if (!S.followingUsers.some(u => u._id === user._id)) {
+                                    S.followingUsers.push(user);
+                                }
                             }
                         } catch (_) {}
                     }
@@ -7057,7 +6932,6 @@
                     S.following = S.following.filter(id => id !== userId);
                     S.followingUsers = S.followingUsers.filter(u => u._id !== userId);
                 }
-                // Save to localStorage for persistence
                 try {
                     localStorage.setItem('cx_following', JSON.stringify(S.following));
                     localStorage.setItem('cx_followingUsers', JSON.stringify(S.followingUsers));
@@ -7158,7 +7032,7 @@
                                     ❤️ ${p.likes || 0} · 💬 ${p.commentsCount || 0} · 👁️ ${p.views || 0} ·
                                     <span style="color:var(--primary);font-weight:700;">${fmtMoneyAPI(p.earnings || 0)}</span>
                                 </div>
-                                ${(S.user?._id === user._id || isAdmin) ? `<div class="ci-actions"><button class="post-delete-btn" onclick="deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button></div>` : ''}
+                                ${(S.user?._id === user._id || isAdmin) ? `<div class="ci-actions"><button class="post-delete-btn" onclick="event.stopPropagation();deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button></div>` : ''}
                             </div>
                         `}).join('') : '<p style="color:var(--text3);">No posts yet</p>'}
                     </div>
@@ -7189,7 +7063,6 @@
                 S.following = users.map(u => u._id);
                 S.followingUsers = users;
                 users.forEach(u => { S.followStatus[u._id] = true; });
-                // Cache following list
                 try {
                     localStorage.setItem('cx_following', JSON.stringify(S.following));
                     localStorage.setItem('cx_followingUsers', JSON.stringify(users));
@@ -7201,7 +7074,6 @@
                 console.log('✅ Following loaded:', S.following.length, 'users');
             } catch (err) {
                 console.warn('Could not load following:', err);
-                // Try to load from cache
                 try {
                     const cached = JSON.parse(localStorage.getItem('cx_following') || '[]');
                     const users = JSON.parse(localStorage.getItem('cx_followingUsers') || '[]');
@@ -7246,7 +7118,6 @@
             renderHomeDashboard();
             checkPlanExpiry();
             loadFeed(1);
-            // Update SEO for home
             updateSEO({ title: 'ChangeX Academy Dashboard', description: 'Learn tech skills and earn real money on ChangeX Academy.' });
         }
 
@@ -7387,13 +7258,11 @@
                         quizContainer.innerHTML = quizHtml;
                     }
                 }
-                // Display course ratings
                 displayCourseRatings();
                 S.currentLessonIdx = 0;
                 renderCurric();
                 const firstLesson = S.currentLessons[0];
                 if (firstLesson && firstLesson._id) loadInteractiveMaterials(firstLesson._id);
-                // Update SEO with course data
                 updateSEO({
                     title: S.currentCourseData.title,
                     description: S.currentCourseData.subtitle || S.currentCourseData.description?.substring(0, 160),
@@ -7800,7 +7669,7 @@
                             variable_name: type, value: item.title }, { display_name: 'User ID',
                             variable_name: 'user_id', value: S.user._id }] },
                     callback: async (response) => {
-                        const verify = await apiCall('/payments/verify-paystack', {
+                        const verify = await apiCall('/payments/verify-transaction', {
                             method: 'POST',
                             body: { reference: response.reference, type, courseId: type === 'course' ?
                                     id : undefined, bookId: type === 'book' ? id : undefined }
@@ -7811,7 +7680,9 @@
                             await renderWallet();
                             if (type === 'course') {
                                 await loadEnrollments();
-                                setDP('courses');
+                                if (S.dp === 'courses') renderCourseGrid(S.courseFilter);
+                                else if (S.dp === 'explore') renderExplore();
+                                else setDP('courses');
                             } else if (type === 'book') {
                                 if (S.currentBook) {
                                     S.currentBook.isPurchased = true;
@@ -7926,14 +7797,11 @@
             if (navInd) navInd.textContent = `${S.currentLessonIdx + 1} of ${total}`;
             S.lessonStartTime = Date.now();
             updateLessonInfo();
-            updateAdVisibility();
             const currentLesson = lessons[S.currentLessonIdx];
             if (currentLesson && currentLesson._id) loadInteractiveMaterials(currentLesson._id);
-            // Render ratings in overview
             if (S.currentCourseData?.ratings) {
                 document.getElementById('courseRatingsContainer').innerHTML = renderCourseRatings(S.currentCourseData.ratings);
             }
-            // Also render in reviews tab
             if (S.currentCourseData?.ratings) {
                 document.getElementById('reviewsListContainer').innerHTML = renderCourseRatings(S.currentCourseData.ratings);
             }
@@ -8039,7 +7907,7 @@
             }
             const nextIdx = S.currentLessonIdx + 1;
             if (nextIdx < S.currentLessons.length) { S.currentLessonIdx = nextIdx; } else {
-                toast('🎉 Course complete! Certificate ready! +₦300', 'success');
+                toast('🎉 Course complete! Certificate ready! +₦100', 'success');
                 setDP('certs');
                 renderWallet();
             }
@@ -8196,7 +8064,7 @@
         async function checkCertificateAvailability(courseId) {
             try {
                 const token = localStorage.getItem('cx_accessToken');
-                const response = await fetch(`${API_BASE}/courses/${courseId}/certificate/check`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const response = await fetch(`${API_BASE}/certificates/check/${courseId}`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const data = await response.json();
                 return data.data || { available: false, message: 'Unable to check' };
             } catch (err) { return { available: false, message: 'Unable to check' }; }
@@ -8283,6 +8151,16 @@
                     <div class="web-row" style="border-top:2px solid var(--border);font-weight:800;font-size:.9rem"><span>Total Earnings</span><span style="color:var(--lime)">${fmtMoneyAPI(breakdown.totalEarnings || 0)}</span></div>
                 `;
 
+                // ─── SOCIAL EARNINGS ─────────────────────────────────────
+                const socialEarnings = await apiCall('/posts/my/social-earnings');
+                const socialEarned = socialEarnings.data?.totalEarnings || 0;
+                const breakdownEl = document.getElementById('walletBreakdown');
+                if (breakdownEl) {
+                    breakdownEl.innerHTML += `
+                        <div class="web-row"><span>Social Earnings</span><span style="color:var(--cyan);font-weight:700">${fmtMoneyAPI(socialEarned)}</span></div>
+                    `;
+                }
+
                 document.getElementById('walletStatsRow').innerHTML =
                     `<div class="col-6"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${fmtMoneyAPI(breakdown.referralEarnings || 0)}</div><div class="sl">Referral Earnings</div></div></div><div class="col-6"><div class="stat-card"><div class="si si-v"><i class="fas fa-handshake"></i></div><div class="sv">${fmtMoneyAPI(breakdown.affiliateCommissions || 0)}</div><div class="sl">Affiliate Earned</div></div></div>`;
 
@@ -8317,7 +8195,7 @@
         function filterTx(type) { renderTxTable(type); }
 
         function openWithdrawModal() {
-            const hasBankDetails = S.user?.bankAccount?.accountNumber || S.user?.bankAccountNumber;
+            const hasBankDetails = S.user?.bankAccount?.accountNumber && S.user.bankAccount.accountNumber.length === 10;
             const warningEl = document.getElementById('withdrawBankWarning');
             const submitBtn = document.getElementById('withdrawSubmitBtn');
             if (!hasBankDetails) { if (warningEl) warningEl.style.display = 'block'; if (submitBtn) submitBtn.disabled =
@@ -8328,7 +8206,7 @@
         }
 
         async function processWithdraw() {
-            const hasBankDetails = S.user?.bankAccount?.accountNumber || S.user?.bankAccountNumber || S.user?.bankName;
+            const hasBankDetails = S.user?.bankAccount?.accountNumber && S.user.bankAccount.accountNumber.length === 10;
             if (!hasBankDetails) {
                 toast('⚠️ Add bank details in Settings → Payouts first.', 'error');
                 closeModal('withdrawModal');
@@ -8428,12 +8306,14 @@
         // ================================================================
         // AFFILIATES
         // ================================================================
-        async function renderAffiliates() {
+        async function renderAffiliates(forceRefresh = false) {
             showLoading('Loading affiliate offers...');
             try {
-                const offersData = await apiCall('/courses?hasAffiliate=true&published=true&limit=20');
-                S.affiliateOffers = (Array.isArray(offersData.data) ? offersData.data : (Array.isArray(offersData.data
-                    ?.courses) ? offersData.data.courses : []));
+                if (forceRefresh || !S.affiliateOffers.length) {
+                    const offersData = await apiCall('/courses?hasAffiliate=true&published=true&limit=20');
+                    S.affiliateOffers = (Array.isArray(offersData.data) ? offersData.data : (Array.isArray(offersData.data
+                        ?.courses) ? offersData.data.courses : []));
+                }
             } catch (e) { S.affiliateOffers = []; }
             try {
                 const statsRes = await apiCall('/affiliate/stats');
@@ -8600,7 +8480,6 @@
                 loadDraftFromLocalStorage(courseId);
                 setTimeout(() => { if (S.quillEditors['descEditorQuill']) { S.quillEditors['descEditorQuill'].root
                             .innerHTML = S.currentCourseData.description || ''; } }, 300);
-                // Update SEO
                 updateSEO({ title: S.currentCourseData.title, description: S.currentCourseData.subtitle });
                 toast('Course loaded for editing', 'success');
             } catch (e) { toast('Failed to load course: ' + e.message, 'error'); }
@@ -8943,7 +8822,7 @@
                 return;
             }
             el.innerHTML = S.quizBuilderList.map((q, qi) =>
-                `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.6rem"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem"><strong style="font-size:.82rem">Q${qi + 1}</strong><button class="btn-icon-sm" onclick="S.quizBuilderList.splice(${qi},1);renderQuizBuilder()" style="color:var(--danger)"><i class="fas fa-trash"></i></button></div><input type="text" class="finput mb-2" value="${q.question || ''}" placeholder="Question text" oninput="S.quizBuilderList[${qi}].question=this.value" style="margin-bottom:.5rem;font-size:.82rem"/>${q.options.map((o, oi) => `<div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem"><input type="radio" name="ans${qi}" ${q.correctIdx === oi ? 'checked' : ''} onchange="S.quizBuilderList[${qi}].correctIdx=${oi}" style="accent-color:var(--primary)"/><input type="text" class="finput" value="${o || ''}" placeholder="Option ${oi + 1}" oninput="S.quizBuilderList[${qi}].options[${oi}]=this.value" style="height:32px;font-size:.78rem"/></div>`).join('')}</div>`
+                `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.6rem"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem"><strong style="font-size:.82rem">Q${qi + 1}</strong><button class="btn-icon-sm" onclick="S.quizBuilderList.splice(${qi},1);renderQuizBuilder()" style="color:var(--danger)"><i class="fas fa-trash"></i></button></div><input type="text" class="finput mb-2" value="${q.question || ''}" placeholder="Question text" oninput="S.quizBuilderList[${qi}].question=this.value" style="margin-bottom:.5rem;font-size:.82rem"/>${q.options.map((o, oi) => `<div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem"><input type="radio" name="ans${qi}" ${q.correctIdx === oi ? 'checked' : ''} onchange="S.quizBuilderList[${qi}].correctIdx=${oi}" style="accent-color:var(--primary)"/><input type="text" class="finput" value="${o || ''}" placeholder="Option ${oi + 1}" oninput="S.quizBuilderList[${qi}].options[${oi}]=this.value" style="height:32px;font-size:.78rem"/></div></div>`).join('')}</div>`
                 ).join('');
         }
 
@@ -9117,7 +8996,6 @@
                 S.currentBook = book;
                 renderBookDetail(book);
                 setDP('book-detail');
-                // Update SEO
                 updateSEO({
                     title: book.title,
                     description: book.description,
@@ -9203,14 +9081,12 @@
 
             showLoading('Preparing download...');
 
-            // ✅ Force .pdf extension
             const cleanTitle = (book.title || 'book').replace(/[^a-zA-Z0-9 ]/g, ' ').trim();
             const fileName = `${cleanTitle}.pdf`;
 
             try {
                 const response = await fetch(book.fileUrl);
                 if (!response.ok) {
-                    // Fallback: direct link with corrected filename
                     const link = document.createElement('a');
                     link.href = book.fileUrl;
                     link.download = fileName;
@@ -9248,12 +9124,11 @@
                     }
                 }
 
-                // Force PDF MIME type
                 const blob = new Blob(chunks, { type: 'application/pdf' });
                 const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = fileName; // ✅ Correct extension
+                link.download = fileName;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -9277,7 +9152,6 @@
 
             } catch (err) {
                 console.error('Download error:', err);
-                // Final fallback
                 const link = document.createElement('a');
                 link.href = book.fileUrl;
                 link.download = fileName;
@@ -9686,7 +9560,11 @@
                     closeModal('rateModal');
                     // Refresh course data to show updated rating
                     if (S.currentCourseId) {
-                        loadCourseForLesson(S.currentCourseId);
+                        await loadCourseForLesson(S.currentCourseId);
+                    }
+                    // Also refresh explore grid if visible
+                    if (S.dp === 'explore') {
+                        await renderExplore();
                     }
                 } else {
                     toast(res.message || 'Failed to submit rating', 'error');
@@ -9784,19 +9662,42 @@
         }
 
         // ================================================================
-        // GLOBAL SEARCH
+        // GLOBAL SEARCH – UPGRADED TO SEARCH COURSES, POSTS & USERS
         // ================================================================
         document.addEventListener('input', e => {
             if (e.target.id !== 'globalSearch') return;
             clearTimeout(searchTO);
             const q = e.target.value.trim().toLowerCase();
-            document.getElementById('searchDD').classList.toggle('open', q.length >= 2);
-            if (q.length < 2) return;
+            const dd = document.getElementById('searchDD');
+            if (!dd) return;
+            dd.classList.toggle('open', q.length >= 2);
+            if (q.length < 2) { dd.innerHTML = ''; return; }
             searchTO = setTimeout(() => {
-                const matches = (S.appCourses || []).filter(c => (c.title || '').toLowerCase().includes(q));
-                document.getElementById('searchDD').innerHTML = matches.length ? matches.slice(0, 8).map(c =>
-                    `<div class="search-ri" onclick="openBuyCourse('${c._id}');document.getElementById('searchDD').classList.remove('open');document.getElementById('globalSearch').value=''"><span>📚</span><div><div style="font-size:.81rem;font-weight:600">${c.title}</div></div></div>`
-                    ).join('') : '<div style="padding:.72rem;font-size:.79rem;color:var(--text3)">No results</div>';
+                const courseMatches = (S.appCourses || []).filter(c => (c.title || '').toLowerCase()
+                .includes(q)).slice(0, 4);
+                const postMatches = (S.posts || []).filter(p => (p.title || '').toLowerCase().includes(q))
+                    .slice(0, 4);
+                const userMatches = (S.users || []).filter(u => (u.firstName + ' ' + u.lastName)
+                    .toLowerCase().includes(q)).slice(0, 4);
+                let html = '';
+                if (courseMatches.length) {
+                    html += courseMatches.map(c =>
+                        `<div class="search-ri" onclick="openBuyCourse('${c._id}');document.getElementById('globalSearch').value='';dd.classList.remove('open')"><span>📚</span><div><div style="font-size:.81rem;font-weight:600">${escapeHtml(c.title)}</div><div style="font-size:.65rem;color:var(--text3)">Course</div></div></div>`
+                        ).join('');
+                }
+                if (postMatches.length) {
+                    html += postMatches.map(p => {
+                        const slug = p.slug || p._id;
+                        return `<div class="search-ri" onclick="window.location.href='/post/${slug}';document.getElementById('globalSearch').value='';dd.classList.remove('open')"><span>📝</span><div><div style="font-size:.81rem;font-weight:600">${escapeHtml(p.title)}</div><div style="font-size:.65rem;color:var(--text3)">Post</div></div></div>`;
+                    }).join('');
+                }
+                if (userMatches.length) {
+                    html += userMatches.map(u =>
+                        `<div class="search-ri" onclick="openUserProfile('${u._id}');document.getElementById('globalSearch').value='';dd.classList.remove('open')"><span>👤</span><div><div style="font-size:.81rem;font-weight:600">${escapeHtml(u.firstName)} ${escapeHtml(u.lastName)}</div><div style="font-size:.65rem;color:var(--text3)">User</div></div></div>`
+                        ).join('');
+                }
+                dd.innerHTML = html ||
+                    '<div style="padding:.72rem;font-size:.79rem;color:var(--text3)">No results found</div>';
             }, 280);
         });
 
@@ -9895,7 +9796,7 @@
                         S.adminUsers = Array.isArray(res.data?.users) ? res.data.users : (Array.isArray(res.data) ? res
                             .data : []);
                         document.getElementById('admUsersTable').innerHTML =
-                            `<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminUsers.map(u => { const bankInfo = u.bankAccount?.bankName ? `${u.bankAccount.bankName} - ${u.bankAccount.accountNumber || 'N/A'} (${u.bankAccount.accountName || 'N/A'})` : '<span style="color:var(--text3)">No bank details</span>'; return `<tr><td>${u.firstName || ''} ${u.lastName || ''}</td><td>${u.email}</td><td>${(u.roles || []).join(',') || 'user'}</td><td style="font-size:.75rem">${bankInfo}</td><td>${u.isBanned ? '<span style="color:var(--danger)">Banned</span>' : '<span style="color:var(--success)">Active</span>'}</td><td><button class="btn btn-ghost btn-sm" onclick="toggleUserBan('${u._id}',${!u.isBanned})">${u.isBanned ? 'Unban' : 'Ban'}</button>${!u.isApprovedInstructor ? `<button class="btn btn-primary btn-sm" onclick="approveInstructor('${u._id}')">Approve Instructor</button>` : ''}<button class="btn btn-ghost btn-sm" onclick="showUserDetails('${u._id}')"><i class="fas fa-eye"></i> Details</button></td></tr>`; }).join('') || '<tr><td colspan="6" style="text-align:center">No users</td></tr>'}</tbody>`;
+                            `<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminUsers.map(u => { const bankInfo = u.bankAccount?.bankName ? `${u.bankAccount.bankName} - ${u.bankAccount.accountNumber || 'N/A'} (${u.bankAccount.accountName || 'N/A'})` : '<span style="color:var(--text3)">No bank details</span>'; return `<tr><td>${u.firstName || ''} ${u.lastName || ''}</td><td>${u.email}</td><td>${(u.roles || []).join(',') || 'user'}</td><td style="font-size:.75rem">${bankInfo}</td><td>${u.isBanned ? '<span style="color:var(--danger)">Banned</span>' : '<span style="color:var(--success)">Active</span>'}</td><td><button class="btn btn-ghost btn-sm" onclick="toggleUserBan('${u._id}',${!u.isBanned})">${u.isBanned ? 'Unban' : 'Ban'}</button>${!u.isApprovedInstructor ? `<button class="btn btn-primary btn-sm" onclick="approveInstructor('${u._id}')">Approve Instructor</button>` : ''}<button class="btn btn-ghost btn-sm" onclick="showUserPosts('${u._id}')">📝 Posts</button><button class="btn btn-ghost btn-sm" onclick="showUserDetails('${u._id}')"><i class="fas fa-eye"></i> Details</button></td></tr>`; }).join('') || '<tr><td colspan="6" style="text-align:center">No users</td></tr>'}</tbody>`;
                     } catch (e) { content.innerHTML = '<p style="color:var(--danger)">Failed to load: ' + e.message +
                             '</p>'; }
                     break;
@@ -10598,7 +10499,7 @@
             try {
                 await apiCall(`/admin/users/${userId}`, { method: 'PATCH', body: { isBanned: ban } });
                 toast(ban ? 'User banned' : 'User unbanned', 'success');
-                switchAdm('users', document.querySelector('#dash-admin .fpill'));
+                switchAdm('users', document.querySelector('#dash-admin .fpill.active'));
             } catch (e) { toast(e.message, 'error'); }
         }
 
@@ -10606,8 +10507,40 @@
             try {
                 await apiCall(`/admin/users/${userId}/approve-instructor`, { method: 'POST' });
                 toast('✅ Instructor approved!', 'success');
-                switchAdm('users', document.querySelector('#dash-admin .fpill'));
+                switchAdm('users', document.querySelector('#dash-admin .fpill.active'));
             } catch (e) { toast(e.message, 'error'); }
+        }
+
+        // ─── ADMIN SHOW USER POSTS ──────────────────────────────────────
+        async function showUserPosts(userId) {
+            try {
+                const res = await apiCall(`/admin/users/${userId}/posts`);
+                const posts = res.data || [];
+                const content = document.getElementById('userDetailsContent');
+                if (!content) return;
+                if (!posts.length) {
+                    content.innerHTML = '<p style="color:var(--text3)">No posts from this user.</p>';
+                } else {
+                    content.innerHTML = posts.map(p => `
+                        <div style="padding:.5rem 0;border-bottom:1px solid var(--border)">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <div>
+                                    <strong>${escapeHtml(p.title)}</strong>
+                                    <span class="badge badge-cyan" style="font-size:.55rem">${p.type || 'post'}</span>
+                                    <span style="font-size:.7rem;color:var(--text3)">${new Date(p.createdAt).toLocaleString()}</span>
+                                </div>
+                                <button class="btn btn-danger btn-sm" onclick="deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button>
+                            </div>
+                            <div style="font-size:.78rem;color:var(--text2);margin-top:.3rem;">${escapeHtml(p.content?.substring(0, 120) || '')}${p.content?.length > 120 ? '...' : ''}</div>
+                        </div>
+                    `).join('');
+                }
+                document.getElementById('userDetailsModal')._userId = userId;
+                document.querySelector('#userDetailsModal .modal-hd h5').textContent = '📝 User Posts';
+                openModal('userDetailsModal');
+            } catch (err) {
+                toast('Failed to load posts: ' + err.message, 'error');
+            }
         }
 
         // ─── ADMIN COURSE ACTIONS ──────────────────────────────────────
@@ -10687,7 +10620,7 @@
         // ─── SHOW USER DETAILS ──────────────────────────────────────────
         async function showUserDetails(userId) {
             try {
-                const res = await apiCall(`/admin/users/${userId}/full`);
+                const res = await apiCall(`/admin/users/${userId}`);
                 const data = res.data;
                 const content = document.getElementById('userDetailsContent');
                 if (!content) return;
@@ -10736,6 +10669,7 @@
                         </div>
                     </div>
                 `;
+                document.querySelector('#userDetailsModal .modal-hd h5').textContent = '👤 User Details';
                 openModal('userDetailsModal');
             } catch (err) { toast('Failed to load user details: ' + err.message, 'error'); }
         }
@@ -10755,9 +10689,7 @@
             initStickyNav();
             setInterval(buildLandingFeed, 5000);
             updateThemeIcons();
-            updateAdVisibility();
             updateLandingHeroStats();
-            // Update SEO for landing page
             updateSEO({ title: 'ChangeX Academy — Learn, Earn, and Grow', description: 'Turn tech skills into real income. Join the #1 Learn-to-Earn platform.' });
         }
 
@@ -10991,7 +10923,6 @@
                     currentCurrency = S.user.preferredCurrency || localStorage.getItem('cx_currency') || 'NGN';
                     localStorage.setItem('cx_user', JSON.stringify(S.user));
                     updateUserUI();
-                    updateAdVisibility();
                     checkPlanExpiry();
                     await loadUserFollowing();
                     const hash = window.location.hash.slice(1);
@@ -11014,7 +10945,6 @@
 
             initLanding();
             updateThemeIcons();
-            updateAdVisibility();
             if (S.loggedIn) { initApp().catch(() => {}); }
 
             const pendingRef = localStorage.getItem('cx_pending_ref');
@@ -11055,7 +10985,6 @@
                             S.loggedIn = true;
                             localStorage.setItem('cx_user', JSON.stringify(S.user));
                             updateUserUI();
-                            updateAdVisibility();
                             checkPlanExpiry();
                             await loadUserFollowing();
                         } catch (e) {}
@@ -11075,7 +11004,6 @@
                         S.user.subscriptionTier = 'premium';
                         localStorage.setItem('cx_user', JSON.stringify(S.user));
                         updateUserUI();
-                        updateAdVisibility();
                         checkPlanExpiry();
                     } catch (e) { console.warn('Subscription verification failed:', e.message); }
                     window.history.replaceState({}, '', window.location.pathname);
@@ -11103,7 +11031,6 @@
                 if (token) {
                     await apiCall(`/posts/${post._id}/view`, { method: 'POST' }).catch(() => {});
                 }
-                // Update SEO
                 updateSEO(post);
                 renderPostDetail(post);
                 setDP('post-detail');
@@ -11383,7 +11310,6 @@
                 localStorage.setItem('cx_user', JSON.stringify(S.user));
             } catch (e) {}
             updateUserUI();
-            updateAdVisibility();
             if (S.user.roles?.includes('admin') || S.user.role === 'admin' || S.user.role === 'superadmin') {
                 document.getElementById('adminNavLi').style.display = 'block';
             }
@@ -11401,9 +11327,6 @@
             renderNotifs();
             renderCurrencySelectorUI();
             populateAllBankDetailsBoxes();
-            loadAds('sidebar', 'adSidebar');
-            loadAds('banner', 'adBannerTop');
-            loadAds('in-feed', 'adFeedTop');
             await loadPeople();
             checkPlanExpiry();
             await loadSocialEarnings();
@@ -11468,35 +11391,6 @@
             } catch (e) { console.warn('Could not fetch notifications:', e.message); }
         }
 
-        // ================================================================
-        // ADS LOADER
-        // ================================================================
-        async function loadAds(placement, containerId) {
-            try {
-                const res = await apiCall(`/ads/placement/${placement}`);
-                const ads = res.data || [];
-                const container = document.getElementById(containerId);
-                if (container && ads.length) {
-                    container.innerHTML = ads.map(ad => `
-                        <div class="ad-sidebar" onclick="trackAdClick('${ad._id}','${ad.linkUrl}')">
-                            <img src="${ad.imageUrl}" alt="${escapeHtml(ad.title)}" loading="lazy">
-                            <div class="ad-label">${escapeHtml(ad.title)}</div>
-                        </div>
-                    `).join('');
-                }
-            } catch (e) {}
-        }
-
-        // ─── EXTRA: LOAD ADS ON BOOKS PAGE ────────────────────────────
-        document.addEventListener('DOMContentLoaded', function() {
-            const observer = new MutationObserver(() => {
-                if (S.dp === 'books') loadAds('banner', 'adBookBanner');
-            });
-            observer.observe(document.getElementById('dash-books'), { attributes: true, attributeFilter: ['class'] });
-        });
-
-        // Ensure banner ads container is visible for free users on all pages
-        // The container #adBannerTop is now in the HTML and updateAdVisibility() handles it.
         console.log('🚀 ChangeX Academy — Production Ready');
         console.log('📚 Learn, Earn, and Grow with ChangeX!');
         console.log('📱 PWA: Install banner hides for 7 days after dismissal.');
@@ -11504,7 +11398,7 @@
         console.log('👥 Following system fixed with proper localStorage persistence.');
         console.log('🔍 SEO meta tags dynamically updated for posts and courses.');
         console.log('📖 Book downloads permanently unlocked after purchase approval.');
-        console.log('💰 Course completion bonus: ₦300.');
+        console.log('💰 Course completion bonus: ₦100.');
         console.log('🎨 Gold, White & Black premium theme applied.');
         console.log('📢 Smart ads rotation implemented.');
         console.log('🗑️ Admin can delete any post.');
