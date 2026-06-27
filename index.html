@@ -98,50 +98,51 @@
             --skeleton-shine: #2A2A2A;
             --loading-spinner-color: var(--primary);
         }
-          [data-theme="light"] {
-    /* ─── Backgrounds – Warm Gold Tints ─── */
-    --bg: #FDF8F0;
-    --bg2: #FFFBF5;
-    --bg3: #F7F0E6;
-    --card: #FFFBF5;
-    --card2: #FDF8F0;
-    --card3: #F7F0E6;
-    --border: #E8DCC8;
-    --border2: #D4C4A8;
+        /* ===== LIGHT GOLD THEME – UPGRADED ===== */
+        [data-theme="light"] {
+            /* ─── Backgrounds – Warm Gold Tints ─── */
+            --bg: #FDF8F0;
+            --bg2: #FFFBF5;
+            --bg3: #F7F0E6;
+            --card: #FFFBF5;
+            --card2: #FDF8F0;
+            --card3: #F7F0E6;
+            --border: #E8DCC8;
+            --border2: #D4C4A8;
 
-    /* ─── Primary = Rich Gold ─── */
-    --primary: #B8860B;
-    --primary-dark: #8B6914;
-    --primary-light: #D4AF37;
-    --secondary: #D4AF37;
-    --accent: #C9A84C;
-    --accent-dark: #A8893A;
-    --gold: #B8860B;
-    --gold-light: #D4AF37;
-    --lime: #B8860B;
-    --lime2: #8B6914;
-    --cyan: #C9A84C;
-    --violet: #B8860B;
-    --orange: #D4893B;
+            /* ─── Primary = Rich Gold ─── */
+            --primary: #B8860B;
+            --primary-dark: #8B6914;
+            --primary-light: #D4AF37;
+            --secondary: #D4AF37;
+            --accent: #C9A84C;
+            --accent-dark: #A8893A;
+            --gold: #B8860B;
+            --gold-light: #D4AF37;
+            --lime: #B8860B;
+            --lime2: #8B6914;
+            --cyan: #C9A84C;
+            --violet: #B8860B;
+            --orange: #D4893B;
 
-    /* ─── Text – Warm Dark ─── */
-    --text: #2C2418;
-    --text2: #4A3F2E;
-    --text3: #7A6B52;
-    --text4: #A6957A;
+            /* ─── Text – Warm Dark ─── */
+            --text: #2C2418;
+            --text2: #4A3F2E;
+            --text3: #7A6B52;
+            --text4: #A6957A;
 
-    /* ─── Shadows & Glows – Gold Tinted ─── */
-    --shadow: 0 8px 32px rgba(184, 134, 11, 0.12);
-    --shadow2: 0 2px 12px rgba(184, 134, 11, 0.06);
-    --glow: 0 0 24px rgba(212, 175, 55, 0.15);
-    --glow-cyan: 0 0 20px rgba(212, 175, 55, 0.12);
-    --glow-primary: 0 0 20px rgba(184, 134, 11, 0.18);
-    --overlay-bg: rgba(44, 36, 24, 0.4);
+            /* ─── Shadows & Glows – Gold Tinted ─── */
+            --shadow: 0 8px 32px rgba(184, 134, 11, 0.12);
+            --shadow2: 0 2px 12px rgba(184, 134, 11, 0.06);
+            --glow: 0 0 24px rgba(212, 175, 55, 0.15);
+            --glow-cyan: 0 0 20px rgba(212, 175, 55, 0.12);
+            --glow-primary: 0 0 20px rgba(184, 134, 11, 0.18);
+            --overlay-bg: rgba(44, 36, 24, 0.4);
 
-    /* ─── Skeletons ─── */
-    --skeleton-base: #E8DCC8;
-    --skeleton-shine: #D4C4A8;
-          }
+            /* ─── Skeletons ─── */
+            --skeleton-base: #E8DCC8;
+            --skeleton-shine: #D4C4A8;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -192,7 +193,7 @@
             }
         }
         [data-theme="light"] body::before {
-            opacity: 0.015;
+            opacity: 0.025;
         }
         .page,
         .app-layout,
@@ -4896,6 +4897,13 @@
             min-width: 18px;
             text-align: center;
         }
+        /* Book upload progress */
+        .book-upload-progress {
+            font-size: .8rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-top: .5rem;
+        }
     </style>
 </head>
 <body>
@@ -5309,7 +5317,9 @@
 
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 30000);
+                // Increase timeout for uploads (5 minutes)
+                const timeoutDuration = endpoint.includes('upload') ? 300000 : 30000;
+                const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
                 fetchOptions.signal = controller.signal;
                 const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
                 const response = await fetch(url, fetchOptions);
@@ -9313,38 +9323,115 @@
             }
         }
 
-        // ─── BOOK PDF UPLOAD ────────────────────────────────────────────
+        // ─── BOOK PDF UPLOAD – WITH PROGRESS & LARGE FILE SUPPORT ─────
         async function uploadBookPdf(input) {
             const file = input.files[0];
-            if (!file || file.type !== 'application/pdf') {
-                toast('Please select a PDF file', 'error');
+            if (!file) {
+                toast('No file selected', 'error');
                 return;
             }
+
+            // Validate file size (500MB max)
+            if (file.size > 500 * 1024 * 1024) {
+                toast('File exceeds 500MB limit', 'error');
+                input.value = '';
+                return;
+            }
+
+            if (file.type !== 'application/pdf') {
+                toast('Please select a PDF file', 'error');
+                input.value = '';
+                return;
+            }
+
+            const token = localStorage.getItem('cx_accessToken');
+            if (!token) {
+                toast('Please log in', 'error');
+                return;
+            }
+
             const formData = new FormData();
             formData.append('file', file);
-            showLoading('Uploading PDF...');
-            try {
-                const token = localStorage.getItem('cx_accessToken');
-                const res = await fetch(`${API_BASE}/admin/upload-file`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData,
-                });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById('bookFileUrl').value = data.data.url;
-                    const preview = document.getElementById('bookPdfPreview');
-                    preview.classList.add('visible');
-                    toast('✅ PDF uploaded!', 'success');
-                } else {
-                    toast('Upload failed: ' + data.message, 'error');
-                }
-            } catch (err) {
-                toast('Upload error: ' + err.message, 'error');
-            } finally {
-                hideLoading();
-                input.value = '';
+
+            const progressEl = document.getElementById('bookPdfProgress');
+            if (progressEl) {
+                progressEl.style.display = 'block';
+                progressEl.textContent = 'Uploading... 0%';
             }
+
+            // Use XMLHttpRequest for progress tracking and timeout control
+            const xhr = new XMLHttpRequest();
+            xhr.timeout = 600000; // 10 minutes
+            xhr.open('POST', `${API_BASE}/admin/upload-file`);
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const percent = Math.round((event.loaded / event.total) * 100);
+                    if (progressEl) {
+                        progressEl.textContent = `Uploading... ${percent}%`;
+                    }
+                    const loadingText = document.getElementById('loadingText');
+                    if (loadingText) {
+                        loadingText.textContent = `Uploading PDF... ${percent}%`;
+                    }
+                }
+            };
+
+            xhr.onload = () => {
+                if (progressEl) {
+                    progressEl.style.display = 'none';
+                    progressEl.textContent = '';
+                }
+                hideLoading();
+
+                if (xhr.status === 200) {
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        if (data.success) {
+                            document.getElementById('bookFileUrl').value = data.data.url;
+                            const preview = document.getElementById('bookPdfPreview');
+                            if (preview) preview.classList.add('visible');
+                            toast('✅ PDF uploaded successfully!', 'success');
+                        } else {
+                            toast('Upload failed: ' + (data.message || 'Unknown error'), 'error');
+                        }
+                    } catch (e) {
+                        toast('Invalid server response', 'error');
+                    }
+                } else {
+                    let errorMsg = `Upload failed (${xhr.status})`;
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        errorMsg = data.message || errorMsg;
+                    } catch (e) {}
+                    toast(errorMsg, 'error');
+                }
+                input.value = '';
+            };
+
+            xhr.onerror = () => {
+                if (progressEl) {
+                    progressEl.style.display = 'none';
+                    progressEl.textContent = '';
+                }
+                hideLoading();
+                toast('Network error – please check your connection', 'error');
+                input.value = '';
+            };
+
+            xhr.ontimeout = () => {
+                if (progressEl) {
+                    progressEl.style.display = 'none';
+                    progressEl.textContent = '';
+                }
+                hideLoading();
+                toast('Upload timed out. Please try again.', 'error');
+                input.value = '';
+            };
+
+            showLoading('Uploading PDF...');
+            xhr.send(formData);
         }
 
         // ─── ADMIN BOOK CRUD ─────────────────────────────────────────────
@@ -9993,6 +10080,7 @@
                                     <div id="bookPdfPreview" class="upload-preview">
                                         <div class="upload-preview-label">✅ PDF uploaded</div>
                                     </div>
+                                    <div id="bookPdfProgress" class="book-upload-progress" style="display:none;">Uploading... 0%</div>
                                 </div>
                             </div>
                             <div class="row">
@@ -11420,6 +11508,8 @@
         console.log('🎨 Gold, White & Black premium theme applied.');
         console.log('📢 Smart ads rotation implemented.');
         console.log('🗑️ Admin can delete any post.');
+        console.log('📤 Book upload: Large file support (500MB) with progress tracking.');
+        console.log('🔗 Affiliate links now use hash-based routing (#courses/...) for SPA compatibility.');
     </script>
 </body>
 </html>
