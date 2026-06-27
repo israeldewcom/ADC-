@@ -15,13 +15,19 @@
     <meta name="twitter:title" content="ChangeX Academy — Turn Tech Into Income" />
     <meta name="twitter:description" content="Global #1 Learn-to-Earn platform. Learn tech skills and earn real money. Card or bank transfer accepted." />
     <link rel="canonical" href="https://changex.academy" id="canonicalLink" />
+
+    <!-- ===== PWA: Static manifest (served from root) ===== -->
     <link rel="manifest" href="/manifest.json" />
+    <!-- iOS specific -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="ChangeX" />
     <link rel="apple-touch-icon" href="/logo.png" />
     <link rel="apple-touch-startup-image" href="/logo.png" />
+
     <title id="pageTitle">ChangeX Academy — Turn Tech Into Income</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5224024430002176" crossorigin="anonymous">
+    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
@@ -37,6 +43,7 @@
     <style>
         /* ===== CSS VARIABLES – GOLD, WHITE & BLACK THEME ===== */
         :root {
+            /* ─── Backgrounds ─── */
             --bg: #0A0A0A;
             --bg2: #141414;
             --bg3: #1F1F1F;
@@ -45,6 +52,8 @@
             --card3: #2A2A2A;
             --border: #2A2A2A;
             --border2: #3A3A3A;
+
+            /* ─── Primary = GOLD ─── */
             --primary: #D4AF37;
             --primary-dark: #B8960F;
             --primary-light: #FBBF24;
@@ -61,15 +70,21 @@
             --danger: #F87171;
             --success: #34D399;
             --warning: #FBBF24;
+
+            /* ─── Text ─── */
             --text: #FFFFFF;
             --text2: #E5E5E5;
             --text3: #94A3B8;
             --text4: #64748B;
+
+            /* ─── Shadows & Glows ─── */
             --shadow: 0 12px 48px rgba(0, 0, 0, .6);
             --shadow2: 0 4px 20px rgba(0, 0, 0, .4);
             --glow: 0 0 40px rgba(212, 175, 55, .12);
             --glow-cyan: 0 0 28px rgba(212, 175, 55, .08);
             --glow-primary: 0 0 24px rgba(212, 175, 55, .15);
+
+            /* ─── Rest ─── */
             --radius: 20px;
             --radius-sm: 12px;
             --radius-lg: 28px;
@@ -134,6 +149,7 @@
             max-width: 100%;
             position: relative;
         }
+        /* ===== LOGO WATERMARK ===== */
         body::before {
             content: '';
             position: fixed;
@@ -147,13 +163,13 @@
             z-index: -1;
             transition: opacity 0.5s ease;
         }
-        @media (min-width:768px) {
+        @media (min-width: 768px) {
             body::before {
                 background-size: 35% auto;
                 opacity: 0.03;
             }
         }
-        @media (min-width:1200px) {
+        @media (min-width: 1200px) {
             body::before {
                 background-size: 28% auto;
                 opacity: 0.035;
@@ -2657,7 +2673,7 @@
             max-height: 500px;
             overflow-y: auto;
         }
-        @media (max-width:991px) {
+        @media (max-width: 991px) {
             .lesson-layout {
                 flex-direction: column;
                 height: auto;
@@ -3515,34 +3531,7 @@
         .ad-container.visible {
             display: block;
         }
-        .ad-banner-bottom {
-            display: block;
-            text-align: center;
-            margin: 1.5rem 0 0.5rem;
-            padding: 0.75rem;
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-        }
-        .ad-banner-bottom .ad-label {
-            font-size: 0.55rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text3);
-            margin-bottom: 0.3rem;
-        }
-        .ad-banner-bottom img {
-            max-width: 100%;
-            max-height: 90px;
-            border-radius: var(--radius-sm);
-            object-fit: contain;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .ad-banner-bottom img:hover {
-            opacity: 0.85;
-        }
+        /* ===== PWA INSTALL BANNER – 7‑day dismissal ===== */
         .install-banner {
             position: fixed;
             bottom: 80px;
@@ -4740,7 +4729,21 @@
             margin-top: .2rem;
         }
         .adsense-ad {
-            display: none !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1.5rem 0;
+            padding: 0.5rem;
+            min-height: 90px;
+            background: var(--bg2);
+            border-radius: var(--radius-sm);
+            border: 1px dashed var(--border2);
+            overflow: hidden;
+        }
+        .adsense-ad ins {
+            display: block;
+            width: 100%;
+            max-width: 100%;
         }
         .adsense-label {
             font-size: .55rem;
@@ -4828,6 +4831,7 @@
         .pwa-install-btn.show {
             display: inline-flex;
         }
+        /* ===== PRODUCTION GRADE ENHANCEMENTS ===== */
         .transition-all {
             transition: all var(--transition);
         }
@@ -4886,6 +4890,7 @@
                 box-shadow: none !important;
             }
         }
+        /* ===== SEO ENHANCEMENTS ===== */
         .seo-article {
             max-width: 100%;
             word-wrap: break-word;
@@ -4944,6 +4949,7 @@
             padding: 0;
             color: var(--text);
         }
+        /* Course rating display */
         .rating-stars {
             color: var(--gold);
             font-size: 1.1rem;
@@ -4961,6 +4967,7 @@
             font-size: 0.8rem;
             color: var(--text3);
         }
+        /* Following badge count */
         .following-badge-count {
             background: var(--primary);
             color: #000;
@@ -4973,131 +4980,12 @@
             min-width: 18px;
             text-align: center;
         }
-        .book-unlock-badge {
-            background: var(--success);
-            color: #000;
-            border-radius: 50px;
-            padding: 0.15rem 0.6rem;
-            font-size: 0.6rem;
-            font-weight: 700;
-            font-family: var(--font-heading);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        .book-locked-badge {
-            background: var(--danger);
-            color: #fff;
-            border-radius: 50px;
-            padding: 0.15rem 0.6rem;
-            font-size: 0.6rem;
-            font-weight: 700;
-            font-family: var(--font-heading);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        .user-profile-header {
-            background: var(--bg2);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 1.5rem;
-            border: 1px solid var(--border);
-        }
-        .user-profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #000;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-        .user-profile-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .user-profile-info {
-            flex: 1;
-            min-width: 200px;
-        }
-        .user-profile-info h2 {
-            font-size: 1.3rem;
-            margin-bottom: 0.15rem;
-        }
-        .user-profile-info .bio {
-            color: var(--text2);
-            font-size: 0.88rem;
-            margin-bottom: 0.5rem;
-        }
-        .user-profile-stats {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            font-size: 0.85rem;
-            color: var(--text3);
-        }
-        .user-profile-stats strong {
-            color: var(--text);
-        }
-        .user-profile-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-top: 0.5rem;
-        }
-        @media(max-width:480px) {
-            .user-profile-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            .user-profile-stats {
-                justify-content: center;
-            }
-        }
-        .forgot-password-link {
-            color: var(--primary);
-            cursor: pointer;
-            font-size: 0.78rem;
-        }
-        .forgot-password-link:hover {
-            text-decoration: underline;
-        }
-        .password-reset-success {
-            background: rgba(52, 211, 153, .08);
-            border: 1px solid rgba(52, 211, 153, .2);
-            border-radius: var(--radius-sm);
-            padding: 0.75rem 1rem;
-            color: var(--success);
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
-        }
-        .password-reset-error {
-            background: rgba(248, 113, 113, .08);
-            border: 1px solid rgba(248, 113, 113, .2);
-            border-radius: var(--radius-sm);
-            padding: 0.75rem 1rem;
-            color: var(--danger);
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
-        }
     </style>
 </head>
 <body>
     <div id="toastBox"></div>
     <div id="loadingOverlay" class="loading-overlay" style="display:none"><div class="loading-spinner"></div><div class="loading-text" id="loadingText">Loading...</div></div>
-
+    <!-- ===== PWA INSTALL BANNER – 7‑day dismissal ===== -->
     <div id="installBanner" class="install-banner hidden"><div style="font-size:1.5rem">📲</div><div style="flex:1"><div style="font-weight:700;font-size:.84rem">Install ChangeX Academy</div><div style="font-size:.72rem;color:var(--text3)">Get faster access, offline learning & instant notifications</div></div><button class="btn btn-primary btn-sm" id="installBtn" onclick="installPWA()">Install</button><button class="btn-icon-sm" onclick="dismissInstallBanner()"><i class="fas fa-times"></i></button></div>
 
     <!-- ============================================================ -->
@@ -5125,20 +5013,20 @@
 
         <section id="reviews-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-star"></i> Reviews</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">What Our <span class="grad-text">Students Say</span></h2></div><div class="row" id="reviewsList"></div><div class="row justify-center mt-5"><div class="col-12 col-md-6"><div class="card card-p"><h5>Leave a Review</h5><div class="form-group"><label class="flabel">Your Name</label><input type="text" class="finput" id="reviewName" placeholder="Your full name"></div><div class="form-group"><label class="flabel">Rating</label><div style="display:flex;gap:.3rem;font-size:1.5rem;cursor:pointer" id="reviewStars"><span data-val="1" onclick="setReviewStar(1)">☆</span><span data-val="2" onclick="setReviewStar(2)">☆</span><span data-val="3" onclick="setReviewStar(3)">☆</span><span data-val="4" onclick="setReviewStar(4)">☆</span><span data-val="5" onclick="setReviewStar(5)">☆</span></div></div><div class="form-group"><label class="flabel">Review</label><textarea class="finput" id="reviewText" rows="3" placeholder="Your experience..."></textarea></div><button class="btn btn-primary" onclick="submitReview()">Submit Review</button></div></div></div></div></section>
 
-        <!-- Admin Banner Ads (bottom of landing page) -->
-        <div id="landingAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="landingAdContent"></div></div>
+        <!-- AdSense: Below Reviews -->
+        <div class="adsense-ad"><div class="adsense-label">📢 Sponsored</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5224024430002176" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
 
         <section id="pricing-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-tag"></i> Pricing</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Simple, <span class="grad-text">Transparent</span> Pricing</h2></div><div class="row justify-center"><div class="col-12 col-md-4 reveal" style="transition-delay:.05s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-user"></i> Free</div><div class="p-amt">₦0<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">Perfect to get started</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>5 courses access</li><li><i class="fas fa-check chk"></i>Basic certificates</li><li><i class="fas fa-check chk"></i>Referral program</li><li><i class="fas fa-times nope"></i>Create courses</li><li><i class="fas fa-times nope"></i>Unlimited uploads</li><li><i class="fas fa-times nope"></i>No ads</li></ul><button class="btn btn-outline w-full" onclick="goPage('register')">Get Started Free</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.1s"><div class="price-card featured"><div class="stag mb-3"><i class="fas fa-crown"></i> Premium</div><div class="p-amt" style="color:var(--lime)">₦5,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For serious learners &amp; earners</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>All courses unlimited</li><li><i class="fas fa-check chk"></i>Create &amp; sell courses</li><li><i class="fas fa-check chk"></i>Affiliate dashboard</li><li><i class="fas fa-check chk"></i>Unlimited uploads</li><li><i class="fas fa-check chk"></i>No ads 🎉</li><li><i class="fas fa-check chk"></i>80% course revenue</li></ul><button class="btn btn-primary w-full" onclick="goPage('register')"><i class="fas fa-crown"></i>Go Premium</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.15s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-building"></i> Business</div><div class="p-amt">₦25,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For teams &amp; organizations</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>Everything in Premium</li><li><i class="fas fa-check chk"></i>Up to 20 seats</li><li><i class="fas fa-check chk"></i>Custom branding</li><li><i class="fas fa-check chk"></i>Analytics</li><li><i class="fas fa-check chk"></i>Dedicated manager</li></ul><button class="btn btn-outline w-full" onclick="goPage('contact')">Contact Sales</button></div></div></div></div></section>
 
         <footer class="lfooter"><div class="lsec-wrap"><div class="row mb-4"><div class="col-12 col-md-4"><div class="logo mb-3"><div class="logo-mark"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;border-radius:8px;object-fit:cover;" /></div>ChangeX<span style="color:var(--primary)">.</span></div><p style="font-size:.82rem;color:var(--text3);max-width:260px;line-height:1.65">Global #1 Learn-to-Earn platform. Turning tech skills into real income.</p><div class="f-social"><div class="soc-btn"><i class="fab fa-twitter"></i></div><div class="soc-btn"><i class="fab fa-instagram"></i></div><div class="soc-btn"><i class="fab fa-linkedin"></i></div><div class="soc-btn"><i class="fab fa-youtube"></i></div><div class="soc-btn"><i class="fab fa-whatsapp"></i></div></div></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Learn</h6><ul class="f-links"><li><a onclick="goPage('register')">All Courses</a></li><li><a>Web Dev</a></li><li><a>AI &amp; Tools</a></li><li><a>Freelancing</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Earn</h6><ul class="f-links"><li><a>Referrals</a></li><li><a>Affiliates</a></li><li><a>Teach Here</a></li><li><a>Leaderboard</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Company</h6><ul class="f-links"><li><a>About</a></li><li><a onclick="goPage('contact')">Contact</a></li><li><a>Privacy</a></li><li><a>Terms</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Newsletter</h6><p style="font-size:.75rem;color:var(--text3);margin-bottom:.6rem">Weekly tips &amp; earnings updates</p><input type="email" class="finput" id="footerEmail" placeholder="your@email.com" style="margin-bottom:.4rem"/><button class="btn btn-primary btn-sm w-full" onclick="subscribeEmail()">Subscribe</button></div></div><div style="border-top:1px solid var(--border);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem"><p style="font-size:.73rem;color:var(--text3)">© 2025 ChangeX Academy. Made with ❤️ for the world.</p><p style="font-size:.73rem;color:var(--text3)">Contact: <a href="mailto:changexacademysupport@gmail.com" style="color:var(--primary)">changexacademysupport@gmail.com</a></p></div></div></footer>
-        <!-- Admin Banner Ads (bottom of landing page footer) -->
-        <div id="landingAdFooter" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="landingAdFooterContent"></div></div>
+        <!-- AdSense: Below Landing Page Footer -->
+        <div class="adsense-ad"><div class="adsense-label">📢 Sponsored</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5224024430002176" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
     </div>
 
     <!-- ============================================================ -->
     <!-- AUTH PAGES -->
     <!-- ============================================================ -->
-    <div id="page-login" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem;border-radius:12px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div><h2 style="font-size:1.6rem">Welcome Back</h2><p style="font-size:.82rem;color:var(--text3)">Sign in to continue earning</p></div><div style="display:flex;gap:.55rem;margin-bottom:.85rem"><button class="social-btn" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="loginEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="loginPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/><button class="pw-toggle" onclick="togglePw('loginPw',this)"><i class="fas fa-eye"></i></button></div></div><div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem"><input type="checkbox" id="rememberMe" style="accent-color:var(--primary)"/><label for="rememberMe" style="font-size:.78rem;color:var(--text2);cursor:pointer">Remember me</label><span class="forgot-password-link" onclick="handleForgotPassword()">Forgot password?</span></div><button class="btn btn-primary w-full" id="loginBtn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i>Sign In</button><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">No account? <a style="color:var(--primary);cursor:pointer" onclick="goPage('register')">Create free →</a></p><p style="text-align:center;margin-top:.4rem"><a style="font-size:.75rem;cursor:pointer;color:var(--text3)" onclick="goPage('landing')">← Back to Home</a></p></div></div></div>
+    <div id="page-login" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem;border-radius:12px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div><h2 style="font-size:1.6rem">Welcome Back</h2><p style="font-size:.82rem;color:var(--text3)">Sign in to continue earning</p></div><div style="display:flex;gap:.55rem;margin-bottom:.85rem"><button class="social-btn" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="loginEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="loginPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/><button class="pw-toggle" onclick="togglePw('loginPw',this)"><i class="fas fa-eye"></i></button></div></div><div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem"><input type="checkbox" id="rememberMe" style="accent-color:var(--primary)"/><label for="rememberMe" style="font-size:.78rem;color:var(--text2);cursor:pointer">Remember me</label><a style="font-size:.78rem;color:var(--primary);cursor:pointer;margin-left:auto" onclick="handleForgotPassword()">Forgot password?</a></div><button class="btn btn-primary w-full" id="loginBtn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i>Sign In</button><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">No account? <a style="color:var(--primary);cursor:pointer" onclick="goPage('register')">Create free →</a></p><p style="text-align:center;margin-top:.4rem"><a style="font-size:.75rem;cursor:pointer;color:var(--text3)" onclick="goPage('landing')">← Back to Home</a></p></div></div></div>
 
     <div id="page-register" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box" style="max-width:460px"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem;border-radius:12px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div><h2 style="font-size:1.6rem">Create Free Account</h2><p style="font-size:.82rem;color:var(--text3)">Join thousands of learners &amp; earners worldwide</p></div><div class="row" style="gap:.55rem;margin-bottom:.85rem"><button class="social-btn" style="flex:1" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" style="flex:1" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="regFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="regLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="regEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Phone</label><div class="finput-ico"><i class="fas fa-phone fii"></i><input type="tel" class="finput" id="regPhone" placeholder="+234 800 000 0000"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="regPw" placeholder="Min 8 characters" oninput="checkPwStr(this.value)"/><button class="pw-toggle" onclick="togglePw('regPw',this)"><i class="fas fa-eye"></i></button></div><div class="pw-bars"><div class="pw-bar" id="pb1"></div><div class="pw-bar" id="pb2"></div><div class="pw-bar" id="pb3"></div><div class="pw-bar" id="pb4"></div></div></div><div class="form-group"><label class="flabel">Referral Code (optional)</label><div class="finput-ico"><i class="fas fa-users fii"></i><input type="text" class="finput" id="regRef" placeholder="Enter referral code"/></div></div><div style="display:flex;align-items:flex-start;gap:.5rem;margin-bottom:1rem;font-size:.79rem"><input type="checkbox" id="termsChk" style="accent-color:var(--primary);margin-top:.15rem"/><label for="termsChk" style="color:var(--text2);cursor:pointer;line-height:1.5">I agree to the <a style="color:var(--primary)">Terms</a> and <a style="color:var(--primary)">Privacy Policy</a></label></div><button class="btn btn-primary w-full" id="registerBtn" onclick="doRegister()"><i class="fas fa-rocket"></i>Create My Free Account</button><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.14);border-radius:var(--radius-sm);padding:.65rem;margin-top:.85rem;font-size:.76rem;color:var(--text2);text-align:center">🎉 Get <strong style="color:var(--primary)">₦500 welcome bonus</strong> on first profile completion!</div><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">Already have account? <a style="color:var(--primary);cursor:pointer" onclick="goPage('login')">Sign in →</a></p></div></div></div>
 
@@ -5159,6 +5047,7 @@
 
     <div class="modal-ov hidden" id="buyCourseModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">🛒 Purchase</h5><button class="btn-icon-sm" onclick="closeModal('buyCourseModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div id="buyCourseInfo" style="margin-bottom:1rem"></div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><h6 style="margin-bottom:.75rem">Order Summary</h6><div id="buyCourseSummary"></div><div class="payment-method-tabs mt-3"><div class="payment-method-tab active" onclick="toggleBuyPaymentMethod('card',this)">💳 Card Payment</div><div class="payment-method-tab" onclick="toggleBuyPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="buyCardSection"><div class="form-group mt-3"><label class="flabel">Referral Code (optional)</label><input type="text" class="finput" id="buyRefCode" placeholder="Enter referral code" oninput="applyBuyCode(this.value)"/></div><div id="buyCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><button class="paystack-btn" onclick="processPayment()"><i class="fas fa-lock"></i><span id="paystackBtnText">Pay with Paystack</span></button></div><div id="buyManualSection" style="display:none"><div class="bank-details-box" id="buyBankDetailsBox"></div><div class="form-group mt-3"><label class="flabel">Referral Code (optional)</label><input type="text" class="finput" id="buyManualRefCode" placeholder="Enter referral code" oninput="applyBuyManualCode(this.value)"/></div><div id="buyManualCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="manualRef" placeholder="e.g. TRX123456789"><small style="font-size:.7rem;color:var(--text3)">Enter the reference from your bank transfer</small></div><div class="form-group"><label class="flabel">Amount Paid (₦)</label><input type="number" class="finput" id="manualAmount" placeholder="e.g. 5000"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="manualDate"></div><div class="form-group"><label class="flabel">Upload Receipt/Screenshot</label><div class="upload-zone" style="padding:1rem"><input type="file" id="manualReceipt" accept="image/*,application/pdf" onchange="previewReceipt(this)"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt or screenshot</div></div><div id="receiptPreview" style="margin-top:.5rem;display:none"><img id="receiptPreviewImg" style="max-width:100%;max-height:150px;border-radius:var(--radius-sm)"></div></div><button class="btn btn-primary w-full" onclick="submitManualPayment()">Submit for Verification</button><div class="info-box"><i class="fas fa-info-circle" style="color:var(--primary)"></i><strong>How it works:</strong> Transfer the exact amount to the bank details above, then submit your reference and receipt. Our system will automatically verify your payment if all details match. If verification fails, an admin will review within 24 hours.</div></div></div></div></div></div>
 
+    <!-- ===== PREMIUM MODAL – enhanced with referral code ===== -->
     <div class="modal-ov hidden" id="premiumModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👑 Go Premium</h5><button class="btn-icon-sm" onclick="closeModal('premiumModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div style="text-align:center;margin-bottom:1.25rem"><div style="font-size:2.5rem;margin-bottom:.5rem">👑</div><h4>Unlock Full Power</h4><p style="color:var(--text3);font-size:.83rem;margin-top:.35rem">Create courses, earn affiliates, no ads!</p></div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><div class="pay-summary-row"><span>Premium Plan</span><span style="color:var(--primary);font-weight:800">₦5,000/mo</span></div><div class="pay-summary-row"><span>Setup Fee</span><span>₦0</span></div><div class="pay-summary-row"><span style="font-weight:700">Total Today</span><span style="color:var(--primary)">₦5,000</span></div>
         <div class="form-group prem-referral-input mt-3"><label class="flabel">Referral Code (optional) <span style="color:var(--gold)">🎁</span></label><input type="text" class="finput" id="premReferralCode" placeholder="Enter referral code to earn ₦500 bonus" oninput="applyPremReferralCode(this.value)"/><div id="premRefCodeStatus" class="prem-referral-status">Enter a referral code to get ₦500 bonus for the referrer</div></div>
         <div class="payment-method-tabs mt-3"><div class="payment-method-tab active" onclick="togglePremPaymentMethod('card',this)">💳 Card Payment</div><div class="payment-method-tab" onclick="togglePremPaymentMethod('manual',this)">🏦 Bank Transfer</div></div>
@@ -5196,7 +5085,7 @@
     <!-- APP (MAIN DASHBOARD) -->
     <!-- ============================================================ -->
     <div id="page-app" class="page">
-        <!-- Admin Banner Ads (top of app) – shown to free users only -->
+        <!-- Banner Ad Container – visible for free users on all pages -->
         <div id="adBannerTop" class="ad-container" style="display:none;"></div>
         <div class="announcement-bar" id="announcementBar" style="display:none"><i class="fas fa-bullhorn"></i><span id="announcementText">📣 Loading announcements...</span><button style="margin-left:auto;background:none;border:none;color:var(--gold);cursor:pointer;font-size:.8rem" onclick="this.parentElement.style.display='none'"><i class="fas fa-times"></i></button></div>
         <div id="planWarning" class="plan-warning" style="display:none"><span class="pw-icon">⚠️</span><span id="planWarningText">Your Premium plan expires in 5 days. Renew now to keep earning.</span><div class="pw-actions"><button class="btn btn-gold btn-sm" onclick="openModal('premiumModal')"><i class="fas fa-crown"></i> Renew</button><span class="btn-icon-sm" onclick="this.parentElement.parentElement.style.display='none'"><i class="fas fa-times"></i></span></div></div>
@@ -5242,136 +5131,74 @@
 
                 <div class="dash-wrap thin-scroll" id="dashWrap">
                     <!-- FEED -->
-                    <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span><span class="fpill" onclick="filterFeed('personalized',this)">✨ For You</span></div><div id="feedContainer"></div><div id="feedSentinel"></div><div id="feedLoadingMore" class="feed-loading-more" style="display:none"><span class="spinner"></span> Loading more posts...</div>
-                        <!-- Admin Banner Ads (bottom of feed) -->
-                        <div id="feedAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="feedAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-feed" class="dash-sub active"><div class="d-flex items-center justify-between mb-3"><h2 class="page-title" style="margin:0">📰 Feed</h2><button class="btn btn-primary btn-sm" onclick="openCreatePostModal()"><i class="fas fa-plus"></i> Create Post</button></div><div id="adFeedTop" class="ad-container"></div><div class="feed-tabs"><span class="fpill active" onclick="filterFeed('all',this)">All</span><span class="fpill" onclick="filterFeed('article',this)">Articles</span><span class="fpill" onclick="filterFeed('tutorial',this)">Tutorials</span><span class="fpill" onclick="filterFeed('challenge',this)">Challenges</span><span class="fpill" onclick="filterFeed('announcement',this)">Announcements</span><span class="fpill" onclick="filterFeed('personalized',this)">✨ For You</span></div><div id="feedContainer"></div><div id="feedSentinel"></div><div id="feedLoadingMore" class="feed-loading-more" style="display:none"><span class="spinner"></span> Loading more posts...</div></div>
 
                     <!-- FOLLOWING -->
-                    <div id="dash-following" class="dash-sub"><div class="page-hd"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem"><h2 class="page-title" style="margin:0">📡 Following</h2><button class="btn btn-ghost btn-sm" onclick="loadUserFollowing();loadFollowing();"><i class="fas fa-sync-alt"></i> Refresh</button></div><p class="page-sub">Posts from people you follow</p></div><div id="followingContainer"><div class="empty-state"><i class="fas fa-rss"></i><h4>Loading your following feed...</h4><p>Please wait while we fetch posts from people you follow.</p></div></div>
-                        <!-- Admin Banner Ads (bottom of following) -->
-                        <div id="followingAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="followingAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-following" class="dash-sub"><div class="page-hd"><h2 class="page-title">📡 Following</h2><p class="page-sub">Posts from people you follow</p></div><div id="followingContainer"><div class="empty-state"><i class="fas fa-rss"></i><h4>No one to follow yet</h4><p>Follow other learners and instructors to see their posts here.</p><button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button></div></div></div>
 
                     <!-- CHALLENGES -->
-                    <div id="dash-challenges" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Challenges</h2><p class="page-sub">Join challenges, earn XP &amp; win rewards</p></div><div class="d-flex gap-2 mb-3"><span class="fpill active" onclick="filterChallenges('active',this)">Active</span><span class="fpill" onclick="filterChallenges('upcoming',this)">Upcoming</span><span class="fpill" onclick="filterChallenges('completed',this)">Completed</span></div><div id="challengesContainer"></div><div class="mt-4"><h4>My Challenge Progress</h4><div id="myChallengeProgress"></div></div>
-                        <!-- Admin Banner Ads (bottom of challenges) -->
-                        <div id="challengesAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="challengesAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-challenges" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Challenges</h2><p class="page-sub">Join challenges, earn XP &amp; win rewards</p></div><div class="d-flex gap-2 mb-3"><span class="fpill active" onclick="filterChallenges('active',this)">Active</span><span class="fpill" onclick="filterChallenges('upcoming',this)">Upcoming</span><span class="fpill" onclick="filterChallenges('completed',this)">Completed</span></div><div id="challengesContainer"></div><div class="mt-4"><h4>My Challenge Progress</h4><div id="myChallengeProgress"></div></div></div>
 
                     <!-- PEOPLE -->
-                    <div id="dash-people" class="dash-sub"><div class="page-hd"><h2 class="page-title">👥 People</h2><p class="page-sub">Connect with fellow learners &amp; instructors</p></div><div class="people-search"><input type="text" class="finput" id="peopleSearch" placeholder="Search by name..." oninput="filterPeople(this.value)"/></div><div id="peopleContainer" class="people-grid"></div>
-                        <!-- Admin Banner Ads (bottom of people) -->
-                        <div id="peopleAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="peopleAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-people" class="dash-sub"><div class="page-hd"><h2 class="page-title">👥 People</h2><p class="page-sub">Connect with fellow learners &amp; instructors</p></div><div class="people-search"><input type="text" class="finput" id="peopleSearch" placeholder="Search by name..." oninput="filterPeople(this.value)"/></div><div id="peopleContainer" class="people-grid"></div></div>
 
                     <!-- PROFILE -->
-                    <div id="dash-profile" class="dash-sub"><div class="page-hd"><button class="btn btn-ghost btn-sm" onclick="setDP('people')"><i class="fas fa-arrow-left"></i> Back</button></div><div id="profileContent"></div>
-                        <!-- Admin Banner Ads (bottom of profile) -->
-                        <div id="profileAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="profileAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-profile" class="dash-sub"><div class="page-hd"><button class="btn btn-ghost btn-sm" onclick="setDP('people')"><i class="fas fa-arrow-left"></i> Back</button></div><div id="profileContent"></div></div>
 
                     <!-- HOME -->
-                    <div id="dash-home" class="dash-sub"><div id="homeSkeleton" style="display:none"><div class="skeleton" style="height:120px;margin-bottom:1rem;border-radius:var(--radius)"></div><div class="row"><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div></div></div><div id="homeContent"></div>
-                        <!-- Admin Banner Ads (bottom of home) -->
-                        <div id="homeAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="homeAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-home" class="dash-sub"><div id="homeSkeleton" style="display:none"><div class="skeleton" style="height:120px;margin-bottom:1rem;border-radius:var(--radius)"></div><div class="row"><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div><div class="col-6 col-md-3"><div class="skeleton" style="height:100px;border-radius:var(--radius)"></div></div></div></div><div id="homeContent"></div></div>
 
                     <!-- EXPLORE -->
-                    <div id="dash-explore" class="dash-sub"><div class="page-hd"><h2 class="page-title">🔍 Explore Courses</h2><p class="page-sub">Browse all approved courses on ChangeX</p></div><div class="d-flex flex-wrap gap-2 mb-3"><input type="text" class="finput flex-1" id="exploreSearch" placeholder="Search courses..." style="min-width:180px" oninput="filterExplore()"/><select class="finput" id="exploreCat" style="width:auto" onchange="filterExplore()"><option value="">All Categories</option><option>Web Development</option><option>AI &amp; Tools</option><option>Freelancing</option><option>Design</option><option>Backend</option></select><select class="finput" id="exploreLevel" style="width:auto" onchange="filterExplore()"><option value="">All Levels</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div><div id="exploreGrid" class="courses-grid"></div>
-                        <!-- Admin Banner Ads (bottom of explore) -->
-                        <div id="exploreAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="exploreAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-explore" class="dash-sub"><div class="page-hd"><h2 class="page-title">🔍 Explore Courses</h2><p class="page-sub">Browse all approved courses on ChangeX</p></div><div class="d-flex flex-wrap gap-2 mb-3"><input type="text" class="finput flex-1" id="exploreSearch" placeholder="Search courses..." style="min-width:180px" oninput="filterExplore()"/><select class="finput" id="exploreCat" style="width:auto" onchange="filterExplore()"><option value="">All Categories</option><option>Web Development</option><option>AI &amp; Tools</option><option>Freelancing</option><option>Design</option><option>Backend</option></select><select class="finput" id="exploreLevel" style="width:auto" onchange="filterExplore()"><option value="">All Levels</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div><div id="exploreGrid" class="courses-grid"></div></div>
 
                     <!-- MY COURSES -->
-                    <div id="dash-courses" class="dash-sub"><div class="page-hd"><h2 class="page-title">My Courses</h2><p class="page-sub">Track your learning progress</p></div><div style="display:flex;gap:.28rem;flex-wrap:nowrap;overflow-x:auto;margin-bottom:1rem;padding-bottom:.15rem"><span class="fpill active" onclick="filterCourses('all',this)">All</span><span class="fpill" onclick="filterCourses('progress',this)">In Progress</span><span class="fpill" onclick="filterCourses('completed',this)">Completed</span><span class="fpill" onclick="filterCourses('new',this)">Not Started</span></div><div class="courses-grid" id="coursesGrid"></div>
-                        <!-- Admin Banner Ads (bottom of courses) -->
-                        <div id="coursesAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="coursesAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-courses" class="dash-sub"><div class="page-hd"><h2 class="page-title">My Courses</h2><p class="page-sub">Track your learning progress</p></div><div style="display:flex;gap:.28rem;flex-wrap:nowrap;overflow-x:auto;margin-bottom:1rem;padding-bottom:.15rem"><span class="fpill active" onclick="filterCourses('all',this)">All</span><span class="fpill" onclick="filterCourses('progress',this)">In Progress</span><span class="fpill" onclick="filterCourses('completed',this)">Completed</span><span class="fpill" onclick="filterCourses('new',this)">Not Started</span></div><div class="courses-grid" id="coursesGrid"></div></div>
 
                     <!-- LESSON -->
-                    <div id="dash-lesson" class="dash-sub"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><button class="btn btn-ghost btn-sm" onclick="setDP('courses')"><i class="fas fa-arrow-left"></i>Back</button><div class="d-flex gap-2"><button class="btn btn-ghost btn-sm" onclick="openModal('rateModal')"><i class="fas fa-star"></i>Rate</button><button class="btn btn-primary btn-sm" onclick="completeLessonAndNext()"><i class="fas fa-check"></i>Mark Done &amp; Next</button></div></div><div id="interactiveContainer"></div><div class="lesson-layout"><div><div class="video-wrap mb-3" id="lessonVideoWrap"><div style="text-align:center"><div class="play-btn" onclick="toast('Playing lesson video...','info')"><i class="fas fa-play"></i></div><div style="font-size:.78rem;color:var(--text2);margin-top:.75rem" id="currentLessonTitle">Select a course</div><div style="font-size:.7rem;color:var(--text3);margin-top:.2rem" id="currentCourseTitle">Loading...</div></div></div><div class="d-flex justify-between mb-3 gap-2"><button class="btn btn-ghost btn-sm" id="prevLessonBtn" onclick="navigateLesson(-1)"><i class="fas fa-arrow-left"></i>Previous</button><span style="font-size:.78rem;color:var(--text3);padding:.35rem .5rem" id="lessonNavIndicator">—</span><button class="btn btn-primary btn-sm" id="nextLessonBtn" onclick="navigateLesson(1)">Next<i class="fas fa-arrow-right"></i></button></div><div class="lesson-tabs"><div class="ltab active" onclick="switchLTab('overview',this)">Overview</div><div class="ltab" onclick="switchLTab('notes',this)">📝 Notes</div><div class="ltab" onclick="switchLTab('resources',this)">📎 Resources</div><div class="ltab" onclick="switchLTab('qa',this)">💬 Q&amp;A</div><div class="ltab" onclick="switchLTab('reviews',this)">⭐ Reviews</div><div class="ltab" onclick="switchLTab('interactive',this)">⚡ Try It</div></div><div class="lesson-sub active" id="ls-overview"><h5 style="margin-bottom:.5rem" id="lessonOverviewTitle">Loading...</h5><p style="font-size:.84rem;color:var(--text2);line-height:1.7" id="lessonOverviewDesc">Please select a course.</p><div id="courseRatingsContainer"></div></div><div class="lesson-sub" id="ls-notes"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">My Notes</h6><button class="btn btn-primary btn-sm" onclick="saveNote()"><i class="fas fa-save"></i>Save</button></div><textarea class="finput" id="lessonNote" style="min-height:200px;resize:vertical" placeholder="Write your personal notes... They auto-save."></textarea></div><div class="lesson-sub" id="ls-resources"><h6 style="margin-bottom:.75rem">📎 Resources</h6><div id="lessonResourcesList"></div></div><div class="lesson-sub" id="ls-qa"><h6 style="margin-bottom:.75rem">💬 Questions &amp; Answers</h6><div style="margin-bottom:.85rem"><textarea class="finput" id="qaInput" style="min-height:80px;resize:vertical" placeholder="Ask a question about this lesson..."></textarea><button class="btn btn-primary btn-sm mt-2" onclick="submitQuestion()"><i class="fas fa-paper-plane"></i>Ask Question</button></div><div id="qaList"></div></div><div class="lesson-sub" id="ls-reviews"><h6 style="margin-bottom:.75rem">⭐ Course Reviews</h6><div id="reviewsListContainer"></div></div><div class="lesson-sub" id="ls-interactive"><h6 style="margin-bottom:.75rem">⚡ Try It Yourself</h6><div id="interactiveMaterialsContainer"></div></div></div><div><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">Curriculum</h6><span style="font-size:.73rem;color:var(--text3)" id="curricProgress">0/0</span></div><div class="prog mb-3" style="height:5px"><div class="prog-fill pf-primary" id="curricBar" style="width:0%"></div></div><div id="curricList" class="thin-scroll" style="max-height:420px;overflow-y:auto"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">📊 Your Progress</h6><div><div class="web-row"><span>Lessons Done</span><strong id="lpLessonsDone">0/0</strong></div><div class="web-row"><span>XP Earned</span><strong style="color:var(--gold)">+0</strong></div><div class="web-row"><span>Quiz Score Avg</span><strong style="color:var(--primary)">—</strong></div><div class="web-row"><span>Time Spent</span><strong>0h 0m</strong></div></div></div></div></div>
-                        <!-- Admin Banner Ads (bottom of lesson) -->
-                        <div id="lessonAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="lessonAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-lesson" class="dash-sub"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><button class="btn btn-ghost btn-sm" onclick="setDP('courses')"><i class="fas fa-arrow-left"></i>Back</button><div class="d-flex gap-2"><button class="btn btn-ghost btn-sm" onclick="openModal('rateModal')"><i class="fas fa-star"></i>Rate</button><button class="btn btn-primary btn-sm" onclick="completeLessonAndNext()"><i class="fas fa-check"></i>Mark Done &amp; Next</button></div></div><div id="interactiveContainer"></div><div class="lesson-layout"><div><div class="video-wrap mb-3" id="lessonVideoWrap"><div style="text-align:center"><div class="play-btn" onclick="toast('Playing lesson video...','info')"><i class="fas fa-play"></i></div><div style="font-size:.78rem;color:var(--text2);margin-top:.75rem" id="currentLessonTitle">Select a course</div><div style="font-size:.7rem;color:var(--text3);margin-top:.2rem" id="currentCourseTitle">Loading...</div></div></div><div class="d-flex justify-between mb-3 gap-2"><button class="btn btn-ghost btn-sm" id="prevLessonBtn" onclick="navigateLesson(-1)"><i class="fas fa-arrow-left"></i>Previous</button><span style="font-size:.78rem;color:var(--text3);padding:.35rem .5rem" id="lessonNavIndicator">—</span><button class="btn btn-primary btn-sm" id="nextLessonBtn" onclick="navigateLesson(1)">Next<i class="fas fa-arrow-right"></i></button></div><div class="lesson-tabs"><div class="ltab active" onclick="switchLTab('overview',this)">Overview</div><div class="ltab" onclick="switchLTab('notes',this)">📝 Notes</div><div class="ltab" onclick="switchLTab('resources',this)">📎 Resources</div><div class="ltab" onclick="switchLTab('qa',this)">💬 Q&amp;A</div><div class="ltab" onclick="switchLTab('reviews',this)">⭐ Reviews</div><div class="ltab" onclick="switchLTab('interactive',this)">⚡ Try It</div></div><div class="lesson-sub active" id="ls-overview"><h5 style="margin-bottom:.5rem" id="lessonOverviewTitle">Loading...</h5><p style="font-size:.84rem;color:var(--text2);line-height:1.7" id="lessonOverviewDesc">Please select a course.</p><div id="courseRatingsContainer"></div></div><div class="lesson-sub" id="ls-notes"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">My Notes</h6><button class="btn btn-primary btn-sm" onclick="saveNote()"><i class="fas fa-save"></i>Save</button></div><textarea class="finput" id="lessonNote" style="min-height:200px;resize:vertical" placeholder="Write your personal notes... They auto-save."></textarea></div><div class="lesson-sub" id="ls-resources"><h6 style="margin-bottom:.75rem">📎 Resources</h6><div id="lessonResourcesList"></div></div><div class="lesson-sub" id="ls-qa"><h6 style="margin-bottom:.75rem">💬 Questions &amp; Answers</h6><div style="margin-bottom:.85rem"><textarea class="finput" id="qaInput" style="min-height:80px;resize:vertical" placeholder="Ask a question about this lesson..."></textarea><button class="btn btn-primary btn-sm mt-2" onclick="submitQuestion()"><i class="fas fa-paper-plane"></i>Ask Question</button></div><div id="qaList"></div></div><div class="lesson-sub" id="ls-reviews"><h6 style="margin-bottom:.75rem">⭐ Course Reviews</h6><div id="reviewsListContainer"></div></div><div class="lesson-sub" id="ls-interactive"><h6 style="margin-bottom:.75rem">⚡ Try It Yourself</h6><div id="interactiveMaterialsContainer"></div></div></div><div><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">Curriculum</h6><span style="font-size:.73rem;color:var(--text3)" id="curricProgress">0/0</span></div><div class="prog mb-3" style="height:5px"><div class="prog-fill pf-primary" id="curricBar" style="width:0%"></div></div><div id="curricList" class="thin-scroll" style="max-height:420px;overflow-y:auto"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">📊 Your Progress</h6><div><div class="web-row"><span>Lessons Done</span><strong id="lpLessonsDone">0/0</strong></div><div class="web-row"><span>XP Earned</span><strong style="color:var(--gold)">+0</strong></div><div class="web-row"><span>Quiz Score Avg</span><strong style="color:var(--primary)">—</strong></div><div class="web-row"><span>Time Spent</span><strong>0h 0m</strong></div></div></div></div></div></div>
 
                     <!-- QUIZ -->
-                    <div id="dash-quiz" class="dash-sub"><div class="page-hd"><h2 class="page-title">Quizzes</h2><p class="page-sub">Test your knowledge and earn XP</p></div><div class="quiz-wrap" id="quizWrap"></div>
-                        <!-- Admin Banner Ads (bottom of quiz) -->
-                        <div id="quizAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="quizAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-quiz" class="dash-sub"><div class="page-hd"><h2 class="page-title">Quizzes</h2><p class="page-sub">Test your knowledge and earn XP</p></div><div class="quiz-wrap" id="quizWrap"></div></div>
+                    <!-- AdSense: Below Quiz -->
+                    <div class="adsense-ad"><div class="adsense-label">📢 Sponsored</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5224024430002176" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
 
                     <!-- CERTS -->
-                    <div id="dash-certs" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 My Certificates</h2><p class="page-sub">Your earned achievements &amp; credentials</p></div><div class="row" id="certsGrid"></div>
-                        <!-- Admin Banner Ads (bottom of certs) -->
-                        <div id="certsAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="certsAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-certs" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 My Certificates</h2><p class="page-sub">Your earned achievements &amp; credentials</p></div><div class="row" id="certsGrid"></div></div>
 
                     <!-- WALLET -->
-                    <div id="dash-wallet" class="dash-sub"><div class="page-hd"><h2 class="page-title">My Wallet</h2><p class="page-sub">Earnings, payouts &amp; transaction history</p></div><div class="row mb-4"><div class="col-12 col-md-4"><div class="wallet-card"><div style="font-size:.7rem;color:var(--text2);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem">💰 Available Balance</div><div class="wallet-bal" id="walletBal">₦0</div><div style="font-size:.74rem;color:var(--text3)" id="walletWeekChange">+₦0 this week</div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-top:.75rem" id="walletBreakdown"></div><div class="d-flex gap-2 mt-3"><button class="btn btn-primary btn-sm flex-1" onclick="openWithdrawModal()"><i class="fas fa-paper-plane"></i>Withdraw</button><button class="btn btn-ghost btn-sm flex-1" onclick="setDP('settings');setTimeout(()=>switchSet('ss-payout'),50)"><i class="fas fa-university"></i>Bank</button></div></div></div><div class="col-12 col-md-8"><div class="row" id="walletStatsRow"></div></div></div><div class="card card-p"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><h6 style="margin:0">Transaction History</h6><select class="finput" style="width:auto;height:32px;font-size:.76rem" onchange="filterTx(this.value)"><option>All</option><option>Referral</option><option>Affiliate</option><option>Instructor</option><option>Bonus</option><option>Withdrawal</option></select></div><div class="overflow-x-auto"><table class="dtable" id="txTable"></table></div></div>
-                        <!-- Admin Banner Ads (bottom of wallet) -->
-                        <div id="walletAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="walletAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-wallet" class="dash-sub"><div class="page-hd"><h2 class="page-title">My Wallet</h2><p class="page-sub">Earnings, payouts &amp; transaction history</p></div><div class="row mb-4"><div class="col-12 col-md-4"><div class="wallet-card"><div style="font-size:.7rem;color:var(--text2);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem">💰 Available Balance</div><div class="wallet-bal" id="walletBal">₦0</div><div style="font-size:.74rem;color:var(--text3)" id="walletWeekChange">+₦0 this week</div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-top:.75rem" id="walletBreakdown"></div><div class="d-flex gap-2 mt-3"><button class="btn btn-primary btn-sm flex-1" onclick="openWithdrawModal()"><i class="fas fa-paper-plane"></i>Withdraw</button><button class="btn btn-ghost btn-sm flex-1" onclick="setDP('settings');setTimeout(()=>switchSet('ss-payout'),50)"><i class="fas fa-university"></i>Bank</button></div></div></div><div class="col-12 col-md-8"><div class="row" id="walletStatsRow"></div></div></div><div class="card card-p"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><h6 style="margin:0">Transaction History</h6><select class="finput" style="width:auto;height:32px;font-size:.76rem" onchange="filterTx(this.value)"><option>All</option><option>Referral</option><option>Affiliate</option><option>Instructor</option><option>Bonus</option><option>Withdrawal</option></select></div><div class="overflow-x-auto"><table class="dtable" id="txTable"></table></div></div></div>
+                    <!-- AdSense: Below Wallet -->
+                    <div class="adsense-ad"><div class="adsense-label">📢 Sponsored</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5224024430002176" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
 
                     <!-- AFFILIATES -->
-                    <div id="dash-affiliates" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤝 Affiliate Dashboard</h2><p class="page-sub">Promote courses and earn commissions</p></div><button class="btn btn-ghost btn-sm mb-3" onclick="renderAffiliates()"><i class="fas fa-sync-alt"></i> Refresh Offers</button><div class="row mb-4" id="affStatsRow"></div><div class="card card-p mb-3"><h6 style="margin-bottom:.65rem">📣 Available Affiliate Offers</h6><p style="font-size:.81rem;color:var(--text3);margin-bottom:.85rem">Accept any offer to get your unique affiliate link &amp; code for that course</p><div id="affiliateOffers"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">🔗 My Active Affiliate Links</h6><div id="myAffiliateLinks"></div></div>
-                        <!-- Admin Banner Ads (bottom of affiliates) -->
-                        <div id="affiliatesAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="affiliatesAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-affiliates" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤝 Affiliate Dashboard</h2><p class="page-sub">Promote courses and earn commissions</p></div><button class="btn btn-ghost btn-sm mb-3" onclick="renderAffiliates()"><i class="fas fa-sync-alt"></i> Refresh Offers</button><div class="row mb-4" id="affStatsRow"></div><div class="card card-p mb-3"><h6 style="margin-bottom:.65rem">📣 Available Affiliate Offers</h6><p style="font-size:.81rem;color:var(--text3);margin-bottom:.85rem">Accept any offer to get your unique affiliate link &amp; code for that course</p><div id="affiliateOffers"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">🔗 My Active Affiliate Links</h6><div id="myAffiliateLinks"></div></div></div>
 
                     <!-- REFERRALS -->
-                    <div id="dash-referrals" class="dash-sub"><div class="page-hd"><h2 class="page-title">Referral Program</h2><p class="page-sub">Earn ₦500 for every friend who subscribes</p></div><div class="row mb-4" id="refStatsRow"></div><div class="card card-p mb-3"><div style="font-size:.7rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">Your Referral Link</div><div class="ref-box"><i class="fas fa-link" style="color:var(--accent);flex-shrink:0"></i><span class="ref-link" id="refLink">Loading...</span><button class="btn btn-primary btn-sm" onclick="copyRefLink()"><i class="fas fa-copy"></i>Copy</button></div><div style="display:flex;align-items:center;gap:.5rem;margin-top:.6rem"><span style="font-size:.76rem;color:var(--text3)">Your code:</span><span style="font-family:var(--font-mono);font-size:.85rem;color:var(--primary);font-weight:700" id="refCode">—</span><button class="btn btn-ghost btn-sm" onclick="copyRefCode()"><i class="fas fa-copy"></i></button></div><div class="d-flex gap-2 mt-3 flex-wrap"><button class="btn btn-ghost btn-sm" onclick="shareWhatsApp()"><i class="fab fa-whatsapp" style="color:#25d366"></i>WhatsApp</button><button class="btn btn-ghost btn-sm" onclick="shareOnSocial('twitter')"><i class="fab fa-twitter" style="color:#1da1f2"></i>Twitter</button><button class="btn btn-ghost btn-sm" onclick="shareOnSocial('telegram')"><i class="fab fa-telegram" style="color:#0088cc"></i>Telegram</button></div></div><div class="card card-p"><h6 style="margin-bottom:.85rem">Recent Referrals</h6><div class="overflow-x-auto"><table class="dtable" id="referralTable"></table></div></div>
-                        <!-- Admin Banner Ads (bottom of referrals) -->
-                        <div id="referralsAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="referralsAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-referrals" class="dash-sub"><div class="page-hd"><h2 class="page-title">Referral Program</h2><p class="page-sub">Earn ₦500 for every friend who subscribes</p></div><div class="row mb-4" id="refStatsRow"></div><div class="card card-p mb-3"><div style="font-size:.7rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">Your Referral Link</div><div class="ref-box"><i class="fas fa-link" style="color:var(--accent);flex-shrink:0"></i><span class="ref-link" id="refLink">Loading...</span><button class="btn btn-primary btn-sm" onclick="copyRefLink()"><i class="fas fa-copy"></i>Copy</button></div><div style="display:flex;align-items:center;gap:.5rem;margin-top:.6rem"><span style="font-size:.76rem;color:var(--text3)">Your code:</span><span style="font-family:var(--font-mono);font-size:.85rem;color:var(--primary);font-weight:700" id="refCode">—</span><button class="btn btn-ghost btn-sm" onclick="copyRefCode()"><i class="fas fa-copy"></i></button></div><div class="d-flex gap-2 mt-3 flex-wrap"><button class="btn btn-ghost btn-sm" onclick="shareWhatsApp()"><i class="fab fa-whatsapp" style="color:#25d366"></i>WhatsApp</button><button class="btn btn-ghost btn-sm" onclick="shareOnSocial('twitter')"><i class="fab fa-twitter" style="color:#1da1f2"></i>Twitter</button><button class="btn btn-ghost btn-sm" onclick="shareOnSocial('telegram')"><i class="fab fa-telegram" style="color:#0088cc"></i>Telegram</button></div></div><div class="card card-p"><h6 style="margin-bottom:.85rem">Recent Referrals</h6><div class="overflow-x-auto"><table class="dtable" id="referralTable"></table></div></div></div>
 
                     <!-- LEADERBOARD -->
-                    <div id="dash-leaderboard" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Leaderboard</h2><p class="page-sub">Top earners and learners this week</p></div><div class="tabs mb-3"><button class="tab-btn active" onclick="switchLbTab('xp',this)">XP</button><button class="tab-btn" onclick="switchLbTab('earnings',this)">Earnings</button><button class="tab-btn" onclick="switchLbTab('streak',this)">Streaks</button><button class="tab-btn" onclick="switchLbTab('refs',this)">Referrals</button><button class="tab-btn" onclick="switchLbTab('followers',this)">Followers</button></div><div class="card card-p" id="lbFull"></div>
-                        <!-- Admin Banner Ads (bottom of leaderboard) -->
-                        <div id="leaderboardAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="leaderboardAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-leaderboard" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 Leaderboard</h2><p class="page-sub">Top earners and learners this week</p></div><div class="tabs mb-3"><button class="tab-btn active" onclick="switchLbTab('xp',this)">XP</button><button class="tab-btn" onclick="switchLbTab('earnings',this)">Earnings</button><button class="tab-btn" onclick="switchLbTab('streak',this)">Streaks</button><button class="tab-btn" onclick="switchLbTab('refs',this)">Referrals</button></div><div class="card card-p" id="lbFull"></div></div>
 
                     <!-- INSTRUCTOR HUB -->
-                    <div id="dash-instructor" class="dash-sub"><div class="d-flex items-center gap-3 mb-4 flex-wrap" style="padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)"><div class="si si-v" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-chalkboard-teacher"></i></div><div><h4 style="margin:0">Instructor Hub</h4><p style="font-size:.8rem;color:var(--text2);margin:.15rem 0 0">Publish, track, manage</p></div><div style="margin-left:auto;display:flex;gap:.4rem;flex-wrap:wrap"><span class="badge badge-violet" id="instVerifiedBadge">Verified</span><button class="btn btn-primary btn-sm" onclick="initNewCourse()"><i class="fas fa-plus"></i>New Course</button></div></div><div id="instPremiumGate" style="display:none"></div><div id="instContent"><div class="tabs mb-3"><button class="tab-btn active" onclick="switchInstTab('courses',this)">My Courses</button><button class="tab-btn" onclick="switchInstTab('sales',this)">Sales &amp; Analytics</button><button class="tab-btn" onclick="switchInstTab('earnings',this)">Earnings Breakdown</button></div><div id="inst-tab-courses"><div class="row mb-4" id="instStatsRow"></div><div class="card card-p mb-3" id="instQANotifs" style="display:none"><h6 style="margin-bottom:.65rem;color:var(--orange)">🔔 Pending Q&amp;A Questions</h6><div id="instQAList"></div></div><div class="card card-p"><h6 style="margin-bottom:.85rem">My Published Courses</h6><div class="overflow-x-auto"><table class="dtable" id="instCoursesTable"></table></div></div></div><div id="inst-tab-sales" style="display:none"><div class="card card-p"><h6 style="margin-bottom:.85rem">📊 Sales &amp; Revenue</h6><div id="instSalesContent"><div class="empty-state"><i class="fas fa-chart-line"></i><h4>Loading sales data...</h4></div></div></div></div><div id="inst-tab-earnings" style="display:none"><div class="card card-p"><h6 style="margin-bottom:.85rem">💰 Earnings Breakdown</h6><div id="instEarningsContent"><div class="empty-state"><i class="fas fa-wallet"></i><h4>Loading earnings...</h4></div></div></div></div></div>
-                        <!-- Admin Banner Ads (bottom of instructor) -->
-                        <div id="instructorAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="instructorAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-instructor" class="dash-sub"><div class="d-flex items-center gap-3 mb-4 flex-wrap" style="padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)"><div class="si si-v" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-chalkboard-teacher"></i></div><div><h4 style="margin:0">Instructor Hub</h4><p style="font-size:.8rem;color:var(--text2);margin:.15rem 0 0">Publish, track, manage</p></div><div style="margin-left:auto;display:flex;gap:.4rem;flex-wrap:wrap"><span class="badge badge-violet" id="instVerifiedBadge">Verified</span><button class="btn btn-primary btn-sm" onclick="initNewCourse()"><i class="fas fa-plus"></i>New Course</button></div></div><div id="instPremiumGate" style="display:none"></div><div id="instContent"><div class="tabs mb-3"><button class="tab-btn active" onclick="switchInstTab('courses',this)">My Courses</button><button class="tab-btn" onclick="switchInstTab('sales',this)">Sales &amp; Analytics</button><button class="tab-btn" onclick="switchInstTab('earnings',this)">Earnings Breakdown</button></div><div id="inst-tab-courses"><div class="row mb-4" id="instStatsRow"></div><div class="card card-p mb-3" id="instQANotifs" style="display:none"><h6 style="margin-bottom:.65rem;color:var(--orange)">🔔 Pending Q&amp;A Questions</h6><div id="instQAList"></div></div><div class="card card-p"><h6 style="margin-bottom:.85rem">My Published Courses</h6><div class="overflow-x-auto"><table class="dtable" id="instCoursesTable"></table></div></div></div><div id="inst-tab-sales" style="display:none"><div class="card card-p"><h6 style="margin-bottom:.85rem">📊 Sales &amp; Revenue</h6><div id="instSalesContent"><div class="empty-state"><i class="fas fa-chart-line"></i><h4>Loading sales data...</h4></div></div></div></div><div id="inst-tab-earnings" style="display:none"><div class="card card-p"><h6 style="margin-bottom:.85rem">💰 Earnings Breakdown</h6><div id="instEarningsContent"><div class="empty-state"><i class="fas fa-wallet"></i><h4>Loading earnings...</h4></div></div></div></div></div></div>
 
                     <!-- COURSE EDITOR -->
-                    <div id="dash-course-editor" class="dash-sub"><div class="editor-shell"><div class="editor-sidebar"><div class="esc-label">COURSE SETUP</div><div class="esc-step active" id="es-1" onclick="goES(1)"><div class="esc-num">1</div><div class="esc-text">Basic Info</div></div><div class="esc-step" id="es-2" onclick="goES(2)"><div class="esc-num">2</div><div class="esc-text">Lessons</div></div><div class="esc-step" id="es-3" onclick="goES(3)"><div class="esc-num">3</div><div class="esc-text">Content</div></div><div class="esc-step" id="es-4" onclick="goES(4)"><div class="esc-num">4</div><div class="esc-text">Media</div></div><div class="esc-step" id="es-5" onclick="goES(5)"><div class="esc-num">5</div><div class="esc-text">Quiz</div></div><div class="esc-step" id="es-6" onclick="goES(6)"><div class="esc-num">6</div><div class="esc-text">Pricing</div></div><div class="esc-step" id="es-7" onclick="goES(7)"><div class="esc-num">7</div><div class="esc-text">Affiliate</div></div><div class="esc-step" id="es-8" onclick="goES(8)"><div class="esc-num">8</div><div class="esc-text">Review</div></div></div><div class="editor-main"><div class="editor-topbar"><button class="btn btn-ghost btn-sm" onclick="setDP('instructor')"><i class="fas fa-arrow-left"></i>Back</button><div class="flex-1"><div style="font-size:.8rem;font-weight:600" id="edCourseTitle">Untitled Course</div><div style="font-size:.7rem;color:var(--text3)" id="edAutoSave">Draft · Auto-saved</div></div><button class="btn btn-ghost btn-sm" onclick="saveDraftToServer(false)"><i class="fas fa-save"></i>Save Draft</button><button class="btn btn-primary btn-sm" onclick="goES(8)"><i class="fas fa-rocket"></i>Review</button></div><div class="editor-step-panel active" id="esp-1"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Basic Info</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1.25rem">Tell students what your course is about.</p><div class="form-group"><label class="flabel">Course Title</label><input type="text" class="finput" id="edTitle" placeholder="e.g. JavaScript Mastery: Zero to Freelancer" oninput="document.getElementById('edCourseTitle').textContent=this.value||'Untitled Course'"/></div><div class="form-group"><label class="flabel">Subtitle</label><input type="text" class="finput" id="edSubtitle" placeholder="A short powerful description..."/></div><div class="form-group"><label class="flabel">Description</label><div class="quill-wrapper"><div id="descEditorQuill" style="min-height:200px"></div></div></div><div class="row"><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Category</label><select class="finput" id="edCategory"><option>Web Development</option><option>AI &amp; Tools</option><option>Freelancing</option><option>Design</option><option>Backend</option><option>Mobile Dev</option><option>Data Science</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Level</label><select class="finput" id="edLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>All Levels</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Language</label><select class="finput" id="edLanguage"><option>English</option><option>Pidgin English</option><option>Yoruba</option><option>Igbo</option><option>Hausa</option></select></div></div></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Thumbnail Emoji</label><input type="text" class="finput" id="edEmoji" placeholder="📚" maxlength="4"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Promo Video URL (optional)</label><input type="url" class="finput" id="edPromoVideo" placeholder="https://youtube.com/..."/></div></div></div><div class="form-group"><label class="flabel">Learning Outcomes</label><div id="outcomesList" style="display:flex;flex-direction:column;gap:.35rem;margin-bottom:.45rem"></div><button class="btn btn-ghost btn-sm" onclick="addOutcome()"><i class="fas fa-plus"></i>Add Outcome</button></div><div class="d-flex items-center gap-2 p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:.5rem"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Issue Certificate on Completion</div><div style="font-size:.74rem;color:var(--text3)">Students who complete get a certificate</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" id="edCertEnabled"/></div><div style="display:flex;justify-content:flex-end;margin-top:1.5rem"><button class="btn btn-primary" onclick="goES(2)">Next: Lessons <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-2"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Course Curriculum</h4><p style="font-size:.82rem;color:var(--text3)">Minimum <strong style="color:var(--primary)">20 lessons</strong> required to publish</p></div><button class="btn btn-primary btn-sm" onclick="openModal('addLessonModal')"><i class="fas fa-plus"></i>Add Lesson</button></div><div id="lessonCountBadge" style="margin-bottom:.85rem"></div><div id="lessonBuilderList"></div><div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.79rem;color:var(--text2);margin-bottom:1rem"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>You need at least 20 lessons with content to submit for admin approval.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(1)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(3)">Next: Content <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-3"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Lesson Content Editor</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Edit each lesson's content using the rich text editor. Content is always editable even after approval.</p><div id="lessonContentEditor"></div><div class="d-flex justify-between mt-4"><button class="btn btn-ghost" onclick="goES(2)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(4)">Next: Media <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-4"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Media &amp; Files Upload</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem" id="uploadLimitNote">Upload videos, PDFs, images, resources for your course.</p><div class="upload-zone" style="padding:2rem;margin-bottom:1rem"><input type="file" multiple id="mediaFileInput" onchange="handleMediaUpload(this)"/><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.88rem;color:var(--text2);font-weight:600">Drop any files here or click to upload</div><div style="font-size:.74rem;color:var(--text3);margin-top:.3rem" id="uploadHint">Free: max 10 files · Premium: unlimited files of any size</div></div><div id="uploadedFilesList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(3)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(5)">Next: Quiz <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-5"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Quiz Builder</h4><p style="font-size:.82rem;color:var(--text3)">Add quiz questions for this course</p></div><button class="btn btn-primary btn-sm" onclick="addQuizQ()"><i class="fas fa-plus"></i>Add Question</button></div><div id="quizBuilderList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(4)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(6)">Next: Pricing <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-6"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Pricing</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Platform takes 20%, you keep 80%.</p><div style="display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.25rem"><div class="price-type-opt selected" id="pt-paid" onclick="selectPriceType('paid')"><i class="fas fa-tag" style="color:var(--primary);width:20px"></div><div><strong>Paid Course</strong><br><small style="color:var(--text3)">Students pay to access</small></div></div><div class="price-type-opt" id="pt-free" onclick="selectPriceType('free')"><i class="fas fa-gift" style="color:var(--accent);width:20px"></div><div><strong>Free Course</strong><br><small style="color:var(--text3)">Open to all students</small></div></div><div class="price-type-opt" id="pt-sub" onclick="selectPriceType('sub')"><i class="fas fa-crown" style="color:var(--gold);width:20px"></div><div><strong>Premium Only</strong><br><small style="color:var(--text3)">Only premium subscribers</small></div></div></div><div id="pricingFields"><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Price (₦)</label><input type="number" class="finput" id="edPrice" placeholder="e.g. 15000" min="1000"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Sale Price (₦, optional)</label><input type="number" class="finput" id="edSalePrice" placeholder="e.g. 12000"/></div></div></div></div><div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>Revenue: <strong style="color:var(--primary)">80%</strong> to you · <strong style="color:var(--text3)">20%</strong> platform fee per sale.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(5)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(7)">Next: Affiliate <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-7"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">🤝 Affiliate Program</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Let other ChangeX users promote your course and earn commissions.</p><div class="d-flex items-center gap-2 p-3 mb-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Enable Affiliate Program</div><div style="font-size:.74rem;color:var(--text3)">After admin approves, all users get notified</div></div><input type="checkbox" id="edAffEnabled" style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" onchange="toggleAffiliateFields(this.checked)"/></div><div id="affiliateFields" style="display:none"><div class="form-group"><label class="flabel">Commission Percentage (%)</label><input type="number" class="finput" id="edAffPercent" placeholder="e.g. 15" min="5" max="50" value="15"/></div><div class="form-group"><label class="flabel">Affiliate Offer Description</label><textarea class="finput" style="min-height:80px;resize:vertical" id="edAffDesc" placeholder="e.g. Promote this JS course and earn 15% commission!"></textarea></div></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(6)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(8)">Next: Review <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-8"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Review &amp; Submit</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Review your course before submitting for admin approval.</p><div id="courseReviewSummary"></div><div style="background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:var(--radius-sm);padding:.85rem;margin:1rem 0;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--accent);margin-right:.3rem"></i>After submission, admin reviews your course. On approval, all ChangeX users get a notification. You can still edit after approval — changes will be reviewed again.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(7)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary btn-lg" onclick="submitCourseForApproval()"><i class="fas fa-rocket"></i>Submit for Approval</button></div></div></div></div></div>
-                        <!-- Admin Banner Ads (bottom of course editor) -->
-                        <div id="courseEditorAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="courseEditorAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-course-editor" class="dash-sub"><div class="editor-shell"><div class="editor-sidebar"><div class="esc-label">COURSE SETUP</div><div class="esc-step active" id="es-1" onclick="goES(1)"><div class="esc-num">1</div><div class="esc-text">Basic Info</div></div><div class="esc-step" id="es-2" onclick="goES(2)"><div class="esc-num">2</div><div class="esc-text">Lessons</div></div><div class="esc-step" id="es-3" onclick="goES(3)"><div class="esc-num">3</div><div class="esc-text">Content</div></div><div class="esc-step" id="es-4" onclick="goES(4)"><div class="esc-num">4</div><div class="esc-text">Media</div></div><div class="esc-step" id="es-5" onclick="goES(5)"><div class="esc-num">5</div><div class="esc-text">Quiz</div></div><div class="esc-step" id="es-6" onclick="goES(6)"><div class="esc-num">6</div><div class="esc-text">Pricing</div></div><div class="esc-step" id="es-7" onclick="goES(7)"><div class="esc-num">7</div><div class="esc-text">Affiliate</div></div><div class="esc-step" id="es-8" onclick="goES(8)"><div class="esc-num">8</div><div class="esc-text">Review</div></div></div><div class="editor-main"><div class="editor-topbar"><button class="btn btn-ghost btn-sm" onclick="setDP('instructor')"><i class="fas fa-arrow-left"></i>Back</button><div class="flex-1"><div style="font-size:.8rem;font-weight:600" id="edCourseTitle">Untitled Course</div><div style="font-size:.7rem;color:var(--text3)" id="edAutoSave">Draft · Auto-saved</div></div><button class="btn btn-ghost btn-sm" onclick="saveDraftToServer(false)"><i class="fas fa-save"></i>Save Draft</button><button class="btn btn-primary btn-sm" onclick="goES(8)"><i class="fas fa-rocket"></i>Review</button></div><div class="editor-step-panel active" id="esp-1"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Basic Info</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1.25rem">Tell students what your course is about.</p><div class="form-group"><label class="flabel">Course Title</label><input type="text" class="finput" id="edTitle" placeholder="e.g. JavaScript Mastery: Zero to Freelancer" oninput="document.getElementById('edCourseTitle').textContent=this.value||'Untitled Course'"/></div><div class="form-group"><label class="flabel">Subtitle</label><input type="text" class="finput" id="edSubtitle" placeholder="A short powerful description..."/></div><div class="form-group"><label class="flabel">Description</label><div class="quill-wrapper"><div id="descEditorQuill" style="min-height:200px"></div></div></div><div class="row"><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Category</label><select class="finput" id="edCategory"><option>Web Development</option><option>AI &amp; Tools</option><option>Freelancing</option><option>Design</option><option>Backend</option><option>Mobile Dev</option><option>Data Science</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Level</label><select class="finput" id="edLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>All Levels</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Language</label><select class="finput" id="edLanguage"><option>English</option><option>Pidgin English</option><option>Yoruba</option><option>Igbo</option><option>Hausa</option></select></div></div></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Thumbnail Emoji</label><input type="text" class="finput" id="edEmoji" placeholder="📚" maxlength="4"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Promo Video URL (optional)</label><input type="url" class="finput" id="edPromoVideo" placeholder="https://youtube.com/..."/></div></div></div><div class="form-group"><label class="flabel">Learning Outcomes</label><div id="outcomesList" style="display:flex;flex-direction:column;gap:.35rem;margin-bottom:.45rem"></div><button class="btn btn-ghost btn-sm" onclick="addOutcome()"><i class="fas fa-plus"></i>Add Outcome</button></div><div class="d-flex items-center gap-2 p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:.5rem"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Issue Certificate on Completion</div><div style="font-size:.74rem;color:var(--text3)">Students who complete get a certificate</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" id="edCertEnabled"/></div><div style="display:flex;justify-content:flex-end;margin-top:1.5rem"><button class="btn btn-primary" onclick="goES(2)">Next: Lessons <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-2"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Course Curriculum</h4><p style="font-size:.82rem;color:var(--text3)">Minimum <strong style="color:var(--primary)">20 lessons</strong> required to publish</p></div><button class="btn btn-primary btn-sm" onclick="openModal('addLessonModal')"><i class="fas fa-plus"></i>Add Lesson</button></div><div id="lessonCountBadge" style="margin-bottom:.85rem"></div><div id="lessonBuilderList"></div><div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.79rem;color:var(--text2);margin-bottom:1rem"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>You need at least 20 lessons with content to submit for admin approval.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(1)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(3)">Next: Content <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-3"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Lesson Content Editor</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Edit each lesson's content using the rich text editor. Content is always editable even after approval.</p><div id="lessonContentEditor"></div><div class="d-flex justify-between mt-4"><button class="btn btn-ghost" onclick="goES(2)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(4)">Next: Media <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-4"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Media &amp; Files Upload</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem" id="uploadLimitNote">Upload videos, PDFs, images, resources for your course.</p><div class="upload-zone" style="padding:2rem;margin-bottom:1rem"><input type="file" multiple id="mediaFileInput" onchange="handleMediaUpload(this)"/><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.88rem;color:var(--text2);font-weight:600">Drop any files here or click to upload</div><div style="font-size:.74rem;color:var(--text3);margin-top:.3rem" id="uploadHint">Free: max 10 files · Premium: unlimited files of any size</div></div><div id="uploadedFilesList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(3)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(5)">Next: Quiz <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-5"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Quiz Builder</h4><p style="font-size:.82rem;color:var(--text3)">Add quiz questions for this course</p></div><button class="btn btn-primary btn-sm" onclick="addQuizQ()"><i class="fas fa-plus"></i>Add Question</button></div><div id="quizBuilderList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(4)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(6)">Next: Pricing <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-6"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Pricing</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Platform takes 20%, you keep 80%.</p><div style="display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.25rem"><div class="price-type-opt selected" id="pt-paid" onclick="selectPriceType('paid')"><i class="fas fa-tag" style="color:var(--primary);width:20px"></i><div><strong>Paid Course</strong><br><small style="color:var(--text3)">Students pay to access</small></div></div><div class="price-type-opt" id="pt-free" onclick="selectPriceType('free')"><i class="fas fa-gift" style="color:var(--accent);width:20px"></i><div><strong>Free Course</strong><br><small style="color:var(--text3)">Open to all students</small></div></div><div class="price-type-opt" id="pt-sub" onclick="selectPriceType('sub')"><i class="fas fa-crown" style="color:var(--gold);width:20px"></i><div><strong>Premium Only</strong><br><small style="color:var(--text3)">Only premium subscribers</small></div></div></div><div id="pricingFields"><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Price (₦)</label><input type="number" class="finput" id="edPrice" placeholder="e.g. 15000" min="1000"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Sale Price (₦, optional)</label><input type="number" class="finput" id="edSalePrice" placeholder="e.g. 12000"/></div></div></div></div><div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>Revenue: <strong style="color:var(--primary)">80%</strong> to you · <strong style="color:var(--text3)">20%</strong> platform fee per sale.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(5)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(7)">Next: Affiliate <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-7"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">🤝 Affiliate Program</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Let other ChangeX users promote your course and earn commissions.</p><div class="d-flex items-center gap-2 p-3 mb-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Enable Affiliate Program</div><div style="font-size:.74rem;color:var(--text3)">After admin approves, all users get notified</div></div><input type="checkbox" id="edAffEnabled" style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" onchange="toggleAffiliateFields(this.checked)"/></div><div id="affiliateFields" style="display:none"><div class="form-group"><label class="flabel">Commission Percentage (%)</label><input type="number" class="finput" id="edAffPercent" placeholder="e.g. 15" min="5" max="50" value="15"/></div><div class="form-group"><label class="flabel">Affiliate Offer Description</label><textarea class="finput" style="min-height:80px;resize:vertical" id="edAffDesc" placeholder="e.g. Promote this JS course and earn 15% commission!"></textarea></div></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(6)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(8)">Next: Review <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-8"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Review &amp; Submit</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Review your course before submitting for admin approval.</p><div id="courseReviewSummary"></div><div style="background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:var(--radius-sm);padding:.85rem;margin:1rem 0;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--accent);margin-right:.3rem"></i>After submission, admin reviews your course. On approval, all ChangeX users get a notification. You can still edit after approval — changes will be reviewed again.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(7)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary btn-lg" onclick="submitCourseForApproval()"><i class="fas fa-rocket"></i>Submit for Approval</button></div></div></div></div></div></div>
 
                     <!-- AI TUTOR -->
-                    <div id="dash-ai" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤖 AI Tutor</h2><p class="page-sub">Your personal AI-powered learning assistant</p></div><div id="aiPlanNote" style="margin-bottom:.85rem"></div><div class="card card-p mb-3"><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.85rem"><button class="fpill active" onclick="switchAIMode('chat',this)"><i class="fas fa-comments"></i>Chat</button><button class="fpill" onclick="switchAIMode('explain',this)"><i class="fas fa-book-open"></i>Explain Code</button><button class="fpill" onclick="switchAIMode('quiz',this)"><i class="fas fa-question-circle"></i>Generate Quiz</button><button class="fpill" onclick="switchAIMode('upload',this)"><i class="fas fa-upload"></i>Upload &amp; Analyze</button></div><div id="aiMessages" style="min-height:280px;max-height:380px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.65rem;display:flex;flex-direction:column;gap:.6rem"></div><div class="d-flex gap-2"><input type="text" class="finput flex-1" id="aiInput" placeholder="Ask me anything about coding or your course..." onkeydown="if(event.key==='Enter')sendAI()"/><button class="btn btn-primary btn-sm" onclick="sendAI()"><i class="fas fa-paper-plane"></i></button></div></div><div class="card card-p" id="aiUploadPanel" style="display:none"><h6 style="margin-bottom:.65rem">📎 Upload Files for AI Analysis</h6><div id="aiUploadInfo" style="font-size:.8rem;color:var(--text3);margin-bottom:.65rem"></div><div class="upload-zone" style="padding:1.5rem"><input type="file" multiple id="aiFileInput" onchange="handleAIUpload(this)"/><div class="upload-icon"><i class="fas fa-file-upload"></i></div><div style="font-size:.84rem;color:var(--text2)">Drop any file here (PDF, image, code, etc.)</div><div style="font-size:.72rem;color:var(--text3);margin-top:.2rem" id="aiUploadLimit"></div></div><div id="aiUploadedFiles" style="margin-top:.65rem"></div></div>
-                        <!-- Admin Banner Ads (bottom of ai) -->
-                        <div id="aiAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="aiAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-ai" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤖 AI Tutor</h2><p class="page-sub">Your personal AI-powered learning assistant</p></div><div id="aiPlanNote" style="margin-bottom:.85rem"></div><div class="card card-p mb-3"><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.85rem"><button class="fpill active" onclick="switchAIMode('chat',this)"><i class="fas fa-comments"></i>Chat</button><button class="fpill" onclick="switchAIMode('explain',this)"><i class="fas fa-book-open"></i>Explain Code</button><button class="fpill" onclick="switchAIMode('quiz',this)"><i class="fas fa-question-circle"></i>Generate Quiz</button><button class="fpill" onclick="switchAIMode('upload',this)"><i class="fas fa-upload"></i>Upload &amp; Analyze</button></div><div id="aiMessages" style="min-height:280px;max-height:380px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.65rem;display:flex;flex-direction:column;gap:.6rem"></div><div class="d-flex gap-2"><input type="text" class="finput flex-1" id="aiInput" placeholder="Ask me anything about coding or your course..." onkeydown="if(event.key==='Enter')sendAI()"/><button class="btn btn-primary btn-sm" onclick="sendAI()"><i class="fas fa-paper-plane"></i></button></div></div><div class="card card-p" id="aiUploadPanel" style="display:none"><h6 style="margin-bottom:.65rem">📎 Upload Files for AI Analysis</h6><div id="aiUploadInfo" style="font-size:.8rem;color:var(--text3);margin-bottom:.65rem"></div><div class="upload-zone" style="padding:1.5rem"><input type="file" multiple id="aiFileInput" onchange="handleAIUpload(this)"/><div class="upload-icon"><i class="fas fa-file-upload"></i></div><div style="font-size:.84rem;color:var(--text2)">Drop any file here (PDF, image, code, etc.)</div><div style="font-size:.72rem;color:var(--text3);margin-top:.2rem" id="aiUploadLimit"></div></div><div id="aiUploadedFiles" style="margin-top:.65rem"></div></div></div>
 
                     <!-- BOOKS -->
-                    <div id="dash-books" class="dash-sub"><div class="page-hd"><h2 class="page-title">📚 Digital Library</h2><p class="page-sub">Browse, read and download books</p></div><div id="adBookBanner" class="ad-container"></div><div id="booksGrid" class="courses-grid"></div>
-                        <!-- Admin Banner Ads (bottom of books) -->
-                        <div id="booksAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="booksAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-books" class="dash-sub"><div class="page-hd"><h2 class="page-title">📚 Digital Library</h2><p class="page-sub">Browse, read and download books</p></div><div id="adBookBanner" class="ad-container"></div><div id="booksGrid" class="courses-grid"></div></div>
 
                     <!-- BOOK DETAIL -->
-                    <div id="dash-book-detail" class="dash-sub"><div class="page-hd"><button class="btn btn-ghost btn-sm" onclick="setDP('books')"><i class="fas fa-arrow-left"></i> Back to Library</button></div><div id="bookDetailContent"></div>
-                        <!-- Admin Banner Ads (bottom of book detail) -->
-                        <div id="bookDetailAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="bookDetailAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-book-detail" class="dash-sub"><div class="page-hd"><button class="btn btn-ghost btn-sm" onclick="setDP('books')"><i class="fas fa-arrow-left"></i> Back to Library</button></div><div id="bookDetailContent"></div></div>
 
                     <!-- SETTINGS -->
-                    <div id="dash-settings" class="dash-sub"><div class="page-hd"><h2 class="page-title">Settings</h2><p class="page-sub">Manage your account &amp; preferences</p></div><div class="set-tabs"><div class="set-tab active" onclick="switchSet('ss-profile',this)">Profile</div><div class="set-tab" onclick="switchSet('ss-security',this)">Security</div><div class="set-tab" onclick="switchSet('ss-payout',this)">Payouts</div><div class="set-tab" onclick="switchSet('ss-subscription',this)">Subscription</div><div class="set-tab" onclick="switchSet('ss-prefs',this)">Preferences</div><div class="set-tab" onclick="switchSet('ss-notifs',this)">Notifications</div></div><div class="set-sec active" id="ss-profile"><div class="card card-p"><div class="d-flex items-center gap-3 mb-4 flex-wrap"><div class="um-av" id="settingsAv" style="width:64px;height:64px;font-size:1.4rem;background:linear-gradient(135deg,var(--primary),var(--secondary))">U</div><div><h5 style="margin-bottom:.2rem" id="settingsName">User</h5><div id="settingsRoles"><span class="badge badge-cyan">Student</span></div></div><button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="document.getElementById('avatarFileInput').click()"><i class="fas fa-camera"></i>Change Photo</button><input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)"/></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="setFirstName" value=""/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="setLastName" value=""/></div></div></div><div class="form-group"><label class="flabel">Email</label><input type="email" class="finput" id="setEmail" readonly/></div><div class="form-group"><label class="flabel">Phone</label><input type="tel" class="finput" id="setPhone" value=""/></div><div class="form-group"><label class="flabel">Bio</label><textarea class="finput" id="setBio" style="min-height:80px;resize:vertical" placeholder="Tell the world about yourself..."></textarea></div><div class="form-group"><label class="flabel">Location</label><input type="text" class="finput" id="setLocation" placeholder="e.g. Lagos, Nigeria"/></div><button class="btn btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i>Save Profile</button></div></div><div class="set-sec" id="ss-security"><div class="card card-p"><h5 style="margin-bottom:1rem">Security Settings</h5><div class="form-group"><label class="flabel">Current Password</label><input type="password" class="finput" id="secCurrentPw" placeholder="••••••••"/></div><div class="form-group"><label class="flabel">New Password</label><input type="password" class="finput" id="secNewPw" placeholder="Min 8 characters"/></div><div class="form-group"><label class="flabel">Confirm Password</label><input type="password" class="finput" id="secConfirmPw" placeholder="Repeat new password"/></div><button class="btn btn-primary" onclick="changePassword()"><i class="fas fa-lock"></i>Update Password</button></div></div><div class="set-sec" id="ss-payout"><div class="card card-p"><h5 style="margin-bottom:.7rem">Payout Settings</h5><p style="font-size:.76rem;color:var(--text3);margin-bottom:1rem">Bank details are required before you can withdraw your earnings.</p><div class="form-group"><label class="flabel">Bank</label><select class="finput" id="payoutBank"><option value="">Select Bank</option><option>GTBank</option><option>Access Bank</option><option>Zenith Bank</option><option>UBA</option><option>First Bank</option><option>Opay</option><option>Palmpay</option><option>Kuda Bank</option><option>Moniepoint</option></select></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Number</label><input type="text" class="finput" id="payoutAccNum" placeholder="0123456789" maxlength="10"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Name</label><input type="text" class="finput" id="payoutAccName" placeholder="Enter your full name"/></div></div></div><div id="payoutSaveStatus" style="font-size:.76rem;margin-bottom:.75rem;min-height:1.2em"></div><button class="btn btn-primary" onclick="savePayoutSettings()"><i class="fas fa-save"></i>Save Bank Details</button></div></div><div class="set-sec" id="ss-subscription"><div class="card card-p" id="subStatusCard"></div></div><div class="set-sec" id="ss-prefs"><div class="card card-p"><h5 style="margin-bottom:1rem">Preferences</h5><div style="display:flex;flex-direction:column;gap:.55rem"><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Autoplay Next Lesson</div><div style="font-size:.72rem;color:var(--text3)">Continue automatically</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer"/></div><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Daily Streak Reminder</div><div style="font-size:.72rem;color:var(--text3)">Push notification daily</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer"/></div><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Preferred Currency</div><div style="font-size:.72rem;color:var(--text3)">Display earnings in</div></div><div class="currency-select"><span class="currency-opt" id="prefNGN" onclick="updateCurrencyPreference('NGN')">₦</span><span class="currency-opt" id="prefUSD" onclick="updateCurrencyPreference('USD')">$</span><span class="currency-opt" id="prefGBP" onclick="updateCurrencyPreference('GBP')">£</span><span class="currency-opt" id="prefEUR" onclick="updateCurrencyPreference('EUR')">€</span></div></div></div></div></div><div class="set-sec" id="ss-notifs"><div class="card card-p"><h5 style="margin-bottom:1rem">Notification Settings</h5><div id="notifSettingsList"></div><button class="btn btn-primary mt-4" onclick="toast('Preferences saved!','success')"><i class="fas fa-save"></i>Save</button></div></div>
-                        <!-- Admin Banner Ads (bottom of settings) -->
-                        <div id="settingsAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="settingsAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-settings" class="dash-sub"><div class="page-hd"><h2 class="page-title">Settings</h2><p class="page-sub">Manage your account &amp; preferences</p></div><div class="set-tabs"><div class="set-tab active" onclick="switchSet('ss-profile',this)">Profile</div><div class="set-tab" onclick="switchSet('ss-security',this)">Security</div><div class="set-tab" onclick="switchSet('ss-payout',this)">Payouts</div><div class="set-tab" onclick="switchSet('ss-subscription',this)">Subscription</div><div class="set-tab" onclick="switchSet('ss-prefs',this)">Preferences</div><div class="set-tab" onclick="switchSet('ss-notifs',this)">Notifications</div></div><div class="set-sec active" id="ss-profile"><div class="card card-p"><div class="d-flex items-center gap-3 mb-4 flex-wrap"><div class="um-av" id="settingsAv" style="width:64px;height:64px;font-size:1.4rem;background:linear-gradient(135deg,var(--primary),var(--secondary))">U</div><div><h5 style="margin-bottom:.2rem" id="settingsName">User</h5><div id="settingsRoles"><span class="badge badge-cyan">Student</span></div></div><button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="document.getElementById('avatarFileInput').click()"><i class="fas fa-camera"></i>Change Photo</button><input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)"/></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="setFirstName" value=""/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="setLastName" value=""/></div></div></div><div class="form-group"><label class="flabel">Email</label><input type="email" class="finput" id="setEmail" readonly/></div><div class="form-group"><label class="flabel">Phone</label><input type="tel" class="finput" id="setPhone" value=""/></div><div class="form-group"><label class="flabel">Bio</label><textarea class="finput" id="setBio" style="min-height:80px;resize:vertical" placeholder="Tell the world about yourself..."></textarea></div><div class="form-group"><label class="flabel">Location</label><input type="text" class="finput" id="setLocation" placeholder="e.g. Lagos, Nigeria"/></div><button class="btn btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i>Save Profile</button></div></div><div class="set-sec" id="ss-security"><div class="card card-p"><h5 style="margin-bottom:1rem">Security Settings</h5><div class="form-group"><label class="flabel">Current Password</label><input type="password" class="finput" id="secCurrentPw" placeholder="••••••••"/></div><div class="form-group"><label class="flabel">New Password</label><input type="password" class="finput" id="secNewPw" placeholder="Min 8 characters"/></div><div class="form-group"><label class="flabel">Confirm Password</label><input type="password" class="finput" id="secConfirmPw" placeholder="Repeat new password"/></div><button class="btn btn-primary" onclick="changePassword()"><i class="fas fa-lock"></i>Update Password</button></div></div><div class="set-sec" id="ss-payout"><div class="card card-p"><h5 style="margin-bottom:.7rem">Payout Settings</h5><p style="font-size:.76rem;color:var(--text3);margin-bottom:1rem">Bank details are required before you can withdraw your earnings.</p><div class="form-group"><label class="flabel">Bank</label><select class="finput" id="payoutBank"><option value="">Select Bank</option><option>GTBank</option><option>Access Bank</option><option>Zenith Bank</option><option>UBA</option><option>First Bank</option><option>Opay</option><option>Palmpay</option><option>Kuda Bank</option><option>Moniepoint</option></select></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Number</label><input type="text" class="finput" id="payoutAccNum" placeholder="0123456789" maxlength="10"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Name</label><input type="text" class="finput" id="payoutAccName" placeholder="Enter your full name"/></div></div></div><div id="payoutSaveStatus" style="font-size:.76rem;margin-bottom:.75rem;min-height:1.2em"></div><button class="btn btn-primary" onclick="savePayoutSettings()"><i class="fas fa-save"></i>Save Bank Details</button></div></div><div class="set-sec" id="ss-subscription"><div class="card card-p" id="subStatusCard"></div></div><div class="set-sec" id="ss-prefs"><div class="card card-p"><h5 style="margin-bottom:1rem">Preferences</h5><div style="display:flex;flex-direction:column;gap:.55rem"><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Autoplay Next Lesson</div><div style="font-size:.72rem;color:var(--text3)">Continue automatically</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer"/></div><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Daily Streak Reminder</div><div style="font-size:.72rem;color:var(--text3)">Push notification daily</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer"/></div><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Preferred Currency</div><div style="font-size:.72rem;color:var(--text3)">Display earnings in</div></div><div class="currency-select"><span class="currency-opt" id="prefNGN" onclick="updateCurrencyPreference('NGN')">₦</span><span class="currency-opt" id="prefUSD" onclick="updateCurrencyPreference('USD')">$</span><span class="currency-opt" id="prefGBP" onclick="updateCurrencyPreference('GBP')">£</span><span class="currency-opt" id="prefEUR" onclick="updateCurrencyPreference('EUR')">€</span></div></div></div></div></div><div class="set-sec" id="ss-notifs"><div class="card card-p"><h5 style="margin-bottom:1rem">Notification Settings</h5><div id="notifSettingsList"></div><button class="btn btn-primary mt-4" onclick="toast('Preferences saved!','success')"><i class="fas fa-save"></i>Save</button></div></div></div>
 
                     <!-- ADMIN -->
-                    <div id="dash-admin" class="dash-sub"><div class="admin-hd"><div class="si si-d" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-shield-alt"></i></div><div><h4 style="margin:0">Admin Panel</h4><p style="font-size:.78rem;color:var(--text2);margin:.12rem 0 0">Super admin · All actions logged · Actions affect user dashboards live</p></div><div style="margin-left:0"><span class="badge badge-danger">SUPER ADMIN</span></div></div><div class="row"><div class="col-12"><div style="display:flex;gap:.28rem;flex-wrap:wrap;overflow-x:auto;margin-bottom:.75rem;padding-bottom:.2rem"><span class="fpill active" onclick="switchAdm('dashboard',this)">Dashboard</span><span class="fpill" onclick="switchAdm('users',this)">Users</span><span class="fpill" onclick="switchAdm('courses',this)">Courses</span><span class="fpill" onclick="switchAdm('approvals',this)">Approvals</span><span class="fpill" onclick="switchAdm('withdrawals',this)">Payouts</span><span class="fpill" onclick="switchAdm('manualPayments',this)">Manual Pay</span><span class="fpill" onclick="switchAdm('coupons',this)">Coupons</span><span class="fpill" onclick="switchAdm('announcements',this)">Announce</span><span class="fpill" onclick="switchAdm('challenges',this)">Challenges</span><span class="fpill" onclick="switchAdm('ads',this)">Ads</span><span class="fpill" onclick="switchAdm('affiliates',this)">Affiliates</span><span class="fpill" onclick="switchAdm('books',this)">Books</span><span class="fpill" onclick="switchAdm('social-earnings',this)">Social Earnings</span><span class="fpill" onclick="switchAdm('audit',this)">Audit</span></div><div id="adminContent"></div></div></div>
-                        <!-- Admin Banner Ads (bottom of admin) -->
-                        <div id="adminAdBottom" class="ad-banner-bottom"><div class="ad-label">📢 Sponsored</div><div id="adminAdBottomContent"></div></div>
-                    </div>
+                    <div id="dash-admin" class="dash-sub"><div class="admin-hd"><div class="si si-d" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-shield-alt"></i></div><div><h4 style="margin:0">Admin Panel</h4><p style="font-size:.78rem;color:var(--text2);margin:.12rem 0 0">Super admin · All actions logged · Actions affect user dashboards live</p></div><div style="margin-left:0"><span class="badge badge-danger">SUPER ADMIN</span></div></div><div class="row"><div class="col-12"><div style="display:flex;gap:.28rem;flex-wrap:wrap;overflow-x:auto;margin-bottom:.75rem;padding-bottom:.2rem"><span class="fpill active" onclick="switchAdm('dashboard',this)">Dashboard</span><span class="fpill" onclick="switchAdm('users',this)">Users</span><span class="fpill" onclick="switchAdm('courses',this)">Courses</span><span class="fpill" onclick="switchAdm('approvals',this)">Approvals</span><span class="fpill" onclick="switchAdm('withdrawals',this)">Payouts</span><span class="fpill" onclick="switchAdm('manualPayments',this)">Manual Pay</span><span class="fpill" onclick="switchAdm('coupons',this)">Coupons</span><span class="fpill" onclick="switchAdm('announcements',this)">Announce</span><span class="fpill" onclick="switchAdm('challenges',this)">Challenges</span><span class="fpill" onclick="switchAdm('ads',this)">Ads</span><span class="fpill" onclick="switchAdm('affiliates',this)">Affiliates</span><span class="fpill" onclick="switchAdm('books',this)">Books</span><span class="fpill" onclick="switchAdm('social-earnings',this)">Social Earnings</span><span class="fpill" onclick="switchAdm('audit',this)">Audit</span></div><div id="adminContent"></div></div></div></div>
                 </div></div></div></div>
 
     <!-- ============================================================ -->
@@ -5380,7 +5207,7 @@
     <div class="fab" id="fab" style="display:none"><button onclick="initNewCourse()"><i class="fas fa-plus"></i></button></div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – APPLICATION LOGIC (PRODUCTION READY) -->
+    <!-- JAVASCRIPT – APPLICATION LOGIC (FULLY UPGRADED) -->
     <!-- ============================================================ -->
     <script>
         // ═══════════════════════════════════════════════════════════════
@@ -5495,10 +5322,7 @@
             currentBook: null,
             currentBookId: null,
             adminBookFilter: 'all',
-            editingBookId: null,
-            purchasedBooks: [],
-            userFollowers: [],
-            userFollowing: []
+            editingBookId: null
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -5564,7 +5388,7 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // API CALL
+        // API CALL – FULLY UPGRADED WITH TOKEN HANDLING
         // ═══════════════════════════════════════════════════════════════
         async function apiCall(endpoint, options = {}) {
             const token = localStorage.getItem('cx_accessToken');
@@ -5721,8 +5545,7 @@
                 'book-detail': () => {},
                 profile: () => {},
                 'post-detail': () => {},
-                following: () => { loadFollowing();
-                    loadUserFollowing(); }
+                following: loadFollowing
             };
             if (map[pg]) map[pg]();
             updateAdVisibility();
@@ -5731,78 +5554,34 @@
                         'creator') && S.user?.isApprovedInstructor);
                 fab.style.display = hasCreatorAccess ? 'block' : 'none'; }
             checkPlanExpiry();
-            // Load admin banner ads at bottom of all pages
-            loadBannerAdsForCurrentPage();
         }
 
+        function openSidebar() { document.getElementById('sidebar')?.classList.add('open');
+            document.getElementById('sbOverlay')?.classList.add('vis');
+            document.body.style.overflow = 'hidden'; }
+
+        function closeSidebar() { document.getElementById('sidebar')?.classList.remove('open');
+            document.getElementById('sbOverlay')?.classList.remove('vis');
+            document.body.style.overflow = ''; }
+
         // ═══════════════════════════════════════════════════════════════
-        // BANNER ADS – BOTTOM OF PAGES (only for free users)
+        // MODALS
         // ═══════════════════════════════════════════════════════════════
-        function loadBannerAdsForCurrentPage() {
-            const isPremium = S.isPremium || (S.user && (S.user.isPremium || S.user.subscriptionTier === 'premium'));
-            // Only show banner ads to free users
-            if (isPremium) {
-                document.querySelectorAll('.ad-banner-bottom').forEach(el => el.style.display = 'none');
-                return;
+        function openModal(id) {
+            document.getElementById(id)?.classList.remove('hidden');
+            populateAllBankDetailsBoxes();
+            if (id === 'createPostModal') {
+                setTimeout(initPostQuill, 300);
+                loadMyPostTitles();
             }
-            document.querySelectorAll('.ad-banner-bottom').forEach(el => el.style.display = 'block');
-            // Load ads for each container
-            const containers = [
-                { id: 'landingAdContent', placement: 'banner' },
-                { id: 'landingAdFooterContent', placement: 'banner' },
-                { id: 'feedAdBottomContent', placement: 'banner' },
-                { id: 'followingAdBottomContent', placement: 'banner' },
-                { id: 'challengesAdBottomContent', placement: 'banner' },
-                { id: 'peopleAdBottomContent', placement: 'banner' },
-                { id: 'profileAdBottomContent', placement: 'banner' },
-                { id: 'homeAdBottomContent', placement: 'banner' },
-                { id: 'exploreAdBottomContent', placement: 'banner' },
-                { id: 'coursesAdBottomContent', placement: 'banner' },
-                { id: 'lessonAdBottomContent', placement: 'banner' },
-                { id: 'quizAdBottomContent', placement: 'banner' },
-                { id: 'certsAdBottomContent', placement: 'banner' },
-                { id: 'walletAdBottomContent', placement: 'banner' },
-                { id: 'affiliatesAdBottomContent', placement: 'banner' },
-                { id: 'referralsAdBottomContent', placement: 'banner' },
-                { id: 'leaderboardAdBottomContent', placement: 'banner' },
-                { id: 'instructorAdBottomContent', placement: 'banner' },
-                { id: 'courseEditorAdBottomContent', placement: 'banner' },
-                { id: 'aiAdBottomContent', placement: 'banner' },
-                { id: 'booksAdBottomContent', placement: 'banner' },
-                { id: 'bookDetailAdBottomContent', placement: 'banner' },
-                { id: 'settingsAdBottomContent', placement: 'banner' },
-                { id: 'adminAdBottomContent', placement: 'banner' }
-            ];
-            containers.forEach(({ id, placement }) => {
-                const el = document.getElementById(id);
-                if (el) {
-                    loadSingleBannerAd(placement, el);
-                }
-            });
-        }
-
-        async function loadSingleBannerAd(placement, container) {
-            try {
-                const res = await apiCall(`/ads/placement/${placement}`);
-                const ads = res.data || [];
-                const active = ads.filter(a => a.isActive !== false);
-                if (active.length) {
-                    const ad = active[Math.floor(Math.random() * active.length)];
-                    container.innerHTML =
-                        `<img src="${ad.imageUrl}" alt="${escapeHtml(ad.title)}" onclick="trackAdClick('${ad._id}','${ad.linkUrl}')" style="cursor:pointer;max-height:90px;object-fit:contain;">`;
-                } else {
-                    container.innerHTML = '';
-                }
-            } catch (e) {
-                container.innerHTML = '';
+            if (id === 'shareModal') {
+                document.getElementById('shareLink').textContent = `${FRONTEND_URL}/post/${S.sharePostSlug || ''}`;
             }
         }
 
-        // ─── TRACK AD CLICK ──────────────────────────────────────────
-        async function trackAdClick(adId, url) {
-            try { await apiCall(`/ads/${adId}/click`, { method: 'POST' });
-                window.open(url, '_blank'); } catch (e) {}
-        }
+        function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
+        document.addEventListener('click', e => { if (e.target.classList.contains('modal-ov')) e.target.classList.add(
+            'hidden'); });
 
         // ═══════════════════════════════════════════════════════════════
         // SOCKET.IO
@@ -6030,30 +5809,43 @@
 
         function handleGithubLogin() { window.location.href = `${API_BASE}/auth/github`; }
 
-        // ─── FORGOT PASSWORD – FULLY FUNCTIONAL ─────────────────────
         async function handleForgotPassword() {
             const email = document.getElementById('loginEmail')?.value.trim();
             if (!email) { toast('Enter your email address', 'error'); return; }
-            const btn = document.querySelector('.forgot-password-link') || document.querySelector(
-                '[onclick*="handleForgotPassword"]');
+            const btn = document.querySelector('[onclick="handleForgotPassword()"]');
             const originalText = btn?.textContent;
             if (btn) { btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner spin"></i> Sending...'; }
-            showLoading('Sending reset link...');
             try {
-                const res = await apiCall('/auth/forgot-password', { method: 'POST', body: { email } });
-                toast(
-                    '✅ Password reset link sent! Check your email (including spam folder). If you don\'t receive it, please contact support.',
-                    'success');
-                // Clear the password fields
-                document.getElementById('loginPw').value = '';
-            } catch (err) {
-                toast('❌ Failed to send reset link: ' + err.message, 'error');
-            } finally {
-                hideLoading();
-                if (btn) { btn.disabled = false;
-                    btn.innerHTML = originalText || 'Forgot password?'; }
-            }
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                const res = await fetch(`${API_BASE}/auth/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email }), signal: controller.signal });
+                clearTimeout(timeoutId);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Request failed');
+                toast('If an account exists with that email, a password reset link has been sent.', 'success');
+            } catch (err) { if (err.name === 'AbortError') toast('Request timed out.', 'error'); else toast(err.message ||
+                    'Failed to send reset link.', 'error'); } finally { if (btn) { btn.disabled = false;
+                    btn.innerHTML = originalText; } }
+        }
+
+        function doLogout() {
+            if (autoSaveTimer) clearInterval(autoSaveTimer);
+            if (S.loggedIn) { apiCall('/auth/logout', { method: 'POST' }).catch(() => {}); }
+            if (socket) { socket.disconnect();
+                socket = null; }
+            localStorage.removeItem('cx_accessToken');
+            localStorage.removeItem('cx_user');
+            S.user = null;
+            S.loggedIn = false;
+            S.isPremium = false;
+            S.walletBal = 0;
+            S.enrollments = [];
+            S.appCourses = [];
+            toast('See you soon! 👋', 'info');
+            // Force full reload to clear all state
+            window.location.href = '/';
         }
 
         function togglePw(id, btn) {
@@ -6077,7 +5869,7 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // LANDING PAGE HERO STATS
+        // LANDING PAGE HERO STATS – FIXED
         // ═══════════════════════════════════════════════════════════════
         function updateLandingHeroStats() {
             if (!S.user) {
@@ -6120,34 +5912,43 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // AD VISIBILITY – PREMIUM USERS SEE NO ADS
+        // AD VISIBILITY – PREMIUM USERS SEE ONLY IN‑FEED ADS
         // ═══════════════════════════════════════════════════════════════
         function updateAdVisibility() {
             const isPremium = S.isPremium || (S.user && (S.user.isPremium || S.user.subscriptionTier === 'premium'));
 
-            // Hide all banner ads for premium users
-            document.querySelectorAll('.ad-banner-bottom, .ad-container, .ad-sidebar, .ad-card, .ad-banner, #adBanner, #adBannerTop, #adBookBanner')
-                .forEach(el => {
-                    if (el) {
-                        el.style.display = isPremium ? 'none' : '';
-                        if (isPremium) el.classList.remove('visible');
-                    }
-                });
+            // ─── HIDE ALL NON‑FEED ADS FOR PREMIUM USERS ──────────────
+            const adSelectors = [
+                '.adsbygoogle',
+                '.adsense-ad',
+                '.ad-container:not(#adFeedTop)',
+                '.ad-sidebar',
+                '.ad-banner',
+                '#adBanner',
+                '#adBannerTop',
+                '#adBookBanner',
+                '#adSidebar',
+                '.ad-card:not(.ad-feed)'
+            ];
 
-            // Hide Google AdSense (we've removed it entirely via CSS)
-            document.querySelectorAll('.adsense-ad').forEach(el => el.style.display = 'none');
+            document.querySelectorAll(adSelectors.join(',')).forEach(el => {
+                if (el) {
+                    el.style.display = isPremium ? 'none' : '';
+                    if (isPremium) el.classList.remove('visible');
+                }
+            });
 
-            // Feed ads should also be hidden for premium
+            // ─── KEEP IN‑FEED ADS ALWAYS VISIBLE ──────────────────────
             const feedAd = document.getElementById('adFeedTop');
             if (feedAd) {
-                feedAd.style.display = isPremium ? 'none' : 'block';
-                if (!isPremium) feedAd.classList.add('visible');
+                feedAd.style.display = 'block';
+                feedAd.classList.add('visible');
             }
 
-            // Load banner ads if free user
-            if (!isPremium) {
-                loadBannerAdsForCurrentPage();
-            }
+            document.querySelectorAll('.ad-feed').forEach(el => {
+                el.style.display = '';
+                el.classList.add('visible');
+            });
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -6201,6 +6002,7 @@
             toast('App installed! 🎉', 'success');
         });
 
+        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js', { scope: '/' })
                 .then(() => console.log('✅ Service Worker registered'))
@@ -6261,11 +6063,6 @@
             if (fab) fab.style.display = hasCreatorAccess ? 'block' : 'none';
             renderCurrencySelectorUI();
             updateLandingHeroStats();
-            // Update following badge
-            const followingBadge = document.getElementById('navFollowingBadge');
-            if (followingBadge) {
-                followingBadge.textContent = S.following.filter(id => id !== S.user?._id).length;
-            }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -6356,6 +6153,7 @@
             document.title = `${title} | ChangeX Academy`;
             document.getElementById('pageTitle').textContent = document.title;
 
+            // Meta tags
             const metaDesc = document.querySelector('meta[name="description"]');
             if (metaDesc) metaDesc.setAttribute('content', description);
 
@@ -6382,7 +6180,7 @@
         }
 
         // ================================================================
-        // POSTS MODULE – UPGRADED WITH FOLLOWING FIX
+        // POSTS MODULE – UPGRADED WITH VIEW TRACKING CACHE & DUPLICATE DETECTION
         // ================================================================
         const POSTS_API = '/posts';
         const CHALLENGES_API = '/challenges';
@@ -6439,7 +6237,7 @@
             }
         }
 
-        // ─── INFINITE SCROLL ─────────────────────────────────────────
+        // ─── INFINITE SCROLL & SMART ADS ─────────────────────────────
         let feedPage = 1;
         let feedHasMore = true;
         let feedIsLoading = false;
@@ -6447,6 +6245,7 @@
         let feedAds = [];
         let feedAdIndex = 0;
 
+        // ─── FEED CACHING ──────────────────────────────────────────────
         function cacheFeedPosts(posts) {
             if (!posts || !posts.length) return;
             try {
@@ -6477,6 +6276,7 @@
                 feedIsLoading = false;
                 const container = document.getElementById('feedContainer');
                 if (container) {
+                    // Try to load cached feed first for instant display
                     if (!loadCachedFeed()) {
                         container.innerHTML = '';
                     }
@@ -6502,6 +6302,7 @@
                 const res = await apiCall(url);
                 const posts = res.data?.posts || res.data || [];
                 const pagination = res.data?.pagination || { total: 0, pages: 1 };
+                // Cache posts for offline/instant display
                 if (page === 1 && posts.length) {
                     cacheFeedPosts(posts);
                 }
@@ -6710,6 +6511,11 @@
             try { await apiCall(`${ADS_API}/${adId}/impression`, { method: 'POST' }); } catch (e) {}
         }
 
+        async function trackAdClick(adId, url) {
+            try { await apiCall(`${ADS_API}/${adId}/click`, { method: 'POST' });
+                window.open(url, '_blank'); } catch (e) {}
+        }
+
         function attachPostEventListeners() {
             document.querySelectorAll('.btn-like').forEach(btn => {
                 btn.onclick = () => likePost(btn.dataset.id);
@@ -6806,6 +6612,7 @@
             try {
                 await apiCall(`${POSTS_API}/${postId}`, { method: 'DELETE' });
                 toast('Post deleted', 'success');
+                // Remove from cache
                 try {
                     const cached = JSON.parse(localStorage.getItem('cx_feed_posts') || '[]');
                     const updated = cached.filter(p => p._id !== postId);
@@ -6819,12 +6626,13 @@
             } catch (err) { toast('Failed to delete: ' + err.message, 'error'); }
         }
 
+        // ─── EDIT POST (placeholder) ──────────────────────────────────────
         function editPost(postId) {
             toast('Edit functionality coming soon!', 'info');
         }
 
         // ================================================================
-        // SUBMIT NEW POST
+        // SUBMIT NEW POST – WITH OPTIMISTIC UPDATE & DUPLICATE CHECK
         // ================================================================
         function openCreatePostModal() {
             const modal = document.getElementById('createPostModal');
@@ -6918,6 +6726,7 @@
                         body: formData
                     });
                 }
+                // Update SEO
                 updateSEO(newPost);
                 toast('✅ Post published!', 'success');
                 closeModal('createPostModal');
@@ -6930,6 +6739,7 @@
                 if (S.postQuill) {
                     S.postQuill.root.innerHTML = '';
                 }
+                // Update cache
                 cacheFeedPosts([newPost]);
                 if (S.dp === 'feed' || S.dp === 'home') {
                     const container = document.getElementById('feedContainer');
@@ -6955,143 +6765,32 @@
         }
 
         // ================================================================
-        // FOLLOWING PAGE – FULLY WORKING WITH PROPER FOLLOW DATA
+        // FOLLOWING PAGE
         // ================================================================
         async function loadFollowing() {
             const container = document.getElementById('followingContainer');
             if (!container) return;
-
-            // First, make sure we have the following list loaded
-            await loadUserFollowing();
-
             if (!S.following || !S.following.length) {
                 container.innerHTML = `
-                    <div class="empty-state"><i class="fas fa-rss"></i><h4>You're not following anyone yet</h4>
-                    <p>Follow other learners and instructors to see their posts here.</p>
-                    <button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button>
-                    </div>`;
+                    <div class="empty-state"><i class="fas fa-rss"></i><h4>No one to follow yet</h4><p>Follow other learners and instructors to see their posts here.</p><button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button></div>
+                `;
                 return;
             }
-
             showLoading('Loading following feed...');
             try {
                 const res = await apiCall(`/posts/following?page=1&limit=20`);
                 const posts = res.data?.posts || res.data || [];
-                if (!posts || !posts.length) {
+                if (!posts.length) {
                     container.innerHTML = `
-                        <div class="empty-state"><i class="fas fa-rss"></i><h4>No posts from people you follow</h4>
-                        <p>Your followers haven't posted anything yet. Check back later!</p>
-                        <button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover More People</button>
-                        </div>`;
+                        <div class="empty-state"><i class="fas fa-rss"></i><h4>No posts from people you follow</h4><p>Your followers haven't posted anything yet.</p><button class="btn btn-primary btn-sm" onclick="setDP('people')">Discover People</button></div>
+                    `;
                     return;
                 }
                 container.innerHTML = posts.map(p => renderPostCard(p)).join('');
                 attachPostEventListeners();
             } catch (err) {
-                container.innerHTML =
-                    `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h4>Failed to load following feed</h4><p>${err.message}</p></div>`;
+                container.innerHTML = '<div class="empty-state"><p>Failed to load following feed: ' + err.message + '</p></div>';
             } finally { hideLoading(); }
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // FOLLOWING PERSISTENCE – FULLY FIXED
-        // ═══════════════════════════════════════════════════════════════
-        async function loadUserFollowing() {
-            if (!S.user) {
-                console.warn('No user logged in, cannot load following.');
-                return;
-            }
-            try {
-                const res = await apiCall(`/follows/${S.user._id}/following`);
-                const users = res.data || [];
-                S.following = users.map(u => u._id || u);
-                S.followingUsers = users;
-                // Update followStatus
-                users.forEach(u => {
-                    S.followStatus[u._id || u] = true;
-                });
-                // Cache following list
-                try {
-                    localStorage.setItem('cx_following', JSON.stringify(S.following));
-                    localStorage.setItem('cx_followingUsers', JSON.stringify(users));
-                } catch (e) {}
-                const badge = document.getElementById('navFollowingBadge');
-                if (badge) {
-                    badge.textContent = S.following.length;
-                }
-                console.log(`✅ Following loaded: ${S.following.length} users`);
-                // If on following page, refresh the feed
-                if (S.dp === 'following') {
-                    loadFollowing();
-                }
-                // Update people page if it's open
-                if (S.dp === 'people' && S.users.length) {
-                    renderPeople(S.users);
-                }
-            } catch (err) {
-                console.warn('Could not load following:', err.message);
-                // Try to load from cache
-                try {
-                    const cached = JSON.parse(localStorage.getItem('cx_following') || '[]');
-                    const users = JSON.parse(localStorage.getItem('cx_followingUsers') || '[]');
-                    if (cached.length) {
-                        S.following = cached;
-                        S.followingUsers = users;
-                        S.following.forEach(id => { S.followStatus[id] = true; });
-                        const badge = document.getElementById('navFollowingBadge');
-                        if (badge) {
-                            badge.textContent = cached.length;
-                        }
-                        console.log(`✅ Following loaded from cache: ${cached.length} users`);
-                        if (S.dp === 'following') {
-                            loadFollowing();
-                        }
-                    }
-                } catch (e) {}
-            }
-        }
-
-        // ─── FOLLOW USER – UPDATED ──────────────────────────────────
-        async function followUser(userId) {
-            try {
-                const res = await apiCall(`/follows/${userId}/follow`, { method: 'POST' });
-                const isNowFollowing = res.followed;
-                S.followStatus[userId] = isNowFollowing;
-                if (isNowFollowing) {
-                    if (!S.following.includes(userId)) {
-                        S.following.push(userId);
-                        try {
-                            const userRes = await apiCall(`/users/${userId}/profile`);
-                            if (userRes.data) {
-                                const user = userRes.data.user || userRes.data;
-                                if (!S.followingUsers.find(u => u._id === userId)) {
-                                    S.followingUsers.push(user);
-                                }
-                            }
-                        } catch (_) {}
-                    }
-                } else {
-                    S.following = S.following.filter(id => id !== userId);
-                    S.followingUsers = S.followingUsers.filter(u => (u._id || u) !== userId);
-                }
-                try {
-                    localStorage.setItem('cx_following', JSON.stringify(S.following));
-                    localStorage.setItem('cx_followingUsers', JSON.stringify(S.followingUsers));
-                } catch (e) {}
-                const badge = document.getElementById('navFollowingBadge');
-                if (badge) {
-                    badge.textContent = S.following.length;
-                }
-                toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
-                if (S.dp === 'people') renderPeople(S.users);
-                if (S.dp === 'profile' && S.profileUser) {
-                    const res2 = await apiCall(`/users/${S.profileUser._id}/profile`);
-                    renderUserProfile(res2.data);
-                }
-                if (S.dp === 'following') loadFollowing();
-            } catch (err) {
-                toast('Error: ' + err.message, 'error');
-            }
         }
 
         // ================================================================
@@ -7276,7 +6975,6 @@
                     }
                 }
                 S.users = users;
-                // Load follow status for each user
                 const followPromises = users.filter(u => u._id !== S.user?._id).map(async (u) => {
                     try {
                         const statusRes = await apiCall(`/follows/${u._id}/status`);
@@ -7312,6 +7010,10 @@
                 const avatarHtml = getAvatarUrl(u) ?
                     `<img src="${getAvatarUrl(u)}" alt="${u.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                     (u.firstName?.[0] || 'U');
+                const navFollowingBadge = document.getElementById('navFollowingBadge');
+                if (navFollowingBadge) {
+                    navFollowingBadge.textContent = S.following.filter(id => id !== S.user?._id).length;
+                }
                 return `
                     <div class="person-card card card-p" onclick="openUserProfile('${u._id}')">
                         <div class="person-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
@@ -7334,8 +7036,47 @@
             renderPeople(S.users);
         }
 
+        // ─── FOLLOW USER – UPDATED WITH IMMEDIATE UI ───────────────────
+        async function followUser(userId) {
+            try {
+                const res = await apiCall(`/follows/${userId}/follow`, { method: 'POST' });
+                const isNowFollowing = res.followed;
+                S.followStatus[userId] = isNowFollowing;
+                if (isNowFollowing) {
+                    if (!S.following.includes(userId)) {
+                        S.following.push(userId);
+                        // Optionally fetch user details to update S.followingUsers
+                        try {
+                            const userRes = await apiCall(`/users/${userId}/profile`);
+                            if (userRes.data) {
+                                S.followingUsers = [...S.followingUsers, userRes.data.user];
+                            }
+                        } catch (_) {}
+                    }
+                } else {
+                    S.following = S.following.filter(id => id !== userId);
+                    S.followingUsers = S.followingUsers.filter(u => u._id !== userId);
+                }
+                // Save to localStorage for persistence
+                try {
+                    localStorage.setItem('cx_following', JSON.stringify(S.following));
+                    localStorage.setItem('cx_followingUsers', JSON.stringify(S.followingUsers));
+                } catch (e) {}
+                document.getElementById('navFollowingBadge').textContent = S.following.length;
+                toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
+                if (S.dp === 'people') renderPeople(S.users);
+                if (S.dp === 'profile' && S.profileUser) {
+                    const res2 = await apiCall(`/users/${S.profileUser._id}/profile`);
+                    renderUserProfile(res2.data);
+                }
+                if (S.dp === 'following') loadFollowing();
+            } catch (err) {
+                toast('Error: ' + err.message, 'error');
+            }
+        }
+
         // ================================================================
-        // USER PROFILE – ENHANCED UI
+        // USER PROFILE
         // ================================================================
         async function openUserProfile(userId) {
             showLoading('Loading profile...');
@@ -7345,8 +7086,6 @@
                 S.profileUser = data.user;
                 renderUserProfile(data);
                 setDP('profile');
-                updateSEO({ title: `${data.user.firstName} ${data.user.lastName} - ChangeX Academy Profile`,
-                    description: data.user.bio || 'ChangeX Academy user profile' });
             } catch (err) {
                 toast('Failed to load profile: ' + err.message, 'error');
             } finally { hideLoading(); }
@@ -7361,33 +7100,28 @@
             const challengeProgress = data.challengeProgress || [];
             const isFollowing = data.isFollowing || false;
             const totalEarnings = posts.reduce((sum, p) => sum + (p.earnings || 0), 0);
-            const followersCount = data.followersCount || 0;
-            const followingCount = data.followingCount || 0;
 
             const avatarHtml = getAvatarUrl(user) ?
                 `<img src="${getAvatarUrl(user)}" alt="avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                 (user.firstName?.[0] || 'U');
 
             container.innerHTML = `
-                <div class="user-profile-header">
-                    <div class="user-profile-avatar">
+                <div class="profile-header" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;background:var(--bg2);padding:1.5rem;border-radius:var(--radius);margin-bottom:1.5rem;">
+                    <div class="profile-avatar" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:bold;color:#000;flex-shrink:0;overflow:hidden;">
                         ${avatarHtml}
                     </div>
-                    <div class="user-profile-info">
+                    <div style="flex:1;">
                         <h2>${escapeHtml(user.firstName)} ${escapeHtml(user.lastName)}</h2>
-                        <div class="bio">${escapeHtml(user.bio || 'No bio yet')}</div>
-                        <div class="user-profile-stats">
-                            <span><strong>${followersCount}</strong> followers</span>
-                            <span><strong>${followingCount}</strong> following</span>
+                        <p style="color:var(--text2);">${escapeHtml(user.bio || 'No bio yet')}</p>
+                        <div style="display:flex;gap:1rem;font-size:.85rem;color:var(--text3);flex-wrap:wrap;">
+                            <span><strong>${data.followersCount || 0}</strong> followers</span>
+                            <span><strong>${data.followingCount || 0}</strong> following</span>
                             <span><strong>${posts.length}</strong> posts</span>
                             <span><strong>${fmtMoneyAPI(totalEarnings)}</strong> earned from posts</span>
                             ${user.isPremium ? '<span class="badge badge-gold">Premium</span>' : ''}
                             ${user.isApprovedInstructor ? '<span class="badge badge-violet">Instructor</span>' : ''}
                         </div>
-                        <div class="user-profile-actions">
-                            ${user._id !== S.user?._id ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="followUser('${user._id}')">${isFollowing ? 'Unfollow' : 'Follow'}</button>` : ''}
-                            ${user._id === S.user?._id ? '<span class="badge badge-dark">You</span>' : ''}
-                        </div>
+                        ${user._id !== S.user?._id ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="followUser('${user._id}')" style="margin-top:.5rem;">${isFollowing ? 'Unfollow' : 'Follow'}</button>` : ''}
                     </div>
                 </div>
                 <div class="profile-content">
@@ -7445,6 +7179,46 @@
         }
 
         // ================================================================
+        // FOLLOWING PERSISTENCE – UPDATED
+        // ================================================================
+        async function loadUserFollowing() {
+            if (!S.user) return;
+            try {
+                const res = await apiCall(`/follows/${S.user._id}/following`);
+                const users = res.data || [];
+                S.following = users.map(u => u._id);
+                S.followingUsers = users;
+                users.forEach(u => { S.followStatus[u._id] = true; });
+                // Cache following list
+                try {
+                    localStorage.setItem('cx_following', JSON.stringify(S.following));
+                    localStorage.setItem('cx_followingUsers', JSON.stringify(users));
+                } catch (e) {}
+                const navFollowingBadge = document.getElementById('navFollowingBadge');
+                if (navFollowingBadge) {
+                    navFollowingBadge.textContent = S.following.length;
+                }
+                console.log('✅ Following loaded:', S.following.length, 'users');
+            } catch (err) {
+                console.warn('Could not load following:', err);
+                // Try to load from cache
+                try {
+                    const cached = JSON.parse(localStorage.getItem('cx_following') || '[]');
+                    const users = JSON.parse(localStorage.getItem('cx_followingUsers') || '[]');
+                    if (cached.length) {
+                        S.following = cached;
+                        S.followingUsers = users;
+                        S.following.forEach(id => { S.followStatus[id] = true; });
+                        const navFollowingBadge = document.getElementById('navFollowingBadge');
+                        if (navFollowingBadge) {
+                            navFollowingBadge.textContent = cached.length;
+                        }
+                    }
+                } catch (e) {}
+            }
+        }
+
+        // ================================================================
         // SOCIAL EARNINGS
         // ================================================================
         async function loadSocialEarnings() {
@@ -7472,6 +7246,7 @@
             renderHomeDashboard();
             checkPlanExpiry();
             loadFeed(1);
+            // Update SEO for home
             updateSEO({ title: 'ChangeX Academy Dashboard', description: 'Learn tech skills and earn real money on ChangeX Academy.' });
         }
 
@@ -7612,11 +7387,13 @@
                         quizContainer.innerHTML = quizHtml;
                     }
                 }
+                // Display course ratings
                 displayCourseRatings();
                 S.currentLessonIdx = 0;
                 renderCurric();
                 const firstLesson = S.currentLessons[0];
                 if (firstLesson && firstLesson._id) loadInteractiveMaterials(firstLesson._id);
+                // Update SEO with course data
                 updateSEO({
                     title: S.currentCourseData.title,
                     description: S.currentCourseData.subtitle || S.currentCourseData.description?.substring(0, 160),
@@ -7625,6 +7402,7 @@
             } catch (e) { toast('Could not load course: ' + e.message, 'error'); }
         }
 
+        // ─── DISPLAY COURSE RATINGS ──────────────────────────────────────
         function displayCourseRatings() {
             const container = document.getElementById('courseRatingsContainer');
             if (!container) return;
@@ -7816,7 +7594,8 @@
         }
 
         // ================================================================
-        // MANUAL PAYMENT SUBMISSION
+        // MANUAL PAYMENT SUBMISSION – SUPPORTS COURSE, BOOK, SUBSCRIPTION
+        // AFFILIATE & REFERRAL CODES ARE NOW PASSED
         // ================================================================
         function getAffiliateCodeFromCookie() {
             const match = document.cookie.match(/(?:^|; )affiliate_code=([^;]*)/);
@@ -7863,9 +7642,6 @@
                         if (currentPaymentType === 'book') {
                             S.currentBook.isPurchased = true;
                             if (S.dp === 'book-detail') renderBookDetail(S.currentBook);
-                            // Also update in books list
-                            const bookIndex = S.books.findIndex(b => b._id === currentManualBookId);
-                            if (bookIndex > -1) S.books[bookIndex].isPurchased = true;
                         }
                         setTimeout(async () => {
                             if (currentPaymentType === 'course') { await loadEnrollments();
@@ -7985,7 +7761,7 @@
         }
 
         // ================================================================
-        // PAYSTACK – UNIFIED PAYMENT
+        // PAYSTACK – UNIFIED PAYMENT (with book unlock)
         // ================================================================
         async function processPayment() {
             const type = currentPaymentType;
@@ -8042,8 +7818,6 @@
                                     if (S.dp === 'book-detail') {
                                         renderBookDetail(S.currentBook);
                                     }
-                                    const bookIndex = S.books.findIndex(b => b._id === id);
-                                    if (bookIndex > -1) S.books[bookIndex].isPurchased = true;
                                 }
                                 await loadBooks();
                                 setDP('books');
@@ -8059,6 +7833,7 @@
             } catch (err) { toast('Payment failed: ' + err.message, 'error'); } finally { hideLoading(); }
         }
 
+        // ─── DO PREMIUM PAYSTACK – WITH REFERRAL CODE ────────────────
         async function doPremiumPaystack() {
             const referralCode = document.getElementById('premReferralCode')?.value.trim() || '';
             const btn = document.querySelector('#premiumModal .paystack-btn');
@@ -8085,6 +7860,7 @@
             }
         }
 
+        // ─── PREMIUM REFERRAL CODE STATUS ─────────────────────────────
         function applyPremReferralCode(val) {
             const st = document.getElementById('premRefCodeStatus');
             if (!st) return;
@@ -8153,14 +7929,17 @@
             updateAdVisibility();
             const currentLesson = lessons[S.currentLessonIdx];
             if (currentLesson && currentLesson._id) loadInteractiveMaterials(currentLesson._id);
+            // Render ratings in overview
             if (S.currentCourseData?.ratings) {
                 document.getElementById('courseRatingsContainer').innerHTML = renderCourseRatings(S.currentCourseData.ratings);
             }
+            // Also render in reviews tab
             if (S.currentCourseData?.ratings) {
                 document.getElementById('reviewsListContainer').innerHTML = renderCourseRatings(S.currentCourseData.ratings);
             }
         }
 
+        // ─── RENDER COURSE RATINGS ────────────────────────────────────
         function renderCourseRatings(ratings) {
             if (!ratings || !ratings.length) {
                 return '<p style="color:var(--text3);font-size:.85rem;">No reviews yet. Be the first to rate this course!</p>';
@@ -8268,7 +8047,7 @@
         }
 
         // ================================================================
-        // QA – FIXED ROUTE
+        // QA
         // ================================================================
         async function loadQA() {
             if (!S.currentCourseId) return;
@@ -8474,7 +8253,7 @@
         }
 
         // ================================================================
-        // WALLET – WITH FULL EARNINGS BREAKDOWN
+        // WALLET – WITH FULL EARNINGS BREAKDOWN DISPLAY
         // ================================================================
         async function renderWallet() {
             try {
@@ -8494,6 +8273,7 @@
                 document.getElementById('walletWeekChange').innerHTML = pending > 0 ?
                     `<span style="color:var(--gold)">Pending: ${fmtMoneyAPI(pending)}</span>` : '+₦0 this week';
 
+                // ─── FULL BREAKDOWN ──────────────────────────────────────
                 document.getElementById('walletBreakdown').innerHTML = `
                     <div class="web-row"><span>Referral Earnings</span><span style="color:var(--primary);font-weight:700">${fmtMoneyAPI(breakdown.referralEarnings || 0)}</span></div>
                     <div class="web-row"><span>Course Bonuses</span><span style="color:var(--accent);font-weight:700">${fmtMoneyAPI(breakdown.courseBonuses || 0)}</span></div>
@@ -8605,7 +8385,7 @@
         function shareOnSocial(p) { toast(`Shared on ${p}!`, 'success'); }
 
         // ================================================================
-        // LEADERBOARD – WITH FOLLOWERS TAB
+        // LEADERBOARD
         // ================================================================
         async function loadLeaderboard() {
             try { const data = await apiCall('/users/leaderboard?limit=20');
@@ -8630,9 +8410,6 @@
                         break;
                     case 'refs':
                         value = (u.referralCount || 0) + ' refs';
-                        break;
-                    case 'followers':
-                        value = (u.followerCount || 0) + ' followers';
                         break;
                     default:
                         value = (u.xp || 0).toLocaleString() + ' XP';
@@ -8823,6 +8600,7 @@
                 loadDraftFromLocalStorage(courseId);
                 setTimeout(() => { if (S.quillEditors['descEditorQuill']) { S.quillEditors['descEditorQuill'].root
                             .innerHTML = S.currentCourseData.description || ''; } }, 300);
+                // Update SEO
                 updateSEO({ title: S.currentCourseData.title, description: S.currentCourseData.subtitle });
                 toast('Course loaded for editing', 'success');
             } catch (e) { toast('Failed to load course: ' + e.message, 'error'); }
@@ -8863,7 +8641,7 @@
         }
 
         // ================================================================
-        // COURSE EDITOR
+        // COURSE EDITOR – FIXED DRAFT SAVING
         // ================================================================
         function startAutoSave() {
             if (autoSaveTimer) clearInterval(autoSaveTimer);
@@ -9293,26 +9071,14 @@
         }
 
         // ================================================================
-        // BOOKS MODULE – DIGITAL LIBRARY (UPGRADED: auto-unlock on purchase)
+        // BOOKS MODULE – DIGITAL LIBRARY (UPGRADED: download forces .pdf)
         // ================================================================
         async function loadBooks() {
             showLoading('Loading books...');
             try {
                 const res = await apiCall(BOOKS_API);
-                const books = res.data || [];
-                // Check which books the user has purchased
-                if (S.user) {
-                    try {
-                        const purchasedRes = await apiCall('/books/my/purchased');
-                        const purchasedIds = purchasedRes.data || [];
-                        S.purchasedBooks = purchasedIds;
-                        books.forEach(b => {
-                            if (purchasedIds.includes(b._id)) b.isPurchased = true;
-                        });
-                    } catch (e) { console.warn('Could not load purchased books:', e); }
-                }
-                S.books = books;
-                renderBooks(books);
+                S.books = res.data || [];
+                renderBooks(S.books);
             } catch (err) {
                 toast('Failed to load books: ' + err.message, 'error');
                 document.getElementById('booksGrid').innerHTML =
@@ -9328,68 +9094,35 @@
                     '<div class="empty-state"><i class="fas fa-book"></i><h4>No books available</h4><p>Check back soon for new additions!</p></div>';
                 return;
             }
-            container.innerHTML = books.filter(b => b.isPublished !== false).map(book => {
-                const isPurchased = book.isPurchased || false;
-                const isFree = book.price === 0;
-                const purchaseStatus = isFree ? 'Free' : (isPurchased ? '✅ Purchased' : fmtMoneyAPI(book.price));
-                const statusBadge = isFree ?
-                    '<span class="badge badge-success" style="font-size:.55rem">Free</span>' :
-                    (isPurchased ? '<span class="badge badge-success" style="font-size:.55rem">✅ Unlocked</span>' :
-                        '<span class="badge badge-gold" style="font-size:.55rem">🔒 Purchase</span>');
-                return `
-                    <div class="book-card" onclick="openBookDetail('${book._id}')">
-                        <div class="book-cover">
-                            ${book.coverImage ? `<img src="${book.coverImage}" alt="${escapeHtml(book.title)}" loading="lazy">` : '📖'}
-                            <div style="position:absolute;top:8px;right:8px;">${statusBadge}</div>
-                        </div>
-                        <div class="book-body">
-                            <div class="book-title">${escapeHtml(book.title)}</div>
-                            <div class="book-author">By ${escapeHtml(book.author || 'Unknown')}</div>
-                            <div class="book-price">${purchaseStatus}</div>
-                            <div class="book-meta">📥 ${book.downloads || 0} downloads · 👁️ ${book.views || 0} views</div>
-                        </div>
+            container.innerHTML = books.filter(b => b.isPublished !== false).map(book => `
+                <div class="book-card" onclick="openBookDetail('${book._id}')">
+                    <div class="book-cover">
+                        ${book.coverImage ? `<img src="${book.coverImage}" alt="${escapeHtml(book.title)}" loading="lazy">` : '📖'}
                     </div>
-                `;
-            }).join('');
+                    <div class="book-body">
+                        <div class="book-title">${escapeHtml(book.title)}</div>
+                        <div class="book-author">By ${escapeHtml(book.author || 'Unknown')}</div>
+                        <div class="book-price">${book.price === 0 ? 'Free' : fmtMoneyAPI(book.price)}</div>
+                        <div class="book-meta">📥 ${book.downloads || 0} downloads · 👁️ ${book.views || 0} views</div>
+                    </div>
+                </div>
+            `).join('');
         }
 
         async function openBookDetail(bookId) {
             showLoading('Loading book...');
             try {
-                // Check if user has purchased this book
-                let purchased = false;
-                if (S.user) {
-                    try {
-                        const res = await apiCall(`/books/${bookId}`);
-                        const book = res.data;
-                        purchased = book.isPurchased || false;
-                        // Also check in S.purchasedBooks
-                        if (S.purchasedBooks && S.purchasedBooks.includes(bookId)) purchased = true;
-                        if (book.price === 0) purchased = true; // Free books are always "purchased"
-                        S.currentBook = { ...book, isPurchased: purchased };
-                        renderBookDetail(S.currentBook);
-                        setDP('book-detail');
-                        updateSEO({
-                            title: book.title,
-                            description: book.description,
-                            thumbnail: book.coverImage
-                        });
-                    } catch (e) {
-                        toast('Failed to load book: ' + e.message, 'error');
-                        setDP('books');
-                    }
-                } else {
-                    const res = await apiCall(`/books/${bookId}`);
-                    const book = res.data;
-                    S.currentBook = { ...book, isPurchased: false };
-                    renderBookDetail(S.currentBook);
-                    setDP('book-detail');
-                    updateSEO({
-                        title: book.title,
-                        description: book.description,
-                        thumbnail: book.coverImage
-                    });
-                }
+                const res = await apiCall(`${BOOKS_API}/${bookId}`);
+                const book = res.data;
+                S.currentBook = book;
+                renderBookDetail(book);
+                setDP('book-detail');
+                // Update SEO
+                updateSEO({
+                    title: book.title,
+                    description: book.description,
+                    thumbnail: book.coverImage
+                });
             } catch (err) {
                 toast('Failed to load book: ' + err.message, 'error');
                 setDP('books');
@@ -9408,7 +9141,6 @@
                         <div style="flex:0 0 200px;">
                             <div style="background:linear-gradient(135deg,var(--card2),var(--card3));border-radius:var(--radius);padding:1rem;text-align:center;">
                                 ${book.coverImage ? `<img src="${book.coverImage}" alt="${escapeHtml(book.title)}" style="width:100%;border-radius:var(--radius-sm);">` : '<div style="font-size:5rem;padding:1rem 0;">📖</div>'}
-                                ${isPurchased ? '<div class="book-unlock-badge mt-2" style="justify-content:center;"><i class="fas fa-check-circle"></i> Unlocked</div>' : (isFree ? '<div class="book-unlock-badge mt-2" style="justify-content:center;background:var(--success);">✅ Free</div>' : '<div class="book-locked-badge mt-2" style="justify-content:center;">🔒 Locked</div>')}
                             </div>
                         </div>
                         <div style="flex:1;min-width:200px;">
@@ -9422,8 +9154,8 @@
                             </div>
                             ${canDownload ? `
                                 <div>
-                                    <button class="book-download-btn ${book.price > 0 ? 'paid' : ''}" onclick="downloadBook('${book._id}')">
-                                        <i class="fas fa-download"></i> ${isFree ? 'Download Free Book' : 'Download Now'}
+                                    <button class="book-download-btn" onclick="downloadBook('${book._id}')">
+                                        <i class="fas fa-download"></i> Download Now
                                     </button>
                                     <div id="bookDownloadProgress-${book._id}" class="book-download-progress">
                                         <div class="prog"><div class="prog-fill pf-primary" id="bookProgBar-${book._id}" style="width:0%"></div></div>
@@ -9444,6 +9176,7 @@
             `;
         }
 
+        // ─── DOWNLOAD BOOK – FORCES .pdf EXTENSION ─────────────────────
         async function downloadBook(bookId) {
             const token = localStorage.getItem('cx_accessToken');
             if (!token) { toast('Please log in to download', 'error');
@@ -9470,12 +9203,14 @@
 
             showLoading('Preparing download...');
 
+            // ✅ Force .pdf extension
             const cleanTitle = (book.title || 'book').replace(/[^a-zA-Z0-9 ]/g, ' ').trim();
             const fileName = `${cleanTitle}.pdf`;
 
             try {
                 const response = await fetch(book.fileUrl);
                 if (!response.ok) {
+                    // Fallback: direct link with corrected filename
                     const link = document.createElement('a');
                     link.href = book.fileUrl;
                     link.download = fileName;
@@ -9513,11 +9248,12 @@
                     }
                 }
 
+                // Force PDF MIME type
                 const blob = new Blob(chunks, { type: 'application/pdf' });
                 const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = fileName;
+                link.download = fileName; // ✅ Correct extension
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -9541,6 +9277,7 @@
 
             } catch (err) {
                 console.error('Download error:', err);
+                // Final fallback
                 const link = document.createElement('a');
                 link.href = book.fileUrl;
                 link.download = fileName;
@@ -9647,6 +9384,7 @@
             }
         }
 
+        // ─── BOOK COVER UPLOAD ──────────────────────────────────────────
         async function uploadBookCover(input) {
             const file = input.files[0];
             if (!file) return;
@@ -9683,6 +9421,7 @@
             }
         }
 
+        // ─── BOOK PDF UPLOAD ────────────────────────────────────────────
         async function uploadBookPdf(input) {
             const file = input.files[0];
             if (!file || file.type !== 'application/pdf') {
@@ -9716,6 +9455,7 @@
             }
         }
 
+        // ─── ADMIN BOOK CRUD ─────────────────────────────────────────────
         async function saveBook() {
             const title = document.getElementById('bookTitle').value.trim();
             const author = document.getElementById('bookAuthor').value.trim();
@@ -9904,7 +9644,7 @@
         }
 
         // ================================================================
-        // RATING STARS
+        // RATING STARS – FIXED WITH GLOBAL setRating
         // ================================================================
         window.selectedRating = 0;
 
@@ -9944,6 +9684,7 @@
                 if (res.success) {
                     toast(`⭐ Thanks! You rated ${window.selectedRating}/5`, 'success');
                     closeModal('rateModal');
+                    // Refresh course data to show updated rating
                     if (S.currentCourseId) {
                         loadCourseForLesson(S.currentCourseId);
                     }
@@ -10108,7 +9849,7 @@
         }
 
         // ================================================================
-        // REVIEW STAR HELPER
+        // REVIEW STAR HELPER (for landing page)
         // ================================================================
         function setReviewStar(n) {
             document.querySelectorAll('#reviewStars span').forEach((s, i) => {
@@ -10118,7 +9859,7 @@
         }
 
         // ================================================================
-        // ADMIN PANEL
+        // ADMIN PANEL – WITH CHALLENGES, BOOKS, AND FULL INTEGRATION
         // ================================================================
         function renderAdm(sec) { switchAdm(sec, null); }
 
@@ -10760,6 +10501,7 @@
             }
         }
 
+        // ─── UPDATED approveManualPayment with book refresh ───────────
         async function approveManualPayment(paymentId) {
             const note = prompt('Optional admin note:');
             showLoading('Approving payment...');
@@ -10771,6 +10513,7 @@
                 if (res.success) {
                     toast('Payment approved!', 'success');
                     await renderWallet();
+                    // Refresh books if it was a book purchase
                     try {
                         const payment = await apiCall(`/admin/manual-payments/${paymentId}`);
                         if (payment.data?.type === 'book') {
@@ -11014,9 +10757,8 @@
             updateThemeIcons();
             updateAdVisibility();
             updateLandingHeroStats();
+            // Update SEO for landing page
             updateSEO({ title: 'ChangeX Academy — Learn, Earn, and Grow', description: 'Turn tech skills into real income. Join the #1 Learn-to-Earn platform.' });
-            // Load banner ads on landing
-            loadBannerAdsForCurrentPage();
         }
 
         async function fetchLandingStats() {
@@ -11214,30 +10956,6 @@
         }
 
         // ================================================================
-        // LOGOUT – FULL REFRESH
-        // ================================================================
-        function doLogout() {
-            if (autoSaveTimer) clearInterval(autoSaveTimer);
-            if (S.loggedIn) { apiCall('/auth/logout', { method: 'POST' }).catch(() => {}); }
-            if (socket) { socket.disconnect();
-                socket = null; }
-            localStorage.removeItem('cx_accessToken');
-            localStorage.removeItem('cx_user');
-            localStorage.removeItem('cx_following');
-            localStorage.removeItem('cx_followingUsers');
-            S.user = null;
-            S.loggedIn = false;
-            S.isPremium = false;
-            S.walletBal = 0;
-            S.enrollments = [];
-            S.appCourses = [];
-            S.following = [];
-            S.followingUsers = [];
-            toast('See you soon! 👋', 'info');
-            window.location.href = '/';
-        }
-
-        // ================================================================
         // INITIALIZATION
         // ================================================================
         window.addEventListener('load', async () => {
@@ -11245,6 +10963,7 @@
             const urlRef = urlParams.get('ref');
             if (urlRef) localStorage.setItem('cx_pending_ref', urlRef.toUpperCase());
 
+            // ─── PWA BANNER – 7‑day dismissal ──────────────────────────
             const banner = document.getElementById('installBanner');
             if (banner) {
                 if (!shouldShowInstallBanner()) {
@@ -11384,6 +11103,7 @@
                 if (token) {
                     await apiCall(`/posts/${post._id}/view`, { method: 'POST' }).catch(() => {});
                 }
+                // Update SEO
                 updateSEO(post);
                 renderPostDetail(post);
                 setDP('post-detail');
@@ -11452,7 +11172,7 @@
         }
 
         // ================================================================
-        // SHARE MODAL
+        // SHARE MODAL (kept)
         // ================================================================
         function openShareModal(postId, slug) {
             S.sharePostId = postId;
@@ -11695,8 +11415,6 @@
                         loadPostBySlug(slug), 1000); }
             }, 800);
             handleDeepLink();
-            // Load banner ads
-            loadBannerAdsForCurrentPage();
         }
 
         // Deep link handling
@@ -11754,12 +11472,6 @@
         // ADS LOADER
         // ================================================================
         async function loadAds(placement, containerId) {
-            const isPremium = S.isPremium || (S.user && (S.user.isPremium || S.user.subscriptionTier === 'premium'));
-            if (isPremium) {
-                const container = document.getElementById(containerId);
-                if (container) container.style.display = 'none';
-                return;
-            }
             try {
                 const res = await apiCall(`/ads/placement/${placement}`);
                 const ads = res.data || [];
@@ -11771,11 +11483,20 @@
                             <div class="ad-label">${escapeHtml(ad.title)}</div>
                         </div>
                     `).join('');
-                    container.style.display = 'block';
                 }
             } catch (e) {}
         }
 
+        // ─── EXTRA: LOAD ADS ON BOOKS PAGE ────────────────────────────
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new MutationObserver(() => {
+                if (S.dp === 'books') loadAds('banner', 'adBookBanner');
+            });
+            observer.observe(document.getElementById('dash-books'), { attributes: true, attributeFilter: ['class'] });
+        });
+
+        // Ensure banner ads container is visible for free users on all pages
+        // The container #adBannerTop is now in the HTML and updateAdVisibility() handles it.
         console.log('🚀 ChangeX Academy — Production Ready');
         console.log('📚 Learn, Earn, and Grow with ChangeX!');
         console.log('📱 PWA: Install banner hides for 7 days after dismissal.');
@@ -11785,17 +11506,8 @@
         console.log('📖 Book downloads permanently unlocked after purchase approval.');
         console.log('💰 Course completion bonus: ₦300.');
         console.log('🎨 Gold, White & Black premium theme applied.');
-        console.log('📢 Smart ads rotation implemented (admin banner ads).');
+        console.log('📢 Smart ads rotation implemented.');
         console.log('🗑️ Admin can delete any post.');
-        console.log('🔐 Forgot password fully functional.');
-        console.log('📊 Leaderboard with followers tab.');
-        console.log('💳 Bank transfer manual payment with auto-approval.');
-        console.log('🎯 Challenges: active, upcoming, completed all visible.');
-        console.log('🔄 Logout now fully refreshes the page.');
-        console.log('📰 Q&A routes fixed.');
-        console.log('📚 Book purchase auto-unlocks download.');
-        console.log('👤 Enhanced user profiles with better UI.');
-        console.log('📢 Banner ads at bottom of all pages (free users only).');
     </script>
 </body>
 </html>
