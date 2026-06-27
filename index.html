@@ -4980,20 +4980,6 @@
             min-width: 18px;
             text-align: center;
         }
-        /* ─── FOOTER AD CONTAINER ─── */
-        #adFooter {
-            max-width: 100%;
-            margin: 2rem auto 0;
-            padding: 0.5rem;
-            background: var(--bg2);
-            border-top: 1px solid var(--border);
-            text-align: center;
-        }
-        #adFooter img {
-            max-height: 90px;
-            width: auto;
-            border-radius: var(--radius-sm);
-        }
     </style>
 </head>
 <body>
@@ -5213,9 +5199,6 @@
 
                     <!-- ADMIN -->
                     <div id="dash-admin" class="dash-sub"><div class="admin-hd"><div class="si si-d" style="width:44px;height:44px;font-size:1.1rem"><i class="fas fa-shield-alt"></i></div><div><h4 style="margin:0">Admin Panel</h4><p style="font-size:.78rem;color:var(--text2);margin:.12rem 0 0">Super admin · All actions logged · Actions affect user dashboards live</p></div><div style="margin-left:0"><span class="badge badge-danger">SUPER ADMIN</span></div></div><div class="row"><div class="col-12"><div style="display:flex;gap:.28rem;flex-wrap:wrap;overflow-x:auto;margin-bottom:.75rem;padding-bottom:.2rem"><span class="fpill active" onclick="switchAdm('dashboard',this)">Dashboard</span><span class="fpill" onclick="switchAdm('users',this)">Users</span><span class="fpill" onclick="switchAdm('courses',this)">Courses</span><span class="fpill" onclick="switchAdm('approvals',this)">Approvals</span><span class="fpill" onclick="switchAdm('withdrawals',this)">Payouts</span><span class="fpill" onclick="switchAdm('manualPayments',this)">Manual Pay</span><span class="fpill" onclick="switchAdm('coupons',this)">Coupons</span><span class="fpill" onclick="switchAdm('announcements',this)">Announce</span><span class="fpill" onclick="switchAdm('challenges',this)">Challenges</span><span class="fpill" onclick="switchAdm('ads',this)">Ads</span><span class="fpill" onclick="switchAdm('affiliates',this)">Affiliates</span><span class="fpill" onclick="switchAdm('books',this)">Books</span><span class="fpill" onclick="switchAdm('social-earnings',this)">Social Earnings</span><span class="fpill" onclick="switchAdm('audit',this)">Audit</span></div><div id="adminContent"></div></div></div></div>
-
-                    <!-- FOOTER AD CONTAINER – only for free users -->
-                    <div id="adFooter" class="ad-container" style="display:none; margin-top: 2rem;"></div>
                 </div></div></div></div>
 
     <!-- ============================================================ -->
@@ -5945,8 +5928,7 @@
                 '#adBannerTop',
                 '#adBookBanner',
                 '#adSidebar',
-                '.ad-card:not(.ad-feed)',
-                '#adFooter'   // <- hide footer ads for premium users
+                '.ad-card:not(.ad-feed)'
             ];
 
             document.querySelectorAll(adSelectors.join(',')).forEach(el => {
@@ -6836,7 +6818,6 @@
                     }
                 }
                 const res = await apiCall(url);
-                console.log('Challenges response:', res);   // Debug
                 const challenges = res.data || [];
                 if (!challenges || challenges.length === 0) {
                     document.getElementById('challengesContainer').innerHTML =
@@ -7830,7 +7811,7 @@
                             await renderWallet();
                             if (type === 'course') {
                                 await loadEnrollments();
-                                setDP('courses');   // Force reload courses
+                                setDP('courses');
                             } else if (type === 'book') {
                                 if (S.currentBook) {
                                     S.currentBook.isPurchased = true;
@@ -8407,14 +8388,8 @@
         // LEADERBOARD
         // ================================================================
         async function loadLeaderboard() {
-            try {
-                const data = await apiCall('/users/leaderboard?limit=20');
-                console.log('Leaderboard response:', data);
-                S.leaderboard = Array.isArray(data.data) ? data.data : [];
-            } catch (e) {
-                console.warn('Leaderboard load failed:', e);
-                S.leaderboard = [];
-            }
+            try { const data = await apiCall('/users/leaderboard?limit=20');
+                S.leaderboard = Array.isArray(data.data) ? data.data : []; } catch (e) { S.leaderboard = []; }
         }
 
         function renderLB() {
@@ -10037,7 +10012,6 @@
                                     <option value="banner">Banner</option>
                                     <option value="in-feed">In-Feed</option>
                                     <option value="popup">Popup</option>
-                                    <option value="footer">Footer (Bottom)</option>  <!-- NEW -->
                                 </select>
                             </div>
                             <div class="row">
@@ -11430,7 +11404,6 @@
             loadAds('sidebar', 'adSidebar');
             loadAds('banner', 'adBannerTop');
             loadAds('in-feed', 'adFeedTop');
-            loadAds('footer', 'adFooter');  // load footer ads
             await loadPeople();
             checkPlanExpiry();
             await loadSocialEarnings();
@@ -11535,7 +11508,6 @@
         console.log('🎨 Gold, White & Black premium theme applied.');
         console.log('📢 Smart ads rotation implemented.');
         console.log('🗑️ Admin can delete any post.');
-        console.log('📦 Footer ads now supported – only for free users.');
     </script>
 </body>
 </html>
