@@ -25,6 +25,15 @@
     <link rel="apple-touch-icon" href="/logo.png" />
     <link rel="apple-touch-startup-image" href="/logo.png" />
 
+    <!-- ===== PERFORMANCE: Preconnect & Preload ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://js.paystack.co">
+    <link rel="preconnect" href="https://cdn.quilljs.com">
+    <link rel="preload" href="/logo.png" as="image">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style">
+    <link rel="dns-prefetch" href="https://res.cloudinary.com">
+
     <title id="pageTitle">ChangeX Academy — Turn Tech Into Income</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -262,6 +271,13 @@
         iframe {
             max-width: 100%;
             height: auto;
+        }
+        img[data-src] {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        img[data-src].loaded {
+            opacity: 1;
         }
         code,
         .mono {
@@ -4904,6 +4920,29 @@
             font-weight: 600;
             margin-top: .5rem;
         }
+        /* ===== PERFORMANCE: Reduce paint/layout shifts ===== */
+        img,
+        video,
+        iframe {
+            aspect-ratio: attr(width) / attr(height);
+            content-visibility: auto;
+            contain-intrinsic-size: auto 300px;
+        }
+        .will-change-transform {
+            will-change: transform;
+        }
+        .will-change-opacity {
+            will-change: opacity;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -4964,7 +5003,7 @@
     <!-- ============================================================ -->
     <div class="modal-ov hidden" id="withdrawModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">💸 Withdraw Earnings</h5><button class="btn-icon-sm" onclick="closeModal('withdrawModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.14);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:1rem;text-align:center"><div style="font-size:.7rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase">AVAILABLE BALANCE</div><div style="font-family:var(--font-heading);font-size:2rem;font-weight:800;color:var(--lime)" id="withdrawBal">₦0</div></div><div id="withdrawBankWarning" style="display:none;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1rem;font-size:.79rem;color:var(--orange)"><i class="fas fa-exclamation-triangle" style="margin-right:.35rem"></i><strong>No bank account linked!</strong> Please add your bank details in <a style="color:var(--primary);cursor:pointer;text-decoration:underline" onclick="closeModal('withdrawModal');setDP('settings');setTimeout(()=>switchSet('ss-payout'),100)">Settings → Payouts</a> before withdrawing.</div><div class="form-group"><label class="flabel">Amount (₦)</label><input type="number" class="finput" id="withdrawAmt" placeholder="Min ₦2,000"/></div><div class="form-group"><label class="flabel">Bank Account</label><select class="finput" id="withdrawBank"><option>Loading...</option></select></div><div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:var(--radius-sm);padding:.65rem;font-size:.76rem;color:var(--gold)"><i class="fas fa-info-circle" style="margin-right:.3rem"></i>Processing takes 1–3 business days. <strong>10% fee</strong> applied.</div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('withdrawModal')">Cancel</button><button class="btn btn-primary" id="withdrawSubmitBtn" onclick="processWithdraw()"><i class="fas fa-paper-plane"></i>Submit</button></div></div></div>
 
-    <div class="modal-ov hidden" id="buyCourseModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">🛒 Purchase</h5><button class="btn-icon-sm" onclick="closeModal('buyCourseModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div id="buyCourseInfo" style="margin-bottom:1rem"></div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><h6 style="margin-bottom:.75rem">Order Summary</h6><div id="buyCourseSummary"></div><div class="payment-method-tabs mt-3"><div class="payment-method-tab active" onclick="toggleBuyPaymentMethod('card',this)">💳 Card Payment</div><div class="payment-method-tab" onclick="toggleBuyPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="buyCardSection"><div class="form-group mt-3"><label class="flabel">Referral Code (optional)</label><input type="text" class="finput" id="buyRefCode" placeholder="Enter referral code" oninput="applyBuyCode(this.value)"/></div><div id="buyCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><button class="paystack-btn" onclick="processPayment()"><i class="fas fa-lock"></i><span id="paystackBtnText">Pay with Paystack</span></button></div><div id="buyManualSection" style="display:none"><div class="bank-details-box" id="buyBankDetailsBox"></div><div class="form-group mt-3"><label class="flabel">Referral Code (optional)</label><input type="text" class="finput" id="buyManualRefCode" placeholder="Enter referral code" oninput="applyBuyManualCode(this.value)"/></div><div id="buyManualCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="manualRef" placeholder="e.g. TRX123456789"><small style="font-size:.7rem;color:var(--text3)">Enter the reference from your bank transfer</small></div><div class="form-group"><label class="flabel">Amount Paid (₦)</label><input type="number" class="finput" id="manualAmount" placeholder="e.g. 5000"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="manualDate"></div><div class="form-group"><label class="flabel">Upload Receipt/Screenshot</label><div class="upload-zone" style="padding:1rem"><input type="file" id="manualReceipt" accept="image/*,application/pdf" onchange="previewReceipt(this)"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt or screenshot</div></div><div id="receiptPreview" style="margin-top:.5rem;display:none"><img id="receiptPreviewImg" style="max-width:100%;max-height:150px;border-radius:var(--radius-sm)"></div></div><button class="btn btn-primary w-full" onclick="submitManualPayment()">Submit for Verification</button><div class="info-box"><i class="fas fa-info-circle" style="color:var(--primary)"></i><strong>How it works:</strong> Transfer the exact amount to the bank details above, then submit your reference and receipt. Our system will automatically verify your payment if all details match. If verification fails, an admin will review within 24 hours.</div></div></div></div></div></div>
+    <div class="modal-ov hidden" id="buyCourseModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">🛒 Purchase</h5><button class="btn-icon-sm" onclick="closeModal('buyCourseModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div id="buyCourseInfo" style="margin-bottom:1rem"></div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><h6 style="margin-bottom:.75rem">Order Summary</h6><div id="buyCourseSummary"></div><div class="payment-method-tabs mt-3"><div class="payment-method-tab active" onclick="toggleBuyPaymentMethod('card',this)">💳 Card Payment</div><div class="payment-method-tab" onclick="toggleBuyPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="buyCardSection"><div class="form-group mt-3"><label class="flabel">Referral Code (optional)</label><input type="text" class="finput" id="buyRefCode" placeholder="Enter referral code" oninput="applyBuyCode(this.value)"/></div><div id="buyCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><button class="paystack-btn" onclick="processPayment()"><i class="fas fa-lock"></i><span id="paystackBtnText">Pay with Paystack</span></button></div><div id="buyManualSection" style="display:none"><div class="bank-details-box" id="buyBankDetailsBox"></div><div class="form-group mt-3"><label class="flabel">Referral Code (optional)</label><input type="text" class="finput" id="buyManualRefCode" placeholder="Enter referral code" oninput="applyBuyManualCode(this.value)"/></div><div id="buyManualCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="manualRef" placeholder="e.g. TRX123456789"><small style="font-size:.7rem;color:var(--text3)">Enter the reference from your bank transfer</small></div><div id="manualRefError" style="font-size:.72rem;margin-top:.2rem;min-height:1.2em"></div><div class="form-group"><label class="flabel">Amount Paid (₦)</label><input type="number" class="finput" id="manualAmount" placeholder="e.g. 5000"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="manualDate"></div><div class="form-group"><label class="flabel">Upload Receipt/Screenshot</label><div class="upload-zone" style="padding:1rem"><input type="file" id="manualReceipt" accept="image/*,application/pdf" onchange="previewReceipt(this)"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt or screenshot</div></div><div id="receiptPreview" style="margin-top:.5rem;display:none"><img id="receiptPreviewImg" style="max-width:100%;max-height:150px;border-radius:var(--radius-sm)"></div><div id="manualReceiptProgress" class="book-upload-progress" style="display:none;">Uploading receipt... 0%</div></div><button class="btn btn-primary w-full" onclick="submitManualPayment()">Submit for Verification</button><div class="info-box"><i class="fas fa-info-circle" style="color:var(--primary)"></i><strong>How it works:</strong> Transfer the exact amount to the bank details above, then submit your reference and receipt. Our system will automatically verify your payment if all details match. If verification fails, an admin will review within 24 hours.</div></div></div></div></div></div>
 
     <!-- ===== PREMIUM MODAL – enhanced with referral code ===== -->
     <div class="modal-ov hidden" id="premiumModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">👑 Go Premium</h5><button class="btn-icon-sm" onclick="closeModal('premiumModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div style="text-align:center;margin-bottom:1.25rem"><div style="font-size:2.5rem;margin-bottom:.5rem">👑</div><h4>Unlock Full Power</h4><p style="color:var(--text3);font-size:.83rem;margin-top:.35rem">Create courses, earn affiliates, no ads!</p></div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><div class="pay-summary-row"><span>Premium Plan</span><span style="color:var(--primary);font-weight:800">₦5,000/mo</span></div><div class="pay-summary-row"><span>Setup Fee</span><span>₦0</span></div><div class="pay-summary-row"><span style="font-weight:700">Total Today</span><span style="color:var(--primary)">₦5,000</span></div>
@@ -5297,6 +5336,75 @@
                 return `<img src="${avatarUrl}" alt="${initial}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;">`;
             }
             return initial;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // DEBOUNCE / THROTTLE UTILITIES
+        // ═══════════════════════════════════════════════════════════════
+        function debounce(fn, delay = 300) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn(...args), delay);
+            };
+        }
+
+        function throttle(fn, limit = 200) {
+            let last = 0;
+            return (...args) => {
+                const now = Date.now();
+                if (now - last >= limit) {
+                    fn(...args);
+                    last = now;
+                }
+            };
+        }
+
+        // ─── BATCH DOM UPDATES ──────────────────────────────────────────
+        function batchUpdate(items, renderFn, container) {
+            if (!container) return;
+            const fragment = document.createDocumentFragment();
+            items.forEach(item => {
+                const el = document.createElement('div');
+                el.innerHTML = renderFn(item);
+                const child = el.firstElementChild;
+                if (child) fragment.appendChild(child);
+            });
+            container.appendChild(fragment);
+        }
+
+        // ─── REQUEST DEDUPLICATION ──────────────────────────────────────
+        const pendingRequests = new Map();
+
+        function dedupeRequest(url, fetchFn) {
+            if (pendingRequests.has(url)) {
+                return pendingRequests.get(url);
+            }
+            const promise = fetchFn().finally(() => {
+                pendingRequests.delete(url);
+            });
+            pendingRequests.set(url, promise);
+            return promise;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // LAZY LOAD IMAGES
+        // ═══════════════════════════════════════════════════════════════
+        function initLazyLoading() {
+            const images = document.querySelectorAll('img[data-src]');
+            if (!images.length) return;
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        img.classList.add('loaded');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+            images.forEach(img => imageObserver.observe(img));
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -7518,6 +7626,44 @@
             }
         }
 
+        // ─── MANUAL REF VALIDATION ──────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', function() {
+            const refInput = document.getElementById('manualRef');
+            if (refInput) {
+                refInput.addEventListener('input', function() {
+                    const val = this.value.trim();
+                    const errorEl = document.getElementById('manualRefError');
+                    if (!errorEl) return;
+                    if (val.length > 0 && (val.length < 8 || val.length > 30)) {
+                        errorEl.textContent = '⚠️ Reference must be 8-30 characters';
+                        errorEl.style.color = 'var(--danger)';
+                    } else if (val.length >= 8) {
+                        errorEl.textContent = '✅ Valid reference';
+                        errorEl.style.color = 'var(--success)';
+                    } else {
+                        errorEl.textContent = '';
+                    }
+                });
+            }
+
+            const dateInput = document.getElementById('manualDate');
+            if (dateInput) {
+                dateInput.addEventListener('change', function() {
+                    const selected = new Date(this.value);
+                    const now = new Date();
+                    const sevenDaysAgo = new Date(now);
+                    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                    if (selected > now) {
+                        toast('Payment date cannot be in the future', 'error');
+                        this.value = '';
+                    } else if (selected < sevenDaysAgo) {
+                        toast('Payment date is older than 7 days', 'error');
+                        this.value = '';
+                    }
+                });
+            }
+        });
+
         // ================================================================
         // MANUAL PAYMENT SUBMISSION – SUPPORTS COURSE, BOOK, SUBSCRIPTION
         // AFFILIATE & REFERRAL CODES ARE NOW PASSED
@@ -7536,6 +7682,10 @@
             const affiliateCode = getAffiliateCodeFromCookie();
 
             if (!reference) { toast('Enter transaction reference', 'error'); return; }
+            if (reference.length < 8 || reference.length > 30) {
+                toast('Reference must be 8-30 characters', 'error');
+                return;
+            }
             if (!amount || amount < 1000) { toast('Enter a valid amount (min ₦1,000)', 'error'); return; }
             if (!paymentDate) { toast('Select payment date', 'error'); return; }
             if (!receipt) { toast('Upload receipt', 'error'); return; }
@@ -7551,46 +7701,96 @@
             if (referralCode) formData.append('referralCode', referralCode);
             if (affiliateCode) formData.append('affiliateCode', affiliateCode);
 
+            const progressEl = document.getElementById('manualReceiptProgress');
+            if (progressEl) {
+                progressEl.style.display = 'block';
+                progressEl.textContent = 'Uploading receipt... 0%';
+            }
+
             showLoading('Submitting payment...');
             try {
                 const token = localStorage.getItem('cx_accessToken');
-                const response = await fetch(`${API_BASE}/payments/manual`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData
-                });
-                const data = await response.json();
-                if (data.success) {
-                    if (data.autoApproved) {
-                        toast('✅ Payment verified! Access granted.', 'success');
-                        closeModal('buyCourseModal');
-                        if (currentPaymentType === 'book') {
-                            S.currentBook.isPurchased = true;
-                            if (S.dp === 'book-detail') renderBookDetail(S.currentBook);
+                const xhr = new XMLHttpRequest();
+                xhr.timeout = 120000; // 2 minutes
+
+                xhr.upload.onprogress = (event) => {
+                    if (event.lengthComputable) {
+                        const pct = Math.round((event.loaded / event.total) * 100);
+                        if (progressEl) {
+                            progressEl.textContent = `Uploading receipt... ${pct}%`;
                         }
-                        setTimeout(async () => {
-                            if (currentPaymentType === 'course') { await loadEnrollments();
-                                setDP('courses'); } else if (currentPaymentType === 'book') { await loadBooks(); }
-                            await renderWallet();
-                        }, 1500);
-                    } else {
-                        toast('📋 Payment submitted for admin review.', 'info');
-                        closeModal('buyCourseModal');
-                        setTimeout(renderWallet, 2000);
+                        const loadingText = document.getElementById('loadingText');
+                        if (loadingText) {
+                            loadingText.textContent = `Uploading receipt... ${pct}%`;
+                        }
                     }
-                } else {
-                    toast(data.message || 'Submission failed', 'error');
-                }
+                };
+
+                xhr.onload = function() {
+                    if (progressEl) {
+                        progressEl.style.display = 'none';
+                        progressEl.textContent = '';
+                    }
+                    hideLoading();
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        if (data.success) {
+                            if (data.autoApproved) {
+                                toast('✅ Payment verified! Access granted.', 'success');
+                                closeModal('buyCourseModal');
+                                if (currentPaymentType === 'book') {
+                                    S.currentBook.isPurchased = true;
+                                    if (S.dp === 'book-detail') renderBookDetail(S.currentBook);
+                                }
+                                setTimeout(async () => {
+                                    if (currentPaymentType === 'course') { await loadEnrollments();
+                                        setDP('courses'); } else if (currentPaymentType === 'book') { await loadBooks(); }
+                                    await renderWallet();
+                                }, 1500);
+                            } else {
+                                toast('📋 Payment submitted for admin review.', 'info');
+                                closeModal('buyCourseModal');
+                                setTimeout(renderWallet, 2000);
+                            }
+                        } else {
+                            toast(data.message || 'Submission failed', 'error');
+                        }
+                    } catch (e) {
+                        toast('Invalid server response', 'error');
+                    }
+                    document.getElementById('manualReceipt').value = '';
+                    document.getElementById('receiptPreview').style.display = 'none';
+                    document.cookie = 'affiliate_code=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                };
+
+                xhr.onerror = function() {
+                    if (progressEl) {
+                        progressEl.style.display = 'none';
+                        progressEl.textContent = '';
+                    }
+                    hideLoading();
+                    toast('Network error – please check your connection', 'error');
+                };
+
+                xhr.ontimeout = function() {
+                    if (progressEl) {
+                        progressEl.style.display = 'none';
+                        progressEl.textContent = '';
+                    }
+                    hideLoading();
+                    toast('Upload timed out. Please try again.', 'error');
+                };
+
+                xhr.open('POST', `${API_BASE}/payments/manual`);
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+                xhr.send(formData);
             } catch (err) {
                 toast('Network error: ' + err.message, 'error');
-            } finally {
+                if (progressEl) {
+                    progressEl.style.display = 'none';
+                    progressEl.textContent = '';
+                }
                 hideLoading();
-                document.getElementById('manualRef').value = '';
-                document.getElementById('manualAmount').value = '';
-                document.getElementById('manualDate').value = '';
-                document.getElementById('manualReceipt').value = '';
-                document.getElementById('receiptPreview').style.display = 'none';
-                document.cookie = 'affiliate_code=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             }
         }
 
@@ -9289,6 +9489,8 @@
             document.getElementById('bookIsPublished').checked = true;
             document.getElementById('bookCoverPreview').classList.remove('visible');
             document.getElementById('bookPdfPreview').classList.remove('visible');
+            document.getElementById('bookCoverProgress').style.display = 'none';
+            document.getElementById('bookPdfProgress').style.display = 'none';
         }
 
         async function loadBookData(bookId) {
@@ -11158,6 +11360,7 @@
 
             initLanding();
             updateThemeIcons();
+            initLazyLoading();
             if (S.loggedIn) { initApp().catch(() => {}); }
 
             const pendingRef = localStorage.getItem('cx_pending_ref');
@@ -11618,6 +11821,7 @@
         console.log('📤 Book upload: Large file support (500MB) with progress tracking.');
         console.log('🔗 Affiliate links now use hash-based routing (#courses/...) for SPA compatibility.');
         console.log('🏦 Bank details updated: Lead Bank & Taj Bank for manual transfers.');
+        console.log('⚡ Performance: Lazy loading, debounce, throttle, batch DOM updates, request deduplication.');
     </script>
 </body>
 </html>
