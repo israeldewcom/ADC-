@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Offline – ChangeX Academy</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0A0A0A;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+    .offline-box {
+      max-width: 400px;
+      padding: 40px 30px;
+      background: #141414;
+      border: 1px solid #2A2A2A;
+      border-radius: 20px;
+    }
+    .offline-box .icon { font-size: 4rem; margin-bottom: 1rem; }
+    .offline-box h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #D4AF37; }
+    .offline-box p { color: #94A3B8; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: #D4AF37;
+      color: #000;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: background 0.3s;
+    }
+    .btn:hover { background: #B8960F; }
+  </style>
+</head>
+<body>
+  <div class="offline-box">
+    <div class="icon">📡</div>
+    <h1>You're Offline</h1>
+    <p>Don't worry – your progress is saved. Connect to the internet to continue learning and earning.</p>
+    <button class="btn" onclick="location.reload()">Try Again</button>
+  </div>
+</body>
+</html>
