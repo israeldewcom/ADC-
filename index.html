@@ -5589,33 +5589,54 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // PLATFORM BANK DETAILS
+        // PLATFORM BANK DETAILS – UPDATED (Lead Bank & Taj Bank)
         // ═══════════════════════════════════════════════════════════════
-        const PLATFORM_BANK_DETAILS = { bankName: 'Opay', accountName: 'Isreal Dewa Wycliffe', accountNumber: '9171806424' };
+        const PLATFORM_BANK_DETAILS = [
+            {
+                bankName: 'Lead Bank',
+                accountName: 'Ijigai John Thomas',
+                accountNumber: '215799076919',
+                routing: '101019644',
+                accountType: 'Checking',
+                note: 'For international/wire transfers'
+            },
+            {
+                bankName: 'Taj Bank',
+                accountName: 'Ijigai John Thomas',
+                accountNumber: '0009624235',
+                note: 'For local Nigerian transfers (Naira)'
+            }
+        ];
 
         function renderBankDetailsHTML(includeCopyBtn = true) {
-            const copyBtn = includeCopyBtn ?
-                `<button class="btn btn-ghost btn-sm mt-2" onclick="copyToClipboard('${PLATFORM_BANK_DETAILS.accountNumber}')" style="width:100%"><i class="fas fa-copy"></i> Copy Account Number</button>` :
-                '';
-            return `
+            let html = `
             <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem">
                 <i class="fas fa-university" style="color:var(--cyan);font-size:1.1rem"></i>
                 <strong style="font-size:.85rem;color:var(--cyan)">Bank Transfer Details</strong>
-            </div>
-            <div class="bank-detail-row"><span style="color:var(--text3)">Bank:</span><strong>${PLATFORM_BANK_DETAILS.bankName}</strong></div>
-            <div class="bank-detail-row"><span style="color:var(--text3)">Account Name:</span><strong>${PLATFORM_BANK_DETAILS.accountName}</strong></div>
-            <div class="bank-detail-row"><span style="color:var(--text3)">Account Number:</span><strong style="color:var(--lime);font-family:var(--font-mono);font-size:1rem">${PLATFORM_BANK_DETAILS.accountNumber}</strong></div>
-            <div style="font-size:.72rem;color:var(--text3);margin-top:.5rem;padding-top:.5rem;border-top:1px solid rgba(128,128,128,.1)">
-                <i class="fas fa-info-circle" style="margin-right:.25rem"></i>Transfer the exact amount, then submit your reference & receipt below.
-            </div>
-            ${copyBtn}`;
-        }
+            </div>`;
 
-        function populateAllBankDetailsBoxes() {
-            ['buyBankDetailsBox', 'premBankDetailsBox', 'wizBankDetailsBox'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.innerHTML = renderBankDetailsHTML(id !== 'wizBankDetailsBox');
+            PLATFORM_BANK_DETAILS.forEach((bank, index) => {
+                const copyBtn = includeCopyBtn ?
+                    `<button class="btn btn-ghost btn-sm mt-1" onclick="copyToClipboard('${bank.accountNumber}')" style="width:100%"><i class="fas fa-copy"></i> Copy Account Number</button>` :
+                    '';
+
+                html += `
+                <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.85rem;">
+                    <div style="font-weight:700;font-size:.85rem;color:var(--primary)">Option ${index + 1}: ${bank.bankName}</div>
+                    ${bank.note ? `<div style="font-size:.72rem;color:var(--text3);margin-bottom:.4rem">${bank.note}</div>` : ''}
+                    <div class="bank-detail-row"><span style="color:var(--text3)">Bank:</span><strong>${bank.bankName}</strong></div>
+                    <div class="bank-detail-row"><span style="color:var(--text3)">Account Name:</span><strong>${bank.accountName}</strong></div>
+                    <div class="bank-detail-row"><span style="color:var(--text3)">Account Number:</span><strong style="color:var(--lime);font-family:var(--font-mono);font-size:1rem">${bank.accountNumber}</strong></div>
+                    ${bank.routing ? `<div class="bank-detail-row"><span style="color:var(--text3)">Routing (Wire/ACH):</span><strong style="font-family:var(--font-mono)">${bank.routing}</strong></div>` : ''}
+                    ${bank.accountType ? `<div class="bank-detail-row"><span style="color:var(--text3)">Account Type:</span><strong>${bank.accountType}</strong></div>` : ''}
+                    <div style="font-size:.72rem;color:var(--text3);margin-top:.4rem;padding-top:.4rem;border-top:1px solid rgba(128,128,128,.1)">
+                        <i class="fas fa-info-circle" style="margin-right:.25rem"></i>Transfer the exact amount, then submit your reference & receipt below.
+                    </div>
+                    ${copyBtn}
+                </div>`;
             });
+
+            return html;
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -11510,6 +11531,7 @@
         console.log('🗑️ Admin can delete any post.');
         console.log('📤 Book upload: Large file support (500MB) with progress tracking.');
         console.log('🔗 Affiliate links now use hash-based routing (#courses/...) for SPA compatibility.');
+        console.log('🏦 Bank details updated: Lead Bank & Taj Bank displayed for manual transfers.');
     </script>
 </body>
 </html>
