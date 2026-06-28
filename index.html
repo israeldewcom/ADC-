@@ -5639,6 +5639,13 @@
             return html;
         }
 
+        function populateAllBankDetailsBoxes() {
+            ['buyBankDetailsBox', 'premBankDetailsBox', 'wizBankDetailsBox'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = renderBankDetailsHTML(id !== 'wizBankDetailsBox');
+            });
+        }
+
         // ═══════════════════════════════════════════════════════════════
         // AUTHENTICATION
         // ═══════════════════════════════════════════════════════════════
@@ -9307,41 +9314,115 @@
             }
         }
 
-        // ─── BOOK COVER UPLOAD ──────────────────────────────────────────
+        // ─── BOOK COVER UPLOAD – WITH PROGRESS & TIMEOUT ──────────────
         async function uploadBookCover(input) {
             const file = input.files[0];
-            if (!file) return;
+            if (!file) {
+                toast('No file selected', 'error');
+                return;
+            }
             if (!file.type.startsWith('image/')) {
-                toast('Please select an image file', 'error');
+                toast('Please select an image file (PNG, JPG, WebP)', 'error');
                 input.value = '';
                 return;
             }
-            const formData = new FormData();
-            formData.append('image', file);
-            showLoading('Uploading cover image...');
-            try {
-                const token = localStorage.getItem('cx_accessToken');
-                const res = await fetch(`${API_BASE}/admin/upload`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData,
-                });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById('bookCoverImage').value = data.data.url;
-                    const preview = document.getElementById('bookCoverPreview');
-                    preview.classList.add('visible');
-                    document.getElementById('bookCoverPreviewImg').src = data.data.url;
-                    toast('✅ Cover image uploaded!', 'success');
-                } else {
-                    toast('Upload failed: ' + data.message, 'error');
-                }
-            } catch (err) {
-                toast('Upload error: ' + err.message, 'error');
-            } finally {
-                hideLoading();
+            if (file.size > 20 * 1024 * 1024) {
+                toast('Image exceeds 20MB limit. Please compress it.', 'error');
                 input.value = '';
+                return;
             }
+
+            const token = localStorage.getItem('cx_accessToken');
+            if (!token) {
+                toast('Please log in', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const progressEl = document.getElementById('bookCoverProgress');
+            if (progressEl) {
+                progressEl.style.display = 'block';
+                progressEl.textContent = 'Uploading... 0%';
+            }
+
+            const xhr = new XMLHttpRequest();
+            xhr.timeout = 120000; // 2 minutes
+
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const pct = Math.round((event.loaded / event.total) * 100);
+                    if (progressEl) progressEl.textContent = `Uploading... ${pct}%`;
+                    const loadingText = document.getElementById('loadingText');
+                    if (loadingText) loadingText.textContent = `Uploading image... ${pct}%`;
+                }
+            };
+
+            xhr.onload = () => {
+                if (progressEl) {
+                    progressEl.style.display = 'none';
+                    progressEl.textContent = '';
+                }
+                hideLoading();
+
+                if (xhr.status === 200) {
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        if (data.success) {
+                            document.getElementById('bookCoverImage').value = data.data.url;
+                            const preview = document.getElementById('bookCoverPreview');
+                            if (preview) {
+                                preview.classList.add('visible');
+                                const img = document.getElementById('bookCoverPreviewImg');
+                                if (img) img.src = data.data.url;
+                            }
+                            toast('✅ Cover image uploaded!', 'success');
+                        } else {
+                            toast('Upload failed: ' + (data.message || 'Unknown error'), 'error');
+                        }
+                    } catch (e) {
+                        toast('Invalid server response', 'error');
+                    }
+                } else if (xhr.status === 413) {
+                    toast('Image too large. Max 20MB.', 'error');
+                } else if (xhr.status === 0) {
+                    toast('Network error – check connection or file size.', 'error');
+                } else {
+                    let errorMsg = `Upload failed (${xhr.status})`;
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        errorMsg = data.message || errorMsg;
+                    } catch (e) {}
+                    toast(errorMsg, 'error');
+                }
+                input.value = '';
+            };
+
+            xhr.onerror = () => {
+                if (progressEl) {
+                    progressEl.style.display = 'none';
+                    progressEl.textContent = '';
+                }
+                hideLoading();
+                toast('Network error – please check your connection', 'error');
+                input.value = '';
+            };
+
+            xhr.ontimeout = () => {
+                if (progressEl) {
+                    progressEl.style.display = 'none';
+                    progressEl.textContent = '';
+                }
+                hideLoading();
+                toast('Upload timed out. Try again with a smaller image.', 'error');
+                input.value = '';
+            };
+
+            showLoading('Uploading image...');
+            xhr.open('POST', `${API_BASE}/admin/upload-file`);
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+            xhr.send(formData);
         }
 
         // ─── BOOK PDF UPLOAD – WITH PROGRESS & LARGE FILE SUPPORT ─────
@@ -9420,6 +9501,10 @@
                     } catch (e) {
                         toast('Invalid server response', 'error');
                     }
+                } else if (xhr.status === 413) {
+                    toast('File too large. Max 500MB.', 'error');
+                } else if (xhr.status === 0) {
+                    toast('Network error – check connection or file size.', 'error');
                 } else {
                     let errorMsg = `Upload failed (${xhr.status})`;
                     try {
@@ -9447,7 +9532,7 @@
                     progressEl.textContent = '';
                 }
                 hideLoading();
-                toast('Upload timed out. Please try again.', 'error');
+                toast('Upload timed out. Try a smaller file.', 'error');
                 input.value = '';
             };
 
@@ -10090,6 +10175,7 @@
                                         <div class="upload-preview-label">✅ Image uploaded</div>
                                     </div>
                                     <input type="hidden" id="bookCoverImage" />
+                                    <div id="bookCoverProgress" class="book-upload-progress" style="display:none;">Uploading... 0%</div>
                                 </div>
                                 <div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Book PDF File *</label>
                                     <div class="upload-zone" style="padding:1rem">
@@ -11531,7 +11617,7 @@
         console.log('🗑️ Admin can delete any post.');
         console.log('📤 Book upload: Large file support (500MB) with progress tracking.');
         console.log('🔗 Affiliate links now use hash-based routing (#courses/...) for SPA compatibility.');
-        console.log('🏦 Bank details updated: Lead Bank & Taj Bank displayed for manual transfers.');
+        console.log('🏦 Bank details updated: Lead Bank & Taj Bank for manual transfers.');
     </script>
 </body>
 </html>
