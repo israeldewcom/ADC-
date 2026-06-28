@@ -10,10 +10,12 @@
     <meta property="og:title" content="ChangeX Academy — Turn Tech Into Income" id="ogTitle" />
     <meta property="og:description" content="Learn HTML, CSS, JavaScript & AI Tools — earn from course sales, referrals, affiliates & bonuses. Pay online or via bank transfer." id="ogDescription" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://changex.academy" />
+    <meta property="og:url" content="https://changex.academy" id="ogUrl" />
+    <meta property="og:image" content="https://changex.academy/logo.png" id="ogImage" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="ChangeX Academy — Turn Tech Into Income" />
     <meta name="twitter:description" content="Global #1 Learn-to-Earn platform. Learn tech skills and earn real money. Card or bank transfer accepted." />
+    <meta name="twitter:image" content="https://changex.academy/logo.png" />
     <link rel="canonical" href="https://changex.academy" id="canonicalLink" />
 
     <!-- ===== PWA: Static manifest (served from root) ===== -->
@@ -4866,7 +4868,6 @@
             padding: 0;
             color: var(--text);
         }
-        /* Course rating display */
         .rating-stars {
             color: var(--gold);
             font-size: 1.1rem;
@@ -4884,7 +4885,6 @@
             font-size: 0.8rem;
             color: var(--text3);
         }
-        /* Following badge count */
         .following-badge-count {
             background: var(--primary);
             color: #000;
@@ -4897,12 +4897,25 @@
             min-width: 18px;
             text-align: center;
         }
-        /* Book upload progress */
         .book-upload-progress {
             font-size: .8rem;
             color: var(--primary);
             font-weight: 600;
             margin-top: .5rem;
+        }
+        /* ===== RESET PASSWORD PAGE ===== */
+        .reset-container {
+            min-height: 100svh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            background: var(--bg);
+            position: relative;
+            overflow: hidden;
+        }
+        .reset-container .auth-box {
+            max-width: 430px;
         }
     </style>
 </head>
@@ -4916,20 +4929,20 @@
     <!-- LANDING PAGE -->
     <!-- ============================================================ -->
     <div id="page-landing" class="page active">
-        <nav class="land-nav" id="landingNav"><div class="logo" onclick="goPage('landing')"><div class="logo-mark"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;border-radius:8px;object-fit:cover;" /></div>ChangeX<span style="color:var(--primary)">.</span></div><div class="land-nav-links"><a onclick="smoothTo('how-it-works')">How It Works</a><a onclick="smoothTo('courses-sec')">Courses</a><a onclick="smoothTo('instructors-sec')">Instructors</a><a onclick="smoothTo('pricing-sec')">Pricing</a><a onclick="goPage('contact')">Contact</a><a onclick="smoothTo('books-landing')">Books</a></div><div style="display:flex;align-items:center;gap:.4rem"><button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><i class="fas" id="themeIcon"></i></button><button class="btn btn-outline btn-sm" onclick="goPage('login')">Sign In</button><button class="btn btn-primary btn-sm" onclick="goPage('register')">Start Free</button><button class="btn-icon d-md-none" onclick="toggleMobNav()"><i class="fas fa-bars"></i></button></div></nav>
-        <div class="mob-nav-dd" id="mobNav"><a onclick="smoothTo('how-it-works');toggleMobNav()">How It Works</a><a onclick="smoothTo('courses-sec');toggleMobNav()">Courses</a><a onclick="smoothTo('instructors-sec');toggleMobNav()">Instructors</a><a onclick="smoothTo('pricing-sec');toggleMobNav()">Pricing</a><a onclick="smoothTo('books-landing');toggleMobNav()">Books</a><a onclick="goPage('contact');toggleMobNav()">Contact</a><a onclick="goPage('login')">Sign In</a><a onclick="goPage('register')" style="color:var(--primary);font-weight:600">Start Free →</a></div>
+        <nav class="land-nav" id="landingNav"><div class="logo" onclick="navigateTo('/')"><div class="logo-mark"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;border-radius:8px;object-fit:cover;" /></div>ChangeX<span style="color:var(--primary)">.</span></div><div class="land-nav-links"><a onclick="smoothTo('how-it-works')">How It Works</a><a onclick="smoothTo('courses-sec')">Courses</a><a onclick="smoothTo('instructors-sec')">Instructors</a><a onclick="smoothTo('pricing-sec')">Pricing</a><a onclick="navigateTo('/contact')">Contact</a><a onclick="smoothTo('books-landing')">Books</a></div><div style="display:flex;align-items:center;gap:.4rem"><button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><i class="fas" id="themeIcon"></i></button><button class="btn btn-outline btn-sm" onclick="navigateTo('/login')">Sign In</button><button class="btn btn-primary btn-sm" onclick="navigateTo('/register')">Start Free</button><button class="btn-icon d-md-none" onclick="toggleMobNav()"><i class="fas fa-bars"></i></button></div></nav>
+        <div class="mob-nav-dd" id="mobNav"><a onclick="smoothTo('how-it-works');toggleMobNav()">How It Works</a><a onclick="smoothTo('courses-sec');toggleMobNav()">Courses</a><a onclick="smoothTo('instructors-sec');toggleMobNav()">Instructors</a><a onclick="smoothTo('pricing-sec');toggleMobNav()">Pricing</a><a onclick="smoothTo('books-landing');toggleMobNav()">Books</a><a onclick="navigateTo('/contact');toggleMobNav()">Contact</a><a onclick="navigateTo('/login')">Sign In</a><a onclick="navigateTo('/register')" style="color:var(--primary);font-weight:600">Start Free →</a></div>
 
-        <section class="lhero"><div class="lhero-bg"></div><div class="lhero-wrap"><div class="row items-center"><div class="col-12 col-lg-6"><div class="hero-eyebrow"><span class="pulse-dot"></span><span>🌍 Global Learn-to-Earn Platform</span></div><h1 style="font-size:clamp(2rem,5vw,3.2rem)">Turn Tech Skills Into <span class="grad-text">Real Income</span></h1><p class="hero-desc">Learn HTML, CSS, JavaScript &amp; AI Tools — earn from course sales, referrals, affiliates &amp; bonuses. Pay online or via <strong style="color:var(--primary)">bank transfer</strong>. No experience needed.</p><div class="hero-actions"><button class="btn btn-primary btn-lg" onclick="goPage('register')"><i class="fas fa-rocket"></i>Start Earning Free</button><button class="btn btn-outline btn-lg" onclick="smoothTo('how-it-works')"><i class="fas fa-play"></i>See How</button></div><div class="trust-row"><div class="trust-item"><i class="fas fa-shield-alt"></i>Secure &amp; Verified</div><div class="trust-item"><i class="fas fa-certificate"></i>Earn Certificates</div><div class="trust-item"><i class="fas fa-bolt"></i>Instant Payouts</div><div class="trust-item"><i class="fas fa-university"></i>Bank Transfer Accepted</div></div></div><div class="col-12 col-lg-6" style="padding-top:1.5rem"><div class="hero-vis"><div class="hero-dash"><div class="hd-bar"><div class="hd-dot" style="background:#ff5f57"></div><div class="hd-dot" style="background:#febc2e;margin-left:4px"></div><div class="hd-dot" style="background:#28c840;margin-left:4px"></div><span style="font-size:.67rem;color:var(--text3);margin-left:auto;font-family:var(--font-mono)">changex.academy/dashboard</span></div><div class="hd-body"><div class="hd-earn"><div style="font-size:.7rem;color:var(--text3);margin-bottom:.2rem;font-family:var(--font-mono)">💰 TOTAL EARNINGS</div><div class="hd-amt" id="heroEarnings">₦0</div><div class="hd-minis"><div class="hd-mini"><div class="hd-mv" style="color:var(--lime)" id="heroReferrals">₦0</div><div class="hd-ml">Referrals</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--cyan)" id="heroCourses">₦0</div><div class="hd-ml">Courses</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--gold)" id="heroStreak">🔥 0</div><div class="hd-ml">Streak</div></div></div></div></div></div><div class="fc fc-bot"><i class="fas fa-star" style="color:var(--gold)"></i> 4.9 · 3,200+ reviews</div><div class="fc fc-top"><i class="fas fa-user-plus"></i> 15K+ Students</div></div></div></div></div></section>
+        <section class="lhero"><div class="lhero-bg"></div><div class="lhero-wrap"><div class="row items-center"><div class="col-12 col-lg-6"><div class="hero-eyebrow"><span class="pulse-dot"></span><span>🌍 Global Learn-to-Earn Platform</span></div><h1 style="font-size:clamp(2rem,5vw,3.2rem)">Turn Tech Skills Into <span class="grad-text">Real Income</span></h1><p class="hero-desc">Learn HTML, CSS, JavaScript &amp; AI Tools — earn from course sales, referrals, affiliates &amp; bonuses. Pay online or via <strong style="color:var(--primary)">bank transfer</strong>. No experience needed.</p><div class="hero-actions"><button class="btn btn-primary btn-lg" onclick="navigateTo('/register')"><i class="fas fa-rocket"></i>Start Earning Free</button><button class="btn btn-outline btn-lg" onclick="smoothTo('how-it-works')"><i class="fas fa-play"></i>See How</button></div><div class="trust-row"><div class="trust-item"><i class="fas fa-shield-alt"></i>Secure &amp; Verified</div><div class="trust-item"><i class="fas fa-certificate"></i>Earn Certificates</div><div class="trust-item"><i class="fas fa-bolt"></i>Instant Payouts</div><div class="trust-item"><i class="fas fa-university"></i>Bank Transfer Accepted</div></div></div><div class="col-12 col-lg-6" style="padding-top:1.5rem"><div class="hero-vis"><div class="hero-dash"><div class="hd-bar"><div class="hd-dot" style="background:#ff5f57"></div><div class="hd-dot" style="background:#febc2e;margin-left:4px"></div><div class="hd-dot" style="background:#28c840;margin-left:4px"></div><span style="font-size:.67rem;color:var(--text3);margin-left:auto;font-family:var(--font-mono)">changex.academy/dashboard</span></div><div class="hd-body"><div class="hd-earn"><div style="font-size:.7rem;color:var(--text3);margin-bottom:.2rem;font-family:var(--font-mono)">💰 TOTAL EARNINGS</div><div class="hd-amt" id="heroEarnings">₦0</div><div class="hd-minis"><div class="hd-mini"><div class="hd-mv" style="color:var(--lime)" id="heroReferrals">₦0</div><div class="hd-ml">Referrals</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--cyan)" id="heroCourses">₦0</div><div class="hd-ml">Courses</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--gold)" id="heroStreak">🔥 0</div><div class="hd-ml">Streak</div></div></div></div></div></div><div class="fc fc-bot"><i class="fas fa-star" style="color:var(--gold)"></i> 4.9 · 3,200+ reviews</div><div class="fc fc-top"><i class="fas fa-user-plus"></i> 15K+ Students</div></div></div></div></div></section>
 
         <div class="ticker-outer"><div class="ticker-track" id="tickerTrack"></div></div>
 
         <section id="how-it-works" class="lsec lsec-dark"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag" style="margin-bottom:.65rem"><i class="fas fa-map"></i> Process</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">From Zero to <span class="grad-text">Earning</span> in 4 Steps</h2></div><div class="row"><div class="col-12 col-md-6 col-lg-3 reveal" style="transition-delay:.05s"><div class="hiw-card"><div class="hiw-num">01</div><div><strong>Sign Up Free</strong><br><small style="color:var(--text3)">Create account, complete profile &amp; choose your role.</small></div></div></div><div class="col-12 col-md-6 col-lg-3 reveal" style="transition-delay:.1s"><div class="hiw-card"><div class="hiw-num">02</div><div><strong>Learn Skills</strong><br><small style="color:var(--text3)">20+ lessons per course with video, quiz, Q&amp;A &amp; resources.</small></div></div></div><div class="col-12 col-md-6 col-lg-3 reveal" style="transition-delay:.15s"><div class="hiw-card"><div class="hiw-num">03</div><div><strong>Create &amp; Promote</strong><br><small style="color:var(--text3)">Teach courses, earn affiliate commissions &amp; referral bonuses.</small></div></div></div><div class="col-12 col-md-6 col-lg-3 reveal" style="transition-delay:.2s"><div class="hiw-card"><div class="hiw-num">04</div><div><strong>Start Earning</strong><br><small style="color:var(--text3)">Get paid to your wallet, withdraw to your Nigerian bank.</small></div></div></div></div></div></section>
 
-        <section id="courses-sec" class="lsec"><div class="lsec-wrap"><div class="d-flex items-center justify-between mb-4 reveal flex-wrap" style="gap:.75rem"><div><div class="stag mb-2"><i class="fas fa-graduation-cap"></i> Featured</div><h2 style="font-size:1.85rem">Learn what <span class="grad-text">pays</span></h2></div><button class="btn btn-outline btn-sm" onclick="goPage('register')">View All <i class="fas fa-arrow-right"></i></button></div><div class="row" id="landingCourseGrid"></div></div></section>
+        <section id="courses-sec" class="lsec"><div class="lsec-wrap"><div class="d-flex items-center justify-between mb-4 reveal flex-wrap" style="gap:.75rem"><div><div class="stag mb-2"><i class="fas fa-graduation-cap"></i> Featured</div><h2 style="font-size:1.85rem">Learn what <span class="grad-text">pays</span></h2></div><button class="btn btn-outline btn-sm" onclick="navigateTo('/explore')">View All <i class="fas fa-arrow-right"></i></button></div><div class="row" id="landingCourseGrid"></div></div></section>
 
-        <section id="books-landing" class="lsec lsec-dark"><div class="lsec-wrap"><div class="d-flex items-center justify-between mb-4 reveal flex-wrap" style="gap:.75rem"><div><div class="stag mb-2"><i class="fas fa-book"></i> Library</div><h2 style="font-size:1.85rem">Explore Our <span class="grad-text">Digital Books</span></h2></div><button class="btn btn-outline btn-sm" onclick="goPage('register')">Browse All <i class="fas fa-arrow-right"></i></button></div><div class="row" id="landingBooksGrid"></div></div></section>
+        <section id="books-landing" class="lsec lsec-dark"><div class="lsec-wrap"><div class="d-flex items-center justify-between mb-4 reveal flex-wrap" style="gap:.75rem"><div><div class="stag mb-2"><i class="fas fa-book"></i> Library</div><h2 style="font-size:1.85rem">Explore Our <span class="grad-text">Digital Books</span></h2></div><button class="btn btn-outline btn-sm" onclick="navigateTo('/books')">Browse All <i class="fas fa-arrow-right"></i></button></div><div class="row" id="landingBooksGrid"></div></div></section>
 
-        <section class="lsec"><div class="lsec-wrap"><div class="row items-center"><div class="col-12 col-md-6 reveal"><div class="stag mb-3"><i class="fas fa-fire"></i> Live Activity</div><h3 style="font-size:1.4rem;margin-bottom:.85rem">Students Earning <span class="grad-text">Right Now</span></h3><div id="landingFeed"></div></div><div class="col-12 col-md-6 reveal-r"><div class="bonus-card"><div class="stag mb-3"><i class="fas fa-wallet"></i> 4 Income Streams</div><h4 style="margin-bottom:.85rem">Earn Multiple Ways on ChangeX</h4><div style="display:flex;flex-direction:column;gap:.55rem;font-size:.83rem"><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-primary" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-book"></i></div><div><strong>Course Sales</strong> — 80% revenue share to you</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-c" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-users"></i></div><div><strong>Referrals</strong> — ₦500 per signup that subscribes</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-v" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-handshake"></i></div><div><strong>Affiliates</strong> — Promote others, earn % commission</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-g" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-trophy"></i></div><div><strong>Completion Bonuses</strong> — ₦100 per course done</div></div></div><button class="btn btn-primary btn-sm mt-4" onclick="goPage('register')"><i class="fas fa-rocket"></i>Start Earning Now</button></div></div></div></div></section>
+        <section class="lsec"><div class="lsec-wrap"><div class="row items-center"><div class="col-12 col-md-6 reveal"><div class="stag mb-3"><i class="fas fa-fire"></i> Live Activity</div><h3 style="font-size:1.4rem;margin-bottom:.85rem">Students Earning <span class="grad-text">Right Now</span></h3><div id="landingFeed"></div></div><div class="col-12 col-md-6 reveal-r"><div class="bonus-card"><div class="stag mb-3"><i class="fas fa-wallet"></i> 4 Income Streams</div><h4 style="margin-bottom:.85rem">Earn Multiple Ways on ChangeX</h4><div style="display:flex;flex-direction:column;gap:.55rem;font-size:.83rem"><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-primary" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-book"></i></div><div><strong>Course Sales</strong> — 80% revenue share to you</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-c" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-users"></i></div><div><strong>Referrals</strong> — ₦500 per signup that subscribes</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-v" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-handshake"></i></div><div><strong>Affiliates</strong> — Promote others, earn % commission</div></div><div style="display:flex;align-items:center;gap:.65rem"><div class="si si-g" style="width:30px;height:30px;font-size:.75rem"><i class="fas fa-trophy"></i></div><div><strong>Completion Bonuses</strong> — ₦100 per course done</div></div></div><button class="btn btn-primary btn-sm mt-4" onclick="navigateTo('/register')"><i class="fas fa-rocket"></i>Start Earning Now</button></div></div></div></div></section>
 
         <section id="instructors-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-chalkboard-teacher"></i> Educators</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Learn From <span class="grad-text">Nigeria's Best</span></h2></div><div class="row" id="landingInstructors"></div></div></section>
 
@@ -4937,27 +4950,35 @@
 
         <section id="reviews-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-star"></i> Reviews</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">What Our <span class="grad-text">Students Say</span></h2></div><div class="row" id="reviewsList"></div><div class="row justify-center mt-5"><div class="col-12 col-md-6"><div class="card card-p"><h5>Leave a Review</h5><div class="form-group"><label class="flabel">Your Name</label><input type="text" class="finput" id="reviewName" placeholder="Your full name"></div><div class="form-group"><label class="flabel">Rating</label><div style="display:flex;gap:.3rem;font-size:1.5rem;cursor:pointer" id="reviewStars"><span data-val="1" onclick="setReviewStar(1)">☆</span><span data-val="2" onclick="setReviewStar(2)">☆</span><span data-val="3" onclick="setReviewStar(3)">☆</span><span data-val="4" onclick="setReviewStar(4)">☆</span><span data-val="5" onclick="setReviewStar(5)">☆</span></div></div><div class="form-group"><label class="flabel">Review</label><textarea class="finput" id="reviewText" rows="3" placeholder="Your experience..."></textarea></div><button class="btn btn-primary" onclick="submitReview()">Submit Review</button></div></div></div></div></section>
 
-        <section id="pricing-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-tag"></i> Pricing</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Simple, <span class="grad-text">Transparent</span> Pricing</h2></div><div class="row justify-center"><div class="col-12 col-md-4 reveal" style="transition-delay:.05s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-user"></i> Free</div><div class="p-amt">₦0<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">Perfect to get started</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>5 courses access</li><li><i class="fas fa-check chk"></i>Basic certificates</li><li><i class="fas fa-check chk"></i>Referral program</li><li><i class="fas fa-times nope"></i>Create courses</li><li><i class="fas fa-times nope"></i>Unlimited uploads</li><li><i class="fas fa-times nope"></i>No ads</li></ul><button class="btn btn-outline w-full" onclick="goPage('register')">Get Started Free</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.1s"><div class="price-card featured"><div class="stag mb-3"><i class="fas fa-crown"></i> Premium</div><div class="p-amt" style="color:var(--lime)">₦5,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For serious learners &amp; earners</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>All courses unlimited</li><li><i class="fas fa-check chk"></i>Create &amp; sell courses</li><li><i class="fas fa-check chk"></i>Affiliate dashboard</li><li><i class="fas fa-check chk"></i>Unlimited uploads</li><li><i class="fas fa-check chk"></i>No ads 🎉</li><li><i class="fas fa-check chk"></i>80% course revenue</li></ul><button class="btn btn-primary w-full" onclick="goPage('register')"><i class="fas fa-crown"></i>Go Premium</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.15s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-building"></i> Business</div><div class="p-amt">₦25,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For teams &amp; organizations</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>Everything in Premium</li><li><i class="fas fa-check chk"></i>Up to 20 seats</li><li><i class="fas fa-check chk"></i>Custom branding</li><li><i class="fas fa-check chk"></i>Analytics</li><li><i class="fas fa-check chk"></i>Dedicated manager</li></ul><button class="btn btn-outline w-full" onclick="goPage('contact')">Contact Sales</button></div></div></div></div></section>
+        <section id="pricing-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-tag"></i> Pricing</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Simple, <span class="grad-text">Transparent</span> Pricing</h2></div><div class="row justify-center"><div class="col-12 col-md-4 reveal" style="transition-delay:.05s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-user"></i> Free</div><div class="p-amt">₦0<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">Perfect to get started</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>5 courses access</li><li><i class="fas fa-check chk"></i>Basic certificates</li><li><i class="fas fa-check chk"></i>Referral program</li><li><i class="fas fa-times nope"></i>Create courses</li><li><i class="fas fa-times nope"></i>Unlimited uploads</li><li><i class="fas fa-times nope"></i>No ads</li></ul><button class="btn btn-outline w-full" onclick="navigateTo('/register')">Get Started Free</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.1s"><div class="price-card featured"><div class="stag mb-3"><i class="fas fa-crown"></i> Premium</div><div class="p-amt" style="color:var(--lime)">₦5,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For serious learners &amp; earners</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>All courses unlimited</li><li><i class="fas fa-check chk"></i>Create &amp; sell courses</li><li><i class="fas fa-check chk"></i>Affiliate dashboard</li><li><i class="fas fa-check chk"></i>Unlimited uploads</li><li><i class="fas fa-check chk"></i>No ads 🎉</li><li><i class="fas fa-check chk"></i>80% course revenue</li></ul><button class="btn btn-primary w-full" onclick="navigateTo('/register')"><i class="fas fa-crown"></i>Go Premium</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.15s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-building"></i> Business</div><div class="p-amt">₦25,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For teams &amp; organizations</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>Everything in Premium</li><li><i class="fas fa-check chk"></i>Up to 20 seats</li><li><i class="fas fa-check chk"></i>Custom branding</li><li><i class="fas fa-check chk"></i>Analytics</li><li><i class="fas fa-check chk"></i>Dedicated manager</li></ul><button class="btn btn-outline w-full" onclick="navigateTo('/contact')">Contact Sales</button></div></div></div></div></section>
 
-        <footer class="lfooter"><div class="lsec-wrap"><div class="row mb-4"><div class="col-12 col-md-4"><div class="logo mb-3"><div class="logo-mark"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;border-radius:8px;object-fit:cover;" /></div>ChangeX<span style="color:var(--primary)">.</span></div><p style="font-size:.82rem;color:var(--text3);max-width:260px;line-height:1.65">Global #1 Learn-to-Earn platform. Turning tech skills into real income.</p><div class="f-social"><div class="soc-btn"><i class="fab fa-twitter"></i></div><div class="soc-btn"><i class="fab fa-instagram"></i></div><div class="soc-btn"><i class="fab fa-linkedin"></i></div><div class="soc-btn"><i class="fab fa-youtube"></i></div><div class="soc-btn"><i class="fab fa-whatsapp"></i></div></div></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Learn</h6><ul class="f-links"><li><a onclick="goPage('register')">All Courses</a></li><li><a>Web Dev</a></li><li><a>AI &amp; Tools</a></li><li><a>Freelancing</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Earn</h6><ul class="f-links"><li><a>Referrals</a></li><li><a>Affiliates</a></li><li><a>Teach Here</a></li><li><a>Leaderboard</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Company</h6><ul class="f-links"><li><a>About</a></li><li><a onclick="goPage('contact')">Contact</a></li><li><a>Privacy</a></li><li><a>Terms</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Newsletter</h6><p style="font-size:.75rem;color:var(--text3);margin-bottom:.6rem">Weekly tips &amp; earnings updates</p><input type="email" class="finput" id="footerEmail" placeholder="your@email.com" style="margin-bottom:.4rem"/><button class="btn btn-primary btn-sm w-full" onclick="subscribeEmail()">Subscribe</button></div></div><div style="border-top:1px solid var(--border);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem"><p style="font-size:.73rem;color:var(--text3)">© 2025 ChangeX Academy. Made with ❤️ for the world.</p><p style="font-size:.73rem;color:var(--text3)">Contact: <a href="mailto:changexacademysupport@gmail.com" style="color:var(--primary)">changexacademysupport@gmail.com</a></p></div></div></footer>
+        <footer class="lfooter"><div class="lsec-wrap"><div class="row mb-4"><div class="col-12 col-md-4"><div class="logo mb-3"><div class="logo-mark"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;border-radius:8px;object-fit:cover;" /></div>ChangeX<span style="color:var(--primary)">.</span></div><p style="font-size:.82rem;color:var(--text3);max-width:260px;line-height:1.65">Global #1 Learn-to-Earn platform. Turning tech skills into real income.</p><div class="f-social"><div class="soc-btn"><i class="fab fa-twitter"></i></div><div class="soc-btn"><i class="fab fa-instagram"></i></div><div class="soc-btn"><i class="fab fa-linkedin"></i></div><div class="soc-btn"><i class="fab fa-youtube"></i></div><div class="soc-btn"><i class="fab fa-whatsapp"></i></div></div></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Learn</h6><ul class="f-links"><li><a onclick="navigateTo('/explore')">All Courses</a></li><li><a>Web Dev</a></li><li><a>AI &amp; Tools</a></li><li><a>Freelancing</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Earn</h6><ul class="f-links"><li><a>Referrals</a></li><li><a>Affiliates</a></li><li><a>Teach Here</a></li><li><a>Leaderboard</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Company</h6><ul class="f-links"><li><a>About</a></li><li><a onclick="navigateTo('/contact')">Contact</a></li><li><a>Privacy</a></li><li><a>Terms</a></li></ul></div><div class="col-6 col-md-2"><h6 style="margin-bottom:.65rem">Newsletter</h6><p style="font-size:.75rem;color:var(--text3);margin-bottom:.6rem">Weekly tips &amp; earnings updates</p><input type="email" class="finput" id="footerEmail" placeholder="your@email.com" style="margin-bottom:.4rem"/><button class="btn btn-primary btn-sm w-full" onclick="subscribeEmail()">Subscribe</button></div></div><div style="border-top:1px solid var(--border);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem"><p style="font-size:.73rem;color:var(--text3)">© 2025 ChangeX Academy. Made with ❤️ for the world.</p><p style="font-size:.73rem;color:var(--text3)">Contact: <a href="mailto:changexacademysupport@gmail.com" style="color:var(--primary)">changexacademysupport@gmail.com</a></p></div></div></footer>
     </div>
 
     <!-- ============================================================ -->
     <!-- AUTH PAGES -->
     <!-- ============================================================ -->
-    <div id="page-login" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem;border-radius:12px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div><h2 style="font-size:1.6rem">Welcome Back</h2><p style="font-size:.82rem;color:var(--text3)">Sign in to continue earning</p></div><div style="display:flex;gap:.55rem;margin-bottom:.85rem"><button class="social-btn" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="loginEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="loginPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/><button class="pw-toggle" onclick="togglePw('loginPw',this)"><i class="fas fa-eye"></i></button></div></div><div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem"><input type="checkbox" id="rememberMe" style="accent-color:var(--primary)"/><label for="rememberMe" style="font-size:.78rem;color:var(--text2);cursor:pointer">Remember me</label><a style="font-size:.78rem;color:var(--primary);cursor:pointer;margin-left:auto" onclick="handleForgotPassword()">Forgot password?</a></div><button class="btn btn-primary w-full" id="loginBtn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i>Sign In</button><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">No account? <a style="color:var(--primary);cursor:pointer" onclick="goPage('register')">Create free →</a></p><p style="text-align:center;margin-top:.4rem"><a style="font-size:.75rem;cursor:pointer;color:var(--text3)" onclick="goPage('landing')">← Back to Home</a></p></div></div></div>
+    <div id="page-login" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem;border-radius:12px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div><h2 style="font-size:1.6rem">Welcome Back</h2><p style="font-size:.82rem;color:var(--text3)">Sign in to continue earning</p></div><div style="display:flex;gap:.55rem;margin-bottom:.85rem"><button class="social-btn" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="loginEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="loginPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/><button class="pw-toggle" onclick="togglePw('loginPw',this)"><i class="fas fa-eye"></i></button></div></div><div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem"><input type="checkbox" id="rememberMe" style="accent-color:var(--primary)"/><label for="rememberMe" style="font-size:.78rem;color:var(--text2);cursor:pointer">Remember me</label><a style="font-size:.78rem;color:var(--primary);cursor:pointer;margin-left:auto" onclick="handleForgotPassword()">Forgot password?</a></div><button class="btn btn-primary w-full" id="loginBtn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i>Sign In</button><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">No account? <a style="color:var(--primary);cursor:pointer" onclick="navigateTo('/register')">Create free →</a></p><p style="text-align:center;margin-top:.4rem"><a style="font-size:.75rem;cursor:pointer;color:var(--text3)" onclick="navigateTo('/')">← Back to Home</a></p></div></div></div>
 
-    <div id="page-register" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box" style="max-width:460px"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem;border-radius:12px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div><h2 style="font-size:1.6rem">Create Free Account</h2><p style="font-size:.82rem;color:var(--text3)">Join thousands of learners &amp; earners worldwide</p></div><div class="row" style="gap:.55rem;margin-bottom:.85rem"><button class="social-btn" style="flex:1" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" style="flex:1" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="regFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="regLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="regEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Phone</label><div class="finput-ico"><i class="fas fa-phone fii"></i><input type="tel" class="finput" id="regPhone" placeholder="+234 800 000 0000"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="regPw" placeholder="Min 8 characters" oninput="checkPwStr(this.value)"/><button class="pw-toggle" onclick="togglePw('regPw',this)"><i class="fas fa-eye"></i></button></div><div class="pw-bars"><div class="pw-bar" id="pb1"></div><div class="pw-bar" id="pb2"></div><div class="pw-bar" id="pb3"></div><div class="pw-bar" id="pb4"></div></div></div><div class="form-group"><label class="flabel">Referral Code (optional)</label><div class="finput-ico"><i class="fas fa-users fii"></i><input type="text" class="finput" id="regRef" placeholder="Enter referral code"/></div></div><div style="display:flex;align-items:flex-start;gap:.5rem;margin-bottom:1rem;font-size:.79rem"><input type="checkbox" id="termsChk" style="accent-color:var(--primary);margin-top:.15rem"/><label for="termsChk" style="color:var(--text2);cursor:pointer;line-height:1.5">I agree to the <a style="color:var(--primary)">Terms</a> and <a style="color:var(--primary)">Privacy Policy</a></label></div><button class="btn btn-primary w-full" id="registerBtn" onclick="doRegister()"><i class="fas fa-rocket"></i>Create My Free Account</button><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.14);border-radius:var(--radius-sm);padding:.65rem;margin-top:.85rem;font-size:.76rem;color:var(--text2);text-align:center">🎉 Get <strong style="color:var(--primary)">₦500 welcome bonus</strong> on first profile completion!</div><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">Already have account? <a style="color:var(--primary);cursor:pointer" onclick="goPage('login')">Sign in →</a></p></div></div></div>
+    <div id="page-register" class="page"><div class="auth-wrap"><div class="auth-bg"></div><div class="auth-box" style="max-width:460px"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem;border-radius:12px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div><h2 style="font-size:1.6rem">Create Free Account</h2><p style="font-size:.82rem;color:var(--text3)">Join thousands of learners &amp; earners worldwide</p></div><div class="row" style="gap:.55rem;margin-bottom:.85rem"><button class="social-btn" style="flex:1" onclick="handleGoogleLogin()"><i class="fab fa-google" style="color:#ea4335"></i> Google</button><button class="social-btn" style="flex:1" onclick="handleGithubLogin()"><i class="fab fa-github"></i> GitHub</button></div><div class="divider-or"><span>or with email</span></div><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="regFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="regLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><div class="finput-ico"><i class="fas fa-envelope fii"></i><input type="email" class="finput" id="regEmail" placeholder="you@example.com"/></div></div><div class="form-group"><label class="flabel">Phone</label><div class="finput-ico"><i class="fas fa-phone fii"></i><input type="tel" class="finput" id="regPhone" placeholder="+234 800 000 0000"/></div></div><div class="form-group"><label class="flabel">Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="regPw" placeholder="Min 8 characters" oninput="checkPwStr(this.value)"/><button class="pw-toggle" onclick="togglePw('regPw',this)"><i class="fas fa-eye"></i></button></div><div class="pw-bars"><div class="pw-bar" id="pb1"></div><div class="pw-bar" id="pb2"></div><div class="pw-bar" id="pb3"></div><div class="pw-bar" id="pb4"></div></div></div><div class="form-group"><label class="flabel">Referral Code (optional)</label><div class="finput-ico"><i class="fas fa-users fii"></i><input type="text" class="finput" id="regRef" placeholder="Enter referral code"/></div></div><div style="display:flex;align-items:flex-start;gap:.5rem;margin-bottom:1rem;font-size:.79rem"><input type="checkbox" id="termsChk" style="accent-color:var(--primary);margin-top:.15rem"/><label for="termsChk" style="color:var(--text2);cursor:pointer;line-height:1.5">I agree to the <a style="color:var(--primary)">Terms</a> and <a style="color:var(--primary)">Privacy Policy</a></label></div><button class="btn btn-primary w-full" id="registerBtn" onclick="doRegister()"><i class="fas fa-rocket"></i>Create My Free Account</button><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.14);border-radius:var(--radius-sm);padding:.65rem;margin-top:.85rem;font-size:.76rem;color:var(--text2);text-align:center">🎉 Get <strong style="color:var(--primary)">₦500 welcome bonus</strong> on first profile completion!</div><p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem">Already have account? <a style="color:var(--primary);cursor:pointer" onclick="navigateTo('/login')">Sign in →</a></p></div></div></div>
+
+    <!-- ===== RESET PASSWORD PAGE ===== -->
+    <div id="page-reset-password" class="page"><div class="reset-container"><div class="auth-bg"></div><div class="auth-box"><div style="text-align:center;margin-bottom:1.5rem"><div class="logo-mark" style="margin:0 auto .6rem;width:40px;height:40px;font-size:1rem;border-radius:12px;overflow:hidden"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;object-fit:cover;" /></div><h2 style="font-size:1.6rem">Reset Password</h2><p style="font-size:.82rem;color:var(--text3)">Enter your new password below</p></div><input type="hidden" id="resetToken" value="" />
+        <div class="form-group"><label class="flabel">New Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="resetNewPw" placeholder="Min 8 characters" oninput="checkPwStr(this.value)"/><button class="pw-toggle" onclick="togglePw('resetNewPw',this)"><i class="fas fa-eye"></i></button></div><div class="pw-bars"><div class="pw-bar" id="rb1"></div><div class="pw-bar" id="rb2"></div><div class="pw-bar" id="rb3"></div><div class="pw-bar" id="rb4"></div></div></div>
+        <div class="form-group"><label class="flabel">Confirm Password</label><div class="finput-ico" style="position:relative"><i class="fas fa-lock fii"></i><input type="password" class="finput" id="resetConfirmPw" placeholder="Confirm new password"/><button class="pw-toggle" onclick="togglePw('resetConfirmPw',this)"><i class="fas fa-eye"></i></button></div></div>
+        <button class="btn btn-primary w-full" onclick="doResetPassword()"><i class="fas fa-sync-alt"></i> Reset Password</button>
+        <p style="text-align:center;font-size:.8rem;color:var(--text3);margin-top:.85rem"><a style="color:var(--primary);cursor:pointer" onclick="navigateTo('/login')">← Back to Sign In</a></p>
+    </div></div></div>
 
     <!-- ============================================================ -->
     <!-- SETUP WIZARD -->
     <!-- ============================================================ -->
-    <div id="page-setup" class="page"><div class="wizard-wrap"><div class="wizard-bg"></div><div class="wizard-box"><div class="wizard-prog-bar"><div class="wizard-prog-fill" id="wizProg" style="width:0%"></div></div><div class="wizard-step active wizard-congrats" id="wiz-0"><span class="confetti-emoji">🎉</span><h2 style="font-size:1.8rem;margin:.75rem 0 .35rem">Congratulations!</h2><p style="color:var(--text2);font-size:.95rem;margin-bottom:.4rem">Welcome to ChangeX Academy, <strong id="wizName" style="color:var(--primary)">User</strong>! 🚀</p><p style="color:var(--text3);font-size:.84rem;margin-bottom:1.5rem">Complete your profile to unlock your referral code &amp; start earning!</p><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.18);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.5rem;text-align:left"><p style="font-size:.82rem;color:var(--text2);margin-bottom:.5rem"><strong style="color:var(--primary)">🎁 Welcome Bonus:</strong></p><div style="display:flex;flex-direction:column;gap:.35rem;font-size:.8rem;color:var(--text2)"><div>✅ <strong style="color:var(--primary)">₦500</strong> added to your wallet</div><div>⚡ Complete profile to unlock referral code</div><div>🏆 Earn badges for each step completed</div></div></div><button class="btn btn-primary btn-lg w-full" onclick="nextWizStep()"><i class="fas fa-arrow-right"></i>Complete My Profile</button></div><div class="wizard-step" id="wiz-1" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">Choose Your Role</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Select all that apply — you can change anytime in settings</p><div class="role-options"><div class="role-opt" id="role-student" onclick="toggleRole('student')"><div class="ricon">🎓</div><div class="rtitle">Student</div><div class="rdesc">Learn &amp; earn certificates</div></div><div class="role-opt" id="role-instructor" onclick="toggleRole('instructor')"><div class="ricon">👨‍🏫</div><div class="rtitle">Instructor</div><div class="rdesc">Create &amp; sell courses</div></div><div class="role-opt" id="role-affiliate" onclick="toggleRole('affiliate')"><div class="ricon">🤝</div><div class="rtitle">Affiliate</div><div class="rdesc">Promote &amp; earn commissions</div></div><div class="role-opt" id="role-all" onclick="toggleRole('all')"><div class="ricon">⚡</div><div class="rtitle">All of Above</div><div class="rdesc">Student + Instructor + Affiliate</div></div></div><div class="d-flex gap-2 mt-4"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Next →</button></div></div><div class="wizard-step" id="wiz-2" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">Personal Information</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Tell us a bit about yourself</p><div class="form-group"><label class="flabel">Bio / About You</label><textarea class="finput" id="wiz-bio" style="min-height:80px;resize:vertical" placeholder="e.g. Full-stack developer from Lagos passionate about AI &amp; freelancing."></textarea></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Location</label><input type="text" class="finput" id="wiz-loc" placeholder="e.g. Lagos, Nigeria"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Website (optional)</label><input type="url" class="finput" id="wiz-web" placeholder="https://yoursite.com"/></div></div></div><div class="form-group"><label class="flabel">Skills (comma separated)</label><input type="text" class="finput" id="wiz-skills" placeholder="e.g. HTML, CSS, JavaScript, React"/></div><div class="d-flex gap-2 mt-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Next →</button></div></div><div class="wizard-step" id="wiz-3" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">💳 Bank Details</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">For receiving your earnings (you can skip and add later)</p><div class="form-group"><label class="flabel">Bank Name</label><select class="finput" id="wiz-bank"><option value="">Select Bank</option><option>GTBank</option><option>Access Bank</option><option>Zenith Bank</option><option>UBA</option><option>First Bank</option><option>Opay</option><option>Palmpay</option><option>Kuda Bank</option><option>Moniepoint</option><option>Sterling Bank</option></select></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Number</label><input type="text" class="finput" id="wiz-accnum" placeholder="0123456789" maxlength="10" oninput="verifyAccount(this.value)"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Name</label><input type="text" class="finput" id="wiz-accname" placeholder="Enter your full name"/></div></div></div><div id="accVerifyStatus" style="font-size:.76rem;margin-bottom:.75rem;display:none"></div><div style="background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:var(--radius-sm);padding:.6rem .85rem;font-size:.76rem;color:var(--text3);margin-bottom:1rem"><i class="fas fa-shield-alt" style="color:var(--cyan);margin-right:.3rem"></i>Your bank info is encrypted and only used for payouts</div><div class="d-flex gap-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-ghost btn-sm" onclick="nextWizStep(true)">Skip</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Save &amp; Next →</button></div></div><div class="wizard-step" id="wiz-4" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">⚡ Unlock Premium</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Create courses, earn affiliates, no ads!</p><div style="background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(20,184,166,.04));border:1px solid rgba(212,175,55,.2);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem"><div class="d-flex items-center justify-between mb-3"><span class="badge badge-premium"><i class="fas fa-crown"></i>Premium Plan</span><div><span style="font-family:var(--font-heading);font-size:1.6rem;font-weight:800;color:var(--primary)">₦5,000</span><span style="color:var(--text3);font-size:.8rem">/month</span></div></div><div style="display:flex;flex-direction:column;gap:.4rem;font-size:.82rem;margin-bottom:1rem"><div>✅ Create &amp; sell unlimited courses</div><div>✅ 80% revenue share</div><div>✅ Affiliate dashboard &amp; links</div><div>✅ Unlimited AI Tutor file uploads</div><div>✅ No ads, priority support</div></div><div class="form-group"><label class="flabel">Referral / Discount Code</label><input type="text" class="finput" id="premRefCode" placeholder="Enter referral code for bonus" oninput="applyPremCode(this.value)"/><div id="premCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div></div><div class="payment-method-tabs"><div class="payment-method-tab active" onclick="toggleWizPaymentMethod('card',this)">💳 Card</div><div class="payment-method-tab" onclick="toggleWizPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="wizCardPayment"><button class="paystack-btn" onclick="doPremiumPaystack()"><i class="fas fa-lock"></i>Pay with Paystack — ₦5,000/mo</button></div><div id="wizManualPayment" style="display:none"><div class="bank-details-box" id="wizBankDetailsBox"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="wizManualRef" placeholder="e.g. TRX123456789"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="wizManualDate"></div><div class="form-group"><label class="flabel">Upload Receipt</label><div class="upload-zone" style="padding:1rem"><input type="file" id="wizManualReceipt" accept="image/*,application/pdf"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt</div></div></div><button class="btn btn-primary w-full" onclick="submitWizManualPayment()"><i class="fas fa-paper-plane"></i>Submit for Verification</button></div></div><div class="d-flex gap-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-ghost btn-sm" onclick="finishWizard(false)">Stay Free</button></div></div><div class="wizard-step wizard-congrats" id="wiz-5"><span class="confetti-emoji">🚀</span><h2 style="font-size:1.8rem;margin:.75rem 0 .35rem">You're All Set!</h2><p style="color:var(--text2);font-size:.95rem;margin-bottom:1rem">Profile complete! Your referral code is ready.</p><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1rem;font-family:var(--font-mono);font-size:.9rem;color:var(--primary);text-align:center" id="wizRefCode">LOADING...</div><p style="font-size:.78rem;color:var(--text3);margin-bottom:1.5rem">Share this code to earn ₦500 per referral that subscribes!</p><button class="btn btn-primary btn-lg w-full" onclick="goPage('app')"><i class="fas fa-home"></i>Go to Dashboard</button></div></div></div></div>
+    <div id="page-setup" class="page"><div class="wizard-wrap"><div class="wizard-bg"></div><div class="wizard-box"><div class="wizard-prog-bar"><div class="wizard-prog-fill" id="wizProg" style="width:0%"></div></div><div class="wizard-step active wizard-congrats" id="wiz-0"><span class="confetti-emoji">🎉</span><h2 style="font-size:1.8rem;margin:.75rem 0 .35rem">Congratulations!</h2><p style="color:var(--text2);font-size:.95rem;margin-bottom:.4rem">Welcome to ChangeX Academy, <strong id="wizName" style="color:var(--primary)">User</strong>! 🚀</p><p style="color:var(--text3);font-size:.84rem;margin-bottom:1.5rem">Complete your profile to unlock your referral code &amp; start earning!</p><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.18);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.5rem;text-align:left"><p style="font-size:.82rem;color:var(--text2);margin-bottom:.5rem"><strong style="color:var(--primary)">🎁 Welcome Bonus:</strong></p><div style="display:flex;flex-direction:column;gap:.35rem;font-size:.8rem;color:var(--text2)"><div>✅ <strong style="color:var(--primary)">₦500</strong> added to your wallet</div><div>⚡ Complete profile to unlock referral code</div><div>🏆 Earn badges for each step completed</div></div></div><button class="btn btn-primary btn-lg w-full" onclick="nextWizStep()"><i class="fas fa-arrow-right"></i>Complete My Profile</button></div><div class="wizard-step" id="wiz-1" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">Choose Your Role</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Select all that apply — you can change anytime in settings</p><div class="role-options"><div class="role-opt" id="role-student" onclick="toggleRole('student')"><div class="ricon">🎓</div><div class="rtitle">Student</div><div class="rdesc">Learn &amp; earn certificates</div></div><div class="role-opt" id="role-instructor" onclick="toggleRole('instructor')"><div class="ricon">👨‍🏫</div><div class="rtitle">Instructor</div><div class="rdesc">Create &amp; sell courses</div></div><div class="role-opt" id="role-affiliate" onclick="toggleRole('affiliate')"><div class="ricon">🤝</div><div class="rtitle">Affiliate</div><div class="rdesc">Promote &amp; earn commissions</div></div><div class="role-opt" id="role-all" onclick="toggleRole('all')"><div class="ricon">⚡</div><div class="rtitle">All of Above</div><div class="rdesc">Student + Instructor + Affiliate</div></div></div><div class="d-flex gap-2 mt-4"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Next →</button></div></div><div class="wizard-step" id="wiz-2" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">Personal Information</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Tell us a bit about yourself</p><div class="form-group"><label class="flabel">Bio / About You</label><textarea class="finput" id="wiz-bio" style="min-height:80px;resize:vertical" placeholder="e.g. Full-stack developer from Lagos passionate about AI &amp; freelancing."></textarea></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Location</label><input type="text" class="finput" id="wiz-loc" placeholder="e.g. Lagos, Nigeria"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Website (optional)</label><input type="url" class="finput" id="wiz-web" placeholder="https://yoursite.com"/></div></div></div><div class="form-group"><label class="flabel">Skills (comma separated)</label><input type="text" class="finput" id="wiz-skills" placeholder="e.g. HTML, CSS, JavaScript, React"/></div><div class="d-flex gap-2 mt-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Next →</button></div></div><div class="wizard-step" id="wiz-3" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">💳 Bank Details</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">For receiving your earnings (you can skip and add later)</p><div class="form-group"><label class="flabel">Bank Name</label><select class="finput" id="wiz-bank"><option value="">Select Bank</option><option>GTBank</option><option>Access Bank</option><option>Zenith Bank</option><option>UBA</option><option>First Bank</option><option>Opay</option><option>Palmpay</option><option>Kuda Bank</option><option>Moniepoint</option><option>Sterling Bank</option></select></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Number</label><input type="text" class="finput" id="wiz-accnum" placeholder="0123456789" maxlength="10" oninput="verifyAccount(this.value)"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Name</label><input type="text" class="finput" id="wiz-accname" placeholder="Enter your full name"/></div></div></div><div id="accVerifyStatus" style="font-size:.76rem;margin-bottom:.75rem;display:none"></div><div style="background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:var(--radius-sm);padding:.6rem .85rem;font-size:.76rem;color:var(--text3);margin-bottom:1rem"><i class="fas fa-shield-alt" style="color:var(--cyan);margin-right:.3rem"></i>Your bank info is encrypted and only used for payouts</div><div class="d-flex gap-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-ghost btn-sm" onclick="nextWizStep(true)">Skip</button><button class="btn btn-primary flex-1" onclick="nextWizStep()">Save &amp; Next →</button></div></div><div class="wizard-step" id="wiz-4" style="padding:1.75rem"><h4 style="margin-bottom:.35rem">⚡ Unlock Premium</h4><p style="font-size:.83rem;color:var(--text3);margin-bottom:.85rem">Create courses, earn affiliates, no ads!</p><div style="background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(20,184,166,.04));border:1px solid rgba(212,175,55,.2);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem"><div class="d-flex items-center justify-between mb-3"><span class="badge badge-premium"><i class="fas fa-crown"></i>Premium Plan</span><div><span style="font-family:var(--font-heading);font-size:1.6rem;font-weight:800;color:var(--primary)">₦5,000</span><span style="color:var(--text3);font-size:.8rem">/month</span></div></div><div style="display:flex;flex-direction:column;gap:.4rem;font-size:.82rem;margin-bottom:1rem"><div>✅ Create &amp; sell unlimited courses</div><div>✅ 80% revenue share</div><div>✅ Affiliate dashboard &amp; links</div><div>✅ Unlimited AI Tutor file uploads</div><div>✅ No ads, priority support</div></div><div class="form-group"><label class="flabel">Referral / Discount Code</label><input type="text" class="finput" id="premRefCode" placeholder="Enter referral code for bonus" oninput="applyPremCode(this.value)"/><div id="premCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div></div><div class="payment-method-tabs"><div class="payment-method-tab active" onclick="toggleWizPaymentMethod('card',this)">💳 Card</div><div class="payment-method-tab" onclick="toggleWizPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="wizCardPayment"><button class="paystack-btn" onclick="doPremiumPaystack()"><i class="fas fa-lock"></i>Pay with Paystack — ₦5,000/mo</button></div><div id="wizManualPayment" style="display:none"><div class="bank-details-box" id="wizBankDetailsBox"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="wizManualRef" placeholder="e.g. TRX123456789"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="wizManualDate"></div><div class="form-group"><label class="flabel">Upload Receipt</label><div class="upload-zone" style="padding:1rem"><input type="file" id="wizManualReceipt" accept="image/*,application/pdf"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt</div></div></div><button class="btn btn-primary w-full" onclick="submitWizManualPayment()"><i class="fas fa-paper-plane"></i>Submit for Verification</button></div></div><div class="d-flex gap-2"><button class="btn btn-ghost flex-1" onclick="prevWizStep()">← Back</button><button class="btn btn-ghost btn-sm" onclick="finishWizard(false)">Stay Free</button></div></div><div class="wizard-step wizard-congrats" id="wiz-5"><span class="confetti-emoji">🚀</span><h2 style="font-size:1.8rem;margin:.75rem 0 .35rem">You're All Set!</h2><p style="color:var(--text2);font-size:.95rem;margin-bottom:1rem">Profile complete! Your referral code is ready.</p><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1rem;font-family:var(--font-mono);font-size:.9rem;color:var(--primary);text-align:center" id="wizRefCode">LOADING...</div><p style="font-size:.78rem;color:var(--text3);margin-bottom:1.5rem">Share this code to earn ₦500 per referral that subscribes!</p><button class="btn btn-primary btn-lg w-full" onclick="navigateTo('/app')"><i class="fas fa-home"></i>Go to Dashboard</button></div></div></div></div>
 
     <!-- ============================================================ -->
     <!-- CONTACT PAGE -->
     <!-- ============================================================ -->
-    <div id="page-contact" class="page"><div style="min-height:100svh;padding:2rem 1.25rem;background:var(--bg)"><div style="max-width:700px;margin:0 auto"><button class="btn btn-ghost btn-sm mb-4" onclick="goPage('landing')"><i class="fas fa-arrow-left"></i>Back to Home</button><div class="stag mb-2"><i class="fas fa-envelope"></i> Contact Us</div><h2 style="font-size:2rem;margin-bottom:.5rem">Get In <span class="grad-text">Touch</span></h2><p style="color:var(--text3);margin-bottom:2rem">We respond within 24 hours.</p><div class="row"><div class="col-12 col-md-5"><div class="card card-p mb-3"><div class="si si-primary" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-envelope"></i></div><h6 style="margin-bottom:.25rem">Email</h6><a href="mailto:changexacademysupport@gmail.com" style="color:var(--primary);font-size:.88rem">changexacademysupport@gmail.com</a></div><div class="card card-p"><div class="si si-g" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-map-marker-alt"></i></div><h6 style="margin-bottom:.25rem">Location</h6><p style="font-size:.84rem;color:var(--text3)">Lagos &amp; Abuja, Nigeria 🇳🇬</p></div></div><div class="col-12 col-md-7"><div class="card card-p"><h6 style="margin-bottom:1rem">Send a Message</h6><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="contactFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="contactLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><input type="email" class="finput" id="contactEmail" placeholder="you@example.com"/></div><div class="form-group"><label class="flabel">Subject</label><select class="finput" id="contactSubject"><option>General Inquiry</option><option>Technical Support</option><option>Payment Issue</option><option>Course Report</option><option>Partnership</option></select></div><div class="form-group"><label class="flabel">Message</label><textarea class="finput" id="contactMsg" style="min-height:120px;resize:vertical" placeholder="How can we help?"></textarea></div><button class="btn btn-primary" onclick="sendContact()"><i class="fas fa-paper-plane"></i>Send Message</button></div></div></div></div></div></div>
+    <div id="page-contact" class="page"><div style="min-height:100svh;padding:2rem 1.25rem;background:var(--bg)"><div style="max-width:700px;margin:0 auto"><button class="btn btn-ghost btn-sm mb-4" onclick="navigateTo('/')"><i class="fas fa-arrow-left"></i>Back to Home</button><div class="stag mb-2"><i class="fas fa-envelope"></i> Contact Us</div><h2 style="font-size:2rem;margin-bottom:.5rem">Get In <span class="grad-text">Touch</span></h2><p style="color:var(--text3);margin-bottom:2rem">We respond within 24 hours.</p><div class="row"><div class="col-12 col-md-5"><div class="card card-p mb-3"><div class="si si-primary" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-envelope"></i></div><h6 style="margin-bottom:.25rem">Email</h6><a href="mailto:changexacademysupport@gmail.com" style="color:var(--primary);font-size:.88rem">changexacademysupport@gmail.com</a></div><div class="card card-p"><div class="si si-g" style="width:40px;height:40px;margin-bottom:.65rem"><i class="fas fa-map-marker-alt"></i></div><h6 style="margin-bottom:.25rem">Location</h6><p style="font-size:.84rem;color:var(--text3)">Lagos &amp; Abuja, Nigeria 🇳🇬</p></div></div><div class="col-12 col-md-7"><div class="card card-p"><h6 style="margin-bottom:1rem">Send a Message</h6><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="contactFirst" placeholder="Amaka"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="contactLast" placeholder="Obi"/></div></div></div><div class="form-group"><label class="flabel">Email</label><input type="email" class="finput" id="contactEmail" placeholder="you@example.com"/></div><div class="form-group"><label class="flabel">Subject</label><select class="finput" id="contactSubject"><option>General Inquiry</option><option>Technical Support</option><option>Payment Issue</option><option>Course Report</option><option>Partnership</option></select></div><div class="form-group"><label class="flabel">Message</label><textarea class="finput" id="contactMsg" style="min-height:120px;resize:vertical" placeholder="How can we help?"></textarea></div><button class="btn btn-primary" onclick="sendContact()"><i class="fas fa-paper-plane"></i>Send Message</button></div></div></div></div></div></div>
 
     <!-- ============================================================ -->
     <!-- MODALS -->
@@ -5335,7 +5356,7 @@
                     localStorage.removeItem('cx_user');
                     if (S.loggedIn) {
                         toast('Session expired. Please log in again.', 'error');
-                        goPage('login');
+                        navigateTo('/login');
                     }
                     throw new Error(data.message || 'Session expired. Please log in again.');
                 }
@@ -5395,33 +5416,194 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // NAVIGATION
+        // ROUTER – CLEAN URLS WITH pushState (SEO & SHAREABILITY FIX)
+        // ═══════════════════════════════════════════════════════════════
+        function navigateTo(path, data) {
+            if (path === window.location.pathname + window.location.search + window.location.hash) return;
+            window.history.pushState(data || {}, '', path);
+            handleRoute(path);
+            window.scrollTo(0, 0);
+        }
+
+        function handleRoute(path) {
+            const segments = path.replace(/^\//, '').split('/');
+            const first = segments[0];
+            const second = segments[1] || '';
+            const third = segments[2] || '';
+
+            // ─── AFFILIATE COOKIE FROM QUERY ──────────────────────────
+            const urlParams = new URLSearchParams(window.location.search);
+            const affCode = urlParams.get('aff');
+            if (affCode) {
+                document.cookie = `affiliate_code=${affCode}; path=/; max-age=${30 * 24 * 60 * 60}`;
+                // Remove from URL to keep it clean
+                const cleanUrl = window.location.pathname;
+                if (window.location.search) {
+                    window.history.replaceState({}, '', cleanUrl);
+                }
+            }
+
+            // ─── ROUTE MATCHING ───────────────────────────────────────
+            if (first === '') {
+                goPage('landing');
+                return;
+            }
+            if (first === 'login') { goPage('login'); return; }
+            if (first === 'register') { goPage('register'); return; }
+            if (first === 'reset-password' && second) {
+                // Show reset password page with token
+                goPage('reset-password');
+                document.getElementById('resetToken').value = second;
+                return;
+            }
+            if (first === 'app') {
+                if (!S.loggedIn) { navigateTo('/login'); return; }
+                goPage('app');
+                setDP('home');
+                return;
+            }
+            if (first === 'setup') {
+                if (!S.loggedIn) { navigateTo('/login'); return; }
+                goPage('setup');
+                return;
+            }
+            if (first === 'contact') { goPage('contact'); return; }
+            if (first === 'courses' && second) {
+                if (!S.loggedIn) { navigateTo('/login'); return; }
+                goPage('app');
+                setDP('explore');
+                const courseId = second;
+                const course = S.appCourses.find(c => c._id === courseId || c.slug === second);
+                if (course) {
+                    setTimeout(() => openBuyCourse(course._id), 300);
+                } else {
+                    apiCall(`/courses/${courseId}`).then(res => {
+                        const c = res.data || res;
+                        if (c) {
+                            S.appCourses.push(c);
+                            setTimeout(() => openBuyCourse(c._id), 300);
+                        } else {
+                            toast('Course not found', 'error');
+                            setDP('explore');
+                        }
+                    }).catch(() => { toast('Course not found', 'error');
+                        setDP('explore'); });
+                }
+                return;
+            }
+            if (first === 'books' && second) {
+                if (!S.loggedIn) { navigateTo('/login'); return; }
+                goPage('app');
+                setDP('books');
+                setTimeout(() => openBookDetail(second), 300);
+                return;
+            }
+            if (first === 'post' && second) {
+                if (!S.loggedIn) { navigateTo('/login'); return; }
+                goPage('app');
+                setDP('feed');
+                setTimeout(() => loadPostBySlug(second), 300);
+                return;
+            }
+            if (first === 'explore') {
+                if (!S.loggedIn) { navigateTo('/login'); return; }
+                goPage('app');
+                setDP('explore');
+                return;
+            }
+            if (first === 'feed') {
+                if (!S.loggedIn) { navigateTo('/login'); return; }
+                goPage('app');
+                setDP('feed');
+                return;
+            }
+            if (first === 'books') {
+                if (!S.loggedIn) { navigateTo('/login'); return; }
+                goPage('app');
+                setDP('books');
+                return;
+            }
+            // ─── DEFAULT: HOME ────────────────────────────────────────
+            if (S.loggedIn) {
+                goPage('app');
+                setDP('home');
+            } else {
+                goPage('landing');
+            }
+        }
+
+        // ─── POPSTATE (BACK/FORWARD) ──────────────────────────────────
+        window.addEventListener('popstate', (event) => {
+            handleRoute(window.location.pathname);
+        });
+
+        // ─── INITIAL ROUTE ─────────────────────────────────────────────
+        (function initRoute() {
+            const path = window.location.pathname;
+            const hash = window.location.hash.slice(1);
+            // Handle legacy hash routes
+            if (hash) {
+                let cleanPath = '/';
+                if (hash.startsWith('courses/')) {
+                    const id = hash.split('/')[1];
+                    cleanPath = `/courses/${id}`;
+                } else if (hash.startsWith('books/')) {
+                    const id = hash.split('/')[1];
+                    cleanPath = `/books/${id}`;
+                } else if (hash.startsWith('post/')) {
+                    const slug = hash.split('/')[1];
+                    cleanPath = `/post/${slug}`;
+                } else if (hash === 'app' || hash === 'setup' || hash === 'login' || hash === 'register' || hash ===
+                    'contact') {
+                    cleanPath = `/${hash}`;
+                }
+                if (cleanPath !== '/') {
+                    window.history.replaceState({}, '', cleanPath);
+                    handleRoute(cleanPath);
+                    return;
+                }
+            }
+            handleRoute(path || '/');
+        })();
+
+        // ═══════════════════════════════════════════════════════════════
+        // LEGACY PAGE NAVIGATION (kept for compatibility)
         // ═══════════════════════════════════════════════════════════════
         function goPage(pg) {
             const pages = document.querySelectorAll('.page');
             const target = document.getElementById('page-' + pg);
-            if (!target) { const fallback = document.getElementById('page-app'); if (fallback) { pages.forEach(p => p
-                        .classList.remove('active'));
+            if (!target) {
+                const fallback = document.getElementById('page-app');
+                if (fallback) { pages.forEach(p => p.classList.remove('active'));
                     fallback.classList.add('active');
-                    S.page = 'app'; } return; }
+                    S.page = 'app'; }
+                return;
+            }
             pages.forEach(p => p.classList.remove('active'));
             target.classList.add('active');
             S.page = pg;
             window.scrollTo(0, 0);
-            if (pg === 'app') { setTimeout(() => { if (typeof setDP === 'function') setDP(S.dp || 'feed'); if (typeof
-                        initApp === 'function') initApp(); }, 50); }
-            if (pg === 'setup') { setTimeout(() => { if (typeof showWizStep === 'function') showWizStep(S.wizStep || 0); },
-                    50); }
+            if (pg === 'app') {
+                setTimeout(() => { if (typeof setDP === 'function') setDP(S.dp || 'feed'); if (typeof
+                        initApp === 'function') initApp(); }, 50);
+            }
+            if (pg === 'setup') {
+                setTimeout(() => { if (typeof showWizStep === 'function') showWizStep(S.wizStep || 0); },
+                    50);
+            }
+            if (pg === 'reset-password') {
+                const token = window.location.pathname.split('/')[2];
+                if (token) document.getElementById('resetToken').value = token;
+            }
         }
 
         function forceRedirect(targetPage) {
-            if (typeof goPage === 'function') goPage(targetPage);
+            if (typeof navigateTo === 'function') navigateTo(`/${targetPage}`);
             const pages = document.querySelectorAll('.page');
             const target = document.getElementById('page-' + targetPage);
             if (target) { pages.forEach(p => p.classList.remove('active'));
                 target.classList.add('active');
                 S.page = targetPage; }
-            if (window.location.hash !== `#${targetPage}`) window.location.hash = targetPage;
         }
 
         function setDP(pg) {
@@ -5468,6 +5650,29 @@
                         'creator') && S.user?.isApprovedInstructor);
                 fab.style.display = hasCreatorAccess ? 'block' : 'none'; }
             checkPlanExpiry();
+            // Update SEO meta for page
+            const pageTitles = {
+                feed: 'Feed | ChangeX Academy',
+                home: 'Dashboard | ChangeX Academy',
+                explore: 'Explore Courses | ChangeX Academy',
+                courses: 'My Courses | ChangeX Academy',
+                wallet: 'Wallet | ChangeX Academy',
+                books: 'Digital Library | ChangeX Academy',
+                people: 'People | ChangeX Academy',
+                challenges: 'Challenges | ChangeX Academy',
+                affiliates: 'Affiliate Dashboard | ChangeX Academy',
+                referrals: 'Referrals | ChangeX Academy',
+                leaderboard: 'Leaderboard | ChangeX Academy',
+                settings: 'Settings | ChangeX Academy',
+                instructor: 'Instructor Hub | ChangeX Academy',
+                'course-editor': 'Course Editor | ChangeX Academy',
+                ai: 'AI Tutor | ChangeX Academy',
+                certs: 'Certificates | ChangeX Academy',
+                admin: 'Admin Panel | ChangeX Academy'
+            };
+            if (pageTitles[pg]) {
+                updateSEO({ title: pageTitles[pg], description: 'Manage your learning and earnings on ChangeX Academy.' });
+            }
         }
 
         function openSidebar() { document.getElementById('sidebar')?.classList.add('open');
@@ -5740,7 +5945,8 @@
             const targetPage = isFromLogin ? 'app' : (S.user.setupDone ? 'app' : 'setup');
             toast(isFromLogin ? `Welcome back, ${S.user?.firstName || 'User'}! 👋` :
                 `Welcome to ChangeX, ${S.user?.firstName || 'User'}! 🎉`, 'success');
-            forceRedirect(targetPage);
+            if (targetPage === 'app') navigateTo('/app');
+            else navigateTo('/setup');
             await loadUserFollowing();
             if (S.page === 'landing' || document.getElementById('page-landing').classList.contains('active')) {
                 updateLandingHeroStats();
@@ -5772,6 +5978,30 @@
                     btn.innerHTML = originalText; } }
         }
 
+        // ─── RESET PASSWORD ─────────────────────────────────────────────
+        async function doResetPassword() {
+            const token = document.getElementById('resetToken')?.value.trim();
+            const newPw = document.getElementById('resetNewPw')?.value;
+            const confirmPw = document.getElementById('resetConfirmPw')?.value;
+            if (!token) { toast('Invalid reset link. Please request a new one.', 'error'); return; }
+            if (!newPw || newPw.length < 8) { toast('Password must be at least 8 characters', 'error'); return; }
+            if (newPw !== confirmPw) { toast('Passwords do not match', 'error'); return; }
+            showLoading('Resetting password...');
+            try {
+                const res = await apiCall('/auth/reset-password', { method: 'POST', body: { token, newPassword: newPw } });
+                if (res.success) {
+                    toast('✅ Password reset successfully! Please log in.', 'success');
+                    navigateTo('/login');
+                } else {
+                    toast(res.message || 'Reset failed', 'error');
+                }
+            } catch (err) {
+                toast(err.message || 'Reset failed. The link may have expired.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
         function doLogout() {
             if (autoSaveTimer) clearInterval(autoSaveTimer);
             if (S.loggedIn) { apiCall('/auth/logout', { method: 'POST' }).catch(() => {}); }
@@ -5786,8 +6016,7 @@
             S.enrollments = [];
             S.appCourses = [];
             toast('See you soon! 👋', 'info');
-            // Force full reload to clear all state
-            window.location.href = '/';
+            navigateTo('/');
         }
 
         function togglePw(id, btn) {
@@ -5808,6 +6037,10 @@
             if (/[^a-zA-Z0-9]/.test(v)) sc++;
             const cls = sc < 2 ? 'weak' : sc < 3 ? 'fair' : 'strong';
             for (let i = 0; i < sc; i++) { if (segs[i]) segs[i].classList.add(cls); }
+            // Also apply to reset password bars
+            const rb = ['rb1', 'rb2', 'rb3', 'rb4'].map(id => document.getElementById(id));
+            rb.forEach(s => { if (s) s.className = 'pw-bar'; });
+            for (let i = 0; i < sc; i++) { if (rb[i]) rb[i].classList.add(cls); }
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -6049,9 +6282,9 @@
         // SEO – Dynamic Meta Updates
         // ================================================================
         function updateSEO(data) {
-            const title = data?.title || 'ChangeX Academy';
+            const title = data?.title || 'ChangeX Academy — Turn Tech Into Income';
             const description = data?.description || data?.excerpt || 'Learn tech skills and earn real money on ChangeX Academy.';
-            const image = data?.featuredImage || data?.coverImage || data?.thumbnail || '/icons/icon-512x512.png';
+            const image = data?.featuredImage || data?.coverImage || data?.thumbnail || '/logo.png';
             const url = window.location.href;
 
             document.title = `${title} | ChangeX Academy`;
@@ -6080,6 +6313,9 @@
 
             const twImage = document.querySelector('meta[name="twitter:image"]');
             if (twImage) twImage.setAttribute('content', image);
+
+            const canonical = document.getElementById('canonicalLink');
+            if (canonical) canonical.setAttribute('href', url);
         }
 
         // ================================================================
@@ -6337,7 +6573,7 @@
             const isAdmin = S.user?.roles?.includes('admin');
             const slug = post.slug || post._id;
             const views = post.views || 0;
-            const postUrl = `${FRONTEND_URL}/post/${slug}`;
+            const postUrl = `/post/${slug}`;
             return `
                 <div class="post-card card card-p" data-post-id="${post._id}">
                     <div class="post-header">
@@ -6357,7 +6593,7 @@
                             ${isAuthor ? `<button class="post-edit-btn" onclick="editPost('${post._id}')" title="Edit post"><i class="fas fa-edit"></i></button>` : ''}
                         </div>
                     </div>
-                    <h3 class="post-title" onclick="window.location.href='${postUrl}'">${escapeHtml(post.title)}</h3>
+                    <h3 class="post-title" onclick="navigateTo('${postUrl}')">${escapeHtml(post.title)}</h3>
                     ${post.featuredImage ? `<img src="${post.featuredImage}" class="post-image" alt="featured" loading="lazy">` : ''}
                     ${post.videoUrl ? `<video controls style="max-width:100%;border-radius:var(--radius-sm);margin:.75rem 0;"><source src="${post.videoUrl}" type="video/mp4"></video>` : ''}
                     <div class="post-content">
@@ -7077,10 +7313,10 @@
                     <div class="profile-collection">
                         ${posts.length ? posts.map(p => {
                             const slug = p.slug || p._id;
-                            const postUrl = `${FRONTEND_URL}/post/${slug}`;
+                            const postUrl = `/post/${slug}`;
                             const isAdmin = S.user?.roles?.includes('admin');
                             return `
-                            <div class="collection-item" onclick="window.location.href='${postUrl}'" style="cursor:pointer">
+                            <div class="collection-item" onclick="navigateTo('${postUrl}')" style="cursor:pointer">
                                 <span class="ci-type">${p.type || 'post'}</span>
                                 <div class="ci-title">${escapeHtml(p.title)}</div>
                                 <div class="ci-meta">
@@ -7174,7 +7410,7 @@
             renderHomeDashboard();
             checkPlanExpiry();
             loadFeed(1);
-            updateSEO({ title: 'ChangeX Academy Dashboard', description: 'Learn tech skills and earn real money on ChangeX Academy.' });
+            updateSEO({ title: 'Dashboard | ChangeX Academy', description: 'Learn tech skills and earn real money on ChangeX Academy.' });
         }
 
         async function loadReferralStats() {
@@ -7392,7 +7628,8 @@
                 const instructorName = c.instructor?.firstName || 'Instructor';
                 const lessonCount = c.totalLessons || (Array.isArray(c.lessons) ? c.lessons.length : 0);
                 const views = c.views || 0;
-                return `<div class="course-card" onclick="openBuyCourse('${c._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail || c.emoji || '📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress || 0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title || 'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level || 'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent || 0}% aff</span>` : ''}</div><div style="font-size:.7rem;color:var(--text3);margin-top:.3rem"><i class="fas fa-eye"></i> ${views}</div></div></div>`;
+                const slug = c.slug || c._id;
+                return `<div class="course-card" onclick="navigateTo('/courses/${slug}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail || c.emoji || '📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress || 0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title || 'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level || 'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent || 0}% aff</span>` : ''}</div><div style="font-size:.7rem;color:var(--text3);margin-top:.3rem"><i class="fas fa-eye"></i> ${views}</div></div></div>`;
             }).join('');
         }
 
@@ -7408,7 +7645,7 @@
             }
             if ((c.price === 0 || c.price == null) && (c.salePrice === 0 || c.salePrice == null)) {
                 if (!S.loggedIn) { toast('Please log in to enroll', 'warning');
-                    goPage('login'); return; }
+                    navigateTo('/login'); return; }
                 apiCall(`/courses/${c._id}/enroll`, { method: 'POST' }).then(() => { toast('✅ Free course enrolled!',
                         'success');
                     loadEnrollments();
@@ -7818,7 +8055,8 @@
                 const status = progress >= 100 ? 'completed' : 'active';
                 const courseId = extractCourseId(e);
                 if (!courseId) return '';
-                return `<div class="course-card" onclick="openEnrollmentLesson('${courseId}','${e._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">📚</div><div class="cc-bar"><div class="cc-fill ${progress === 100 ? 'pf-success' : 'pf-primary'}" style="width:${progress}%"></div></div><div class="cc-body"><div style="font-weight:700;font-size:.88rem;margin-bottom:.25rem">${e.course?.title || 'Course'}</div><div style="font-size:.74rem;color:var(--text3)">${e.course?.totalLessons || 0} lessons · ★${e.course?.rating || 0}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:.5rem"><span class="badge ${status === 'completed' ? 'badge-success' : 'badge-cyan'}" style="font-size:.6rem">${status === 'completed' ? '✓ Done' : progress + '%'}</span><button class="btn btn-primary btn-sm" style="font-size:.68rem;padding:.22rem .6rem">Continue</button></div></div></div>`;
+                const slug = e.course?.slug || courseId;
+                return `<div class="course-card" onclick="navigateTo('/courses/${slug}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">📚</div><div class="cc-bar"><div class="cc-fill ${progress === 100 ? 'pf-success' : 'pf-primary'}" style="width:${progress}%"></div></div><div class="cc-body"><div style="font-weight:700;font-size:.88rem;margin-bottom:.25rem">${e.course?.title || 'Course'}</div><div style="font-size:.74rem;color:var(--text3)">${e.course?.totalLessons || 0} lessons · ★${e.course?.rating || 0}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:.5rem"><span class="badge ${status === 'completed' ? 'badge-success' : 'badge-cyan'}" style="font-size:.6rem">${status === 'completed' ? '✓ Done' : progress + '%'}</span><button class="btn btn-primary btn-sm" style="font-size:.68rem;padding:.22rem .6rem">Continue</button></div></div></div>`;
             }).join('') :
                 '<div class="empty-state"><i class="fas fa-book-open"></i><h4>No courses</h4><p>Explore courses to start learning!</p></div>';
         }
@@ -8130,7 +8368,7 @@
             if (!courseId) { toast('Invalid course', 'error'); return; }
             const token = localStorage.getItem('cx_accessToken');
             if (!token) { toast('Please log in', 'error');
-                goPage('login'); return; }
+                navigateTo('/login'); return; }
             showLoading('Generating certificate...');
             try {
                 const response = await fetch(`${API_BASE}/courses/${courseId}/certificate/download`, { method: 'GET',
@@ -9030,7 +9268,7 @@
                 return;
             }
             container.innerHTML = books.filter(b => b.isPublished !== false).map(book => `
-                <div class="book-card" onclick="openBookDetail('${book._id}')">
+                <div class="book-card" onclick="navigateTo('/books/${book._id}')">
                     <div class="book-cover">
                         ${book.coverImage ? `<img src="${book.coverImage}" alt="${escapeHtml(book.title)}" loading="lazy">` : '📖'}
                     </div>
@@ -9114,7 +9352,7 @@
         async function downloadBook(bookId) {
             const token = localStorage.getItem('cx_accessToken');
             if (!token) { toast('Please log in to download', 'error');
-                goPage('login'); return; }
+                navigateTo('/login'); return; }
 
             const book = S.currentBook || S.books.find(b => b._id === bookId);
             if (!book) { toast('Book not found', 'error'); return; }
@@ -9747,7 +9985,7 @@
             const token = localStorage.getItem('cx_accessToken');
             if (!token) {
                 toast('Please log in to rate', 'error');
-                goPage('login');
+                navigateTo('/login');
                 return;
             }
             if (!window.selectedRating) {
@@ -9838,7 +10076,7 @@
                             await loadEnrollments();
                             updateUserUI(); } catch (e) { console.warn('Bonus already claimed'); } } catch (e) { console
                             .warn('Could not save wizard profile:', e.message); } }
-            goPage('app');
+            navigateTo('/app');
         }
 
         // ================================================================
@@ -9893,13 +10131,13 @@
                 let html = '';
                 if (courseMatches.length) {
                     html += courseMatches.map(c =>
-                        `<div class="search-ri" onclick="openBuyCourse('${c._id}');document.getElementById('globalSearch').value='';dd.classList.remove('open')"><span>📚</span><div><div style="font-size:.81rem;font-weight:600">${escapeHtml(c.title)}</div><div style="font-size:.65rem;color:var(--text3)">Course</div></div></div>`
+                        `<div class="search-ri" onclick="navigateTo('/courses/${c._id}');document.getElementById('globalSearch').value='';dd.classList.remove('open')"><span>📚</span><div><div style="font-size:.81rem;font-weight:600">${escapeHtml(c.title)}</div><div style="font-size:.65rem;color:var(--text3)">Course</div></div></div>`
                         ).join('');
                 }
                 if (postMatches.length) {
                     html += postMatches.map(p => {
                         const slug = p.slug || p._id;
-                        return `<div class="search-ri" onclick="window.location.href='/post/${slug}';document.getElementById('globalSearch').value='';dd.classList.remove('open')"><span>📝</span><div><div style="font-size:.81rem;font-weight:600">${escapeHtml(p.title)}</div><div style="font-size:.65rem;color:var(--text3)">Post</div></div></div>`;
+                        return `<div class="search-ri" onclick="navigateTo('/post/${slug}');document.getElementById('globalSearch').value='';dd.classList.remove('open')"><span>📝</span><div><div style="font-size:.81rem;font-weight:600">${escapeHtml(p.title)}</div><div style="font-size:.65rem;color:var(--text3)">Post</div></div></div>`;
                     }).join('');
                 }
                 if (userMatches.length) {
@@ -10942,9 +11180,10 @@
                 const data = await apiCall('/courses?published=true&limit=3');
                 const list = Array.isArray(data.data) ? data.data : [];
                 S.landingCourses = list;
-                document.getElementById('landingCourseGrid').innerHTML = list.length ? list.map((c, i) =>
-                    `<div style="flex:1;min-width:240px"><div class="l-cc" onclick="goPage('register')"><div class="l-cc-thumb" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail || c.emoji || '📚'}<div class="l-cc-badge"><span class="badge ${i === 0 ? 'badge-primary' : 'badge-gold'}" style="font-size:.62rem">${i === 0 ? '🔥 Bestseller' : '🌟 Hot'}</span></div></div><div class="l-cc-body"><div class="l-cc-title">${c.title || 'Course'}</div><div class="l-cc-meta"><span class="stars">★★★★★</span><span>${c.rating || 4.9}</span>·<span>${c.totalLessons || 0} lessons</span></div><div class="l-cc-price">${fmtMoneyAPI(c.displayPrice || c.price || 0)}</div></div></div></div>`
-                    ).join('') : '<div class="empty-state"><p>Loading courses...</p></div>';
+                document.getElementById('landingCourseGrid').innerHTML = list.length ? list.map((c, i) => {
+                    const slug = c.slug || c._id;
+                    return `<div style="flex:1;min-width:240px"><div class="l-cc" onclick="navigateTo('/courses/${slug}')"><div class="l-cc-thumb" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail || c.emoji || '📚'}<div class="l-cc-badge"><span class="badge ${i === 0 ? 'badge-primary' : 'badge-gold'}" style="font-size:.62rem">${i === 0 ? '🔥 Bestseller' : '🌟 Hot'}</span></div></div><div class="l-cc-body"><div class="l-cc-title">${c.title || 'Course'}</div><div class="l-cc-meta"><span class="stars">★★★★★</span><span>${c.rating || 4.9}</span>·<span>${c.totalLessons || 0} lessons</span></div><div class="l-cc-price">${fmtMoneyAPI(c.displayPrice || c.price || 0)}</div></div></div></div>`;
+                }).join('') : '<div class="empty-state"><p>Loading courses...</p></div>';
             } catch (e) { document.getElementById('landingCourseGrid').innerHTML =
                     '<div class="empty-state"><p>Loading courses...</p></div>'; }
         }
@@ -10961,7 +11200,7 @@
                 }
                 container.innerHTML = books.map(book => `
                     <div style="flex:1;min-width:200px">
-                        <div class="l-cc" onclick="goPage('register')">
+                        <div class="l-cc" onclick="navigateTo('/books/${book._id}')">
                             <div class="l-cc-thumb" style="background:linear-gradient(135deg,var(--card2),var(--card3));font-size:2.5rem;">
                                 ${book.coverImage ? `<img src="${book.coverImage}" style="width:100%;height:100%;object-fit:cover;">` : '📖'}
                             </div>
@@ -10987,7 +11226,7 @@
                     const avatarHtml = getAvatarUrl(inst) ?
                         `<img src="${getAvatarUrl(inst)}" alt="${inst.firstName || 'I'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                         (inst.firstName?.[0] || 'I');
-                    return `<div style="flex:1;min-width:200px"><div class="inst-card"><div class="inst-av-lg" style="background:linear-gradient(135deg,var(--primary),var(--secondary));overflow:hidden">${avatarHtml}</div><div style="font-weight:700">${inst.firstName || 'Instructor'} ${inst.lastName || ''}</div><div style="font-size:.74rem;color:var(--text3)">Level ${inst.level || 1}</div><button class="btn btn-ghost btn-sm w-full mt-3" onclick="goPage('register')">View Profile</button></div></div>`;
+                    return `<div style="flex:1;min-width:200px"><div class="inst-card"><div class="inst-av-lg" style="background:linear-gradient(135deg,var(--primary),var(--secondary));overflow:hidden">${avatarHtml}</div><div style="font-weight:700">${inst.firstName || 'Instructor'} ${inst.lastName || ''}</div><div style="font-size:.74rem;color:var(--text3)">Level ${inst.level || 1}</div><button class="btn btn-ghost btn-sm w-full mt-3" onclick="navigateTo('/register')">View Profile</button></div></div>`;
                 }).join('') :
                     '<div class="col-12"><div class="empty-state"><p>Loading instructors...</p></div></div>';
             } catch (e) { document.getElementById('landingInstructors').innerHTML =
@@ -11140,20 +11379,20 @@
                     await loadUserFollowing();
                     const hash = window.location.hash.slice(1);
                     if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(
-                            () => openBuyCourse(courseId), 1000); } else if (hash.startsWith('post/')) { const slug =
-                            hash.split('/')[1]; if (slug) setTimeout(() => loadPostBySlug(slug), 1000); } else if (
-                        hash === 'app' || hash === 'setup') goPage(hash);
-                    else goPage('app');
+                            () => navigateTo(`/courses/${courseId}`), 1000); } else if (hash.startsWith('post/')) { const
+                            slug = hash.split('/')[1]; if (slug) setTimeout(() => navigateTo(`/post/${slug}`), 1000); } else if (
+                        hash === 'app' || hash === 'setup') navigateTo(`/${hash}`);
+                    else navigateTo('/app');
                 } catch (e) {
                     localStorage.removeItem('cx_accessToken');
                     localStorage.removeItem('cx_user');
                     S.loggedIn = false;
-                    goPage('landing');
+                    navigateTo('/');
                 }
             } else {
                 const hash = window.location.hash.slice(1);
-                if (hash === 'app' || hash === 'setup') goPage('landing');
-                else goPage('landing');
+                if (hash === 'app' || hash === 'setup') navigateTo('/');
+                else navigateTo('/');
             }
 
             initLanding();
@@ -11201,10 +11440,10 @@
                             checkPlanExpiry();
                             await loadUserFollowing();
                         } catch (e) {}
-                        if (S.user?.setupDone) goPage('app');
-                        else goPage('setup');
+                        if (S.user?.setupDone) navigateTo('/app');
+                        else navigateTo('/setup');
                     })();
-                } catch (e) { goPage('app'); }
+                } catch (e) { navigateTo('/app'); }
             }
 
             if (reference) {
@@ -11546,9 +11785,9 @@
             setTimeout(() => {
                 const hash = window.location.hash.slice(1);
                 if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(() =>
-                        openBuyCourse(courseId), 1000); }
+                        navigateTo(`/courses/${courseId}`), 1000); }
                 if (hash.startsWith('post/')) { const slug = hash.split('/')[1]; if (slug) setTimeout(() =>
-                        loadPostBySlug(slug), 1000); }
+                        navigateTo(`/post/${slug}`), 1000); }
             }, 800);
             handleDeepLink();
         }
@@ -11562,7 +11801,7 @@
                 const token = localStorage.getItem('cx_accessToken');
                 if (!token) {
                     toast('Please log in to view this post.', 'warning');
-                    goPage('login');
+                    navigateTo('/login');
                     return;
                 }
                 loadPostBySlug(slug);
@@ -11575,7 +11814,7 @@
                     method: 'GET',
                     credentials: 'include'
                 }).catch(() => {}).finally(() => {
-                    window.location.href = `/courses/${courseId}`;
+                    navigateTo(`/courses/${courseId}`);
                 });
             }
         }
@@ -11618,6 +11857,10 @@
         console.log('📤 Book upload: Large file support (500MB) with progress tracking.');
         console.log('🔗 Affiliate links now use hash-based routing (#courses/...) for SPA compatibility.');
         console.log('🏦 Bank details updated: Lead Bank & Taj Bank for manual transfers.');
+        console.log('🌐 Clean URLs with pushState: /courses/xyz, /books/abc, /post/def.');
+        console.log('📝 Reset password flow fully integrated.');
+        console.log('🏆 Challenge completion rewards auto-triggered.');
+        console.log('✅ All features production-ready.');
     </script>
 </body>
 </html>
