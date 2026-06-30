@@ -30,25 +30,33 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://js.paystack.co">
     <link rel="preconnect" href="https://cdn.quilljs.com">
-    <link rel="preload" href="/logo.png" as="image">
+    <link rel="preload" href="/logo.png" as="image" fetchpriority="high">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style">
     <link rel="dns-prefetch" href="https://res.cloudinary.com">
 
     <title id="pageTitle">ChangeX Academy — Turn Tech Into Income</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+    <!-- ===== FONTS (preloaded) ===== -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
-    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js">
-    </script>
+
+    <!-- ===== FONT AWESOME (lightweight) ===== -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+    <!-- ===== QUILL & PAYSTACK – LAZY LOADED (see bottom) ===== -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="preload" as="style" id="quillCssPreload" />
     <script src="https://cdn.socket.io/4.6.1/socket.io.esm.min.js">
     </script>
-    <script src="https://js.paystack.co/v1/inline.js">
-    </script>
+
+    <!-- ===== DOMPURIFY (always needed for security) ===== -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js">
     </script>
+
     <meta name="google-site-verification" content="PB3lWW6G3FccAT72e65ehI6ILq12ZxNzS_RUsXDVufE" />
+
     <style>
-        /* ===== CSS VARIABLES – GOLD, WHITE & BLACK THEME ===== */
+        /* ================================================================
+               CSS VARIABLES – GOLD, WHITE & BLACK THEME
+               ================================================================ */
         :root {
             /* ─── Backgrounds ─── */
             --bg: #0A0A0A;
@@ -107,9 +115,9 @@
             --skeleton-shine: #2A2A2A;
             --loading-spinner-color: var(--primary);
         }
+
         /* ===== LIGHT GOLD THEME – UPGRADED ===== */
         [data-theme="light"] {
-            /* ─── Backgrounds – Warm Gold Tints ─── */
             --bg: #FDF8F0;
             --bg2: #FFFBF5;
             --bg3: #F7F0E6;
@@ -118,8 +126,6 @@
             --card3: #F7F0E6;
             --border: #E8DCC8;
             --border2: #D4C4A8;
-
-            /* ─── Primary = Rich Gold ─── */
             --primary: #B8860B;
             --primary-dark: #8B6914;
             --primary-light: #D4AF37;
@@ -133,25 +139,23 @@
             --cyan: #C9A84C;
             --violet: #B8860B;
             --orange: #D4893B;
-
-            /* ─── Text – Warm Dark ─── */
             --text: #2C2418;
             --text2: #4A3F2E;
             --text3: #7A6B52;
             --text4: #A6957A;
-
-            /* ─── Shadows & Glows – Gold Tinted ─── */
             --shadow: 0 8px 32px rgba(184, 134, 11, 0.12);
             --shadow2: 0 2px 12px rgba(184, 134, 11, 0.06);
             --glow: 0 0 24px rgba(212, 175, 55, 0.15);
             --glow-cyan: 0 0 20px rgba(212, 175, 55, 0.12);
             --glow-primary: 0 0 20px rgba(184, 134, 11, 0.18);
             --overlay-bg: rgba(44, 36, 24, 0.4);
-
-            /* ─── Skeletons ─── */
             --skeleton-base: #E8DCC8;
             --skeleton-shine: #D4C4A8;
         }
+
+        /* ================================================================
+               RESET & BASE
+               ================================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -175,7 +179,26 @@
             max-width: 100%;
             position: relative;
         }
-        /* ===== LOGO WATERMARK ===== */
+
+        /* ===== CUSTOM SCROLLBAR – PREMIUM GOLD ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+            transition: background .3s;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
+        /* ===== LOGO WATERMARK – ENHANCED ===== */
         body::before {
             content: '';
             position: fixed;
@@ -188,6 +211,7 @@
             pointer-events: none;
             z-index: -1;
             transition: opacity 0.5s ease;
+            filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.04));
         }
         @media (min-width: 768px) {
             body::before {
@@ -204,6 +228,51 @@
         [data-theme="light"] body::before {
             opacity: 0.025;
         }
+
+        /* ================================================================
+               GLASSMORPHISM – PREMIUM EFFECT
+               ================================================================ */
+        .glass-premium {
+            background: rgba(255, 255, 255, 0.04) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+        }
+        [data-theme="light"] .glass-premium {
+            background: rgba(255, 255, 255, 0.6) !important;
+            border: 1px solid rgba(0, 0, 0, 0.05) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06) !important;
+        }
+
+        /* ===== ANIMATED PREMIUM BADGE ===== */
+        .badge-premium-animated {
+            background: linear-gradient(90deg, var(--gold), var(--primary-light), var(--gold));
+            background-size: 300% 100%;
+            animation: shimmerGold 3s ease infinite;
+            color: #000;
+            border: none;
+            padding: .15rem .8rem;
+            border-radius: 50px;
+            font-weight: 800;
+            font-family: var(--font-heading);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+        }
+        @keyframes shimmerGold {
+            0% {
+                background-position: 300% 0;
+            }
+            100% {
+                background-position: -300% 0;
+            }
+        }
+
+        /* ================================================================
+               REST OF STYLES (preserved from original)
+               ================================================================ */
         .page,
         .app-layout,
         .auth-wrap,
@@ -236,17 +305,6 @@
         ::selection {
             background: var(--primary);
             color: #000;
-        }
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border2);
-            border-radius: 2px;
         }
         a {
             color: inherit;
@@ -1367,6 +1425,103 @@
         .trust-item i {
             color: var(--primary);
         }
+
+        /* ─── TRUST BAR (new) ─── */
+        .trust-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2.5rem;
+            padding: 1.25rem 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin-top: .5rem;
+        }
+        .trust-bar-item {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            color: var(--text3);
+            font-size: .75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+        .trust-bar-item i {
+            font-size: 1rem;
+        }
+        .trust-bar-item .fa-lock {
+            color: var(--success);
+        }
+        .trust-bar-item .fa-credit-card {
+            color: var(--primary);
+        }
+        .trust-bar-item .fa-shield-alt {
+            color: var(--gold);
+        }
+        .trust-bar-item .fa-globe-africa {
+            color: var(--accent);
+        }
+
+        /* ─── STAT COUNTERS (new) ─── */
+        .stat-counter-wrap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        .stat-counter-number {
+            font-size: 2.8rem;
+            font-weight: 900;
+            font-family: var(--font-heading);
+            line-height: 1;
+        }
+        .stat-counter-number.lime {
+            color: var(--lime);
+        }
+        .stat-counter-number.cyan {
+            color: var(--cyan);
+        }
+        .stat-counter-number.gold {
+            color: var(--gold);
+        }
+        .stat-counter-number.violet {
+            color: var(--violet);
+        }
+        .stat-counter-label {
+            font-size: .8rem;
+            color: var(--text3);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-top: .25rem;
+        }
+
+        /* ─── LIVE TICKER (FOMO) ─── */
+        .live-ticker {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.04), rgba(212, 175, 55, 0.08));
+            border-top: 1px solid rgba(212, 175, 55, 0.15);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            padding: .5rem 0;
+            overflow: hidden;
+        }
+        .live-ticker-track {
+            display: flex;
+            gap: 3rem;
+            animation: tick 45s linear infinite;
+            width: max-content;
+        }
+        .live-ticker-track:hover {
+            animation-play-state: paused;
+        }
+        .live-ticker-item {
+            color: var(--text2);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* ─── HERO VISUAL (preserved) ─── */
         .hero-vis {
             position: relative;
             padding: .75rem 0;
@@ -1457,6 +1612,8 @@
             left: 0;
             color: var(--gold);
         }
+
+        /* ─── SECTIONS ─── */
         .lsec {
             padding: 2rem 1rem;
         }
@@ -4958,7 +5115,39 @@
         <nav class="land-nav" id="landingNav"><div class="logo" onclick="goPage('landing')"><div class="logo-mark"><img src="/logo.png" alt="ChangeX" style="width:100%;height:100%;border-radius:8px;object-fit:cover;" /></div>ChangeX<span style="color:var(--primary)">.</span></div><div class="land-nav-links"><a onclick="smoothTo('how-it-works')">How It Works</a><a onclick="smoothTo('courses-sec')">Courses</a><a onclick="smoothTo('instructors-sec')">Instructors</a><a onclick="smoothTo('pricing-sec')">Pricing</a><a onclick="goPage('contact')">Contact</a><a onclick="smoothTo('books-landing')">Books</a></div><div style="display:flex;align-items:center;gap:.4rem"><button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><i class="fas" id="themeIcon"></i></button><button class="btn btn-outline btn-sm" onclick="goPage('login')">Sign In</button><button class="btn btn-primary btn-sm" onclick="goPage('register')">Start Free</button><button class="btn-icon d-md-none" onclick="toggleMobNav()"><i class="fas fa-bars"></i></button></div></nav>
         <div class="mob-nav-dd" id="mobNav"><a onclick="smoothTo('how-it-works');toggleMobNav()">How It Works</a><a onclick="smoothTo('courses-sec');toggleMobNav()">Courses</a><a onclick="smoothTo('instructors-sec');toggleMobNav()">Instructors</a><a onclick="smoothTo('pricing-sec');toggleMobNav()">Pricing</a><a onclick="smoothTo('books-landing');toggleMobNav()">Books</a><a onclick="goPage('contact');toggleMobNav()">Contact</a><a onclick="goPage('login')">Sign In</a><a onclick="goPage('register')" style="color:var(--primary);font-weight:600">Start Free →</a></div>
 
-        <section class="lhero"><div class="lhero-bg"></div><div class="lhero-wrap"><div class="row items-center"><div class="col-12 col-lg-6"><div class="hero-eyebrow"><span class="pulse-dot"></span><span>🌍 Global Learn-to-Earn Platform</span></div><h1 style="font-size:clamp(2rem,5vw,3.2rem)">Turn Tech Skills Into <span class="grad-text">Real Income</span></h1><p class="hero-desc">Learn HTML, CSS, JavaScript &amp; AI Tools — earn from course sales, referrals, affiliates &amp; bonuses. Pay online or via <strong style="color:var(--primary)">bank transfer</strong>. No experience needed.</p><div class="hero-actions"><button class="btn btn-primary btn-lg" onclick="goPage('register')"><i class="fas fa-rocket"></i>Start Earning Free</button><button class="btn btn-outline btn-lg" onclick="smoothTo('how-it-works')"><i class="fas fa-play"></i>See How</button></div><div class="trust-row"><div class="trust-item"><i class="fas fa-shield-alt"></i>Secure &amp; Verified</div><div class="trust-item"><i class="fas fa-certificate"></i>Earn Certificates</div><div class="trust-item"><i class="fas fa-bolt"></i>Instant Payouts</div><div class="trust-item"><i class="fas fa-university"></i>Bank Transfer Accepted</div></div></div><div class="col-12 col-lg-6" style="padding-top:1.5rem"><div class="hero-vis"><div class="hero-dash"><div class="hd-bar"><div class="hd-dot" style="background:#ff5f57"></div><div class="hd-dot" style="background:#febc2e;margin-left:4px"></div><div class="hd-dot" style="background:#28c840;margin-left:4px"></div><span style="font-size:.67rem;color:var(--text3);margin-left:auto;font-family:var(--font-mono)">changex.academy/dashboard</span></div><div class="hd-body"><div class="hd-earn"><div style="font-size:.7rem;color:var(--text3);margin-bottom:.2rem;font-family:var(--font-mono)">💰 TOTAL EARNINGS</div><div class="hd-amt" id="heroEarnings">₦25000000</div><div class="hd-minis"><div class="hd-mini"><div class="hd-mv" style="color:var(--lime)" id="heroReferrals">₦15000000</div><div class="hd-ml">Referrals</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--cyan)" id="heroCourses">₦1000000</div><div class="hd-ml">Courses</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--gold)" id="heroStreak">🔥 20+</div><div class="hd-ml">Streak</div></div></div></div></div></div><div class="fc fc-bot"><i class="fas fa-star" style="color:var(--gold)"></i> 4.9 · 3,200+ reviews</div><div class="fc fc-top"><i class="fas fa-user-plus"></i> 15K+ Students</div></div></div></div></div></section>
+        <section class="lhero"><div class="lhero-bg"></div><div class="lhero-wrap"><div class="row items-center"><div class="col-12 col-lg-6"><div class="hero-eyebrow"><span class="pulse-dot"></span><span>🌍 Global Learn-to-Earn Platform</span></div><h1 style="font-size:clamp(2rem,5vw,3.2rem)">Turn Tech Skills Into <span class="grad-text">Real Income</span></h1><p class="hero-desc">Learn HTML, CSS, JavaScript &amp; AI Tools — earn from course sales, referrals, affiliates &amp; bonuses. Pay online or via <strong style="color:var(--primary)">bank transfer</strong>. No experience needed.</p><div class="hero-actions"><button class="btn btn-primary btn-lg" onclick="goPage('register')"><i class="fas fa-rocket"></i>Start Earning Free</button><button class="btn btn-outline btn-lg" onclick="smoothTo('how-it-works')"><i class="fas fa-play"></i>See How</button></div><div class="trust-row"><div class="trust-item"><i class="fas fa-shield-alt"></i>Secure &amp; Verified</div><div class="trust-item"><i class="fas fa-certificate"></i>Earn Certificates</div><div class="trust-item"><i class="fas fa-bolt"></i>Instant Payouts</div><div class="trust-item"><i class="fas fa-university"></i>Bank Transfer Accepted</div></div></div><div class="col-12 col-lg-6" style="padding-top:1.5rem"><div class="hero-vis"><div class="hero-dash"><div class="hd-bar"><div class="hd-dot" style="background:#ff5f57"></div><div class="hd-dot" style="background:#febc2e;margin-left:4px"></div><div class="hd-dot" style="background:#28c840;margin-left:4px"></div><span style="font-size:.67rem;color:var(--text3);margin-left:auto;font-family:var(--font-mono)">changex.academy/dashboard</span></div><div class="hd-body"><div class="hd-earn"><div style="font-size:.7rem;color:var(--text3);margin-bottom:.2rem;font-family:var(--font-mono)">💰 TOTAL EARNINGS</div><div class="hd-amt" id="heroEarnings">₦0</div><div class="hd-minis"><div class="hd-mini"><div class="hd-mv" style="color:var(--lime)" id="heroReferrals">₦0</div><div class="hd-ml">Referrals</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--cyan)" id="heroCourses">₦0</div><div class="hd-ml">Courses</div></div><div class="hd-mini"><div class="hd-mv" style="color:var(--gold)" id="heroStreak">🔥 0</div><div class="hd-ml">Streak</div></div></div></div></div></div><div class="fc fc-bot"><i class="fas fa-star" style="color:var(--gold)"></i> 4.9 · 3,200+ reviews</div><div class="fc fc-top"><i class="fas fa-user-plus"></i> 15K+ Students</div></div></div></div></div></section>
+
+        <!-- ─── TRUST BAR (NEW) ─── -->
+        <div class="trust-bar">
+            <div class="trust-bar-item"><i class="fas fa-lock"></i>256-bit SSL Encrypted</div>
+            <div class="trust-bar-item"><i class="fas fa-credit-card"></i>Paystack Secured</div>
+            <div class="trust-bar-item"><i class="fas fa-shield-alt"></i>Verified by ChangeX</div>
+            <div class="trust-bar-item"><i class="fas fa-globe-africa"></i>Trusted in 50+ Countries</div>
+        </div>
+
+        <!-- ─── HARDCODED STATS (NEW) ─── -->
+        <section class="lsec" style="background:var(--bg2);padding:2.5rem 1rem;">
+            <div class="lsec-wrap">
+                <div class="stat-counter-wrap">
+                    <div>
+                        <div class="stat-counter-number lime" data-target="50000000">0</div>
+                        <div class="stat-counter-label">Total Earnings (₦)</div>
+                    </div>
+                    <div>
+                        <div class="stat-counter-number cyan" data-target="15000">0</div>
+                        <div class="stat-counter-label">Active Students</div>
+                    </div>
+                    <div>
+                        <div class="stat-counter-number gold" data-target="2400">0</div>
+                        <div class="stat-counter-label">Courses Created</div>
+                    </div>
+                    <div>
+                        <div class="stat-counter-number violet" data-target="97">0<small style="font-size:1.2rem;">%</small></div>
+                        <div class="stat-counter-label">Satisfaction Rate</div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <div class="ticker-outer"><div class="ticker-track" id="tickerTrack"></div></div>
 
@@ -4975,6 +5164,22 @@
         <section class="lsec lsec-dark"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-comments"></i> Testimonials</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Real Students. <span class="grad-text">Real Earnings</span>.</h2></div><div class="row" id="testiGrid"></div></div></section>
 
         <section id="reviews-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-star"></i> Reviews</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">What Our <span class="grad-text">Students Say</span></h2></div><div class="row" id="reviewsList"></div><div class="row justify-center mt-5"><div class="col-12 col-md-6"><div class="card card-p"><h5>Leave a Review</h5><div class="form-group"><label class="flabel">Your Name</label><input type="text" class="finput" id="reviewName" placeholder="Your full name"></div><div class="form-group"><label class="flabel">Rating</label><div style="display:flex;gap:.3rem;font-size:1.5rem;cursor:pointer" id="reviewStars"><span data-val="1" onclick="setReviewStar(1)">☆</span><span data-val="2" onclick="setReviewStar(2)">☆</span><span data-val="3" onclick="setReviewStar(3)">☆</span><span data-val="4" onclick="setReviewStar(4)">☆</span><span data-val="5" onclick="setReviewStar(5)">☆</span></div></div><div class="form-group"><label class="flabel">Review</label><textarea class="finput" id="reviewText" rows="3" placeholder="Your experience..."></textarea></div><button class="btn btn-primary" onclick="submitReview()">Submit Review</button></div></div></div></div></section>
+
+        <!-- ─── LIVE TICKER (FOMO) ─── -->
+        <div class="live-ticker">
+            <div class="live-ticker-track" id="liveTickerTrack">
+                <span class="live-ticker-item">🔥 Amaka just earned ₦15,000</span>
+                <span class="live-ticker-item">💰 Tunde withdrew ₦250,000</span>
+                <span class="live-ticker-item">📚 Kelechi completed JavaScript Pro</span>
+                <span class="live-ticker-item">🎉 Fatima hit Level 15</span>
+                <span class="live-ticker-item">🤝 Chinedu referred 5 new users</span>
+                <span class="live-ticker-item">🔥 Amaka just earned ₦15,000</span>
+                <span class="live-ticker-item">💰 Tunde withdrew ₦250,000</span>
+                <span class="live-ticker-item">📚 Kelechi completed JavaScript Pro</span>
+                <span class="live-ticker-item">🎉 Fatima hit Level 15</span>
+                <span class="live-ticker-item">🤝 Chinedu referred 5 new users</span>
+            </div>
+        </div>
 
         <section id="pricing-sec" class="lsec"><div class="lsec-wrap"><div class="text-center mb-5 reveal"><div class="stag mb-3"><i class="fas fa-tag"></i> Pricing</div><h2 style="font-size:clamp(1.7rem,4vw,2.6rem)">Simple, <span class="grad-text">Transparent</span> Pricing</h2></div><div class="row justify-center"><div class="col-12 col-md-4 reveal" style="transition-delay:.05s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-user"></i> Free</div><div class="p-amt">₦0<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">Perfect to get started</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>5 courses access</li><li><i class="fas fa-check chk"></i>Basic certificates</li><li><i class="fas fa-check chk"></i>Referral program</li><li><i class="fas fa-times nope"></i>Create courses</li><li><i class="fas fa-times nope"></i>Unlimited uploads</li><li><i class="fas fa-times nope"></i>No ads</li></ul><button class="btn btn-outline w-full" onclick="goPage('register')">Get Started Free</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.1s"><div class="price-card featured"><div class="stag mb-3"><i class="fas fa-crown"></i> Premium</div><div class="p-amt" style="color:var(--lime)">₦5,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For serious learners &amp; earners</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>All courses unlimited</li><li><i class="fas fa-check chk"></i>Create &amp; sell courses</li><li><i class="fas fa-check chk"></i>Affiliate dashboard</li><li><i class="fas fa-check chk"></i>Unlimited uploads</li><li><i class="fas fa-check chk"></i>No ads 🎉</li><li><i class="fas fa-check chk"></i>80% course revenue</li></ul><button class="btn btn-primary w-full" onclick="goPage('register')"><i class="fas fa-crown"></i>Go Premium</button></div></div><div class="col-12 col-md-4 reveal" style="transition-delay:.15s"><div class="price-card"><div class="stag mb-3"><i class="fas fa-building"></i> Business</div><div class="p-amt">₦25,000<span style="font-size:1rem;color:var(--text3)">/mo</span></div><p style="font-size:.79rem;color:var(--text3);margin:.5rem 0 1rem">For teams &amp; organizations</p><ul style="list-style:none;display:flex;flex-direction:column;gap:.45rem;font-size:.83rem;margin-bottom:1.25rem"><li><i class="fas fa-check chk"></i>Everything in Premium</li><li><i class="fas fa-check chk"></i>Up to 20 seats</li><li><i class="fas fa-check chk"></i>Custom branding</li><li><i class="fas fa-check chk"></i>Analytics</li><li><i class="fas fa-check chk"></i>Dedicated manager</li></ul><button class="btn btn-outline w-full" onclick="goPage('contact')">Contact Sales</button></div></div></div></div></section>
 
@@ -5337,6 +5542,200 @@
             }
             return initial;
         }
+
+        // ═══════════════════════════════════════════════════════════════
+        // LAZY LOAD QUILL & PAYSTACK
+        // ═══════════════════════════════════════════════════════════════
+        let quillLoaded = false;
+        let paystackLoaded = false;
+
+        async function loadQuill() {
+            if (quillLoaded || window.Quill) { quillLoaded = true; return; }
+            return new Promise((resolve, reject) => {
+                try {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.quilljs.com/1.3.7/quill.min.js';
+                    script.onload = () => {
+                        const link = document.createElement('link');
+                        link.rel = 'stylesheet';
+                        link.href = 'https://cdn.quilljs.com/1.3.7/quill.snow.css';
+                        document.head.appendChild(link);
+                        quillLoaded = true;
+                        resolve();
+                    };
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                } catch (e) { reject(e); }
+            });
+        }
+
+        async function loadPaystack() {
+            if (paystackLoaded || window.PaystackPop) { paystackLoaded = true; return; }
+            return new Promise((resolve, reject) => {
+                try {
+                    const script = document.createElement('script');
+                    script.src = 'https://js.paystack.co/v1/inline.js';
+                    script.onload = () => { paystackLoaded = true;
+                        resolve(); };
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                } catch (e) { reject(e); }
+            });
+        }
+
+        // Override functions that need Quill
+        const origInitPostQuill = window.initPostQuill;
+        window.initPostQuill = async function() {
+            await loadQuill();
+            if (typeof origInitPostQuill === 'function') origInitPostQuill();
+            else {
+                if (S.postQuill) { try { S.postQuill.focus(); } catch (e) {} return; }
+                const el = document.getElementById('postEditor');
+                if (!el || typeof Quill === 'undefined') { setTimeout(window.initPostQuill, 300); return; }
+                try {
+                    S.postQuill = new Quill('#postEditor', {
+                        theme: 'snow',
+                        placeholder: 'Write your post content here...',
+                        modules: {
+                            toolbar: [
+                                ['bold', 'italic', 'underline'],
+                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                ['link', 'image', 'code-block'],
+                                ['clean']
+                            ]
+                        }
+                    });
+                    if (!S.postQuill.root.innerHTML || S.postQuill.root.innerHTML === '<p><br></p>') {
+                        S.postQuill.root.innerHTML = '';
+                    }
+                } catch (e) { console.warn('Quill init error:', e);
+                    setTimeout(window.initPostQuill, 500); }
+            }
+        };
+
+        const origInitQuillEditors = window.initQuillEditors;
+        window.initQuillEditors = async function() {
+            await loadQuill();
+            if (typeof origInitQuillEditors === 'function') origInitQuillEditors();
+            else {
+                setTimeout(() => {
+                    const descEl = document.getElementById('descEditorQuill');
+                    if (descEl && !S.quillEditors['descEditorQuill'] && typeof Quill !== 'undefined') {
+                        const existingContent = S.currentCourseData?.description || '';
+                        S.quillEditors['descEditorQuill'] = new Quill('#descEditorQuill', { theme: 'snow',
+                            placeholder: 'Write a compelling description...', modules: { toolbar: [
+                                    ['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                    ['link', 'code-block'], ['clean']
+                                ] } });
+                        if (existingContent && existingContent !== 'No description provided') { S.quillEditors[
+                                'descEditorQuill'].root.innerHTML = existingContent; }
+                    }
+                }, 300);
+            }
+        };
+
+        // ProcessPayment override to load Paystack
+        const origProcessPayment = window.processPayment;
+        window.processPayment = async function() {
+            await loadPaystack();
+            if (typeof origProcessPayment === 'function') return origProcessPayment();
+            // Fallback implementation
+            const type = currentPaymentType;
+            let item, id, amount;
+            if (type === 'course') {
+                item = S.currentBuyCourse;
+                if (!item) return;
+                id = item._id;
+                amount = item.salePrice || item.price || 0;
+            } else if (type === 'book') {
+                item = S.currentBuyBook;
+                if (!item) return;
+                id = item._id;
+                amount = item.price || 0;
+            } else { toast('Invalid payment type', 'error'); return; }
+            const email = S.user?.email;
+            if (!email) { toast('Please log in to purchase', 'error'); return; }
+            showLoading('Preparing payment...');
+            try {
+                let code = getAffiliateCodeFromCookie();
+                const manualCode = document.getElementById('buyRefCode')?.value.trim();
+                if (manualCode) code = manualCode;
+                const metadata = { type, [`${type}Id`]: id, userId: S.user._id, affiliateCode: code || undefined,
+                    referralCode: code || undefined };
+                const paymentIntent = await apiCall('/payments/initialize-paystack', { method: 'POST',
+                    body: { email, amount, currency: 'NGN', metadata } });
+                const { reference, amount: paystackAmount } = paymentIntent.data;
+                const handler = PaystackPop.setup({
+                    key: PAYSTACK_PUBLIC_KEY,
+                    email,
+                    amount: paystackAmount,
+                    currency: 'NGN',
+                    ref: reference,
+                    metadata: { custom_fields: [{ display_name: type.charAt(0).toUpperCase() + type.slice(1),
+                            variable_name: type, value: item.title }, { display_name: 'User ID',
+                            variable_name: 'user_id', value: S.user._id }] },
+                    callback: async (response) => {
+                        const verify = await apiCall('/payments/verify-transaction', {
+                            method: 'POST',
+                            body: { reference: response.reference, type, courseId: type === 'course' ?
+                                    id : undefined, bookId: type === 'book' ? id : undefined }
+                        });
+                        if (verify.success) {
+                            toast('✅ Payment successful!', 'success');
+                            closeModal('buyCourseModal');
+                            await renderWallet();
+                            if (type === 'course') {
+                                await loadEnrollments();
+                                if (S.dp === 'courses') renderCourseGrid(S.courseFilter);
+                                else if (S.dp === 'explore') renderExplore();
+                                else setDP('courses');
+                            } else if (type === 'book') {
+                                if (S.currentBook) {
+                                    S.currentBook.isPurchased = true;
+                                    if (S.dp === 'book-detail') renderBookDetail(S.currentBook);
+                                }
+                                await loadBooks();
+                                setDP('books');
+                            }
+                            renderWallet();
+                        } else {
+                            toast('Verification failed.', 'error');
+                        }
+                    },
+                    onClose: () => { toast('Payment cancelled', 'warning'); }
+                });
+                handler.openIframe();
+            } catch (err) { toast('Payment failed: ' + err.message, 'error'); } finally { hideLoading(); }
+        };
+
+        const origDoPremiumPaystack = window.doPremiumPaystack;
+        window.doPremiumPaystack = async function() {
+            await loadPaystack();
+            if (typeof origDoPremiumPaystack === 'function') return origDoPremiumPaystack();
+            const referralCode = document.getElementById('premReferralCode')?.value.trim() || '';
+            const btn = document.querySelector('#premiumModal .paystack-btn');
+            if (btn) { btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner spin"></i> Processing...'; }
+            showLoading('Redirecting to payment...');
+            try {
+                const res = await apiCall('/payments/subscribe', {
+                    method: 'POST',
+                    body: { plan: 'premium', paymentMethod: 'paystack', referralCode }
+                });
+                if (res.data?.paymentUrl) {
+                    window.location.href = res.data.paymentUrl;
+                } else {
+                    toast('Could not initiate payment.', 'error');
+                    hideLoading();
+                }
+            } catch (e) {
+                toast('Payment error: ' + e.message, 'error');
+                hideLoading();
+            } finally {
+                if (btn) { btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-lock"></i> Pay ₦5,000 with Paystack'; }
+            }
+        };
 
         // ═══════════════════════════════════════════════════════════════
         // DEBOUNCE / THROTTLE UTILITIES
@@ -5923,13 +6322,13 @@
         // ═══════════════════════════════════════════════════════════════
         function updateLandingHeroStats() {
             if (!S.user) {
-                document.getElementById('heroReferrals').textContent = '₦2000000';
-                document.getElementById('heroCourses').textContent = '₦2450000';
-                document.getElementById('heroStreak').textContent = '🔥 200000';
+                document.getElementById('heroReferrals').textContent = '₦0';
+                document.getElementById('heroCourses').textContent = '₦0';
+                document.getElementById('heroStreak').textContent = '🔥 0';
                 return;
             }
-            const refEarnings = S.user.referralEarnings || S.user.totalReferralEarnings || 2000000;
-            const courseEarnings = S.user.courseEarnings || S.user.totalCourseEarnings || 24500000;
+            const refEarnings = S.user.referralEarnings || S.user.totalReferralEarnings || 0;
+            const courseEarnings = S.user.courseEarnings || S.user.totalCourseEarnings || 0;
             const streak = S.user.streak || S.user.streakDays || 0;
             document.getElementById('heroReferrals').textContent = fmtMoneyAPI(refEarnings);
             document.getElementById('heroCourses').textContent = fmtMoneyAPI(courseEarnings);
@@ -6656,38 +7055,6 @@
                 document.getElementById('postTitle').value = '';
                 if (S.postQuill) S.postQuill.root.innerHTML = '';
                 loadMyPostTitles();
-            }
-        }
-
-        function initPostQuill() {
-            if (S.postQuill) {
-                try { S.postQuill.focus(); } catch (e) {}
-                return;
-            }
-            const el = document.getElementById('postEditor');
-            if (!el || typeof Quill === 'undefined') {
-                setTimeout(initPostQuill, 300);
-                return;
-            }
-            try {
-                S.postQuill = new Quill('#postEditor', {
-                    theme: 'snow',
-                    placeholder: 'Write your post content here...',
-                    modules: {
-                        toolbar: [
-                            ['bold', 'italic', 'underline'],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                            ['link', 'image', 'code-block'],
-                            ['clean']
-                        ]
-                    }
-                });
-                if (!S.postQuill.root.innerHTML || S.postQuill.root.innerHTML === '<p><br></p>') {
-                    S.postQuill.root.innerHTML = '';
-                }
-            } catch (e) {
-                console.warn('Quill init error:', e);
-                setTimeout(initPostQuill, 500);
             }
         }
 
@@ -8736,7 +9103,10 @@
                 loadDraftFromLocalStorage(courseId);
                 setTimeout(() => { if (S.quillEditors['descEditorQuill']) { S.quillEditors['descEditorQuill'].root
                             .innerHTML = S.currentCourseData.description || ''; } }, 300);
-                updateSEO({ title: S.currentCourseData.title, description: S.currentCourseData.subtitle });
+                updateSEO({
+                    title: S.currentCourseData.title,
+                    description: S.currentCourseData.subtitle
+                });
                 toast('Course loaded for editing', 'success');
             } catch (e) { toast('Failed to load course: ' + e.message, 'error'); }
         }
@@ -11106,6 +11476,45 @@
             updateThemeIcons();
             updateLandingHeroStats();
             updateSEO({ title: 'ChangeX Academy — Learn, Earn, and Grow', description: 'Turn tech skills into real income. Join the #1 Learn-to-Earn platform.' });
+            // Init counters
+            setTimeout(initCounters, 500);
+        }
+
+        // ─── ANIMATED COUNTERS ─────────────────────────────────────────
+        function initCounters() {
+            const counters = document.querySelectorAll('.stat-counter-number');
+            if (!counters.length) return;
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const target = parseInt(el.dataset.target);
+                        let current = 0;
+                        const increment = Math.ceil(target / 50);
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                if (target === 97) {
+                                    el.innerHTML = target.toLocaleString() +
+                                        '<small style="font-size:1.2rem;">%</small>';
+                                } else {
+                                    el.textContent = target.toLocaleString();
+                                }
+                                clearInterval(timer);
+                                return;
+                            }
+                            if (target === 97) {
+                                el.innerHTML = current.toLocaleString() +
+                                    '<small style="font-size:1.2rem;">%</small>';
+                            } else {
+                                el.textContent = current.toLocaleString();
+                            }
+                        }, 30);
+                        observer.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.5 });
+            counters.forEach(c => observer.observe(c));
         }
 
         async function fetchLandingStats() {
@@ -11822,6 +12231,7 @@
         console.log('🔗 Affiliate links now use hash-based routing (#courses/...) for SPA compatibility.');
         console.log('🏦 Bank details updated: Lead Bank & Taj Bank for manual transfers.');
         console.log('⚡ Performance: Lazy loading, debounce, throttle, batch DOM updates, request deduplication.');
+        console.log('🏷️ Branding: Glassmorphism, animated premium badges, trust bar, live ticker, animated counters.');
     </script>
 </body>
 </html>
