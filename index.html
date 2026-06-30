@@ -5923,13 +5923,13 @@
         // ═══════════════════════════════════════════════════════════════
         function updateLandingHeroStats() {
             if (!S.user) {
-                document.getElementById('heroReferrals').textContent = '₦0';
-                document.getElementById('heroCourses').textContent = '₦0';
-                document.getElementById('heroStreak').textContent = '🔥 0';
+                document.getElementById('heroReferrals').textContent = '₦2000000';
+                document.getElementById('heroCourses').textContent = '₦2450000';
+                document.getElementById('heroStreak').textContent = '🔥 200000';
                 return;
             }
-            const refEarnings = S.user.referralEarnings || S.user.totalReferralEarnings || 0;
-            const courseEarnings = S.user.courseEarnings || S.user.totalCourseEarnings || 0;
+            const refEarnings = S.user.referralEarnings || S.user.totalReferralEarnings || 2000000;
+            const courseEarnings = S.user.courseEarnings || S.user.totalCourseEarnings || 24500000;
             const streak = S.user.streak || S.user.streakDays || 0;
             document.getElementById('heroReferrals').textContent = fmtMoneyAPI(refEarnings);
             document.getElementById('heroCourses').textContent = fmtMoneyAPI(courseEarnings);
