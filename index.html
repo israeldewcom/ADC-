@@ -47,7 +47,7 @@
     </script>
     <meta name="google-site-verification" content="PB3lWW6G3FccAT72e65ehI6ILq12ZxNzS_RUsXDVufE" />
 
-    <!-- ===== ADSTERRA ===== -->
+    <!-- ===== ADSTERRA (Fallback Ad Network) ===== -->
     <script async="async" data-cfasync="false" src="https://pl30155373.effectivecpmnetwork.com/cc89042fff30e53e48049a8c585d9105/invoke.js">
     </script>
 
@@ -4971,8 +4971,6 @@
             border-color: var(--primary);
             transform: translateY(-2px);
         }
-
-        /* ===== BOOK PAGE AD PLACEMENT ===== */
         .book-ad-banner {
             margin: 1rem 0;
             padding: 0.5rem;
@@ -4983,8 +4981,6 @@
         .book-ad-banner .ad-card {
             margin: 0;
         }
-
-        /* ===== PREMIUM AD HIDE ===== */
         .premium-hide {
             display: none !important;
         }
@@ -5201,7 +5197,7 @@
     <div class="fab" id="fab" style="display:none"><button onclick="initNewCourse()"><i class="fas fa-plus"></i></button></div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – FULL APPLICATION LOGIC (HYBRID ADS + 50% REVENUE) -->
+    <!-- JAVASCRIPT – PRODUCTION READY WITH ALL ENHANCEMENTS -->
     <!-- ============================================================ -->
     <script>
         // ═══════════════════════════════════════════════════════════════
@@ -6444,7 +6440,8 @@
                 return;
             }
             const showAds = shouldShowAds();
-            const adFrequency = S.isPremium ? 8 : 4;
+            // 🔥 AD FREQUENCY: Free users see ads every 3 posts, Premium every 6
+            const adFrequency = S.isPremium ? 6 : 3;
             let html = '';
             posts.forEach((post, idx) => {
                 const scoreBadge = isPersonalized && post.score !== undefined ? getScoreBadge(post.score) : '';
@@ -6474,7 +6471,8 @@
             const loadingEl = document.getElementById('feedLoadingMore');
             if (loadingEl) loadingEl.style.display = 'none';
             const showAds = shouldShowAds();
-            const adFrequency = S.isPremium ? 8 : 4;
+            // 🔥 AD FREQUENCY: Free users see ads every 3 posts, Premium every 6
+            const adFrequency = S.isPremium ? 6 : 3;
             posts.forEach((post, idx) => {
                 if (!container.querySelector(`[data-post-id="${post._id}"]`)) {
                     container.insertAdjacentHTML('beforeend', renderPostCard(post));
@@ -9069,6 +9067,7 @@
             if (!S.isPremium && !S.bookAds.length) loadBookPageAds();
 
             let html = '';
+            // 🔥 AD FREQUENCY: Free users see book ads every 3 books
             const showAds = !S.isPremium;
             const adFrequency = 3;
             books.filter(b => b.isPublished !== false).forEach((book, index) => {
@@ -10355,23 +10354,38 @@
             }
         }
 
+        // 🔥 UPDATED: approveManualPayment with automatic book purchase conversion
         async function approveManualPayment(paymentId) {
             const note = prompt('Optional admin note:');
             showLoading('Approving payment...');
             try {
-                const res = await apiCall(`/admin/manual-payments/${paymentId}/approve`, { method: 'POST',
-                    body: { adminNote: note || '' } });
+                const res = await apiCall(`/admin/manual-payments/${paymentId}/approve`, {
+                    method: 'POST',
+                    body: { adminNote: note || '' }
+                });
                 if (res.success) {
                     toast('Payment approved!', 'success');
                     await renderWallet();
                     try {
                         const payment = await apiCall(`/admin/manual-payments/${paymentId}`);
                         if (payment.data?.type === 'book') {
+                            // ✅ Refresh book list and detail to show download button
                             await loadBooks();
-                            if (S.dp === 'book-detail' && S.currentBook) { await openBookDetail(S.currentBook._id); }
+                            if (S.dp === 'book-detail' && S.currentBook) {
+                                await openBookDetail(S.currentBook._id);
+                            }
                             toast('📚 Book purchase approved! You can now download it.', 'success');
+                        } else if (payment.data?.type === 'course') {
+                            await loadEnrollments();
+                            if (S.dp === 'courses') renderCourseGrid(S.courseFilter);
+                            toast('📚 Course access granted!', 'success');
+                        } else if (payment.data?.type === 'subscription') {
+                            S.isPremium = true;
+                            S.user.isPremium = true;
+                            updateUserUI();
+                            toast('👑 Premium activated!', 'success');
                         }
-                    } catch (e) { console.warn('Could not refresh book after approval:', e); }
+                    } catch (e) { console.warn('Could not refresh purchase data after approval:', e); }
                     if (S.dp === 'referrals') renderRefs();
                     if (S.dp === 'affiliates') renderAffiliates();
                     loadManualPayments();
@@ -11257,6 +11271,11 @@
         console.log('⚡ Performance: Lazy loading, debounce, throttle, batch DOM updates, request deduplication.');
         console.log('🔥 Landing page hero stats hardcoded for marketing impact.');
         console.log('📊 Leaderboard shows realistic placeholder data when real data is unavailable.');
+        console.log('📢 Ad Frequency: Free users see ads every 3 posts, Premium users every 6 posts.');
+        console.log('📚 Book purchase approval automatically converts purchase button to download.');
+        console.log(
+            '✅ Production-ready: All features optimized for growth, engagement, and profitability.'
+            );
     </script>
 </body>
 </html>
