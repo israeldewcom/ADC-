@@ -5054,15 +5054,6 @@
         .follower-card .fc-badge {
             font-size: .55rem;
         }
-        /* ===== NEW: Course page ad container ===== */
-        #coursePageAdContainer {
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-        }
-        #coursePageAdContainer .ad-card {
-            margin: 0;
-        }
     </style>
 </head>
 <body>
@@ -5230,10 +5221,7 @@
                     <div id="dash-courses" class="dash-sub"><div class="page-hd"><h2 class="page-title">My Courses</h2><p class="page-sub">Track your learning progress</p></div><div style="display:flex;gap:.28rem;flex-wrap:nowrap;overflow-x:auto;margin-bottom:1rem;padding-bottom:.15rem"><span class="fpill active" onclick="filterCourses('all',this)">All</span><span class="fpill" onclick="filterCourses('progress',this)">In Progress</span><span class="fpill" onclick="filterCourses('completed',this)">Completed</span><span class="fpill" onclick="filterCourses('new',this)">Not Started</span></div><div class="courses-grid" id="coursesGrid"></div></div>
 
                     <!-- LESSON -->
-                    <div id="dash-lesson" class="dash-sub"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><button class="btn btn-ghost btn-sm" onclick="setDP('courses')"><i class="fas fa-arrow-left"></i>Back</button><div class="d-flex gap-2"><button class="btn btn-ghost btn-sm" onclick="openModal('rateModal')"><i class="fas fa-star"></i>Rate</button><button class="btn btn-primary btn-sm" onclick="completeLessonAndNext()"><i class="fas fa-check"></i>Mark Done &amp; Next</button></div></div><div id="interactiveContainer"></div><div class="lesson-layout"><div><div class="video-wrap mb-3" id="lessonVideoWrap"><div style="text-align:center"><div class="play-btn" onclick="toast('Playing lesson video...','info')"><i class="fas fa-play"></i></div><div style="font-size:.78rem;color:var(--text2);margin-top:.75rem" id="currentLessonTitle">Select a course</div><div style="font-size:.7rem;color:var(--text3);margin-top:.2rem" id="currentCourseTitle">Loading...</div></div></div><div class="d-flex justify-between mb-3 gap-2"><button class="btn btn-ghost btn-sm" id="prevLessonBtn" onclick="navigateLesson(-1)"><i class="fas fa-arrow-left"></i>Previous</button><span style="font-size:.78rem;color:var(--text3);padding:.35rem .5rem" id="lessonNavIndicator">—</span><button class="btn btn-primary btn-sm" id="nextLessonBtn" onclick="navigateLesson(1)">Next<i class="fas fa-arrow-right"></i></button></div><div class="lesson-tabs"><div class="ltab active" onclick="switchLTab('overview',this)">Overview</div><div class="ltab" onclick="switchLTab('notes',this)">📝 Notes</div><div class="ltab" onclick="switchLTab('resources',this)">📎 Resources</div><div class="ltab" onclick="switchLTab('qa',this)">💬 Q&amp;A</div><div class="ltab" onclick="switchLTab('reviews',this)">⭐ Reviews</div><div class="ltab" onclick="switchLTab('interactive',this)">⚡ Try It</div></div><div class="lesson-sub active" id="ls-overview"><h5 style="margin-bottom:.5rem" id="lessonOverviewTitle">Loading...</h5><p style="font-size:.84rem;color:var(--text2);line-height:1.7" id="lessonOverviewDesc">Please select a course.</p><div id="courseRatingsContainer"></div></div><div class="lesson-sub" id="ls-notes"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">My Notes</h6><button class="btn btn-primary btn-sm" onclick="saveNote()"><i class="fas fa-save"></i>Save</button></div><textarea class="finput" id="lessonNote" style="min-height:200px;resize:vertical" placeholder="Write your personal notes... They auto-save."></textarea></div><div class="lesson-sub" id="ls-resources"><h6 style="margin-bottom:.75rem">📎 Resources</h6><div id="lessonResourcesList"></div></div><div class="lesson-sub" id="ls-qa"><h6 style="margin-bottom:.75rem">💬 Questions &amp; Answers</h6><div style="margin-bottom:.85rem"><textarea class="finput" id="qaInput" style="min-height:80px;resize:vertical" placeholder="Ask a question about this lesson..."></textarea><button class="btn btn-primary btn-sm mt-2" onclick="submitQuestion()"><i class="fas fa-paper-plane"></i>Ask Question</button></div><div id="qaList"></div></div><div class="lesson-sub" id="ls-reviews"><h6 style="margin-bottom:.75rem">⭐ Course Reviews</h6><div id="reviewsListContainer"></div></div><div class="lesson-sub" id="ls-interactive"><h6 style="margin-bottom:.75rem">⚡ Try It Yourself</h6><div id="interactiveMaterialsContainer"></div></div></div><div><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">Curriculum</h6><span style="font-size:.73rem;color:var(--text3)" id="curricProgress">0/0</span></div><div class="prog mb-3" style="height:5px"><div class="prog-fill pf-primary" id="curricBar" style="width:0%"></div></div><div id="curricList" class="thin-scroll" style="max-height:420px;overflow-y:auto"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">📊 Your Progress</h6><div><div class="web-row"><span>Lessons Done</span><strong id="lpLessonsDone">0/0</strong></div><div class="web-row"><span>XP Earned</span><strong style="color:var(--gold)">+0</strong></div><div class="web-row"><span>Quiz Score Avg</span><strong style="color:var(--primary)">—</strong></div><div class="web-row"><span>Time Spent</span><strong>0h 0m</strong></div></div></div>
-                    <!-- ===== NEW: Course Page Ad Container ===== -->
-                    <div id="coursePageAdContainer"></div>
-                    </div></div></div></div>
+                    <div id="dash-lesson" class="dash-sub"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><button class="btn btn-ghost btn-sm" onclick="setDP('courses')"><i class="fas fa-arrow-left"></i>Back</button><div class="d-flex gap-2"><button class="btn btn-ghost btn-sm" onclick="openModal('rateModal')"><i class="fas fa-star"></i>Rate</button><button class="btn btn-primary btn-sm" onclick="completeLessonAndNext()"><i class="fas fa-check"></i>Mark Done &amp; Next</button></div></div><div id="interactiveContainer"></div><div class="lesson-layout"><div><div class="video-wrap mb-3" id="lessonVideoWrap"><div style="text-align:center"><div class="play-btn" onclick="toast('Playing lesson video...','info')"><i class="fas fa-play"></i></div><div style="font-size:.78rem;color:var(--text2);margin-top:.75rem" id="currentLessonTitle">Select a course</div><div style="font-size:.7rem;color:var(--text3);margin-top:.2rem" id="currentCourseTitle">Loading...</div></div></div><div class="d-flex justify-between mb-3 gap-2"><button class="btn btn-ghost btn-sm" id="prevLessonBtn" onclick="navigateLesson(-1)"><i class="fas fa-arrow-left"></i>Previous</button><span style="font-size:.78rem;color:var(--text3);padding:.35rem .5rem" id="lessonNavIndicator">—</span><button class="btn btn-primary btn-sm" id="nextLessonBtn" onclick="navigateLesson(1)">Next<i class="fas fa-arrow-right"></i></button></div><div class="lesson-tabs"><div class="ltab active" onclick="switchLTab('overview',this)">Overview</div><div class="ltab" onclick="switchLTab('notes',this)">📝 Notes</div><div class="ltab" onclick="switchLTab('resources',this)">📎 Resources</div><div class="ltab" onclick="switchLTab('qa',this)">💬 Q&amp;A</div><div class="ltab" onclick="switchLTab('reviews',this)">⭐ Reviews</div><div class="ltab" onclick="switchLTab('interactive',this)">⚡ Try It</div></div><div class="lesson-sub active" id="ls-overview"><h5 style="margin-bottom:.5rem" id="lessonOverviewTitle">Loading...</h5><p style="font-size:.84rem;color:var(--text2);line-height:1.7" id="lessonOverviewDesc">Please select a course.</p><div id="courseRatingsContainer"></div></div><div class="lesson-sub" id="ls-notes"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">My Notes</h6><button class="btn btn-primary btn-sm" onclick="saveNote()"><i class="fas fa-save"></i>Save</button></div><textarea class="finput" id="lessonNote" style="min-height:200px;resize:vertical" placeholder="Write your personal notes... They auto-save."></textarea></div><div class="lesson-sub" id="ls-resources"><h6 style="margin-bottom:.75rem">📎 Resources</h6><div id="lessonResourcesList"></div></div><div class="lesson-sub" id="ls-qa"><h6 style="margin-bottom:.75rem">💬 Questions &amp; Answers</h6><div style="margin-bottom:.85rem"><textarea class="finput" id="qaInput" style="min-height:80px;resize:vertical" placeholder="Ask a question about this lesson..."></textarea><button class="btn btn-primary btn-sm mt-2" onclick="submitQuestion()"><i class="fas fa-paper-plane"></i>Ask Question</button></div><div id="qaList"></div></div><div class="lesson-sub" id="ls-reviews"><h6 style="margin-bottom:.75rem">⭐ Course Reviews</h6><div id="reviewsListContainer"></div></div><div class="lesson-sub" id="ls-interactive"><h6 style="margin-bottom:.75rem">⚡ Try It Yourself</h6><div id="interactiveMaterialsContainer"></div></div></div><div><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">Curriculum</h6><span style="font-size:.73rem;color:var(--text3)" id="curricProgress">0/0</span></div><div class="prog mb-3" style="height:5px"><div class="prog-fill pf-primary" id="curricBar" style="width:0%"></div></div><div id="curricList" class="thin-scroll" style="max-height:420px;overflow-y:auto"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">📊 Your Progress</h6><div><div class="web-row"><span>Lessons Done</span><strong id="lpLessonsDone">0/0</strong></div><div class="web-row"><span>XP Earned</span><strong style="color:var(--gold)">+0</strong></div><div class="web-row"><span>Quiz Score Avg</span><strong style="color:var(--primary)">—</strong></div><div class="web-row"><span>Time Spent</span><strong>0h 0m</strong></div></div></div></div></div></div>
 
                     <!-- QUIZ -->
                     <div id="dash-quiz" class="dash-sub"><div class="page-hd"><h2 class="page-title">Quizzes</h2><p class="page-sub">Test your knowledge and earn XP</p></div><div class="quiz-wrap" id="quizWrap"></div></div>
@@ -5406,9 +5394,6 @@
             // ─── NEW: Explore Ads ────────────────────────────────────
             exploreAdIndex: 0,
             exploreAds: [],
-            // ─── NEW: Course Page Ads ────────────────────────────────
-            courseAds: [],
-            courseAdIndex: 0,
             bookAds: [],
             bookAdIndex: 0,
             adsterraLoaded: false,
@@ -5582,9 +5567,7 @@
                 explore: renderExplore,
                 courses: () => renderCourseGrid(S.courseFilter),
                 lesson: () => { renderCurric();
-                    switchLTab('overview', null);
-                    // ─── Render course page ad ──────────────────────
-                    renderCoursePageAd(); },
+                    switchLTab('overview', null); },
                 quiz: initQuiz,
                 certs: renderCerts,
                 wallet: renderWallet,
@@ -5866,6 +5849,7 @@
                 `Welcome to ChangeX, ${S.user?.firstName || 'User'}! 🎉`, 'success');
             forceRedirect(targetPage);
             await loadUserFollowing();
+            // ─── NEW: Load followers after login ──────────────────────
             await loadFollowers();
             if (S.page === 'landing' || document.getElementById('page-landing').classList.contains('active')) {
                 updateLandingHeroStats();
@@ -6079,6 +6063,7 @@
             if (navCoursesCnt) navCoursesCnt.textContent = S.enrollments?.length || 0;
             const navFollowingBadge = document.getElementById('navFollowingBadge');
             if (navFollowingBadge) navFollowingBadge.textContent = S.following?.length || 0;
+            // ─── NEW: Followers count in UI ──────────────────────────
             const followersCountEl = document.getElementById('followersCount');
             if (followersCountEl) followersCountEl.textContent = S.followersCount || 0;
         }
@@ -6095,6 +6080,7 @@
                 S.followersCount = data.length;
                 const followersCountEl = document.getElementById('followersCount');
                 if (followersCountEl) followersCountEl.textContent = S.followersCount;
+                // Also update the people page with followers info
                 if (S.dp === 'people') renderPeople(S.users);
             } catch (err) {
                 console.warn('Could not load followers:', err);
@@ -6103,12 +6089,17 @@
             }
         }
 
+        // ─── Render followers in People tab ────────────────────────────
         function renderFollowersSection() {
             const container = document.getElementById('peopleContainer');
             if (!container) return;
-            if (!S.followers || !S.followers.length) return;
+            if (!S.followers || !S.followers.length) {
+                // No followers to show
+                return;
+            }
+            // We'll show followers at the top of the people page
             let followersHtml = `
-                <div style="margin-bottom:1.5rem;width:100%;">
+                <div style="margin-bottom:1.5rem;">
                     <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
                         <h4 style="margin:0;">👥 Followers</h4>
                         <span class="badge badge-cyan">${S.followersCount}</span>
@@ -6131,6 +6122,7 @@
                 `;
             });
             followersHtml += `</div></div>`;
+            // Insert followers at the top of the people container
             const existing = container.innerHTML;
             container.innerHTML = followersHtml + existing;
         }
@@ -6391,9 +6383,10 @@
         function shouldShowAds() {
             if (!S.loggedIn) return true;
             if (S.isPremium) {
-                return S.dp === 'feed' || S.dp === 'explore' || S.dp === 'lesson';
+                // Premium users: show ads on Feed only (and explore with lower frequency)
+                return S.dp === 'feed' || S.dp === 'explore';
             }
-            return ['feed', 'books', 'book-detail', 'explore', 'lesson'].includes(S.dp);
+            return ['feed', 'books', 'book-detail', 'explore'].includes(S.dp);
         }
 
         function loadAdsterra() {
@@ -6423,21 +6416,16 @@
                 if (S.customAds.length === 0) {
                     loadAdsterra();
                 }
+                // Also load explore ads separately
                 if (placement === 'explore') {
                     const exploreRes = await apiCall('/ads/placement/explore');
                     S.exploreAds = exploreRes.data || [];
                     S.exploreAdIndex = 0;
                 }
-                if (placement === 'course-page') {
-                    const courseRes = await apiCall('/ads/placement/course-page');
-                    S.courseAds = courseRes.data || [];
-                    S.courseAdIndex = 0;
-                }
             } catch (e) {
                 loadAdsterra();
                 S.customAds = [];
                 S.exploreAds = [];
-                S.courseAds = [];
             }
         }
 
@@ -6447,14 +6435,10 @@
             if (placement === 'explore') {
                 ads = S.exploreAds.length ? S.exploreAds : S.customAds;
                 idx = S.exploreAdIndex;
-            } else if (placement === 'course-page') {
-                ads = S.courseAds.length ? S.courseAds : S.customAds;
-                idx = S.courseAdIndex;
             }
             if (ads && ads.length > 0) {
                 const ad = ads[idx % ads.length];
                 if (placement === 'explore') S.exploreAdIndex++;
-                else if (placement === 'course-page') S.courseAdIndex++;
                 else S.customAdIndex++;
                 return { type: 'custom', data: ad };
             }
@@ -6485,54 +6469,6 @@
                 return { type: 'adsterra', data: { placement: 'book-page' } };
             }
             return null;
-        }
-
-        // ─── COURSE PAGE ADS ─────────────────────────────────────────────
-        async function loadCoursePageAds() {
-            try {
-                const res = await apiCall('/ads/placement/course-page');
-                S.courseAds = res.data || [];
-                S.courseAdIndex = 0;
-                if (S.courseAds.length === 0) loadAdsterra();
-            } catch (e) { loadAdsterra();
-                S.courseAds = []; }
-        }
-
-        function getNextCourseAd() {
-            if (S.courseAds.length > 0) {
-                const ad = S.courseAds[S.courseAdIndex % S.courseAds.length];
-                S.courseAdIndex++;
-                return { type: 'custom', data: ad };
-            }
-            if (S.adsterraLoaded) {
-                return { type: 'adsterra', data: { placement: 'course-page' } };
-            }
-            return null;
-        }
-
-        function renderCoursePageAd() {
-            const container = document.getElementById('coursePageAdContainer');
-            if (!container) return;
-            // Only show if user is free and not premium, and if we are on lesson page
-            if (!shouldShowAds() || S.dp !== 'lesson') {
-                container.innerHTML = '';
-                return;
-            }
-            // Load ads if not loaded
-            if (!S.courseAds.length && !S.adsterraLoaded) {
-                loadCoursePageAds().then(() => renderCoursePageAd());
-                return;
-            }
-            const ad = getNextCourseAd();
-            if (ad) {
-                container.innerHTML = renderAdCard(ad, null);
-                // Track impression
-                const adId = ad.type === 'custom' ? ad.data._id : 'adsterra-course-' + Date.now();
-                if (adId) trackAdImpression(adId, null, ad.type === 'custom' ? 'custom' : 'adsterra');
-                observeAdImpressions();
-            } else {
-                container.innerHTML = '';
-            }
         }
 
         // ─── REVENUE TRACKING ───────────────────────────────────────────
@@ -7203,6 +7139,7 @@
                     } catch (e) { S.followStatus[u._id] = false; }
                 });
                 await Promise.all(followPromises);
+                // ─── Load followers if not loaded ──────────────────────
                 if (!S.followersCount && S.user) await loadFollowers();
                 renderPeople(users);
             } catch (err) {
@@ -7217,6 +7154,7 @@
             if (!container) return;
             const term = S.peopleSearchTerm?.toLowerCase() || '';
             const filtered = term ? users.filter(u => (u.firstName + ' ' + u.lastName).toLowerCase().includes(term)) : users;
+            // Build followers section
             let followersHtml = '';
             if (S.followers && S.followers.length > 0 && !term) {
                 followersHtml = `
@@ -7307,6 +7245,7 @@
                     localStorage.setItem('cx_followingUsers', JSON.stringify(S.followingUsers));
                 } catch (e) {}
                 document.getElementById('navFollowingBadge').textContent = S.following.length;
+                // Refresh followers list
                 await loadFollowers();
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
                 if (S.dp === 'people') renderPeople(S.users);
@@ -7340,12 +7279,14 @@
             const courses = data.courses || [];
             const challengeProgress = data.challengeProgress || [];
             const isFollowing = data.isFollowing || false;
+            // ─── IMPORTANT: Only show earnings if viewing own profile ───
             const isOwnProfile = S.user?._id === user._id;
             const totalEarnings = isOwnProfile ? posts.reduce((sum, p) => sum + (p.earnings || 0), 0) : 0;
             const avatarHtml = getAvatarUrl(user) ?
                 `<img src="${getAvatarUrl(user)}" alt="avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                 (user.firstName?.[0] || 'U');
 
+            // ─── Check if viewing own profile ─────────────────────────
             const isAdmin = S.user?.roles?.includes('admin');
             const canSeeEarnings = isOwnProfile || isAdmin;
 
@@ -7574,6 +7515,7 @@
             if (!courseId || courseId === 'undefined' || courseId === 'null') { toast('Invalid course.', 'error'); return; }
             S.currentCourseId = courseId;
             S.currentEnrollmentId = enrollmentId;
+            // ─── Track course view ──────────────────────────────────────
             trackCourseView(courseId);
             loadCourseForLesson(courseId);
             setDP('lesson');
@@ -7604,13 +7546,6 @@
                 updateSEO({ title: S.currentCourseData.title, description: S.currentCourseData.subtitle || S
                         .currentCourseData.description?.substring(0, 160), thumbnail: S.currentCourseData
                         .thumbnail || S.currentCourseData.emoji });
-                // ─── Load course page ads ────────────────────────────
-                if (shouldShowAds()) {
-                    if (!S.courseAds.length) await loadCoursePageAds();
-                    renderCoursePageAd();
-                } else {
-                    document.getElementById('coursePageAdContainer').innerHTML = '';
-                }
             } catch (e) { toast('Could not load course: ' + e.message, 'error'); }
         }
 
@@ -7647,6 +7582,7 @@
                 const data = await apiCall('/courses?published=true&limit=50');
                 const raw = data.data || data || [];
                 S.appCourses = Array.isArray(raw) ? raw : (raw.courses || []);
+                // ─── Load explore ads for free users ────────────────────
                 if (!S.isPremium) {
                     await loadAds('explore');
                 }
@@ -7659,7 +7595,7 @@
         function buildExploreCourseCards(list) {
             if (!Array.isArray(list)) return '<div class="empty-state"><p>Loading courses...</p></div>';
             const showAds = !S.isPremium && shouldShowAds();
-            const adFrequency = 4;
+            const adFrequency = 4; // After every 4 courses
             let html = '';
             let adCounter = 0;
             const filtered = list.filter(c => c && c._id);
@@ -7671,6 +7607,7 @@
                 const views = c.views || 0;
                 html += `<div class="course-card" onclick="openBuyCourse('${c._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail || c.emoji || '📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress || 0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title || 'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level || 'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent || 0}% aff</span>` : ''}</div><div style="font-size:.7rem;color:var(--text3);margin-top:.3rem"><i class="fas fa-eye"></i> ${views}</div></div></div>`;
 
+                // Insert ad after every 4 courses (for free users)
                 if (showAds && (idx + 1) % adFrequency === 0 && idx < filtered.length - 1) {
                     const ad = getNextAd('explore');
                     if (ad) {
@@ -7682,6 +7619,7 @@
                 }
             });
 
+            // If no courses, show empty state
             if (!html) {
                 return '<div class="empty-state"><i class="fas fa-search"></i><h4>No courses found</h4></div>';
             }
@@ -7703,6 +7641,7 @@
         function openBuyCourse(courseId) {
             const c = (S.appCourses || []).find(x => x._id === courseId);
             if (!c) { toast('Course not found', 'error'); return; }
+            // ─── Track course view ──────────────────────────────────────
             const token = localStorage.getItem('cx_accessToken');
             if (token) { trackCourseView(courseId); }
             if ((c.price === 0 || c.price == null) && (c.salePrice === 0 || c.salePrice == null)) {
@@ -7743,6 +7682,7 @@
         function openBuyBook(bookId) {
             const book = S.currentBook || S.books.find(b => b._id === bookId);
             if (!book) { toast('Book not found', 'error'); return; }
+            // ─── Track book view ──────────────────────────────────────
             trackBookView(bookId);
             currentPaymentType = 'book';
             currentManualBookId = bookId;
@@ -8174,13 +8114,6 @@
             }
             if (S.currentCourseData?.ratings) {
                 document.getElementById('reviewsListContainer').innerHTML = renderCourseRatings(S.currentCourseData.ratings);
-            }
-            // ─── Refresh course page ad ──────────────────────────────
-            if (shouldShowAds()) {
-                if (!S.courseAds.length) loadCoursePageAds().then(() => renderCoursePageAd());
-                else renderCoursePageAd();
-            } else {
-                document.getElementById('coursePageAdContainer').innerHTML = '';
             }
         }
 
@@ -8638,7 +8571,9 @@
             try {
                 const data = await apiCall('/users/leaderboard?limit=20');
                 S.leaderboard = Array.isArray(data.data) ? data.data : [];
+                // If leaderboard is empty, we'll show placeholder with real-looking data
                 if (!S.leaderboard.length) {
+                    // Try to fetch from a different endpoint or use cached data
                     try {
                         const fallback = await apiCall('/users/top?limit=20');
                         if (fallback.data && fallback.data.length) {
@@ -8656,6 +8591,7 @@
             const el = document.getElementById('lbFull');
             if (!el) return;
             if (!S.leaderboard || S.leaderboard.length === 0) {
+                // Show realistic placeholder data when real data isn't available
                 const placeholders = [
                     { firstName: 'Amaka', lastName: 'Obi', xp: 28450, totalEarned: 245000, streakDays: 45,
                         referralCount: 12 },
@@ -8690,6 +8626,7 @@
             }
             el.innerHTML = S.leaderboard.map((u, i) => {
                 let value;
+                // Map fields dynamically based on available data
                 const xp = u.xp || u.experience || u.points || 0;
                 const earned = u.totalEarned || u.earnings || u.walletBalance || 0;
                 const streak = u.streakDays || u.streak || 0;
@@ -9424,6 +9361,7 @@
             try {
                 const res = await apiCall(`${BOOKS_API}/${bookId}`);
                 const book = res.data;
+                // ─── Track book view ────────────────────────────────────
                 trackBookView(bookId);
                 S.currentBook = book;
                 renderBookDetail(book);
@@ -10287,7 +10225,6 @@
                                     <option value="popup">Popup</option>
                                     <option value="book-page">Book Page</option>
                                     <option value="explore">Explore</option>
-                                    <option value="course-page">Course Page</option>
                                 </select>
                             </div>
                             <div class="row"><div class="col-6"><div class="form-group"><label class="flabel">Start Date</label><input type="date" class="finput" id="admAdStart"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">End Date</label><input type="date" class="finput" id="admAdEnd"/></div></div></div>
@@ -11459,7 +11396,6 @@
                 const lesson = S.currentLessons[S.currentLessonIdx];
                 if (lesson && lesson._id) loadInteractiveMaterials(lesson._id);
             }
-            // Refresh course page ad on tab change (optional)
         }
 
         // ================================================================
@@ -11591,9 +11527,8 @@
         console.log('💰 Course completion bonus: ₦100.');
         console.log('🎨 Gold, White & Black premium theme applied.');
         console.log('📢 Hybrid Ads: Custom Admin Ads + Adsterra fallback with 50% creator revenue share.');
-        console.log('📢 Ads appear between posts (every 3 for free, 6 for premium) and after every 4 courses in Explore.');
-        console.log('📢 Ads also appear on course/lesson pages (below the progress card) for free users.');
-        console.log('📢 Admin can create ads for placement: "course-page".');
+        console.log('📢 Ads appear between posts (every 3 for free, 6 for premium) AND after every 4 courses in Explore.');
+        console.log('📢 Ad rotation: different ads are shown each time (custom ads + Adsterra fallback).');
         console.log('🗑️ Admin can delete any post.');
         console.log('📤 Book upload: Large file support (500MB) with progress tracking.');
         console.log('🔗 Affiliate links now use hash-based routing for SPA compatibility.');
