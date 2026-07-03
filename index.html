@@ -4920,7 +4920,6 @@
                 transition-duration: 0.01ms !important;
             }
         }
-        /* ===== ADSTERRA CONTAINER ===== */
         .adsterra-wrapper {
             min-height: 90px;
             background: var(--bg2);
@@ -4984,6 +4983,86 @@
         .premium-hide {
             display: none !important;
         }
+
+        /* ===== NEW: Followers & Following Section ===== */
+        .followers-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: .75rem;
+            margin-top: .5rem;
+        }
+        @media(min-width:480px) {
+            .followers-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media(min-width:768px) {
+            .followers-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+        .follower-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: .75rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .follower-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .follower-card .fc-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .9rem;
+            font-weight: 700;
+            color: #000;
+            flex-shrink: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        .follower-card .fc-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .follower-card .fc-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .follower-card .fc-info .fc-name {
+            font-weight: 600;
+            font-size: .85rem;
+        }
+        .follower-card .fc-info .fc-bio {
+            font-size: .7rem;
+            color: var(--text3);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .follower-card .fc-badge {
+            font-size: .55rem;
+        }
+        /* ===== NEW: Course page ad container ===== */
+        #coursePageAdContainer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        #coursePageAdContainer .ad-card {
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -5043,7 +5122,7 @@
     <!-- ============================================================ -->
     <!-- MODALS -->
     <!-- ============================================================ -->
-    <div class="modal-ov hidden" id="withdrawModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">💸 Withdraw Earnings</h5><button class="btn-icon-sm" onclick="closeModal('withdrawModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.14);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:1rem;text-align:center"><div style="font-size:.7rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase">AVAILABLE BALANCE</div><div style="font-family:var(--font-heading);font-size:2rem;font-weight:800;color:var(--lime)" id="withdrawBal">₦0</div></div><div id="withdrawBankWarning" style="display:none;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1rem;font-size:.79rem;color:var(--orange)"><i class="fas fa-exclamation-triangle" style="margin-right:.35rem"></i><strong>No bank account linked!</strong> Please add your bank details in <a style="color:var(--primary);cursor:pointer;text-decoration:underline" onclick="closeModal('withdrawModal');setDP('settings');setTimeout(()=>switchSet('ss-payout'),100)">Settings → Payouts</a> before withdrawing.</div><div class="form-group"><label class="flabel">Amount (₦)</label><input type="number" class="finput" id="withdrawAmt" placeholder="Min ₦2,000"/></div><div class="form-group"><label class="flabel">Bank Account</label><select class="finput" id="withdrawBank"><option>Loading...</option></select></div><div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:var(--radius-sm);padding:.65rem;font-size:.76rem;color:var(--gold)"><i class="fas fa-info-circle" style="margin-right:.3rem"></i>Processing takes 1–3 business days. <strong>10% fee</strong> applied.</div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('withdrawModal')">Cancel</button><button class="btn btn-primary" id="withdrawSubmitBtn" onclick="processWithdraw()"><i class="fas fa-paper-plane"></i>Submit</button></div></div></div>
+    <div class="modal-ov hidden" id="withdrawModal"><div class="modal-box"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">💸 Withdraw Earnings</h5><button class="btn-icon-sm" onclick="closeModal('withdrawModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.14);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:1rem;text-align:center"><div style="font-size:.7rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase">AVAILABLE BALANCE</div><div style="font-family:var(--font-heading);font-size:2rem;font-weight:800;color:var(--lime)" id="withdrawBal">₦0</div></div><div id="withdrawBankWarning" style="display:none;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1rem;font-size:.79rem;color:var(--orange)"><i class="fas fa-exclamation-triangle" style="margin-right:.35rem"></i><strong>No bank account linked!</strong> Please add your bank details in <a style="color:var(--primary);cursor:pointer;text-decoration:underline" onclick="closeModal('withdrawModal');setDP('settings');setTimeout(()=>switchSet('ss-payout',null),100)">Settings → Payouts</a> before withdrawing.</div><div class="form-group"><label class="flabel">Amount (₦)</label><input type="number" class="finput" id="withdrawAmt" placeholder="Min ₦2,000"/></div><div class="form-group"><label class="flabel">Bank Account</label><select class="finput" id="withdrawBank"><option>Loading...</option></select></div><div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:var(--radius-sm);padding:.65rem;font-size:.76rem;color:var(--gold)"><i class="fas fa-info-circle" style="margin-right:.3rem"></i>Processing takes 1–3 business days. <strong>10% fee</strong> applied.</div></div><div class="modal-ft"><button class="btn btn-ghost" onclick="closeModal('withdrawModal')">Cancel</button><button class="btn btn-primary" id="withdrawSubmitBtn" onclick="processWithdraw()"><i class="fas fa-paper-plane"></i>Submit</button></div></div></div>
 
     <div class="modal-ov hidden" id="buyCourseModal"><div class="modal-box modal-box-lg"><div class="sheet-handle d-md-none"></div><div class="modal-hd"><h5 style="margin:0">🛒 Purchase</h5><button class="btn-icon-sm" onclick="closeModal('buyCourseModal')"><i class="fas fa-times"></i></button></div><div class="modal-bd"><div id="buyCourseInfo" style="margin-bottom:1rem"></div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><h6 style="margin-bottom:.75rem">Order Summary</h6><div id="buyCourseSummary"></div><div class="payment-method-tabs mt-3"><div class="payment-method-tab active" onclick="toggleBuyPaymentMethod('card',this)">💳 Card Payment</div><div class="payment-method-tab" onclick="toggleBuyPaymentMethod('manual',this)">🏦 Bank Transfer</div></div><div id="buyCardSection"><div class="form-group mt-3"><label class="flabel">Referral Code (optional)</label><input type="text" class="finput" id="buyRefCode" placeholder="Enter referral code" oninput="applyBuyCode(this.value)"/></div><div id="buyCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><button class="paystack-btn" onclick="processPayment()"><i class="fas fa-lock"></i><span id="paystackBtnText">Pay with Paystack</span></button></div><div id="buyManualSection" style="display:none"><div class="bank-details-box" id="buyBankDetailsBox"></div><div class="form-group mt-3"><label class="flabel">Referral Code (optional)</label><input type="text" class="finput" id="buyManualRefCode" placeholder="Enter referral code" oninput="applyBuyManualCode(this.value)"/></div><div id="buyManualCodeStatus" style="font-size:.76rem;margin:.25rem 0;min-height:1em"></div><div class="form-group"><label class="flabel">Transaction Reference</label><input type="text" class="finput" id="manualRef" placeholder="e.g. TRX123456789"><small style="font-size:.7rem;color:var(--text3)">Enter the reference from your bank transfer</small></div><div id="manualRefError" style="font-size:.72rem;margin-top:.2rem;min-height:1.2em"></div><div class="form-group"><label class="flabel">Amount Paid (₦)</label><input type="number" class="finput" id="manualAmount" placeholder="e.g. 5000"></div><div class="form-group"><label class="flabel">Payment Date</label><input type="date" class="finput" id="manualDate"></div><div class="form-group"><label class="flabel">Upload Receipt/Screenshot</label><div class="upload-zone" style="padding:1rem"><input type="file" id="manualReceipt" accept="image/*,application/pdf" onchange="previewReceipt(this)"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.8rem;color:var(--text2)">Upload bank transfer receipt or screenshot</div></div><div id="receiptPreview" style="margin-top:.5rem;display:none"><img id="receiptPreviewImg" style="max-width:100%;max-height:150px;border-radius:var(--radius-sm)"></div><div id="manualReceiptProgress" class="book-upload-progress" style="display:none;">Uploading receipt... 0%</div></div><button class="btn btn-primary w-full" onclick="submitManualPayment()">Submit for Verification</button><div class="info-box"><i class="fas fa-info-circle" style="color:var(--primary)"></i><strong>How it works:</strong> Transfer the exact amount to the bank details above, then submit your reference and receipt. Our system will automatically verify your payment if all details match. If verification fails, an admin will review within 24 hours.</div></div></div></div></div></div>
 
@@ -5151,7 +5230,10 @@
                     <div id="dash-courses" class="dash-sub"><div class="page-hd"><h2 class="page-title">My Courses</h2><p class="page-sub">Track your learning progress</p></div><div style="display:flex;gap:.28rem;flex-wrap:nowrap;overflow-x:auto;margin-bottom:1rem;padding-bottom:.15rem"><span class="fpill active" onclick="filterCourses('all',this)">All</span><span class="fpill" onclick="filterCourses('progress',this)">In Progress</span><span class="fpill" onclick="filterCourses('completed',this)">Completed</span><span class="fpill" onclick="filterCourses('new',this)">Not Started</span></div><div class="courses-grid" id="coursesGrid"></div></div>
 
                     <!-- LESSON -->
-                    <div id="dash-lesson" class="dash-sub"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><button class="btn btn-ghost btn-sm" onclick="setDP('courses')"><i class="fas fa-arrow-left"></i>Back</button><div class="d-flex gap-2"><button class="btn btn-ghost btn-sm" onclick="openModal('rateModal')"><i class="fas fa-star"></i>Rate</button><button class="btn btn-primary btn-sm" onclick="completeLessonAndNext()"><i class="fas fa-check"></i>Mark Done &amp; Next</button></div></div><div id="interactiveContainer"></div><div class="lesson-layout"><div><div class="video-wrap mb-3" id="lessonVideoWrap"><div style="text-align:center"><div class="play-btn" onclick="toast('Playing lesson video...','info')"><i class="fas fa-play"></i></div><div style="font-size:.78rem;color:var(--text2);margin-top:.75rem" id="currentLessonTitle">Select a course</div><div style="font-size:.7rem;color:var(--text3);margin-top:.2rem" id="currentCourseTitle">Loading...</div></div></div><div class="d-flex justify-between mb-3 gap-2"><button class="btn btn-ghost btn-sm" id="prevLessonBtn" onclick="navigateLesson(-1)"><i class="fas fa-arrow-left"></i>Previous</button><span style="font-size:.78rem;color:var(--text3);padding:.35rem .5rem" id="lessonNavIndicator">—</span><button class="btn btn-primary btn-sm" id="nextLessonBtn" onclick="navigateLesson(1)">Next<i class="fas fa-arrow-right"></i></button></div><div class="lesson-tabs"><div class="ltab active" onclick="switchLTab('overview',this)">Overview</div><div class="ltab" onclick="switchLTab('notes',this)">📝 Notes</div><div class="ltab" onclick="switchLTab('resources',this)">📎 Resources</div><div class="ltab" onclick="switchLTab('qa',this)">💬 Q&amp;A</div><div class="ltab" onclick="switchLTab('reviews',this)">⭐ Reviews</div><div class="ltab" onclick="switchLTab('interactive',this)">⚡ Try It</div></div><div class="lesson-sub active" id="ls-overview"><h5 style="margin-bottom:.5rem" id="lessonOverviewTitle">Loading...</h5><p style="font-size:.84rem;color:var(--text2);line-height:1.7" id="lessonOverviewDesc">Please select a course.</p><div id="courseRatingsContainer"></div></div><div class="lesson-sub" id="ls-notes"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">My Notes</h6><button class="btn btn-primary btn-sm" onclick="saveNote()"><i class="fas fa-save"></i>Save</button></div><textarea class="finput" id="lessonNote" style="min-height:200px;resize:vertical" placeholder="Write your personal notes... They auto-save."></textarea></div><div class="lesson-sub" id="ls-resources"><h6 style="margin-bottom:.75rem">📎 Resources</h6><div id="lessonResourcesList"></div></div><div class="lesson-sub" id="ls-qa"><h6 style="margin-bottom:.75rem">💬 Questions &amp; Answers</h6><div style="margin-bottom:.85rem"><textarea class="finput" id="qaInput" style="min-height:80px;resize:vertical" placeholder="Ask a question about this lesson..."></textarea><button class="btn btn-primary btn-sm mt-2" onclick="submitQuestion()"><i class="fas fa-paper-plane"></i>Ask Question</button></div><div id="qaList"></div></div><div class="lesson-sub" id="ls-reviews"><h6 style="margin-bottom:.75rem">⭐ Course Reviews</h6><div id="reviewsListContainer"></div></div><div class="lesson-sub" id="ls-interactive"><h6 style="margin-bottom:.75rem">⚡ Try It Yourself</h6><div id="interactiveMaterialsContainer"></div></div></div><div><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">Curriculum</h6><span style="font-size:.73rem;color:var(--text3)" id="curricProgress">0/0</span></div><div class="prog mb-3" style="height:5px"><div class="prog-fill pf-primary" id="curricBar" style="width:0%"></div></div><div id="curricList" class="thin-scroll" style="max-height:420px;overflow-y:auto"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">📊 Your Progress</h6><div><div class="web-row"><span>Lessons Done</span><strong id="lpLessonsDone">0/0</strong></div><div class="web-row"><span>XP Earned</span><strong style="color:var(--gold)">+0</strong></div><div class="web-row"><span>Quiz Score Avg</span><strong style="color:var(--primary)">—</strong></div><div class="web-row"><span>Time Spent</span><strong>0h 0m</strong></div></div></div></div></div></div>
+                    <div id="dash-lesson" class="dash-sub"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><button class="btn btn-ghost btn-sm" onclick="setDP('courses')"><i class="fas fa-arrow-left"></i>Back</button><div class="d-flex gap-2"><button class="btn btn-ghost btn-sm" onclick="openModal('rateModal')"><i class="fas fa-star"></i>Rate</button><button class="btn btn-primary btn-sm" onclick="completeLessonAndNext()"><i class="fas fa-check"></i>Mark Done &amp; Next</button></div></div><div id="interactiveContainer"></div><div class="lesson-layout"><div><div class="video-wrap mb-3" id="lessonVideoWrap"><div style="text-align:center"><div class="play-btn" onclick="toast('Playing lesson video...','info')"><i class="fas fa-play"></i></div><div style="font-size:.78rem;color:var(--text2);margin-top:.75rem" id="currentLessonTitle">Select a course</div><div style="font-size:.7rem;color:var(--text3);margin-top:.2rem" id="currentCourseTitle">Loading...</div></div></div><div class="d-flex justify-between mb-3 gap-2"><button class="btn btn-ghost btn-sm" id="prevLessonBtn" onclick="navigateLesson(-1)"><i class="fas fa-arrow-left"></i>Previous</button><span style="font-size:.78rem;color:var(--text3);padding:.35rem .5rem" id="lessonNavIndicator">—</span><button class="btn btn-primary btn-sm" id="nextLessonBtn" onclick="navigateLesson(1)">Next<i class="fas fa-arrow-right"></i></button></div><div class="lesson-tabs"><div class="ltab active" onclick="switchLTab('overview',this)">Overview</div><div class="ltab" onclick="switchLTab('notes',this)">📝 Notes</div><div class="ltab" onclick="switchLTab('resources',this)">📎 Resources</div><div class="ltab" onclick="switchLTab('qa',this)">💬 Q&amp;A</div><div class="ltab" onclick="switchLTab('reviews',this)">⭐ Reviews</div><div class="ltab" onclick="switchLTab('interactive',this)">⚡ Try It</div></div><div class="lesson-sub active" id="ls-overview"><h5 style="margin-bottom:.5rem" id="lessonOverviewTitle">Loading...</h5><p style="font-size:.84rem;color:var(--text2);line-height:1.7" id="lessonOverviewDesc">Please select a course.</p><div id="courseRatingsContainer"></div></div><div class="lesson-sub" id="ls-notes"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">My Notes</h6><button class="btn btn-primary btn-sm" onclick="saveNote()"><i class="fas fa-save"></i>Save</button></div><textarea class="finput" id="lessonNote" style="min-height:200px;resize:vertical" placeholder="Write your personal notes... They auto-save."></textarea></div><div class="lesson-sub" id="ls-resources"><h6 style="margin-bottom:.75rem">📎 Resources</h6><div id="lessonResourcesList"></div></div><div class="lesson-sub" id="ls-qa"><h6 style="margin-bottom:.75rem">💬 Questions &amp; Answers</h6><div style="margin-bottom:.85rem"><textarea class="finput" id="qaInput" style="min-height:80px;resize:vertical" placeholder="Ask a question about this lesson..."></textarea><button class="btn btn-primary btn-sm mt-2" onclick="submitQuestion()"><i class="fas fa-paper-plane"></i>Ask Question</button></div><div id="qaList"></div></div><div class="lesson-sub" id="ls-reviews"><h6 style="margin-bottom:.75rem">⭐ Course Reviews</h6><div id="reviewsListContainer"></div></div><div class="lesson-sub" id="ls-interactive"><h6 style="margin-bottom:.75rem">⚡ Try It Yourself</h6><div id="interactiveMaterialsContainer"></div></div></div><div><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">Curriculum</h6><span style="font-size:.73rem;color:var(--text3)" id="curricProgress">0/0</span></div><div class="prog mb-3" style="height:5px"><div class="prog-fill pf-primary" id="curricBar" style="width:0%"></div></div><div id="curricList" class="thin-scroll" style="max-height:420px;overflow-y:auto"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">📊 Your Progress</h6><div><div class="web-row"><span>Lessons Done</span><strong id="lpLessonsDone">0/0</strong></div><div class="web-row"><span>XP Earned</span><strong style="color:var(--gold)">+0</strong></div><div class="web-row"><span>Quiz Score Avg</span><strong style="color:var(--primary)">—</strong></div><div class="web-row"><span>Time Spent</span><strong>0h 0m</strong></div></div></div>
+                    <!-- ===== NEW: Course Page Ad Container ===== -->
+                    <div id="coursePageAdContainer"></div>
+                    </div></div></div></div>
 
                     <!-- QUIZ -->
                     <div id="dash-quiz" class="dash-sub"><div class="page-hd"><h2 class="page-title">Quizzes</h2><p class="page-sub">Test your knowledge and earn XP</p></div><div class="quiz-wrap" id="quizWrap"></div></div>
@@ -5160,7 +5242,7 @@
                     <div id="dash-certs" class="dash-sub"><div class="page-hd"><h2 class="page-title">🏆 My Certificates</h2><p class="page-sub">Your earned achievements &amp; credentials</p></div><div class="row" id="certsGrid"></div></div>
 
                     <!-- WALLET -->
-                    <div id="dash-wallet" class="dash-sub"><div class="page-hd"><h2 class="page-title">My Wallet</h2><p class="page-sub">Earnings, payouts &amp; transaction history</p></div><div class="row mb-4"><div class="col-12 col-md-4"><div class="wallet-card"><div style="font-size:.7rem;color:var(--text2);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem">💰 Available Balance</div><div class="wallet-bal" id="walletBal">₦0</div><div style="font-size:.74rem;color:var(--text3)" id="walletWeekChange">+₦0 this week</div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-top:.75rem" id="walletBreakdown"></div><div class="d-flex gap-2 mt-3"><button class="btn btn-primary btn-sm flex-1" onclick="openWithdrawModal()"><i class="fas fa-paper-plane"></i>Withdraw</button><button class="btn btn-ghost btn-sm flex-1" onclick="setDP('settings');setTimeout(()=>switchSet('ss-payout'),50)"><i class="fas fa-university"></i>Bank</button></div></div></div><div class="col-12 col-md-8"><div class="row" id="walletStatsRow"></div></div></div><div class="card card-p"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><h6 style="margin:0">Transaction History</h6><select class="finput" style="width:auto;height:32px;font-size:.76rem" onchange="filterTx(this.value)"><option>All</option><option>Referral</option><option>Affiliate</option><option>Instructor</option><option>Bonus</option><option>Withdrawal</option></select></div><div class="overflow-x-auto"><table class="dtable" id="txTable"></table></div></div></div>
+                    <div id="dash-wallet" class="dash-sub"><div class="page-hd"><h2 class="page-title">My Wallet</h2><p class="page-sub">Earnings, payouts &amp; transaction history</p></div><div class="row mb-4"><div class="col-12 col-md-4"><div class="wallet-card"><div style="font-size:.7rem;color:var(--text2);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem">💰 Available Balance</div><div class="wallet-bal" id="walletBal">₦0</div><div style="font-size:.74rem;color:var(--text3)" id="walletWeekChange">+₦0 this week</div><div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-top:.75rem" id="walletBreakdown"></div><div class="d-flex gap-2 mt-3"><button class="btn btn-primary btn-sm flex-1" onclick="openWithdrawModal()"><i class="fas fa-paper-plane"></i>Withdraw</button><button class="btn btn-ghost btn-sm flex-1" onclick="setDP('settings');setTimeout(()=>switchSet('ss-payout',null),50)"><i class="fas fa-university"></i>Bank</button></div></div></div><div class="col-12 col-md-8"><div class="row" id="walletStatsRow"></div></div></div><div class="card card-p"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><h6 style="margin:0">Transaction History</h6><select class="finput" style="width:auto;height:32px;font-size:.76rem" onchange="filterTx(this.value)"><option>All</option><option>Referral</option><option>Affiliate</option><option>Instructor</option><option>Bonus</option><option>Withdrawal</option></select></div><div class="overflow-x-auto"><table class="dtable" id="txTable"></table></div></div></div>
 
                     <!-- AFFILIATES -->
                     <div id="dash-affiliates" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤝 Affiliate Dashboard</h2><p class="page-sub">Promote courses and earn commissions</p></div><button class="btn btn-ghost btn-sm mb-3" onclick="renderAffiliates(true)"><i class="fas fa-sync-alt"></i> Refresh Offers</button><div class="row mb-4" id="affStatsRow"></div><div class="card card-p mb-3"><h6 style="margin-bottom:.65rem">📣 Available Affiliate Offers</h6><p style="font-size:.81rem;color:var(--text3);margin-bottom:.85rem">Accept any offer to get your unique affiliate link &amp; code for that course</p><div id="affiliateOffers"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">🔗 My Active Affiliate Links</h6><div id="myAffiliateLinks"></div></div></div>
@@ -5282,7 +5364,6 @@
             lessonStartTime: null,
             feedPage: 1,
             feedFilter: 'all',
-            challengesFilter: 'active',
             posts: [],
             users: [],
             peopleSearchTerm: '',
@@ -5291,6 +5372,9 @@
             followStatus: {},
             following: [],
             followingUsers: [],
+            // ─── NEW: Followers ──────────────────────────────────────
+            followers: [],
+            followersCount: 0,
             profileUser: null,
             challengeProgress: [],
             sharePostId: null,
@@ -5319,6 +5403,12 @@
             // ─── HYBRID AD STATE ──────────────────────────────────────
             customAds: [],
             customAdIndex: 0,
+            // ─── NEW: Explore Ads ────────────────────────────────────
+            exploreAdIndex: 0,
+            exploreAds: [],
+            // ─── NEW: Course Page Ads ────────────────────────────────
+            courseAds: [],
+            courseAdIndex: 0,
             bookAds: [],
             bookAdIndex: 0,
             adsterraLoaded: false,
@@ -5492,7 +5582,9 @@
                 explore: renderExplore,
                 courses: () => renderCourseGrid(S.courseFilter),
                 lesson: () => { renderCurric();
-                    switchLTab('overview', null); },
+                    switchLTab('overview', null);
+                    // ─── Render course page ad ──────────────────────
+                    renderCoursePageAd(); },
                 quiz: initQuiz,
                 certs: renderCerts,
                 wallet: renderWallet,
@@ -5774,10 +5866,10 @@
                 `Welcome to ChangeX, ${S.user?.firstName || 'User'}! 🎉`, 'success');
             forceRedirect(targetPage);
             await loadUserFollowing();
+            await loadFollowers();
             if (S.page === 'landing' || document.getElementById('page-landing').classList.contains('active')) {
                 updateLandingHeroStats();
             }
-            // Auto-refresh after login
             setTimeout(() => { if (S.dp) setDP(S.dp); }, 300);
         }
 
@@ -5820,7 +5912,6 @@
             S.enrollments = [];
             S.appCourses = [];
             toast('See you soon! 👋', 'info');
-            // Force full reload to clear all state
             window.location.href = '/';
         }
 
@@ -5848,7 +5939,6 @@
         // LANDING PAGE HERO STATS – HARDCODED FOR MARKETING
         // ================================================================
         function updateLandingHeroStats() {
-            // Hardcoded impressive numbers for marketing/branding
             document.getElementById('heroEarnings').textContent = '₦85M+';
             document.getElementById('heroReferrals').textContent = '₦12.4M';
             document.getElementById('heroCourses').textContent = '₦45.8M';
@@ -5981,7 +6071,6 @@
             if (fab) fab.style.display = hasCreatorAccess ? 'block' : 'none';
             renderCurrencySelectorUI();
             updateLandingHeroStats();
-            // Update nav badges with real numbers
             const navRefBadge = document.getElementById('navRefBadge');
             if (navRefBadge) navRefBadge.textContent = S.referrals?.length || 0;
             const navAffBadge = document.getElementById('navAffBadge');
@@ -5990,6 +6079,80 @@
             if (navCoursesCnt) navCoursesCnt.textContent = S.enrollments?.length || 0;
             const navFollowingBadge = document.getElementById('navFollowingBadge');
             if (navFollowingBadge) navFollowingBadge.textContent = S.following?.length || 0;
+            const followersCountEl = document.getElementById('followersCount');
+            if (followersCountEl) followersCountEl.textContent = S.followersCount || 0;
+        }
+
+        // ================================================================
+        // FOLLOWERS – NEW FEATURE
+        // ================================================================
+        async function loadFollowers() {
+            if (!S.user) return;
+            try {
+                const res = await apiCall(`/follows/${S.user._id}/followers`);
+                const data = res.data || [];
+                S.followers = data;
+                S.followersCount = data.length;
+                const followersCountEl = document.getElementById('followersCount');
+                if (followersCountEl) followersCountEl.textContent = S.followersCount;
+                if (S.dp === 'people') renderPeople(S.users);
+            } catch (err) {
+                console.warn('Could not load followers:', err);
+                S.followers = [];
+                S.followersCount = 0;
+            }
+        }
+
+        function renderFollowersSection() {
+            const container = document.getElementById('peopleContainer');
+            if (!container) return;
+            if (!S.followers || !S.followers.length) return;
+            let followersHtml = `
+                <div style="margin-bottom:1.5rem;width:100%;">
+                    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
+                        <h4 style="margin:0;">👥 Followers</h4>
+                        <span class="badge badge-cyan">${S.followersCount}</span>
+                    </div>
+                    <div class="followers-grid">
+            `;
+            S.followers.forEach(f => {
+                const avatarHtml = getAvatarUrl(f) ?
+                    `<img src="${getAvatarUrl(f)}" alt="${f.firstName || 'F'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                    (f.firstName?.[0] || 'F');
+                followersHtml += `
+                    <div class="follower-card" onclick="openUserProfile('${f._id}')">
+                        <div class="fc-avatar">${avatarHtml}</div>
+                        <div class="fc-info">
+                            <div class="fc-name">${escapeHtml(f.firstName || 'User')} ${escapeHtml(f.lastName || '')}</div>
+                            <div class="fc-bio">${escapeHtml(f.bio?.substring(0, 40) || '')}</div>
+                        </div>
+                        ${f.isPremium ? '<span class="badge badge-gold fc-badge">Premium</span>' : ''}
+                    </div>
+                `;
+            });
+            followersHtml += `</div></div>`;
+            const existing = container.innerHTML;
+            container.innerHTML = followersHtml + existing;
+        }
+
+        // ================================================================
+        // COURSE VIEWS – ACTIVE TRACKING
+        // ================================================================
+        async function trackCourseView(courseId) {
+            if (!courseId) return;
+            try {
+                await apiCall(`/courses/${courseId}/view`, { method: 'POST' });
+            } catch (e) { console.warn('Could not track course view:', e); }
+        }
+
+        // ================================================================
+        // BOOK VIEWS – ACTIVE TRACKING
+        // ================================================================
+        async function trackBookView(bookId) {
+            if (!bookId) return;
+            try {
+                await apiCall(`/books/${bookId}/view`, { method: 'POST' });
+            } catch (e) { console.warn('Could not track book view:', e); }
         }
 
         // ================================================================
@@ -6226,14 +6389,11 @@
         // HYBRID AD ENGINE – CUSTOM + ADSTERRA + 50% REVENUE
         // ================================================================
         function shouldShowAds() {
-            // If user is not logged in, treat as free (show ads everywhere)
             if (!S.loggedIn) return true;
-            // Premium users: only show ads on Feed, never on book pages
             if (S.isPremium) {
-                return S.dp === 'feed';
+                return S.dp === 'feed' || S.dp === 'explore' || S.dp === 'lesson';
             }
-            // Free users: show ads on Feed AND Book pages
-            return ['feed', 'books', 'book-detail'].includes(S.dp);
+            return ['feed', 'books', 'book-detail', 'explore', 'lesson'].includes(S.dp);
         }
 
         function loadAdsterra() {
@@ -6263,19 +6423,41 @@
                 if (S.customAds.length === 0) {
                     loadAdsterra();
                 }
+                if (placement === 'explore') {
+                    const exploreRes = await apiCall('/ads/placement/explore');
+                    S.exploreAds = exploreRes.data || [];
+                    S.exploreAdIndex = 0;
+                }
+                if (placement === 'course-page') {
+                    const courseRes = await apiCall('/ads/placement/course-page');
+                    S.courseAds = courseRes.data || [];
+                    S.courseAdIndex = 0;
+                }
             } catch (e) {
                 loadAdsterra();
                 S.customAds = [];
+                S.exploreAds = [];
+                S.courseAds = [];
             }
         }
 
         function getNextAd(placement = 'in-feed') {
-            if (S.customAds.length > 0) {
-                const ad = S.customAds[S.customAdIndex % S.customAds.length];
-                S.customAdIndex++;
+            let ads = S.customAds;
+            let idx = S.customAdIndex;
+            if (placement === 'explore') {
+                ads = S.exploreAds.length ? S.exploreAds : S.customAds;
+                idx = S.exploreAdIndex;
+            } else if (placement === 'course-page') {
+                ads = S.courseAds.length ? S.courseAds : S.customAds;
+                idx = S.courseAdIndex;
+            }
+            if (ads && ads.length > 0) {
+                const ad = ads[idx % ads.length];
+                if (placement === 'explore') S.exploreAdIndex++;
+                else if (placement === 'course-page') S.courseAdIndex++;
+                else S.customAdIndex++;
                 return { type: 'custom', data: ad };
             }
-            // Fallback to Adsterra
             if (S.adsterraLoaded) {
                 return { type: 'adsterra', data: { placement } };
             }
@@ -6305,6 +6487,54 @@
             return null;
         }
 
+        // ─── COURSE PAGE ADS ─────────────────────────────────────────────
+        async function loadCoursePageAds() {
+            try {
+                const res = await apiCall('/ads/placement/course-page');
+                S.courseAds = res.data || [];
+                S.courseAdIndex = 0;
+                if (S.courseAds.length === 0) loadAdsterra();
+            } catch (e) { loadAdsterra();
+                S.courseAds = []; }
+        }
+
+        function getNextCourseAd() {
+            if (S.courseAds.length > 0) {
+                const ad = S.courseAds[S.courseAdIndex % S.courseAds.length];
+                S.courseAdIndex++;
+                return { type: 'custom', data: ad };
+            }
+            if (S.adsterraLoaded) {
+                return { type: 'adsterra', data: { placement: 'course-page' } };
+            }
+            return null;
+        }
+
+        function renderCoursePageAd() {
+            const container = document.getElementById('coursePageAdContainer');
+            if (!container) return;
+            // Only show if user is free and not premium, and if we are on lesson page
+            if (!shouldShowAds() || S.dp !== 'lesson') {
+                container.innerHTML = '';
+                return;
+            }
+            // Load ads if not loaded
+            if (!S.courseAds.length && !S.adsterraLoaded) {
+                loadCoursePageAds().then(() => renderCoursePageAd());
+                return;
+            }
+            const ad = getNextCourseAd();
+            if (ad) {
+                container.innerHTML = renderAdCard(ad, null);
+                // Track impression
+                const adId = ad.type === 'custom' ? ad.data._id : 'adsterra-course-' + Date.now();
+                if (adId) trackAdImpression(adId, null, ad.type === 'custom' ? 'custom' : 'adsterra');
+                observeAdImpressions();
+            } else {
+                container.innerHTML = '';
+            }
+        }
+
         // ─── REVENUE TRACKING ───────────────────────────────────────────
         async function trackAdRevenue(adId, type, postId, network = 'custom') {
             if (!postId) return;
@@ -6315,7 +6545,6 @@
                 });
                 if (res.success && res.credited > 0) {
                     // Optionally show a subtle toast
-                    // toast('💰 +₦' + res.credited.toFixed(2) + ' from ad on your post!', 'success');
                 }
             } catch (e) { console.warn('Ad tracking failed:', e); }
         }
@@ -6440,7 +6669,6 @@
                 return;
             }
             const showAds = shouldShowAds();
-            // 🔥 AD FREQUENCY: Free users see ads every 3 posts, Premium every 6
             const adFrequency = S.isPremium ? 6 : 3;
             let html = '';
             posts.forEach((post, idx) => {
@@ -6471,7 +6699,6 @@
             const loadingEl = document.getElementById('feedLoadingMore');
             if (loadingEl) loadingEl.style.display = 'none';
             const showAds = shouldShowAds();
-            // 🔥 AD FREQUENCY: Free users see ads every 3 posts, Premium every 6
             const adFrequency = S.isPremium ? 6 : 3;
             posts.forEach((post, idx) => {
                 if (!container.querySelector(`[data-post-id="${post._id}"]`)) {
@@ -6944,7 +7171,7 @@
         }
 
         // ================================================================
-        // PEOPLE
+        // PEOPLE – with Followers section
         // ================================================================
         async function loadPeople() {
             showLoading('Loading users...');
@@ -6976,6 +7203,7 @@
                     } catch (e) { S.followStatus[u._id] = false; }
                 });
                 await Promise.all(followPromises);
+                if (!S.followersCount && S.user) await loadFollowers();
                 renderPeople(users);
             } catch (err) {
                 toast('Failed to load users: ' + err.message, 'error');
@@ -6989,33 +7217,66 @@
             if (!container) return;
             const term = S.peopleSearchTerm?.toLowerCase() || '';
             const filtered = term ? users.filter(u => (u.firstName + ' ' + u.lastName).toLowerCase().includes(term)) : users;
-            if (!filtered.length) {
+            let followersHtml = '';
+            if (S.followers && S.followers.length > 0 && !term) {
+                followersHtml = `
+                    <div style="margin-bottom:1.5rem;width:100%;">
+                        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
+                            <h4 style="margin:0;">👥 Followers</h4>
+                            <span class="badge badge-cyan">${S.followersCount}</span>
+                        </div>
+                        <div class="followers-grid">
+                `;
+                S.followers.forEach(f => {
+                    const avatarHtml = getAvatarUrl(f) ?
+                        `<img src="${getAvatarUrl(f)}" alt="${f.firstName || 'F'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                        (f.firstName?.[0] || 'F');
+                    followersHtml += `
+                        <div class="follower-card" onclick="openUserProfile('${f._id}')">
+                            <div class="fc-avatar">${avatarHtml}</div>
+                            <div class="fc-info">
+                                <div class="fc-name">${escapeHtml(f.firstName || 'User')} ${escapeHtml(f.lastName || '')}</div>
+                                <div class="fc-bio">${escapeHtml(f.bio?.substring(0, 40) || '')}</div>
+                            </div>
+                            ${f.isPremium ? '<span class="badge badge-gold fc-badge">Premium</span>' : ''}
+                        </div>
+                    `;
+                });
+                followersHtml += `</div></div>`;
+            }
+
+            if (!filtered.length && !followersHtml) {
                 container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><h4>No users found</h4></div>';
                 return;
             }
-            container.innerHTML = filtered.map(u => {
-                const isFollowing = S.followStatus[u._id] || false;
-                const avatarHtml = getAvatarUrl(u) ?
-                    `<img src="${getAvatarUrl(u)}" alt="${u.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
-                    (u.firstName?.[0] || 'U');
-                const navFollowingBadge = document.getElementById('navFollowingBadge');
-                if (navFollowingBadge) { navFollowingBadge.textContent = S.following.filter(id => id !== S.user?._id)
-                        .length; }
-                return `
-                    <div class="person-card card card-p" onclick="openUserProfile('${u._id}')">
-                        <div class="person-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
-                            ${avatarHtml}
-                        </div>
-                        <div class="person-info">
-                            <strong>${escapeHtml(u.firstName || 'User')} ${escapeHtml(u.lastName || '')}</strong>
-                            <span>${escapeHtml(u.bio?.substring(0, 60) || 'No bio')}</span>
-                            ${u.isApprovedInstructor ? '<span class="badge badge-violet" style="font-size:.55rem">Instructor</span>' : ''}
-                            ${u.isPremium ? '<span class="badge badge-gold" style="font-size:.55rem">Premium</span>' : ''}
-                            ${u._id !== S.user?._id && isFollowing ? '<span class="follow-badge"><i class="fas fa-check"></i> Following</span>' : ''}
-                        </div>
-                        ${u._id !== S.user?._id ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="event.stopPropagation();followUser('${u._id}')">${isFollowing ? 'Following' : 'Follow'}</button>` : '<span class="badge badge-dark">You</span>'}
-                    </div>`;
-            }).join('');
+
+            let peopleHtml = '';
+            if (filtered.length) {
+                peopleHtml = filtered.map(u => {
+                    const isFollowing = S.followStatus[u._id] || false;
+                    const avatarHtml = getAvatarUrl(u) ?
+                        `<img src="${getAvatarUrl(u)}" alt="${u.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                        (u.firstName?.[0] || 'U');
+                    return `
+                        <div class="person-card card card-p" onclick="openUserProfile('${u._id}')">
+                            <div class="person-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary));">
+                                ${avatarHtml}
+                            </div>
+                            <div class="person-info">
+                                <strong>${escapeHtml(u.firstName || 'User')} ${escapeHtml(u.lastName || '')}</strong>
+                                <span>${escapeHtml(u.bio?.substring(0, 60) || 'No bio')}</span>
+                                ${u.isApprovedInstructor ? '<span class="badge badge-violet" style="font-size:.55rem">Instructor</span>' : ''}
+                                ${u.isPremium ? '<span class="badge badge-gold" style="font-size:.55rem">Premium</span>' : ''}
+                                ${u._id !== S.user?._id && isFollowing ? '<span class="follow-badge"><i class="fas fa-check"></i> Following</span>' : ''}
+                            </div>
+                            ${u._id !== S.user?._id ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="event.stopPropagation();followUser('${u._id}')">${isFollowing ? 'Following' : 'Follow'}</button>` : '<span class="badge badge-dark">You</span>'}
+                        </div>`;
+                }).join('');
+            }
+
+            container.innerHTML = followersHtml + peopleHtml;
+            const navFollowingBadge = document.getElementById('navFollowingBadge');
+            if (navFollowingBadge) { navFollowingBadge.textContent = S.following.filter(id => id !== S.user?._id).length; }
         }
 
         function filterPeople(term) { S.peopleSearchTerm = term;
@@ -7046,6 +7307,7 @@
                     localStorage.setItem('cx_followingUsers', JSON.stringify(S.followingUsers));
                 } catch (e) {}
                 document.getElementById('navFollowingBadge').textContent = S.following.length;
+                await loadFollowers();
                 toast(res.message || (isNowFollowing ? 'Followed!' : 'Unfollowed'), 'success');
                 if (S.dp === 'people') renderPeople(S.users);
                 if (S.dp === 'profile' && S.profileUser) {
@@ -7057,7 +7319,7 @@
         }
 
         // ================================================================
-        // USER PROFILE
+        // USER PROFILE – NO EARNINGS FOR OTHER USERS
         // ================================================================
         async function openUserProfile(userId) {
             showLoading('Loading profile...');
@@ -7078,10 +7340,14 @@
             const courses = data.courses || [];
             const challengeProgress = data.challengeProgress || [];
             const isFollowing = data.isFollowing || false;
-            const totalEarnings = posts.reduce((sum, p) => sum + (p.earnings || 0), 0);
+            const isOwnProfile = S.user?._id === user._id;
+            const totalEarnings = isOwnProfile ? posts.reduce((sum, p) => sum + (p.earnings || 0), 0) : 0;
             const avatarHtml = getAvatarUrl(user) ?
                 `<img src="${getAvatarUrl(user)}" alt="avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                 (user.firstName?.[0] || 'U');
+
+            const isAdmin = S.user?.roles?.includes('admin');
+            const canSeeEarnings = isOwnProfile || isAdmin;
 
             container.innerHTML = `
                 <div class="profile-header" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;background:var(--bg2);padding:1.5rem;border-radius:var(--radius);margin-bottom:1.5rem;">
@@ -7095,7 +7361,7 @@
                             <span><strong>${data.followersCount || 0}</strong> followers</span>
                             <span><strong>${data.followingCount || 0}</strong> following</span>
                             <span><strong>${posts.length}</strong> posts</span>
-                            <span><strong>${fmtMoneyAPI(totalEarnings)}</strong> earned from posts</span>
+                            ${canSeeEarnings ? `<span><strong>${fmtMoneyAPI(totalEarnings)}</strong> earned from posts</span>` : ''}
                             ${user.isPremium ? '<span class="badge badge-gold">Premium</span>' : ''}
                             ${user.isApprovedInstructor ? '<span class="badge badge-violet">Instructor</span>' : ''}
                         </div>
@@ -7103,11 +7369,13 @@
                     </div>
                 </div>
                 <div class="profile-content">
+                    ${canSeeEarnings ? `
                     <h4>💰 Wallet</h4>
                     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1.5rem;">
                         <span style="font-size:.8rem;color:var(--text3);">Balance</span>
                         <div style="font-family:var(--font-heading);font-size:1.5rem;color:var(--lime);">${fmtMoneyAPI(user.walletBalance || 0)}</div>
                     </div>
+                    ` : ''}
                     <h4>🏆 Challenges</h4>
                     <div style="margin-bottom:1.5rem;">
                         ${challengeProgress.length ? challengeProgress.map(cp => `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.5rem .75rem;margin-bottom:.4rem;"><div style="display:flex;justify-content:space-between;"><strong>${cp.challengeId?.title || 'Challenge'}</strong><span class="badge ${cp.status === 'completed' ? 'badge-success' : 'badge-cyan'}">${cp.status}</span></div><div class="prog" style="height:4px;margin-top:.3rem;"><div class="prog-fill pf-primary" style="width:${cp.progress || 0}%"></div></div><div style="font-size:.7rem;color:var(--text3);">${cp.progress || 0}% complete</div></div>`).join('') : '<p style="color:var(--text3);">No challenges joined.</p>'}
@@ -7118,12 +7386,13 @@
                             const slug = p.slug || p._id;
                             const postUrl = `${FRONTEND_URL}/post/${slug}`;
                             const isAdmin = S.user?.roles?.includes('admin');
-                            return `<div class="collection-item" onclick="window.location.href='${postUrl}'" style="cursor:pointer"><span class="ci-type">${p.type || 'post'}</span><div class="ci-title">${escapeHtml(p.title)}</div><div class="ci-meta">${new Date(p.publishedAt || p.createdAt).toLocaleDateString()} · ❤️ ${p.likes || 0} · 💬 ${p.commentsCount || 0} · 👁️ ${p.views || 0} · <span style="color:var(--primary);font-weight:700;">${fmtMoneyAPI(p.earnings || 0)}</span></div>${(S.user?._id === user._id || isAdmin) ? `<div class="ci-actions"><button class="post-delete-btn" onclick="event.stopPropagation();deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button></div>` : ''}</div>`;
+                            const showEarnings = canSeeEarnings && p.earnings > 0;
+                            return `<div class="collection-item" onclick="window.location.href='${postUrl}'" style="cursor:pointer"><span class="ci-type">${p.type || 'post'}</span><div class="ci-title">${escapeHtml(p.title)}</div><div class="ci-meta">${new Date(p.publishedAt || p.createdAt).toLocaleDateString()} · ❤️ ${p.likes || 0} · 💬 ${p.commentsCount || 0} · 👁️ ${p.views || 0}${showEarnings ? ` · <span style="color:var(--primary);font-weight:700;">${fmtMoneyAPI(p.earnings || 0)}</span>` : ''}</div>${(S.user?._id === user._id || isAdmin) ? `<div class="ci-actions"><button class="post-delete-btn" onclick="event.stopPropagation();deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button></div>` : ''}</div>`;
                         }).join('') : '<p style="color:var(--text3);">No posts yet</p>'}
                     </div>
                     <h4 class="mt-4">📚 Courses</h4>
                     <div class="profile-collection">
-                        ${courses.length ? courses.map(c => `<div class="collection-item" onclick="openBuyCourse('${c._id}')" style="cursor:pointer"><span class="ci-type">course</span><div class="ci-title">${escapeHtml(c.title)}</div><div class="ci-meta">${c.totalLessons || 0} lessons · ${c.level || 'All levels'} · ${fmtMoneyAPI(c.price || 0)}</div>${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.55rem">${c.affiliatePercent || 0}% aff</span>` : ''}</div>`).join('') : '<p style="color:var(--text3);">No courses yet</p>'}
+                        ${courses.length ? courses.map(c => `<div class="collection-item" onclick="openBuyCourse('${c._id}')" style="cursor:pointer"><span class="ci-type">course</span><div class="ci-title">${escapeHtml(c.title)}</div><div class="ci-meta">${c.totalLessons || 0} lessons · ${c.level || 'All levels'} · ${fmtMoneyAPI(c.price || 0)} · 👁️ ${c.views || 0}</div>${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.55rem">${c.affiliatePercent || 0}% aff</span>` : ''}</div>`).join('') : '<p style="color:var(--text3);">No courses yet</p>'}
                     </div>
                 </div>
             `;
@@ -7207,7 +7476,6 @@
                     refStatsRow.innerHTML =
                         `<div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${count}</div><div class="sl">Total Refs</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(totalEarned)}</div><div class="sl">Earned</div></div></div>`;
                 }
-                // Update nav badge
                 const navRefBadge = document.getElementById('navRefBadge');
                 if (navRefBadge) navRefBadge.textContent = count;
             } catch (e) { console.warn('Could not load referrals', e); }
@@ -7306,6 +7574,7 @@
             if (!courseId || courseId === 'undefined' || courseId === 'null') { toast('Invalid course.', 'error'); return; }
             S.currentCourseId = courseId;
             S.currentEnrollmentId = enrollmentId;
+            trackCourseView(courseId);
             loadCourseForLesson(courseId);
             setDP('lesson');
         }
@@ -7335,6 +7604,13 @@
                 updateSEO({ title: S.currentCourseData.title, description: S.currentCourseData.subtitle || S
                         .currentCourseData.description?.substring(0, 160), thumbnail: S.currentCourseData
                         .thumbnail || S.currentCourseData.emoji });
+                // ─── Load course page ads ────────────────────────────
+                if (shouldShowAds()) {
+                    if (!S.courseAds.length) await loadCoursePageAds();
+                    renderCoursePageAd();
+                } else {
+                    document.getElementById('coursePageAdContainer').innerHTML = '';
+                }
             } catch (e) { toast('Could not load course: ' + e.message, 'error'); }
         }
 
@@ -7363,7 +7639,7 @@
         }
 
         // ================================================================
-        // EXPLORE COURSES
+        // EXPLORE COURSES – WITH ADS AFTER EVERY 4 COURSES FOR FREE USERS
         // ================================================================
         async function renderExplore() {
             showLoading('Loading courses...');
@@ -7371,10 +7647,45 @@
                 const data = await apiCall('/courses?published=true&limit=50');
                 const raw = data.data || data || [];
                 S.appCourses = Array.isArray(raw) ? raw : (raw.courses || []);
-                document.getElementById('exploreGrid').innerHTML = buildCourseCards(S.appCourses);
+                if (!S.isPremium) {
+                    await loadAds('explore');
+                }
+                document.getElementById('exploreGrid').innerHTML = buildExploreCourseCards(S.appCourses);
             } catch (e) { S.appCourses = [];
                 document.getElementById('exploreGrid').innerHTML =
                     `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h4>Could not load courses</h4><p>${e.message}</p></div>`; } finally { hideLoading(); }
+        }
+
+        function buildExploreCourseCards(list) {
+            if (!Array.isArray(list)) return '<div class="empty-state"><p>Loading courses...</p></div>';
+            const showAds = !S.isPremium && shouldShowAds();
+            const adFrequency = 4;
+            let html = '';
+            let adCounter = 0;
+            const filtered = list.filter(c => c && c._id);
+
+            filtered.forEach((c, idx) => {
+                const price = c.displayPrice || c.price || 0;
+                const instructorName = c.instructor?.firstName || 'Instructor';
+                const lessonCount = c.totalLessons || (Array.isArray(c.lessons) ? c.lessons.length : 0);
+                const views = c.views || 0;
+                html += `<div class="course-card" onclick="openBuyCourse('${c._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail || c.emoji || '📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress || 0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title || 'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level || 'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent || 0}% aff</span>` : ''}</div><div style="font-size:.7rem;color:var(--text3);margin-top:.3rem"><i class="fas fa-eye"></i> ${views}</div></div></div>`;
+
+                if (showAds && (idx + 1) % adFrequency === 0 && idx < filtered.length - 1) {
+                    const ad = getNextAd('explore');
+                    if (ad) {
+                        const adHtml = renderAdCard(ad, null);
+                        html += `<div style="grid-column:1/-1;">${adHtml}</div>`;
+                        const adId = ad.type === 'custom' ? ad.data._id : 'adsterra-explore-' + Date.now();
+                        if (adId) trackAdImpression(adId, null, ad.type === 'custom' ? 'custom' : 'adsterra');
+                    }
+                }
+            });
+
+            if (!html) {
+                return '<div class="empty-state"><i class="fas fa-search"></i><h4>No courses found</h4></div>';
+            }
+            return html;
         }
 
         function filterExplore() {
@@ -7385,26 +7696,15 @@
             if (q) list = list.filter(c => (c.title || '').toLowerCase().includes(q));
             if (cat) list = list.filter(c => c.category === cat);
             if (lev) list = list.filter(c => c.level === lev);
-            document.getElementById('exploreGrid').innerHTML = list.length ? buildCourseCards(list) :
+            document.getElementById('exploreGrid').innerHTML = list.length ? buildExploreCourseCards(list) :
                 '<div class="empty-state"><i class="fas fa-search"></i><h4>No courses found</h4></div>';
-        }
-
-        function buildCourseCards(list) {
-            if (!Array.isArray(list)) return '<div class="empty-state"><p>Loading courses...</p></div>';
-            return list.filter(c => c && c._id).map(c => {
-                const price = c.displayPrice || c.price || 0;
-                const instructorName = c.instructor?.firstName || 'Instructor';
-                const lessonCount = c.totalLessons || (Array.isArray(c.lessons) ? c.lessons.length : 0);
-                const views = c.views || 0;
-                return `<div class="course-card" onclick="openBuyCourse('${c._id}')"><div class="cc-img" style="background:linear-gradient(135deg,var(--card2),var(--card3))">${c.thumbnail || c.emoji || '📚'}</div><div class="cc-bar"><div class="cc-fill pf-primary" style="width:${c.progress || 0}%"></div></div><div class="cc-body"><div style="font-size:.82rem;font-weight:700;margin-bottom:.25rem">${c.title || 'Course'}</div><div style="font-size:.73rem;color:var(--text3);margin-bottom:.4rem">${instructorName} · ${lessonCount} lessons · ${c.level || 'All'}</div><div style="display:flex;align-items:center;justify-content:space-between"><div style="font-weight:800;color:var(--lime)">${fmtMoneyAPI(price)}</div>${c.hasAffiliate ? `<span class="badge badge-violet" style="font-size:.58rem">${c.affiliatePercent || 0}% aff</span>` : ''}</div><div style="font-size:.7rem;color:var(--text3);margin-top:.3rem"><i class="fas fa-eye"></i> ${views}</div></div></div>`;
-            }).join('');
         }
 
         function openBuyCourse(courseId) {
             const c = (S.appCourses || []).find(x => x._id === courseId);
             if (!c) { toast('Course not found', 'error'); return; }
             const token = localStorage.getItem('cx_accessToken');
-            if (token) { fetch(`${API_BASE}/courses/${c._id}/view`, { method: 'POST' }).catch(() => {}); }
+            if (token) { trackCourseView(courseId); }
             if ((c.price === 0 || c.price == null) && (c.salePrice === 0 || c.salePrice == null)) {
                 if (!S.loggedIn) { toast('Please log in to enroll', 'warning');
                     goPage('login'); return; }
@@ -7422,7 +7722,7 @@
             currentManualCourseId = courseId;
             const price = c.salePrice || c.price || 0;
             document.getElementById('buyCourseInfo').innerHTML =
-                `<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div style="font-size:2rem">${c.thumbnail || c.emoji || '📚'}</div><div><div style="font-weight:700;font-size:.92rem">${c.title}</div><div style="font-size:.75rem;color:var(--text3)">${c.instructor?.firstName || 'Instructor'} · ${c.totalLessons || 0} lessons</div></div></div>`;
+                `<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div style="font-size:2rem">${c.thumbnail || c.emoji || '📚'}</div><div><div style="font-weight:700;font-size:.92rem">${c.title}</div><div style="font-size:.75rem;color:var(--text3)">${c.instructor?.firstName || 'Instructor'} · ${c.totalLessons || 0} lessons · 👁️ ${c.views || 0}</div></div></div>`;
             document.getElementById('buyCourseSummary').innerHTML =
                 `<div class="pay-summary-row"><span>Course Price</span><span>${fmtMoneyAPI(c.price || 0)}</span></div><div class="pay-summary-row"><span style="font-weight:700">Total</span><span style="color:var(--primary);font-weight:800">${fmtMoneyAPI(price)}</span></div>`;
             document.getElementById('paystackBtnText').textContent = `Pay ${fmtMoneyAPI(price)} with Paystack`;
@@ -7443,12 +7743,13 @@
         function openBuyBook(bookId) {
             const book = S.currentBook || S.books.find(b => b._id === bookId);
             if (!book) { toast('Book not found', 'error'); return; }
+            trackBookView(bookId);
             currentPaymentType = 'book';
             currentManualBookId = bookId;
             S.currentBuyBook = book;
             const price = book.price || 0;
             document.getElementById('buyCourseInfo').innerHTML =
-                `<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div style="font-size:2rem">${book.coverImage ? `<img src="${book.coverImage}" style="width:50px;height:50px;object-fit:cover;border-radius:var(--radius-sm)">` : '📖'}</div><div><div style="font-weight:700;font-size:.92rem">${book.title}</div><div style="font-size:.75rem;color:var(--text3)">By ${book.author || 'Unknown'}</div></div></div>`;
+                `<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div style="font-size:2rem">${book.coverImage ? `<img src="${book.coverImage}" style="width:50px;height:50px;object-fit:cover;border-radius:var(--radius-sm)">` : '📖'}</div><div><div style="font-weight:700;font-size:.92rem">${book.title}</div><div style="font-size:.75rem;color:var(--text3)">By ${book.author || 'Unknown'} · 👁️ ${book.views || 0}</div></div></div>`;
             document.getElementById('buyCourseSummary').innerHTML =
                 `<div class="pay-summary-row"><span>Book Price</span><span>${fmtMoneyAPI(price)}</span></div><div class="pay-summary-row"><span style="font-weight:700">Total</span><span style="color:var(--primary);font-weight:800">${fmtMoneyAPI(price)}</span></div>`;
             document.getElementById('paystackBtnText').textContent = `Pay ${fmtMoneyAPI(price)} with Paystack`;
@@ -7874,6 +8175,13 @@
             if (S.currentCourseData?.ratings) {
                 document.getElementById('reviewsListContainer').innerHTML = renderCourseRatings(S.currentCourseData.ratings);
             }
+            // ─── Refresh course page ad ──────────────────────────────
+            if (shouldShowAds()) {
+                if (!S.courseAds.length) loadCoursePageAds().then(() => renderCoursePageAd());
+                else renderCoursePageAd();
+            } else {
+                document.getElementById('coursePageAdContainer').innerHTML = '';
+            }
         }
 
         function renderCourseRatings(ratings) {
@@ -8270,7 +8578,7 @@
                 toast('⚠️ Add bank details in Settings → Payouts first.', 'error');
                 closeModal('withdrawModal');
                 setDP('settings');
-                setTimeout(() => switchSet('ss-payout'), 100);
+                setTimeout(() => switchSet('ss-payout', null), 100);
                 return;
             }
             const amt = Number(document.getElementById('withdrawAmt')?.value);
@@ -8303,7 +8611,6 @@
                     `<div class="col-6 col-md-3"><div class="stat-card"><div class="si si-primary"><i class="fas fa-users"></i></div><div class="sv">${refs.length}</div><div class="sl">Total Refs</div></div></div><div class="col-6 col-md-3"><div class="stat-card"><div class="si si-c"><i class="fas fa-wallet"></i></div><div class="sv">${fmtMoneyAPI(totalEarned)}</div><div class="sl">Earned</div></div></div>`;
                 document.getElementById('referralTable').innerHTML =
                     `<thead><tr><th>Name</th><th>Date</th><th>Status</th><th>Earned</th></tr></thead><tbody>${refs.map(r => `<tr><td style="font-weight:600">${r.referred?.firstName || r.name || 'User'}</td><td>${new Date(r.createdAt || r.date).toLocaleDateString()}</td><td><span class="pstatus ${r.status === 'converted' ? 'ps-paid' : 'ps-pend'}">${r.status || 'pending'}</span></td><td style="font-weight:800;color:var(--primary)">${fmtMoneyAPI(r.earned || 0)}</td></tr>`).join('') || '<tr><td colspan="4" style="text-align:center">No referrals yet</td></tr>'}</tbody>`;
-                // Update nav badge
                 const navRefBadge = document.getElementById('navRefBadge');
                 if (navRefBadge) navRefBadge.textContent = refs.length;
             } catch (e) { document.getElementById('referralTable').innerHTML =
@@ -8325,23 +8632,33 @@
         function shareOnSocial(p) { toast(`Shared on ${p}!`, 'success'); }
 
         // ================================================================
-        // LEADERBOARD – REAL DATA
+        // LEADERBOARD – CORRECT USER DATA (NO MORE ZEROS)
         // ================================================================
         async function loadLeaderboard() {
             try {
                 const data = await apiCall('/users/leaderboard?limit=20');
                 S.leaderboard = Array.isArray(data.data) ? data.data : [];
-            } catch (e) { S.leaderboard = []; }
+                if (!S.leaderboard.length) {
+                    try {
+                        const fallback = await apiCall('/users/top?limit=20');
+                        if (fallback.data && fallback.data.length) {
+                            S.leaderboard = fallback.data;
+                        }
+                    } catch (_) {}
+                }
+            } catch (e) {
+                console.warn('Leaderboard fetch error:', e);
+                S.leaderboard = [];
+            }
         }
 
         function renderLB() {
             const el = document.getElementById('lbFull');
             if (!el) return;
             if (!S.leaderboard || S.leaderboard.length === 0) {
-                // Show realistic placeholder data when no real data exists
                 const placeholders = [
                     { firstName: 'Amaka', lastName: 'Obi', xp: 28450, totalEarned: 245000, streakDays: 45,
-                    referralCount: 12 },
+                        referralCount: 12 },
                     { firstName: 'Kelechi', lastName: 'Agu', xp: 22100, totalEarned: 189000, streakDays: 38,
                         referralCount: 8 },
                     { firstName: 'Fatima', lastName: 'Bello', xp: 19800, totalEarned: 167000, streakDays: 31,
@@ -8373,21 +8690,28 @@
             }
             el.innerHTML = S.leaderboard.map((u, i) => {
                 let value;
+                const xp = u.xp || u.experience || u.points || 0;
+                const earned = u.totalEarned || u.earnings || u.walletBalance || 0;
+                const streak = u.streakDays || u.streak || 0;
+                const refs = u.referralCount || u.referrals || 0;
                 switch (S.lbTab) {
                     case 'earnings':
-                        value = fmtMoneyAPI(u.totalEarned || 0);
+                        value = fmtMoneyAPI(earned);
                         break;
                     case 'streak':
-                        value = (u.streakDays || 0) + ' days';
+                        value = streak + ' days';
                         break;
                     case 'refs':
-                        value = (u.referralCount || 0) + ' refs';
+                        value = refs + ' refs';
                         break;
                     default:
-                        value = (u.xp || 0).toLocaleString() + ' XP';
+                        value = xp.toLocaleString() + ' XP';
                 }
                 const isYou = u._id === S.user?._id;
-                return `<div class="lb-row ${isYou ? 'you' : ''}"><div class="lb-rank">${['🥇','🥈','🥉'][i] || i + 1}</div><div class="lb-av" style="background:linear-gradient(135deg,var(--violet),var(--cyan))">${(u.firstName || 'U')[0]}</div><div style="flex:1"><div style="font-size:.85rem;font-weight:600">${u.firstName || 'User'} ${isYou ? '<span class="badge badge-primary" style="font-size:.55rem">You</span>' : ''}</div><div style="font-size:.71rem;color:var(--text3)">🔥 ${u.streakDays || 0}-day streak</div></div><div style="font-weight:800;color:var(--primary)">${value}</div></div>`;
+                const avatarHtml = getAvatarUrl(u) ?
+                    `<img src="${getAvatarUrl(u)}" alt="${u.firstName || 'U'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
+                    (u.firstName?.[0] || 'U');
+                return `<div class="lb-row ${isYou ? 'you' : ''}"><div class="lb-rank">${['🥇','🥈','🥉'][i] || i + 1}</div><div class="lb-av" style="background:linear-gradient(135deg,var(--violet),var(--cyan));overflow:hidden">${avatarHtml}</div><div style="flex:1"><div style="font-size:.85rem;font-weight:600">${u.firstName || 'User'} ${isYou ? '<span class="badge badge-primary" style="font-size:.55rem">You</span>' : ''}</div><div style="font-size:.71rem;color:var(--text3)">🔥 ${streak}-day streak</div></div><div style="font-weight:800;color:var(--primary)">${value}</div></div>`;
             }).join('') || '<div class="empty-state"><p>No data</p></div>';
         }
 
@@ -9040,7 +9364,7 @@
         }
 
         // ================================================================
-        // BOOKS MODULE – WITH HYBRID ADS FOR FREE USERS
+        // BOOKS MODULE – WITH HYBRID ADS FOR FREE USERS + VIEW TRACKING
         // ================================================================
         async function loadBooks() {
             showLoading('Loading books...');
@@ -9063,11 +9387,9 @@
                     '<div class="empty-state"><i class="fas fa-book"></i><h4>No books available</h4><p>Check back soon for new additions!</p></div>';
                 return;
             }
-            // Preload book ads for free users
             if (!S.isPremium && !S.bookAds.length) loadBookPageAds();
 
             let html = '';
-            // 🔥 AD FREQUENCY: Free users see book ads every 3 books
             const showAds = !S.isPremium;
             const adFrequency = 3;
             books.filter(b => b.isPublished !== false).forEach((book, index) => {
@@ -9082,14 +9404,12 @@
                         </div>
                     </div>
                 `;
-                // Insert book ad every N books for free users
                 if (showAds && (index + 1) % adFrequency === 0 && index < books.length - 1) {
                     const ad = getNextBookAd();
                     if (ad) {
                         const adHtml = renderAdCard(ad, null);
                         html +=
                             `<div class="book-ad-banner" style="grid-column:1/-1;">${adHtml}</div>`;
-                        // Track impression for the ad
                         const adId = ad.type === 'custom' ? ad.data._id : 'adsterra-book-' + Date.now();
                         if (adId) trackAdImpression(adId, null, ad.type === 'custom' ? 'custom' : 'adsterra');
                     }
@@ -9104,6 +9424,7 @@
             try {
                 const res = await apiCall(`${BOOKS_API}/${bookId}`);
                 const book = res.data;
+                trackBookView(bookId);
                 S.currentBook = book;
                 renderBookDetail(book);
                 setDP('book-detail');
@@ -9118,7 +9439,6 @@
             const isPurchased = book.isPurchased || false;
             const isFree = book.price === 0;
             const canDownload = isFree || isPurchased;
-            // Load book ads for free users
             if (!S.isPremium && !S.bookAds.length) loadBookPageAds();
 
             let adHtml = '';
@@ -9267,7 +9587,7 @@
                     <div class="book-info">
                         <strong>${escapeHtml(book.title)}</strong>
                         <span class="badge ${book.isPublished !== false ? 'badge-success' : 'badge-dark'}" style="font-size:.55rem">${book.isPublished !== false ? 'Published' : 'Draft'}</span>
-                        <div class="meta">By ${escapeHtml(book.author || 'Unknown')} · ${fmtMoneyAPI(book.price)} · 📥 ${book.downloads || 0}</div>
+                        <div class="meta">By ${escapeHtml(book.author || 'Unknown')} · ${fmtMoneyAPI(book.price)} · 📥 ${book.downloads || 0} · 👁️ ${book.views || 0}</div>
                     </div>
                     <div class="book-actions">
                         <button class="btn btn-ghost btn-sm" onclick="editBook('${book._id}')"><i class="fas fa-edit"></i></button>
@@ -9966,6 +10286,8 @@
                                     <option value="in-feed">In-Feed</option>
                                     <option value="popup">Popup</option>
                                     <option value="book-page">Book Page</option>
+                                    <option value="explore">Explore</option>
+                                    <option value="course-page">Course Page</option>
                                 </select>
                             </div>
                             <div class="row"><div class="col-6"><div class="form-group"><label class="flabel">Start Date</label><input type="date" class="finput" id="admAdStart"/></div></div><div class="col-6"><div class="form-group"><label class="flabel">End Date</label><input type="date" class="finput" id="admAdEnd"/></div></div></div>
@@ -10354,56 +10676,6 @@
             }
         }
 
-        // 🔥 UPDATED: approveManualPayment with automatic book purchase conversion
-        async function approveManualPayment(paymentId) {
-            const note = prompt('Optional admin note:');
-            showLoading('Approving payment...');
-            try {
-                const res = await apiCall(`/admin/manual-payments/${paymentId}/approve`, {
-                    method: 'POST',
-                    body: { adminNote: note || '' }
-                });
-                if (res.success) {
-                    toast('Payment approved!', 'success');
-                    await renderWallet();
-                    try {
-                        const payment = await apiCall(`/admin/manual-payments/${paymentId}`);
-                        if (payment.data?.type === 'book') {
-                            // ✅ Refresh book list and detail to show download button
-                            await loadBooks();
-                            if (S.dp === 'book-detail' && S.currentBook) {
-                                await openBookDetail(S.currentBook._id);
-                            }
-                            toast('📚 Book purchase approved! You can now download it.', 'success');
-                        } else if (payment.data?.type === 'course') {
-                            await loadEnrollments();
-                            if (S.dp === 'courses') renderCourseGrid(S.courseFilter);
-                            toast('📚 Course access granted!', 'success');
-                        } else if (payment.data?.type === 'subscription') {
-                            S.isPremium = true;
-                            S.user.isPremium = true;
-                            updateUserUI();
-                            toast('👑 Premium activated!', 'success');
-                        }
-                    } catch (e) { console.warn('Could not refresh purchase data after approval:', e); }
-                    if (S.dp === 'referrals') renderRefs();
-                    if (S.dp === 'affiliates') renderAffiliates();
-                    loadManualPayments();
-                } else { toast(res.message || 'Approval failed', 'error'); }
-            } catch (err) { toast('Error: ' + err.message, 'error'); } finally { hideLoading(); }
-        }
-
-        async function rejectManualPayment(paymentId) {
-            const reason = prompt('Rejection reason (required):');
-            if (!reason) { toast('Rejection reason is required', 'error'); return; }
-            showLoading('Rejecting payment...');
-            try {
-                await apiCall(`/admin/manual-payments/${paymentId}/reject`, { method: 'POST', body: { rejectionReason: reason } });
-                toast('Payment rejected', 'info');
-                loadManualPayments();
-            } catch (err) { toast('Failed: ' + err.message, 'error'); } finally { hideLoading(); }
-        }
-
         // ─── ADMIN SOCIAL EARNINGS ──────────────────────────────────────
         async function loadSocialEarningsConfig() {
             try {
@@ -10582,6 +10854,55 @@
                 document.querySelector('#userDetailsModal .modal-hd h5').textContent = '👤 User Details';
                 openModal('userDetailsModal');
             } catch (err) { toast('Failed to load user details: ' + err.message, 'error'); }
+        }
+
+        // ─── ADMIN MANUAL PAYMENT APPROVE/REJECT ──────────────────────
+        async function approveManualPayment(paymentId) {
+            const note = prompt('Optional admin note:');
+            showLoading('Approving payment...');
+            try {
+                const res = await apiCall(`/admin/manual-payments/${paymentId}/approve`, {
+                    method: 'POST',
+                    body: { adminNote: note || '' }
+                });
+                if (res.success) {
+                    toast('Payment approved!', 'success');
+                    await renderWallet();
+                    try {
+                        const payment = await apiCall(`/admin/manual-payments/${paymentId}`);
+                        if (payment.data?.type === 'book') {
+                            await loadBooks();
+                            if (S.dp === 'book-detail' && S.currentBook) {
+                                await openBookDetail(S.currentBook._id);
+                            }
+                            toast('📚 Book purchase approved! You can now download it.', 'success');
+                        } else if (payment.data?.type === 'course') {
+                            await loadEnrollments();
+                            if (S.dp === 'courses') renderCourseGrid(S.courseFilter);
+                            toast('📚 Course access granted!', 'success');
+                        } else if (payment.data?.type === 'subscription') {
+                            S.isPremium = true;
+                            S.user.isPremium = true;
+                            updateUserUI();
+                            toast('👑 Premium activated!', 'success');
+                        }
+                    } catch (e) { console.warn('Could not refresh purchase data after approval:', e); }
+                    if (S.dp === 'referrals') renderRefs();
+                    if (S.dp === 'affiliates') renderAffiliates();
+                    loadManualPayments();
+                } else { toast(res.message || 'Approval failed', 'error'); }
+            } catch (err) { toast('Error: ' + err.message, 'error'); } finally { hideLoading(); }
+        }
+
+        async function rejectManualPayment(paymentId) {
+            const reason = prompt('Rejection reason (required):');
+            if (!reason) { toast('Rejection reason is required', 'error'); return; }
+            showLoading('Rejecting payment...');
+            try {
+                await apiCall(`/admin/manual-payments/${paymentId}/reject`, { method: 'POST', body: { rejectionReason: reason } });
+                toast('Payment rejected', 'info');
+                loadManualPayments();
+            } catch (err) { toast('Failed: ' + err.message, 'error'); } finally { hideLoading(); }
         }
 
         // ================================================================
@@ -10812,6 +11133,7 @@
                     updateUserUI();
                     checkPlanExpiry();
                     await loadUserFollowing();
+                    await loadFollowers();
                     await fetchAdConfig();
                     const hash = window.location.hash.slice(1);
                     if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(
@@ -10874,6 +11196,7 @@
                             updateUserUI();
                             checkPlanExpiry();
                             await loadUserFollowing();
+                            await loadFollowers();
                             await fetchAdConfig();
                         } catch (e) {}
                         if (S.user?.setupDone) goPage('app');
@@ -11136,6 +11459,7 @@
                 const lesson = S.currentLessons[S.currentLessonIdx];
                 if (lesson && lesson._id) loadInteractiveMaterials(lesson._id);
             }
+            // Refresh course page ad on tab change (optional)
         }
 
         // ================================================================
@@ -11177,6 +11501,7 @@
             await fetchAnnouncements();
             await fetchNotifications();
             await loadUserFollowing();
+            await loadFollowers();
             updateThemeIcons();
             renderNotifs();
             renderCurrencySelectorUI();
@@ -11259,18 +11584,24 @@
         console.log('📱 PWA: Install banner hides for 7 days after dismissal.');
         console.log('⭐ Rating system fully integrated with course reviews.');
         console.log('👥 Following system fixed with proper localStorage persistence.');
+        console.log('👥 Followers system added — users can see who follows them.');
         console.log('🔍 SEO meta tags dynamically updated for posts and courses.');
         console.log('📖 Book downloads permanently unlocked after purchase approval.');
+        console.log('👁️ Course views and book views are now actively tracked.');
         console.log('💰 Course completion bonus: ₦100.');
         console.log('🎨 Gold, White & Black premium theme applied.');
         console.log('📢 Hybrid Ads: Custom Admin Ads + Adsterra fallback with 50% creator revenue share.');
+        console.log('📢 Ads appear between posts (every 3 for free, 6 for premium) and after every 4 courses in Explore.');
+        console.log('📢 Ads also appear on course/lesson pages (below the progress card) for free users.');
+        console.log('📢 Admin can create ads for placement: "course-page".');
         console.log('🗑️ Admin can delete any post.');
         console.log('📤 Book upload: Large file support (500MB) with progress tracking.');
         console.log('🔗 Affiliate links now use hash-based routing for SPA compatibility.');
         console.log('🏦 Bank details updated: Lead Bank & Taj Bank for manual transfers.');
         console.log('⚡ Performance: Lazy loading, debounce, throttle, batch DOM updates, request deduplication.');
         console.log('🔥 Landing page hero stats hardcoded for marketing impact.');
-        console.log('📊 Leaderboard shows realistic placeholder data when real data is unavailable.');
+        console.log('📊 Leaderboard shows correct user data (no more zeros).');
+        console.log('👤 Profile earnings hidden when viewing other users\' profiles.');
         console.log('📢 Ad Frequency: Free users see ads every 3 posts, Premium users every 6 posts.');
         console.log('📚 Book purchase approval automatically converts purchase button to download.');
         console.log(
