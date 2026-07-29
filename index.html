@@ -6322,8 +6322,15 @@
                         <li class="nav-sec" style="margin-top:.3rem">Library</li>
                         <li><span class="nav-item" id="nav-books" onclick="setDP('books')"><span class="nav-ico"><i class="fas fa-book"></i></span>Books</span></li>
                         <li><span class="nav-item" id="nav-my-library" onclick="setDP('my-library')"><span class="nav-ico"><i class="fas fa-book-open"></i></span>My Library</span></li>
+                        <!-- ====== CREATE BOOK – PREMIUM ONLY (MOVED TO LIBRARY) ====== -->
+                        <li id="nav-create-book" class="premium-only">
+                            <span class="nav-item" onclick="setDP('create-book')">
+                                <span class="nav-ico"><i class="fas fa-plus-circle"></i></span>
+                                Upload Book
+                                <span class="nav-badge nav-badge-premium">Premium</span>
+                            </span>
+                        </li>
                         <li class="nav-sec" style="margin-top:.3rem">Publish</li>
-                        <li id="nav-create-book" class="premium-only"><span class="nav-item" onclick="setDP('create-book')"><span class="nav-ico"><i class="fas fa-book"></i></span>Upload Book<span class="nav-badge nav-badge-premium">Premium</span></span></li>
                         <li><span class="nav-item" id="nav-sponsorship" onclick="setDP('sponsorship')"><span class="nav-ico"><i class="fas fa-bullhorn"></i></span>Ad Campaigns<span class="nav-badge nav-badge-v" id="navCampaignBadge">0</span></span></li>
                         <li class="nav-sec" style="margin-top:.3rem">Earn More</li>
                         <li><span class="nav-item" id="nav-social-earnings" onclick="setDP('social-earnings')"><span class="nav-ico"><i class="fas fa-seedling"></i></span>Social Earnings<span class="nav-badge nav-badge-gold" id="navSocialBadge">0</span></span></li>
@@ -6427,8 +6434,90 @@
                     <!-- BOOK DETAIL -->
                     <div id="dash-book-detail" class="dash-sub"><div class="page-hd"><button class="btn btn-ghost btn-sm" onclick="setDP('books')"><i class="fas fa-arrow-left"></i> Back to Library</button></div><div id="bookPageAdContainerDetail" class="ad-container"></div><div id="bookDetailContent"></div><div id="bookSponsorAdContainerDetail" class="ad-container"></div></div>
 
-                    <!-- UPLOAD BOOK (Premium Only) -->
-                    <div id="dash-create-book" class="dash-sub premium-only" style="display:none;"><div class="page-hd"><h2 class="page-title">📚 Upload Book</h2><p class="page-sub">Publish your book for admin approval. Premium users only.</p></div><div id="bookUploadStatus" style="display:none;" class="card card-p mb-3"></div><div class="card card-p"><div class="form-group"><label class="flabel">Book Title *</label><input type="text" class="finput" id="bookUploadTitle" placeholder="Enter book title" /></div><div class="form-group"><label class="flabel">Author *</label><input type="text" class="finput" id="bookUploadAuthor" placeholder="Author name" /></div><div class="form-group"><label class="flabel">Description</label><textarea class="finput" id="bookUploadDesc" rows="3" placeholder="Book description..."></textarea></div><div class="form-group"><label class="flabel">Price (₦)</label><input type="number" class="finput" id="bookUploadPrice" placeholder="0 for free" min="0" value="0" /></div><div class="form-group"><label class="flabel">Cover Image URL</label><input type="url" class="finput" id="bookUploadCover" placeholder="https://example.com/cover.jpg" oninput="previewBookCover(this.value)" /></div><div id="bookUploadCoverPreview" style="display:none;"><img id="bookUploadCoverPreviewImg" style="max-width:150px;border-radius:var(--radius-sm);border:1px solid var(--border);" /></div><div class="form-group"><label class="flabel">Book PDF URL *</label><input type="url" class="finput" id="bookUploadFile" placeholder="https://example.com/book.pdf" oninput="previewBookFile(this.value)" /></div><div id="bookUploadFilePreview" style="display:none;"><span class="badge badge-success">✅ PDF URL provided</span></div><div class="form-group"><label class="flabel">Affiliate Commission (%)</label><input type="number" class="finput" id="bookUploadAffiliate" placeholder="e.g. 15" min="0" max="50" value="0" /></div><div class="info-box"><i class="fas fa-info-circle" style="color:var(--primary)"></i>You earn <strong>80%</strong> of each sale. Platform takes 20%. Affiliates earn the percentage you set.</div><button class="btn btn-primary btn-lg w-full mt-3" onclick="submitBookForApproval()"><i class="fas fa-paper-plane"></i> Submit for Approval</button></div></div>
+                    <!-- ============================================================ -->
+                    <!-- UPLOAD BOOK – PREMIUM ONLY (FULLY INTEGRATED WITH FILE UPLOADS) -->
+                    <!-- ============================================================ -->
+                    <div id="dash-create-book" class="dash-sub premium-only" style="display:none;">
+                        <div class="page-hd">
+                            <h2 class="page-title">📚 Upload Book</h2>
+                            <p class="page-sub">Publish your book for admin approval. Premium users only.</p>
+                        </div>
+
+                        <div id="bookUploadStatus" style="display:none;" class="card card-p mb-3"></div>
+
+                        <div class="card card-p">
+                            <!-- Book Title -->
+                            <div class="form-group">
+                                <label class="flabel">Book Title *</label>
+                                <input type="text" class="finput" id="bookUploadTitle" placeholder="Enter book title" />
+                            </div>
+
+                            <!-- Author -->
+                            <div class="form-group">
+                                <label class="flabel">Author *</label>
+                                <input type="text" class="finput" id="bookUploadAuthor" placeholder="Author name" />
+                            </div>
+
+                            <!-- Description -->
+                            <div class="form-group">
+                                <label class="flabel">Description</label>
+                                <textarea class="finput" id="bookUploadDesc" rows="3" placeholder="Book description..."></textarea>
+                            </div>
+
+                            <!-- Price -->
+                            <div class="form-group">
+                                <label class="flabel">Price (₦)</label>
+                                <input type="number" class="finput" id="bookUploadPrice" placeholder="0 for free" min="0" value="0" />
+                            </div>
+
+                            <!-- Cover Image Upload -->
+                            <div class="form-group">
+                                <label class="flabel">Cover Image *</label>
+                                <div class="upload-zone" style="padding:1.5rem; margin-bottom:.5rem;">
+                                    <input type="file" id="bookCoverFile" accept="image/*" onchange="uploadBookCover(this)" />
+                                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                    <div style="font-size:.8rem; color:var(--text2);">Click or drop your cover image (PNG, JPG, WebP)</div>
+                                </div>
+                                <div id="bookCoverPreview" style="display:none; margin-top:.5rem;">
+                                    <img id="bookCoverPreviewImg" style="max-width:150px; border-radius:var(--radius-sm); border:1px solid var(--border);" />
+                                    <span class="badge badge-success" style="margin-left:.5rem;">✅ Uploaded</span>
+                                    <div id="bookCoverProgress" style="display:none; font-size:.8rem; color:var(--primary); margin-top:.3rem;">Uploading... 0%</div>
+                                </div>
+                                <input type="hidden" id="bookUploadCover" />
+                            </div>
+
+                            <!-- PDF File Upload -->
+                            <div class="form-group">
+                                <label class="flabel">Book PDF *</label>
+                                <div class="upload-zone" style="padding:1.5rem; margin-bottom:.5rem;">
+                                    <input type="file" id="bookPdfFile" accept="application/pdf" onchange="uploadBookPdf(this)" />
+                                    <div class="upload-icon"><i class="fas fa-file-pdf"></i></div>
+                                    <div style="font-size:.8rem; color:var(--text2);">Click or drop your PDF file</div>
+                                </div>
+                                <div id="bookPdfPreview" style="display:none; margin-top:.5rem;">
+                                    <span class="badge badge-success">✅ PDF uploaded</span>
+                                    <span id="bookPdfName" style="font-size:.8rem; color:var(--text3); margin-left:.5rem;"></span>
+                                    <div id="bookPdfProgress" style="display:none; font-size:.8rem; color:var(--primary); margin-top:.3rem;">Uploading... 0%</div>
+                                </div>
+                                <input type="hidden" id="bookUploadFile" />
+                            </div>
+
+                            <!-- Affiliate Commission -->
+                            <div class="form-group">
+                                <label class="flabel">Affiliate Commission (%)</label>
+                                <input type="number" class="finput" id="bookUploadAffiliate" placeholder="e.g. 15" min="0" max="50" value="0" />
+                            </div>
+
+                            <div class="info-box">
+                                <i class="fas fa-info-circle" style="color:var(--primary)"></i>
+                                You earn <strong>80%</strong> of each sale. Platform takes 20%. Affiliates earn the percentage you set.
+                            </div>
+
+                            <button class="btn btn-primary btn-lg w-full mt-3" onclick="submitBookForApproval()">
+                                <i class="fas fa-paper-plane"></i> Submit for Approval
+                            </button>
+                        </div>
+                    </div>
 
                     <!-- MY LIBRARY (Purchased Books) -->
                     <div id="dash-my-library" class="dash-sub"><div class="page-hd"><h2 class="page-title">📚 My Library</h2><p class="page-sub">Books you've purchased – download them anytime</p></div><div id="myLibraryBooks" class="courses-grid"></div></div>
@@ -7593,8 +7682,14 @@
             const user = payload.user;
             if (!token || !user) { toast('Invalid server response', 'error');
                 hideLoading(); return; }
+
+            // ─── 30-DAY SESSION (like GitHub) ────────────────────────────
+            const now = Date.now();
+            const sessionExpiry = now + (30 * 24 * 60 * 60 * 1000); // 30 days from now
             localStorage.setItem('cx_accessToken', token);
             localStorage.setItem('cx_user', JSON.stringify(user));
+            localStorage.setItem('cx_session_expiry', sessionExpiry.toString());
+
             S.user = user;
             S.loggedIn = true;
             S.isPremium = user.isPremium || user.subscriptionTier === 'premium' || false;
@@ -7658,6 +7753,7 @@
                 socket = null; }
             localStorage.removeItem('cx_accessToken');
             localStorage.removeItem('cx_user');
+            localStorage.removeItem('cx_session_expiry');
             S.user = null;
             S.loggedIn = false;
             S.isPremium = false;
@@ -7687,6 +7783,57 @@
             const cls = sc < 2 ? 'weak' : sc < 3 ? 'fair' : 'strong';
             for (let i = 0; i < sc; i++) { if (segs[i]) segs[i].classList.add(cls); }
         }
+
+        // ================================================================
+        // SESSION PERSISTENCE – 30-DAY AUTO-REDIRECT (like GitHub)
+        // ================================================================
+        function checkSessionAndRedirect() {
+            const token = localStorage.getItem('cx_accessToken');
+            const userData = localStorage.getItem('cx_user');
+            const expiry = localStorage.getItem('cx_session_expiry');
+
+            // If we're already on the app page, don't redirect
+            const isAppPage = document.getElementById('page-app')?.classList.contains('active');
+            if (isAppPage) return;
+
+            if (token && userData && expiry) {
+                const now = Date.now();
+                const expiryMs = parseInt(expiry, 10);
+                if (expiryMs > now) {
+                    try {
+                        const user = JSON.parse(userData);
+                        S.user = user;
+                        S.loggedIn = true;
+                        S.isPremium = user.isPremium || false;
+                        S.walletBal = user.walletBalance || 0;
+                        // Redirect to app
+                        forceRedirect('app');
+                        setTimeout(() => {
+                            if (typeof setDP === 'function') setDP(S.dp || 'feed');
+                            if (typeof initApp === 'function') initApp();
+                        }, 100);
+                        return true;
+                    } catch (e) {
+                        console.warn('Session restore failed:', e);
+                        localStorage.removeItem('cx_accessToken');
+                        localStorage.removeItem('cx_user');
+                        localStorage.removeItem('cx_session_expiry');
+                        return false;
+                    }
+                } else {
+                    // Session expired – clear and stay on landing/login
+                    localStorage.removeItem('cx_accessToken');
+                    localStorage.removeItem('cx_user');
+                    localStorage.removeItem('cx_session_expiry');
+                    S.loggedIn = false;
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // ─── CALL THIS ON PAGE LOAD ──────────────────────────────────────
+        // We'll invoke it in the DOMContentLoaded event at the bottom.
 
         // ================================================================
         // LANDING PAGE HERO STATS – HARDCODED FOR MARKETING
@@ -8060,6 +8207,7 @@
                 if (response.status === 401) {
                     localStorage.removeItem('cx_accessToken');
                     localStorage.removeItem('cx_user');
+                    localStorage.removeItem('cx_session_expiry');
                     if (S.loggedIn) { toast('Session expired. Please log in again.', 'error');
                         goPage('login'); }
                     throw new Error(data.message || 'Session expired. Please log in again.');
@@ -8078,8 +8226,255 @@
         }
 
         // ================================================================
-        // FEEDBACK
+        // BOOK UPLOAD – FULLY INTEGRATED WITH FILE UPLOADS (PREMIUM)
         // ================================================================
+
+        // ─── UPLOAD COVER IMAGE ──────────────────────────────────────────
+        function uploadBookCover(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const preview = document.getElementById('bookCoverPreview');
+            const previewImg = document.getElementById('bookCoverPreviewImg');
+            const progressEl = document.getElementById('bookCoverProgress');
+            const hiddenInput = document.getElementById('bookUploadCover');
+
+            preview.style.display = 'block';
+            progressEl.style.display = 'block';
+            progressEl.textContent = 'Uploading... 0%';
+
+            // Show local preview immediately
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            const token = localStorage.getItem('cx_accessToken');
+            const xhr = new XMLHttpRequest();
+
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const pct = Math.round((event.loaded / event.total) * 100);
+                    progressEl.textContent = `Uploading... ${pct}%`;
+                    const loadingText = document.getElementById('loadingText');
+                    if (loadingText) loadingText.textContent = `Uploading cover... ${pct}%`;
+                }
+            };
+
+            xhr.onload = function() {
+                progressEl.style.display = 'none';
+                hideLoading();
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success && response.data && response.data.url) {
+                        hiddenInput.value = response.data.url;
+                        toast('✅ Cover uploaded!', 'success');
+                    } else {
+                        toast('Upload failed: ' + (response.message || 'Unknown error'), 'error');
+                        preview.style.display = 'none';
+                    }
+                } catch (e) {
+                    toast('Invalid server response', 'error');
+                    preview.style.display = 'none';
+                }
+            };
+
+            xhr.onerror = function() {
+                progressEl.style.display = 'none';
+                hideLoading();
+                toast('Network error – please try again', 'error');
+                preview.style.display = 'none';
+            };
+
+            xhr.open('POST', `${API_BASE}/admin/upload`);
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+            xhr.send(formData);
+            showLoading('Uploading cover image...');
+        }
+
+        // ─── UPLOAD PDF ──────────────────────────────────────────────────
+        function uploadBookPdf(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+                toast('Please select a PDF file', 'error');
+                input.value = '';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const preview = document.getElementById('bookPdfPreview');
+            const nameEl = document.getElementById('bookPdfName');
+            const progressEl = document.getElementById('bookPdfProgress');
+            const hiddenInput = document.getElementById('bookUploadFile');
+
+            preview.style.display = 'block';
+            nameEl.textContent = file.name;
+            progressEl.style.display = 'block';
+            progressEl.textContent = 'Uploading... 0%';
+
+            const token = localStorage.getItem('cx_accessToken');
+            const xhr = new XMLHttpRequest();
+
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const pct = Math.round((event.loaded / event.total) * 100);
+                    progressEl.textContent = `Uploading... ${pct}%`;
+                    const loadingText = document.getElementById('loadingText');
+                    if (loadingText) loadingText.textContent = `Uploading PDF... ${pct}%`;
+                }
+            };
+
+            xhr.onload = function() {
+                progressEl.style.display = 'none';
+                hideLoading();
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success && response.data && response.data.url) {
+                        hiddenInput.value = response.data.url;
+                        toast('✅ PDF uploaded!', 'success');
+                    } else {
+                        toast('Upload failed: ' + (response.message || 'Unknown error'), 'error');
+                        preview.style.display = 'none';
+                    }
+                } catch (e) {
+                    toast('Invalid server response', 'error');
+                    preview.style.display = 'none';
+                }
+            };
+
+            xhr.onerror = function() {
+                progressEl.style.display = 'none';
+                hideLoading();
+                toast('Network error – please try again', 'error');
+                preview.style.display = 'none';
+            };
+
+            xhr.open('POST', `${API_BASE}/admin/upload-file`);
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+            xhr.send(formData);
+            showLoading('Uploading PDF...');
+        }
+
+        // ─── SUBMIT BOOK FOR APPROVAL ───────────────────────────────────
+        async function submitBookForApproval() {
+            if (!S.isPremium) {
+                toast('Premium subscription required to upload books', 'warning');
+                openModal('premiumModal');
+                return;
+            }
+
+            const title = document.getElementById('bookUploadTitle').value.trim();
+            const author = document.getElementById('bookUploadAuthor').value.trim();
+            const description = document.getElementById('bookUploadDesc').value.trim();
+            const price = parseFloat(document.getElementById('bookUploadPrice').value) || 0;
+            const coverImage = document.getElementById('bookUploadCover').value.trim();
+            const fileUrl = document.getElementById('bookUploadFile').value.trim();
+            const affiliatePercent = parseFloat(document.getElementById('bookUploadAffiliate').value) || 0;
+
+            if (!title) { toast('Please enter a title', 'error'); return; }
+            if (!author) { toast('Please enter an author', 'error'); return; }
+            if (!coverImage) { toast('Please upload a cover image', 'error'); return; }
+            if (!fileUrl) { toast('Please upload the PDF file', 'error'); return; }
+            if (price < 0) { toast('Price cannot be negative', 'error'); return; }
+
+            const payload = {
+                title,
+                author,
+                description,
+                price,
+                coverImage,
+                fileUrl,
+                affiliatePercent,
+                isPublished: false,
+                status: 'pending'
+            };
+
+            showLoading('Submitting book for approval...');
+            try {
+                const res = await apiCall('/books/submit', { method: 'POST', body: payload });
+                if (res.success) {
+                    toast('✅ Book submitted for admin approval!', 'success');
+                    const statusEl = document.getElementById('bookUploadStatus');
+                    statusEl.style.display = 'block';
+                    statusEl.innerHTML = `
+                        <div class="d-flex items-center gap-3">
+                            <div class="si si-gold"><i class="fas fa-clock"></i></div>
+                            <div>
+                                <strong>Book submitted!</strong>
+                                <p style="margin:0;font-size:.82rem;color:var(--text2);">
+                                    Your book "<strong>${escapeHtml(title)}</strong>" is pending admin approval. You'll be notified once reviewed.
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    resetBookUploadForm();
+                    loadBooks();
+                    updateBookStatusBadge();
+                } else {
+                    toast(res.message || 'Failed to submit', 'error');
+                }
+            } catch (err) {
+                toast('Error: ' + err.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ─── RESET BOOK UPLOAD FORM ──────────────────────────────────────
+        function resetBookUploadForm() {
+            document.getElementById('bookUploadTitle').value = '';
+            document.getElementById('bookUploadAuthor').value = '';
+            document.getElementById('bookUploadDesc').value = '';
+            document.getElementById('bookUploadPrice').value = '0';
+            document.getElementById('bookUploadCover').value = '';
+            document.getElementById('bookUploadFile').value = '';
+            document.getElementById('bookUploadAffiliate').value = '0';
+            document.getElementById('bookCoverPreview').style.display = 'none';
+            document.getElementById('bookPdfPreview').style.display = 'none';
+            document.getElementById('bookCoverFile').value = '';
+            document.getElementById('bookPdfFile').value = '';
+            document.getElementById('bookCoverProgress').style.display = 'none';
+            document.getElementById('bookPdfProgress').style.display = 'none';
+            document.getElementById('bookUploadCoverPreview').style.display = 'none';
+            document.getElementById('bookUploadFilePreview').style.display = 'none';
+            const statusEl = document.getElementById('bookUploadStatus');
+            if (statusEl) statusEl.style.display = 'none';
+        }
+
+        // ─── HELPER: previewBookCover (for URL input fallback) ───────────
+        function previewBookCover(url) {
+            const preview = document.getElementById('bookUploadCoverPreview');
+            const img = document.getElementById('bookUploadCoverPreviewImg');
+            if (url && url.trim()) {
+                preview.style.display = 'block';
+                img.src = url.trim();
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        function previewBookFile(url) {
+            const preview = document.getElementById('bookUploadFilePreview');
+            if (url && url.trim()) {
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        function updateBookStatusBadge() {
+            if (S.dp === 'books') loadBooks();
+        }
+
+        // ─── FEEDBACK ──────────────────────────────────────────────────
         async function sendFeedback() {
             const message = document.getElementById('feedbackMsg')?.value.trim();
             const email = document.getElementById('feedbackEmail')?.value.trim();
@@ -8212,7 +8607,6 @@
             const postUrl = `${FRONTEND_URL}/post/${slug}`;
             const earnings = post.earnings || 0;
 
-            // Build reaction emojis
             const reactionEmojis = { like: '👍', love: '❤️', haha: '😄', wow: '😮', sad: '😢', angry: '😡' };
             const activeReactions = post.reactions || [];
             let reactionDisplay = '';
@@ -8232,7 +8626,6 @@
                     `<div class="fb-post-media"><video controls onclick="event.stopPropagation();"><source src="${post.videoUrl}" type="video/mp4"></video></div>`;
             }
 
-            // Build the post HTML
             return `
                 <div class="fb-post-card" data-post-id="${post._id}" data-author-id="${author._id || post.authorId}">
                     <!-- HEADER -->
@@ -8317,14 +8710,12 @@
             `;
         }
 
-        // ─── HELPER: Strip HTML for preview ────────────────────────────
         function stripHtml(html) {
             const div = document.createElement('div');
             div.innerHTML = html;
             return div.textContent || div.innerText || '';
         }
 
-        // ─── HELPER: Time ago formatting ───────────────────────────────
         function getTimeAgo(date) {
             if (!date) return 'Just now';
             const now = new Date();
@@ -8347,7 +8738,6 @@
             return `${diffYear}y`;
         }
 
-        // ─── HELPER: Sanitize HTML ─────────────────────────────────────
         function sanitizeHtml(html) {
             if (!html) return '';
             if (typeof DOMPurify !== 'undefined') {
@@ -8361,7 +8751,6 @@
             return html;
         }
 
-        // ─── TOGGLE READ MORE ───────────────────────────────────────────
         function togglePostReadMore(postId) {
             const container = document.getElementById(`fb-post-text-${postId}`);
             if (!container) return;
@@ -8383,7 +8772,6 @@
             }
         }
 
-        // ─── REACTION PICKER ────────────────────────────────────────────
         function showReactionPicker(postId) {
             clearTimeout(reactionPickerTimeout[postId]);
             const picker = document.getElementById(`fb-reaction-picker-${postId}`);
@@ -8397,7 +8785,6 @@
             }, 500);
         }
 
-        // ─── HANDLE REACTION ────────────────────────────────────────────
         async function handleReaction(postId, type) {
             try {
                 const res = await apiCall(`/posts/${postId}/reaction`, {
@@ -8432,7 +8819,6 @@
             }
         }
 
-        // ─── HANDLE LIKE POST ───────────────────────────────────────────
         async function handleLikePost(postId) {
             try {
                 const res = await apiCall(`/posts/${postId}/like`, { method: 'POST' });
@@ -8463,7 +8849,6 @@
             }
         }
 
-        // ─── TOGGLE COMMENTS ────────────────────────────────────────────
         async function toggleFBComments(postId) {
             const section = document.getElementById(`fb-comments-${postId}`);
             if (!section) return;
@@ -8477,7 +8862,6 @@
             await loadFBComments(postId);
         }
 
-        // ─── LOAD COMMENTS ──────────────────────────────────────────────
         async function loadFBComments(postId) {
             const list = document.getElementById(`fb-comments-list-${postId}`);
             if (!list) return;
@@ -8496,7 +8880,6 @@
             }
         }
 
-        // ─── RENDER A COMMENT ──────────────────────────────────────────
         function renderFBComment(comment, postId, level = 0) {
             const user = comment.userId || {};
             const avatarHtml = getAvatarUrl(user)
@@ -8534,7 +8917,6 @@
             `;
         }
 
-        // ─── SUBMIT COMMENT ─────────────────────────────────────────────
         async function submitFBComment(postId) {
             const input = document.getElementById(`fb-comment-input-${postId}`);
             const content = input?.value.trim();
@@ -8559,7 +8941,6 @@
             }
         }
 
-        // ─── SHOW REPLY INPUT ──────────────────────────────────────────
         function showFBReplyInput(commentId) {
             const container = document.getElementById(`fb-reply-input-${commentId}`);
             if (container) {
@@ -8569,7 +8950,6 @@
             }
         }
 
-        // ─── SUBMIT REPLY ──────────────────────────────────────────────
         async function submitFBReply(commentId, postId) {
             const input = document.getElementById(`fb-reply-text-${commentId}`);
             const content = input?.value.trim();
@@ -8588,7 +8968,6 @@
             }
         }
 
-        // ─── LIKE COMMENT ──────────────────────────────────────────────
         async function likeFBComment(commentId, postId) {
             try {
                 const res = await apiCall(`/posts/comment/${commentId}/like`, { method: 'POST' });
@@ -8600,7 +8979,6 @@
             }
         }
 
-        // ─── SHARE MODAL ──────────────────────────────────────────────
         function openShareModal(postId, slug) {
             const link = `${FRONTEND_URL}/post/${slug}`;
             const modal = document.getElementById('shareModal');
@@ -8660,7 +9038,6 @@
             closeModal('shareModal');
         }
 
-        // ─── POST MENU ──────────────────────────────────────────────────
         function togglePostMenu(postId) {
             const card = document.querySelector(`.fb-post-card[data-post-id="${postId}"]`);
             if (!card) return;
@@ -8700,12 +9077,10 @@
             }, 100);
         }
 
-        // ─── SHOW LIKERS (placeholder) ────────────────────────────────
         function showLikers(postId) {
             toast('View who reacted to this post - coming soon!', 'info');
         }
 
-        // ─── UPDATE FEED RENDERER ─────────────────────────────────────
         async function loadFeed(page = 1) {
             const filter = S.feedFilter || 'personalized';
             if (page === 1) {
@@ -8872,11 +9247,6 @@
             loadFeed(1);
         }
 
-        // ─── OTHER POST FUNCTIONS ──────────────────────────────────────
-        function attachPostEventListeners() {
-            // No longer needed for FB style but kept for compatibility
-        }
-
         async function deletePost(postId) {
             if (!confirm('Delete this post permanently?')) return;
             try {
@@ -8903,7 +9273,6 @@
 
         function editPost(postId) { toast('Edit functionality coming soon!', 'info'); }
 
-        // ─── CREATE POST ───────────────────────────────────────────────
         function openCreatePostModal() {
             const modal = document.getElementById('createPostModal');
             if (modal) {
@@ -10820,7 +11189,6 @@
                 return;
             }
             const amt = Number(document.getElementById('withdrawAmt')?.value);
-            // Minimum withdrawal is ₦5,000
             if (!amt || amt < 5000) { toast('Minimum withdrawal is ₦5,000', 'error'); return; }
             if (amt > S.walletBal) { toast('Insufficient balance', 'error'); return; }
             closeModal('withdrawModal');
@@ -11936,108 +12304,7 @@
             }
         }
 
-        // ─── BOOK UPLOAD ──────────────────────────────────────────────
-        function previewBookCover(url) {
-            const preview = document.getElementById('bookUploadCoverPreview');
-            const img = document.getElementById('bookUploadCoverPreviewImg');
-            if (url && url.trim()) {
-                preview.style.display = 'block';
-                img.src = url.trim();
-            } else {
-                preview.style.display = 'none';
-            }
-        }
-
-        function previewBookFile(url) {
-            const preview = document.getElementById('bookUploadFilePreview');
-            if (url && url.trim()) {
-                preview.style.display = 'block';
-            } else {
-                preview.style.display = 'none';
-            }
-        }
-
-        function resetBookUploadForm() {
-            document.getElementById('bookUploadTitle').value = '';
-            document.getElementById('bookUploadAuthor').value = '';
-            document.getElementById('bookUploadDesc').value = '';
-            document.getElementById('bookUploadPrice').value = '0';
-            document.getElementById('bookUploadCover').value = '';
-            document.getElementById('bookUploadFile').value = '';
-            document.getElementById('bookUploadAffiliate').value = '0';
-            document.getElementById('bookUploadCoverPreview').style.display = 'none';
-            document.getElementById('bookUploadFilePreview').style.display = 'none';
-        }
-
-        async function submitBookForApproval() {
-            if (!S.isPremium) {
-                toast('Premium required to upload books', 'warning');
-                openModal('premiumModal');
-                return;
-            }
-
-            const title = document.getElementById('bookUploadTitle').value.trim();
-            const author = document.getElementById('bookUploadAuthor').value.trim();
-            const description = document.getElementById('bookUploadDesc').value.trim();
-            const price = parseFloat(document.getElementById('bookUploadPrice').value) || 0;
-            const coverImage = document.getElementById('bookUploadCover').value.trim();
-            const fileUrl = document.getElementById('bookUploadFile').value.trim();
-            const affiliatePercent = parseFloat(document.getElementById('bookUploadAffiliate').value) || 0;
-
-            if (!title) { toast('Please enter a title', 'error'); return; }
-            if (!author) { toast('Please enter an author', 'error'); return; }
-            if (!fileUrl) { toast('Please provide a PDF URL', 'error'); return; }
-            if (!fileUrl.startsWith('http://') && !fileUrl.startsWith('https://')) {
-                toast('Please enter a valid URL (e.g., https://...)', 'error');
-                return;
-            }
-            if (price < 0) { toast('Price cannot be negative', 'error'); return; }
-
-            const payload = {
-                title,
-                author,
-                description,
-                price,
-                coverImage,
-                fileUrl,
-                affiliatePercent,
-                isPublished: false,
-                status: 'pending'
-            };
-
-            showLoading('Submitting book for approval...');
-            try {
-                const res = await apiCall('/books/submit', { method: 'POST', body: payload });
-                if (res.success) {
-                    toast('✅ Book submitted for admin approval!', 'success');
-                    document.getElementById('bookUploadStatus').style.display = 'block';
-                    document.getElementById('bookUploadStatus').innerHTML = `
-                        <div class="d-flex items-center gap-3">
-                            <div class="si si-gold"><i class="fas fa-clock"></i></div>
-                            <div>
-                                <strong>Book submitted!</strong>
-                                <p style="margin:0;font-size:.82rem;color:var(--text2);">
-                                    Your book "<strong>${escapeHtml(title)}</strong>" is pending admin approval. You'll be notified once reviewed.
-                                </p>
-                            </div>
-                        </div>
-                    `;
-                    resetBookUploadForm();
-                    loadBooks();
-                    updateBookStatusBadge();
-                } else {
-                    toast(res.message || 'Failed to submit', 'error');
-                }
-            } catch (err) {
-                toast('Error: ' + err.message, 'error');
-            } finally {
-                hideLoading();
-            }
-        }
-
-        function updateBookStatusBadge() {
-            if (S.dp === 'books') loadBooks();
-        }
+        // ─── BOOK UPLOAD (already defined above) ──────────────────────
 
         // ─── MY LIBRARY ────────────────────────────────────────────────
         async function loadMyLibrary() {
@@ -15739,189 +16006,164 @@
         }
 
         // ================================================================
-        // APP INIT
+        // BOOTSTRAP – CHECK SESSION & REDIRECT ON PAGE LOAD (like GitHub)
         // ================================================================
-        async function initApp() {
-            try {
-                const savedUser = JSON.parse(localStorage.getItem('cx_user') || 'null');
-                if (savedUser) { S.user = savedUser;
-                    S.loggedIn = true;
-                    S.isPremium = savedUser.isPremium || savedUser.subscriptionTier === 'premium' || false;
-                    S.walletBal = savedUser.walletBalance || 0; }
-            } catch (e) {}
-            if (!S.user) { doLogout(); return; }
-            connectSocket();
-            await loadExchangeRates();
-            await fetchAdConfig();
-            try {
-                const data = await apiCall('/users/profile');
-                S.user = data.data || data;
-                S.isPremium = S.user.isPremium || S.user.subscriptionTier === 'premium' || false;
-                S.walletBal = S.user.walletBalance || 0;
-                S.loggedIn = true;
-                currentCurrency = S.user.preferredCurrency || localStorage.getItem('cx_currency') || 'NGN';
-                S.myAffiliateLinks = S.user.affiliateLinks || [];
-                localStorage.setItem('cx_user', JSON.stringify(S.user));
-            } catch (e) {}
-            updateUserUI();
-            updatePremiumUI();
-            if (S.user.roles?.includes('admin') || S.user.role === 'admin' || S.user.role === 'superadmin') {
-                document.getElementById('adminNavLi').style.display = 'block';
-            }
-            const hasCreatorAccess = S.isPremium || S.user?.roles?.includes('admin') || (S.user?.roles?.includes('creator') &&
-                S.user?.isApprovedInstructor);
-            document.getElementById('nav-instructor').style.display = hasCreatorAccess ? '' : 'none';
-            document.getElementById('nav-course-editor').style.display = hasCreatorAccess ? '' : 'none';
-            const fab = document.getElementById('fab');
-            if (fab) fab.style.display = hasCreatorAccess ? 'block' : 'none';
-            await loadEnrollments();
-            await fetchAnnouncements();
-            await fetchNotifications();
-            await loadUserFollowing();
-            await loadFollowers();
-            updateThemeIcons();
-            renderNotifs();
-            renderCurrencySelectorUI();
-            populateAllBankDetailsBoxes();
-            await loadPeople();
-            checkPlanExpiry();
-            await updateSocialBadge();
-            await loadAds('in-feed');
-            loadSidebarAd();
-            loadBottomAd();
-            setTimeout(() => {
-                const hash = window.location.hash.slice(1);
-                if (hash.startsWith('courses/')) { const courseId = hash.split('/')[1]; if (courseId) setTimeout(() =>
-                        openBuyCourse(courseId), 1000); }
-                if (hash.startsWith('post/')) { const slug = hash.split('/')[1]; if (slug) setTimeout(() =>
-                        loadPostBySlug(slug), 1000); }
-            }, 800);
-            handleDeepLink();
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user has a valid session and redirect to app
+            const isAppPage = document.getElementById('page-app')?.classList.contains('active');
+            const isLandingPage = document.getElementById('page-landing')?.classList.contains('active');
 
-        function handleDeepLink() {
-            const path = window.location.pathname;
-            const postMatch = path.match(/^\/post\/(.+)/);
-            if (postMatch) {
-                const slug = postMatch[1];
-                const token = localStorage.getItem('cx_accessToken');
-                if (!token) { toast('Please log in to view this post.', 'warning');
-                    goPage('login'); return; }
-                loadPostBySlug(slug);
-            }
-            const affMatch = path.match(/^\/aff\/([^\/]+)\/([^\/]+)\/([^\/]+)/);
-            if (affMatch) {
-                const [, userId, courseId, code] = affMatch;
-                showLoading('Redirecting to course...');
-                fetch(`${API_BASE}/affiliate/track/${code}`, { method: 'GET', credentials: 'include' }).catch(() => {})
-                    .finally(() => { window.location.href = `/courses/${courseId}`; });
-            }
-        }
-
-        async function fetchAnnouncements() {
-            try {
-                const res = await apiCall('/announcements/latest');
-                const list = Array.isArray(res.data) ? res.data : [];
-                if (list.length > 0) {
-                    const latest = list[0];
-                    const bar = document.getElementById('announcementBar');
-                    if (bar) { bar.style.display = 'flex';
-                        bar.onclick = () => toast(latest.title + ': ' + latest.content, 'info'); }
-                    document.getElementById('announcementText').textContent =
-                        `📣 ${latest.title}: ${latest.content?.substring(0, 100) || ''}`;
-                }
-            } catch (e) {}
-        }
-
-        async function fetchNotifications() {
-            try {
-                const res = await apiCall('/users/notifications');
-                const list = Array.isArray(res.data) ? res.data : [];
-                S.notifications = list.map(n => ({ ...n, unread: !n.read, time: new Date(n.createdAt).toLocaleTimeString(),
-                    bg: 'si-primary', ic: n.icon || 'fa-bell' }));
-            } catch (e) { console.warn('Could not fetch notifications:', e.message); }
-        }
-
-        function initLazyLoading() {
-            const images = document.querySelectorAll('img[data-src]');
-            if (!images.length) return;
-            const imageObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.dataset.src;
-                        img.removeAttribute('data-src');
-                        img.classList.add('loaded');
-                        imageObserver.unobserve(img);
+            // If already on app page, init app
+            if (isAppPage) {
+                if (S.loggedIn) {
+                    initApp();
+                    setDP(S.dp || 'feed');
+                } else {
+                    // Try to restore session
+                    const restored = checkSessionAndRedirect();
+                    if (!restored) {
+                        goPage('landing');
                     }
-                });
-            });
-            images.forEach(img => imageObserver.observe(img));
-        }
+                }
+                return;
+            }
 
-        console.log('🚀 ChangeX Academy — Production Ready with All Features');
-        console.log('📚 Learn, Earn, and Grow with ChangeX!');
-        console.log('✅ Premium Book Upload — Users can submit books for admin approval.');
-        console.log('✅ Admin Book Management — Approve, reject, edit, delete books.');
-        console.log('✅ My Library — Purchased books with download buttons.');
-        console.log('✅ Facebook-style feed with reactions, comments, shares.');
-        console.log('✅ Premium Course Upload — Users can create courses with lessons and submit for approval.');
-        console.log('✅ Ad Campaigns — Users create campaigns, admin approves, user pays, campaign goes live.');
-        console.log('✅ Sponsorships — Users can donate/partner with the platform.');
-        console.log('✅ Social Earnings Config — Admin config with engagement weights and distribution trigger.');
-        console.log('✅ Manual Payment Status — Users can track their bank transfer submissions.');
-        console.log('✅ Platform Stats — Admin dashboard with total users, courses, revenue, posts, books, enrollments.');
-        console.log('✅ User Badges — Achievements system with earned badges display.');
-        console.log('✅ Revenue Split Management — Instructors can split revenue with co-instructors.');
-        console.log('✅ Analytics Dashboard — Course analytics with funnel charts and engagement metrics.');
-        console.log('✅ Cohort Management — Create and manage student cohorts.');
-        console.log('✅ Sponsorship & Ad Campaign Platform — Users submit campaigns, pay, track performance.');
-        console.log('✅ Admin Campaign Management — Approve, reject, mark paid, refund campaigns.');
-        console.log('✅ Admin Sponsorship Management — Approve/reject sponsorships.');
-        console.log('✅ Campaign Analytics — Real-time stats with impressions, clicks, CTR, and daily charts.');
-        console.log('📱 PWA: Install banner hides for 7 days after dismissal.');
-        console.log('⭐ Rating system fully integrated with course reviews.');
-        console.log('👥 Following system fixed with proper localStorage persistence.');
-        console.log('🔍 SEO meta tags dynamically updated for posts and courses.');
-        console.log('📖 Book downloads permanently unlocked after purchase approval.');
-        console.log('👁️ Course views and book views are actively tracked.');
-        console.log('💰 Course completion bonus: ₦100.');
-        console.log('🎨 Gold, White & Black premium theme applied.');
-        console.log('📢 Hybrid Ads: Custom Admin Ads + Adsterra fallback with 50% creator revenue share.');
-        console.log('📢 Ads appear between posts (every 3 for free, 6 for premium) AND after every 4 courses in Explore.');
-        console.log('📢 Ads also appear in: Video (pre/mid-roll), Sidebar, Books, Lesson inline, Challenges.');
-        console.log('🗑️ Admin can delete any post.');
-        console.log('📤 Book upload: Premium users can submit books for admin approval.');
-        console.log('📤 Admin can directly add books with immediate publishing.');
-        console.log('🔗 Affiliate links now use hash-based routing for SPA compatibility.');
-        console.log('🏦 Bank details updated: Lead Bank & Taj Bank for manual transfers.');
-        console.log('⚡ Performance: Lazy loading, debounce, throttle, batch DOM updates, request deduplication.');
-        console.log('🔥 Landing page hero stats hardcoded for marketing impact.');
-        console.log('📊 Leaderboard shows correct user data (no more zeros).');
-        console.log('👤 Profile earnings hidden when viewing other users\' profiles.');
-        console.log('📢 Ad Frequency: Free users see ads every 3 posts, Premium users every 6 posts.');
-        console.log('📚 Book purchase approval automatically converts purchase button to download.');
-        console.log('🌱 Social Earnings fully integrated with wallet breakdown and dedicated page.');
-        console.log('✅ Production-ready: All features optimized for growth, engagement, and profitability.');
-        console.log('📊 Social Earnings: Daily pool distribution with admin config and real-time socket updates.');
-        console.log('📌 Read More: Posts truncate at 200 characters with toggle.');
-        console.log('📌 Premium Book Upload: Only visible to premium users with pending status.');
-        console.log('📌 All 11 ad placements supported in dropdown and rendering.');
-        console.log('📌 Popup ads: Only shown to free users, once per session.');
-        console.log('📌 Ad containers hidden for premium users.');
-        console.log('📌 Sponsorship Tab: Users can create ad campaigns, sponsor the platform, and track analytics.');
-        console.log('📌 Campaign Payment Flow: Users pay after admin approval — campaign goes live on payment.');
-        console.log('📌 Escrow-based budget tracking with real-time deductions.');
-        console.log('📌 Top-up campaigns to add more budget.');
-        console.log('📌 Fraud detection with IP blacklisting and unique impression tracking.');
-        console.log('📌 Minimum withdrawal: ₦5,000.');
-        console.log('📌 Badges: Published Author, Paid Author, Book Author, Advertiser badges.');
-        console.log('📌 Premium-only: Book upload requires Premium.');
-        console.log('📌 Manual Payments: Track book, course, campaign, subscription payments.');
-        console.log('📌 Wallet breakdown includes book earnings.');
-        console.log('📌 Facebook-style comments: Nested replies, like comments, reaction picker.');
-        console.log('📌 Share modal: Social media sharing with copy link.');
-        console.log('📌 Post menu: Edit/Delete for authors and admins.');
+            // Try to restore session from localStorage
+            const restored = checkSessionAndRedirect();
+
+            // If no session, stay on landing (or login if explicitly requested)
+            if (!restored && !isLandingPage) {
+                const hash = window.location.hash;
+                if (hash === '#app' || hash === '#login' || hash === '#register') {
+                    // Let the page load as normal
+                } else {
+                    // Ensure landing is visible
+                    const pages = document.querySelectorAll('.page');
+                    const target = document.getElementById('page-landing');
+                    if (target) {
+                        pages.forEach(p => p.classList.remove('active'));
+                        target.classList.add('active');
+                        S.page = 'landing';
+                    }
+                }
+            }
+
+            // Init landing page if not logged in
+            if (!S.loggedIn && document.getElementById('page-landing')?.classList.contains('active')) {
+                initLanding();
+            }
+
+            // If we're on the app page but not logged in, redirect to landing
+            if (isAppPage && !S.loggedIn) {
+                goPage('landing');
+            }
+
+            // Theme
+            const savedTheme = localStorage.getItem('cx_theme');
+            if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcons();
+
+            // Currency
+            currentCurrency = localStorage.getItem('cx_currency') || 'NGN';
+            renderCurrencySelectorUI();
+
+            // Install banner
+            const banner = document.getElementById('installBanner');
+            if (banner && shouldShowInstallBanner()) {
+                banner.classList.remove('hidden');
+            }
+
+            // Check session expiry on each page load
+            const expiry = localStorage.getItem('cx_session_expiry');
+            if (expiry) {
+                const expiryMs = parseInt(expiry, 10);
+                if (Date.now() > expiryMs) {
+                    localStorage.removeItem('cx_accessToken');
+                    localStorage.removeItem('cx_user');
+                    localStorage.removeItem('cx_session_expiry');
+                    S.loggedIn = false;
+                    if (document.getElementById('page-app')?.classList.contains('active')) {
+                        goPage('landing');
+                    }
+                }
+            }
+
+            console.log('🚀 ChangeX Academy — Production Ready with All Features');
+            console.log('📚 Learn, Earn, and Grow with ChangeX!');
+            console.log('✅ 30-Day Persistent Login — like GitHub');
+            console.log('✅ Auto-redirect to dashboard when logged in');
+            console.log('✅ Premium Book Upload — Users can submit books for admin approval.');
+            console.log('✅ Admin Book Management — Approve, reject, edit, delete books.');
+            console.log('✅ My Library — Purchased books with download buttons.');
+            console.log('✅ Facebook-style feed with reactions, comments, shares.');
+            console.log('✅ Premium Course Upload — Users can create courses with lessons and submit for approval.');
+            console.log('✅ Ad Campaigns — Users create campaigns, admin approves, user pays, campaign goes live.');
+            console.log('✅ Sponsorships — Users can donate/partner with the platform.');
+            console.log('✅ Social Earnings Config — Admin config with engagement weights and distribution trigger.');
+            console.log('✅ Manual Payment Status — Users can track their bank transfer submissions.');
+            console.log('✅ Platform Stats — Admin dashboard with total users, courses, revenue, posts, books, enrollments.');
+            console.log('✅ User Badges — Achievements system with earned badges display.');
+            console.log('✅ Revenue Split Management — Instructors can split revenue with co-instructors.');
+            console.log('✅ Analytics Dashboard — Course analytics with funnel charts and engagement metrics.');
+            console.log('✅ Cohort Management — Create and manage student cohorts.');
+            console.log('✅ Sponsorship & Ad Campaign Platform — Users submit campaigns, pay, track performance.');
+            console.log('✅ Admin Campaign Management — Approve, reject, mark paid, refund campaigns.');
+            console.log('✅ Admin Sponsorship Management — Approve/reject sponsorships.');
+            console.log('✅ Campaign Analytics — Real-time stats with impressions, clicks, CTR, and daily charts.');
+            console.log('📱 PWA: Install banner hides for 7 days after dismissal.');
+            console.log('⭐ Rating system fully integrated with course reviews.');
+            console.log('👥 Following system fixed with proper localStorage persistence.');
+            console.log('🔍 SEO meta tags dynamically updated for posts and courses.');
+            console.log('📖 Book downloads permanently unlocked after purchase approval.');
+            console.log('👁️ Course views and book views are actively tracked.');
+            console.log('💰 Course completion bonus: ₦100.');
+            console.log('🎨 Gold, White & Black premium theme applied.');
+            console.log('📢 Hybrid Ads: Custom Admin Ads + Adsterra fallback with 50% creator revenue share.');
+            console.log('📢 Ads appear between posts (every 3 for free, 6 for premium) AND after every 4 courses in Explore.');
+            console.log('📢 Ads also appear in: Video (pre/mid-roll), Sidebar, Books, Lesson inline, Challenges.');
+            console.log('🗑️ Admin can delete any post.');
+            console.log('📤 Book upload: Premium users can submit books for admin approval.');
+            console.log('📤 Admin can directly add books with immediate publishing.');
+            console.log('🔗 Affiliate links now use hash-based routing for SPA compatibility.');
+            console.log('🏦 Bank details updated: Lead Bank & Taj Bank for manual transfers.');
+            console.log('⚡ Performance: Lazy loading, debounce, throttle, batch DOM updates, request deduplication.');
+            console.log('🔥 Landing page hero stats hardcoded for marketing impact.');
+            console.log('📊 Leaderboard shows correct user data (no more zeros).');
+            console.log('👤 Profile earnings hidden when viewing other users\' profiles.');
+            console.log('📢 Ad Frequency: Free users see ads every 3 posts, Premium users every 6 posts.');
+            console.log('📚 Book purchase approval automatically converts purchase button to download.');
+            console.log('🌱 Social Earnings fully integrated with wallet breakdown and dedicated page.');
+            console.log('✅ Production-ready: All features optimized for growth, engagement, and profitability.');
+            console.log('📊 Social Earnings: Daily pool distribution with admin config and real-time socket updates.');
+            console.log('📌 Read More: Posts truncate at 200 characters with toggle.');
+            console.log('📌 Premium Book Upload: Only visible to premium users with pending status.');
+            console.log('📌 All 11 ad placements supported in dropdown and rendering.');
+            console.log('📌 Popup ads: Only shown to free users, once per session.');
+            console.log('📌 Ad containers hidden for premium users.');
+            console.log('📌 Sponsorship Tab: Users can create ad campaigns, sponsor the platform, and track analytics.');
+            console.log('📌 Campaign Payment Flow: Users pay after admin approval — campaign goes live on payment.');
+            console.log('📌 Escrow-based budget tracking with real-time deductions.');
+            console.log('📌 Top-up campaigns to add more budget.');
+            console.log('📌 Fraud detection with IP blacklisting and unique impression tracking.');
+            console.log('📌 Minimum withdrawal: ₦5,000.');
+            console.log('📌 Badges: Published Author, Paid Author, Book Author, Advertiser badges.');
+            console.log('📌 Premium-only: Book upload requires Premium.');
+            console.log('📌 Manual Payments: Track book, course, campaign, subscription payments.');
+            console.log('📌 Wallet breakdown includes book earnings.');
+            console.log('📌 Facebook-style comments: Nested replies, like comments, reaction picker.');
+            console.log('📌 Share modal: Social media sharing with copy link.');
+            console.log('📌 Post menu: Edit/Delete for authors and admins.');
+        });
+
+        // Expose functions globally
+        window.uploadBookCover = uploadBookCover;
+        window.uploadBookPdf = uploadBookPdf;
+        window.submitBookForApproval = submitBookForApproval;
+        window.previewBookCover = previewBookCover;
+        window.previewBookFile = previewBookFile;
+        window.resetBookUploadForm = resetBookUploadForm;
+        window.updateBookStatusBadge = updateBookStatusBadge;
+        window.checkSessionAndRedirect = checkSessionAndRedirect;
     </script>
 </body>
 </html>
