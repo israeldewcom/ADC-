@@ -6788,6 +6788,92 @@
                     limit) { fn(...args);
                     last = now; } }; }
 
+        // ─── STATE SYNC ENGINE ──────────────────────────────────────────
+        const StateSync = {
+            updateUser(data) {
+                S.user = { ...S.user, ...data };
+                localStorage.setItem('cx_user', JSON.stringify(S.user));
+                updateUserUI();
+                if (S.dp === 'settings') initSettings();
+                if (S.dp === 'home') renderHomeDashboard();
+                if (S.dp === 'wallet') renderWallet();
+            },
+            updatePosts(post) {
+                const exists = S.posts.some(p => p._id === post._id);
+                if (!exists) {
+                    S.posts.unshift(post);
+                    cacheFeedPosts([post]);
+                } else {
+                    S.posts = S.posts.map(p => p._id === post._id ? { ...p, ...post } : p);
+                }
+                if (S.dp === 'feed') loadFeed(feedPage);
+                if (S.dp === 'home') renderHomeDashboard();
+            },
+            updateEnrollments(enrollment) {
+                const exists = S.enrollments.some(e => e._id === enrollment._id);
+                if (!exists) S.enrollments.push(enrollment);
+                else S.enrollments = S.enrollments.map(e => e._id === enrollment._id ? enrollment : e);
+                if (S.dp === 'courses') renderCourseGrid(S.courseFilter);
+                if (S.dp === 'home') renderHomeDashboard();
+                const cntEl = document.getElementById('navCoursesCnt');
+                if (cntEl) cntEl.textContent = S.enrollments.length;
+            },
+            updateWallet(balance) {
+                S.walletBal = balance;
+                if (S.user) S.user.walletBalance = balance;
+                localStorage.setItem('cx_user', JSON.stringify(S.user));
+                document.getElementById('tbWallet').textContent = fmtMoneyAPI(balance);
+                if (S.dp === 'wallet') renderWallet();
+                if (S.dp === 'home') renderHomeDashboard();
+            },
+            refreshCurrentView() {
+                if (S.dp) {
+                    const map = {
+                        feed: () => loadFeed(feedPage),
+                        home: renderHomeDashboard,
+                        explore: renderExplore,
+                        courses: () => renderCourseGrid(S.courseFilter),
+                        wallet: renderWallet,
+                        affiliates: () => renderAffiliates(false),
+                        referrals: renderRefs,
+                        leaderboard: () => { loadLeaderboard();
+                            renderLB(); },
+                        instructor: renderInstHub,
+                        'course-editor': initEditor,
+                        ai: initAI,
+                        books: loadBooks,
+                        'my-library': loadMyLibrary,
+                        'create-book': () => { if (S.isPremium) { const el = document.getElementById(
+                                    'dash-create-book'); if (el) { el.style.display = 'block';
+                                    el.classList.add('active');
+                                    resetBookUploadForm(); } } },
+                        'social-earnings': renderSocialEarnings,
+                        'manual-payments': loadUserManualPayments,
+                        tools: loadTools,
+                        settings: initSettings,
+                        sponsorship: () => switchSponsorTab(S.sponsorTab || 'overview'),
+                        admin: () => renderAdm(S.admSec || 'dashboard'),
+                        badges: loadUserBadges,
+                        certs: renderCerts,
+                        quiz: initQuiz,
+                        lesson: () => { renderCurric();
+                            switchLTab('overview', null); },
+                        following: loadFollowing,
+                        challenges: loadChallenges,
+                        people: loadPeople,
+                        'book-detail': () => { if (S.currentBook) renderBookDetail(S.currentBook); },
+                    };
+                    if (map[S.dp]) map[S.dp]();
+                }
+            }
+        };
+
+        // ─── CACHE BUSTING ──────────────────────────────────────────────
+        function bustCache(url) {
+            const separator = url.includes('?') ? '&' : '?';
+            return url + separator + '_t=' + Date.now();
+        }
+
         // ================================================================
         // AD SYSTEM – HYBRID ADS + 50% REVENUE SHARE
         // ================================================================
@@ -7280,6 +7366,12 @@
             if (pg === 'setup') { setTimeout(() => { if (typeof showWizStep === 'function') showWizStep(S.wizStep || 0); },
                     50); }
             if (pg === 'landing') { updateLandingHeroStats(); }
+            // Update URL hash
+            if (pg !== 'landing') {
+                history.pushState(null, '', `#${pg}`);
+            } else {
+                history.pushState(null, '', '/');
+            }
         }
 
         function forceRedirect(targetPage) {
@@ -7293,13 +7385,23 @@
         }
 
         function setDP(pg) {
-            document.querySelectorAll('.dash-sub').forEach(d => d.classList.remove('active'));
+            // Reset all dash-sub: hide them and remove active class
+            document.querySelectorAll('.dash-sub').forEach(d => {
+                d.classList.remove('active');
+                d.style.display = 'none';
+            });
+
             const el = document.getElementById('dash-' + pg);
-            if (el) { el.classList.add('active');
-                S.dp = pg; }
+            if (el) {
+                el.classList.add('active');
+                el.style.display = 'block';
+                S.dp = pg;
+            }
+
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             const ni = document.getElementById('nav-' + pg);
             if (ni) ni.classList.add('active');
+
             ['feed', 'challenges', 'explore', 'wallet', 'home', 'books', 'following', 'social-earnings'].forEach(k => { const m =
                     document.getElementById('mbn-' + k); if (m) m.classList.toggle('active', k === pg); });
             closeSidebar();
@@ -7369,8 +7471,298 @@
                 const subStatus = document.getElementById('subStatusCard');
                 if (subStatus) renderSubStatus();
             }
+            // Update URL without reload
+            if (pg !== 'feed' && pg !== 'home') {
+                history.pushState(null, '', `/${pg}`);
+            } else {
+                history.pushState(null, '', `/app`);
+            }
         }
 
+        // ─── ROUTER ──────────────────────────────────────────────────────
+        const ROUTES = {
+            '/': { page: 'landing', action: null },
+            '/login': { page: 'login', action: null },
+            '/register': { page: 'register', action: null },
+            '/app': { page: 'app', action: null },
+            '/feed': { page: 'app', action: 'showFeed' },
+            '/home': { page: 'app', action: 'showHome' },
+            '/explore': { page: 'app', action: 'showExplore' },
+            '/courses': { page: 'app', action: 'showCourses' },
+            '/wallet': { page: 'app', action: 'showWallet' },
+            '/affiliates': { page: 'app', action: 'showAffiliates' },
+            '/referrals': { page: 'app', action: 'showReferrals' },
+            '/leaderboard': { page: 'app', action: 'showLeaderboard' },
+            '/instructor': { page: 'app', action: 'showInstructor' },
+            '/course-editor': { page: 'app', action: 'showCourseEditor' },
+            '/ai': { page: 'app', action: 'showAI' },
+            '/books': { page: 'app', action: 'showBooks' },
+            '/my-library': { page: 'app', action: 'showMyLibrary' },
+            '/create-book': { page: 'app', action: 'showCreateBook' },
+            '/social-earnings': { page: 'app', action: 'showSocialEarnings' },
+            '/manual-payments': { page: 'app', action: 'showManualPayments' },
+            '/tools': { page: 'app', action: 'showTools' },
+            '/settings': { page: 'app', action: 'showSettings' },
+            '/sponsorship': { page: 'app', action: 'showSponsorship' },
+            '/admin': { page: 'app', action: 'showAdmin' },
+            '/post/:slug': { page: 'app', action: 'loadPost' },
+            '/courses/:id': { page: 'app', action: 'openCourse' },
+            '/aff/:code': { page: null, action: 'trackAffiliate' },
+            '/profile/:userId': { page: 'app', action: 'viewProfile' },
+        };
+
+        function navigate(path, push = true) {
+            if (push && path !== window.location.pathname) {
+                history.pushState(null, '', path);
+            }
+            handleRoute(path);
+        }
+
+        function handleRoute(path) {
+            // Remove hash and query params
+            const cleanPath = path.split('?')[0].split('#')[0];
+            let matchedRoute = null;
+            let routeParams = {};
+
+            // Check exact match first
+            if (ROUTES[cleanPath]) {
+                matchedRoute = ROUTES[cleanPath];
+            } else {
+                // Check dynamic routes
+                for (const [pattern, route] of Object.entries(ROUTES)) {
+                    if (pattern.includes(':')) {
+                        const patternParts = pattern.split('/');
+                        const pathParts = cleanPath.split('/');
+                        if (patternParts.length === pathParts.length) {
+                            let match = true;
+                            const params = {};
+                            for (let i = 0; i < patternParts.length; i++) {
+                                if (patternParts[i].startsWith(':')) {
+                                    params[patternParts[i].slice(1)] = pathParts[i];
+                                } else if (patternParts[i] !== pathParts[i]) {
+                                    match = false;
+                                    break;
+                                }
+                            }
+                            if (match) {
+                                matchedRoute = route;
+                                routeParams = params;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!matchedRoute) {
+                // Default to landing or app
+                if (S.loggedIn) {
+                    goPage('app');
+                    setTimeout(() => setDP('feed'), 50);
+                } else {
+                    goPage('landing');
+                }
+                return;
+            }
+
+            const { page, action } = matchedRoute;
+
+            if (page) {
+                goPage(page);
+            }
+
+            // Execute action with params
+            if (action) {
+                executeAction(action, routeParams);
+            } else if (page === 'app') {
+                setTimeout(() => setDP(S.dp || 'feed'), 50);
+            }
+        }
+
+        function executeAction(action, params) {
+            switch (action) {
+                case 'showFeed':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('feed'), 50);
+                    break;
+                case 'showHome':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('home'), 50);
+                    break;
+                case 'showExplore':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('explore'), 50);
+                    break;
+                case 'showCourses':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('courses'), 50);
+                    break;
+                case 'showWallet':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('wallet'), 50);
+                    break;
+                case 'showAffiliates':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('affiliates'), 50);
+                    break;
+                case 'showReferrals':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('referrals'), 50);
+                    break;
+                case 'showLeaderboard':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => { loadLeaderboard();
+                        setDP('leaderboard'); }, 50);
+                    break;
+                case 'showInstructor':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('instructor'), 50);
+                    break;
+                case 'showCourseEditor':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('course-editor'), 50);
+                    break;
+                case 'showAI':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('ai'), 50);
+                    break;
+                case 'showBooks':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('books'), 50);
+                    break;
+                case 'showMyLibrary':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('my-library'), 50);
+                    break;
+                case 'showCreateBook':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('create-book'), 50);
+                    break;
+                case 'showSocialEarnings':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('social-earnings'), 50);
+                    break;
+                case 'showManualPayments':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('manual-payments'), 50);
+                    break;
+                case 'showTools':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('tools'), 50);
+                    break;
+                case 'showSettings':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('settings'), 50);
+                    break;
+                case 'showSponsorship':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('sponsorship'), 50);
+                    break;
+                case 'showAdmin':
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => setDP('admin'), 50);
+                    break;
+                case 'viewProfile':
+                    const userId = params.userId;
+                    if (userId) {
+                        if (S.page !== 'app') goPage('app');
+                        setTimeout(() => openUserProfile(userId), 100);
+                    }
+                    break;
+                case 'loadPost':
+                    const slug = params.slug;
+                    if (!slug) break;
+                    if (!S.loggedIn) {
+                        toast('Please log in to view this post.', 'warning');
+                        goPage('login');
+                        return;
+                    }
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => loadPostBySlug(slug), 100);
+                    break;
+                case 'openCourse':
+                    const courseId = params.id;
+                    if (!courseId) break;
+                    if (S.page !== 'app') goPage('app');
+                    setTimeout(() => openBuyCourse(courseId), 300);
+                    break;
+                case 'trackAffiliate':
+                    const code = params.code;
+                    if (!code) { goPage('landing'); return; }
+                    fetch(`${API_BASE}/affiliate/track/${code}`, { method: 'GET', credentials: 'include' })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success && data.redirectUrl) {
+                                const cid = data.courseId || data.data?.courseId;
+                                if (cid) {
+                                    navigate(`/courses/${cid}`, true);
+                                } else {
+                                    goPage('landing');
+                                }
+                            } else {
+                                goPage('landing');
+                            }
+                        })
+                        .catch(() => { goPage('landing'); });
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // ─── INTERCEPT NAVIGATION ──────────────────────────────────────
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a[data-route]');
+            if (link) {
+                e.preventDefault();
+                const href = link.getAttribute('href');
+                if (href) navigate(href, true);
+            }
+        });
+
+        window.addEventListener('popstate', function() {
+            const path = window.location.pathname + window.location.search;
+            if (path !== '/') {
+                handleRoute(path);
+            } else {
+                if (S.loggedIn) {
+                    goPage('app');
+                    setTimeout(() => setDP('feed'), 50);
+                } else {
+                    goPage('landing');
+                }
+            }
+        });
+
+        // ─── INIT ROUTER ──────────────────────────────────────────────
+        function initRouter() {
+            // Handle initial load
+            const path = window.location.pathname + window.location.search;
+            const hash = window.location.hash;
+
+            if (hash && hash.startsWith('#/')) {
+                const hashPath = hash.slice(2);
+                navigate(hashPath, false);
+                return;
+            }
+
+            if (path !== '/') {
+                handleRoute(path);
+            } else {
+                // Check if user is logged in
+                const token = localStorage.getItem('cx_accessToken');
+                if (token) {
+                    goPage('app');
+                    setTimeout(() => setDP('feed'), 50);
+                } else {
+                    goPage('landing');
+                }
+            }
+        }
+
+        // ================================================================
+        // SIDEBAR
+        // ================================================================
         function openSidebar() { document.getElementById('sidebar')?.classList.add('open');
             document.getElementById('sbOverlay')?.classList.add('vis');
             document.body.style.overflow = 'hidden'; }
@@ -7792,9 +8184,8 @@
             const userData = localStorage.getItem('cx_user');
             const expiry = localStorage.getItem('cx_session_expiry');
 
-            // If we're already on the app page, don't redirect
             const isAppPage = document.getElementById('page-app')?.classList.contains('active');
-            if (isAppPage) return;
+            if (isAppPage) return true;
 
             if (token && userData && expiry) {
                 const now = Date.now();
@@ -7806,7 +8197,6 @@
                         S.loggedIn = true;
                         S.isPremium = user.isPremium || false;
                         S.walletBal = user.walletBalance || 0;
-                        // Redirect to app
                         forceRedirect('app');
                         setTimeout(() => {
                             if (typeof setDP === 'function') setDP(S.dp || 'feed');
@@ -7821,7 +8211,6 @@
                         return false;
                     }
                 } else {
-                    // Session expired – clear and stay on landing/login
                     localStorage.removeItem('cx_accessToken');
                     localStorage.removeItem('cx_user');
                     localStorage.removeItem('cx_session_expiry');
@@ -7831,9 +8220,6 @@
             }
             return false;
         }
-
-        // ─── CALL THIS ON PAGE LOAD ──────────────────────────────────────
-        // We'll invoke it in the DOMContentLoaded event at the bottom.
 
         // ================================================================
         // LANDING PAGE HERO STATS – HARDCODED FOR MARKETING
@@ -9248,17 +9634,20 @@
         }
 
         async function deletePost(postId) {
-            if (!confirm('Delete this post permanently?')) return;
+            if (!confirm('Delete this post permanently? This action cannot be undone.')) return;
             try {
-                const isAdmin = S.user?.roles?.includes('admin');
+                const isAdmin = S.user?.roles?.includes('admin') || S.user?.role === 'admin';
                 const endpoint = isAdmin ? `/admin/posts/${postId}` : `${POSTS_API}/${postId}`;
                 await apiCall(endpoint, { method: 'DELETE' });
-                toast('Post deleted', 'success');
+                toast('✅ Post deleted successfully', 'success');
+                S.posts = S.posts.filter(p => p._id !== postId);
                 try {
                     const cached = JSON.parse(localStorage.getItem('cx_feed_posts') || '[]');
                     const updated = cached.filter(p => p._id !== postId);
                     localStorage.setItem('cx_feed_posts', JSON.stringify(updated));
                 } catch (e) {}
+                const card = document.querySelector(`.fb-post-card[data-post-id="${postId}"]`);
+                if (card) card.remove();
                 if (S.dp === 'feed') loadFeed(feedPage);
                 if (S.dp === 'profile' && S.profileUser) {
                     const res = await apiCall(`/users/${S.profileUser._id}/profile`);
@@ -9268,7 +9657,7 @@
                     switchAdm('users', document.querySelector('#dash-admin .fpill.active'));
                 }
                 if (S.dp === 'social-earnings') renderSocialEarnings();
-            } catch (err) { toast('Failed to delete: ' + err.message, 'error'); }
+            } catch (err) { toast('Failed to delete post: ' + err.message, 'error'); }
         }
 
         function editPost(postId) { toast('Edit functionality coming soon!', 'info'); }
@@ -9771,12 +10160,12 @@
             const challengeProgress = data.challengeProgress || [];
             const isFollowing = data.isFollowing || false;
             const isOwnProfile = S.user?._id === user._id;
+            const isAdmin = S.user?.roles?.includes('admin');
+            const canSeeWallet = isOwnProfile || isAdmin;
             const totalEarnings = isOwnProfile ? posts.reduce((sum, p) => sum + (p.earnings || 0), 0) : 0;
             const avatarHtml = getAvatarUrl(user) ?
                 `<img src="${getAvatarUrl(user)}" alt="avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` :
                 (user.firstName?.[0] || 'U');
-            const isAdmin = S.user?.roles?.includes('admin');
-            const canSeeEarnings = isOwnProfile || isAdmin;
 
             container.innerHTML = `
                 <div class="profile-header" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;background:var(--bg2);padding:1.5rem;border-radius:var(--radius);margin-bottom:1.5rem;">
@@ -9790,7 +10179,7 @@
                             <span><strong>${data.followersCount || 0}</strong> followers</span>
                             <span><strong>${data.followingCount || 0}</strong> following</span>
                             <span><strong>${posts.length}</strong> posts</span>
-                            ${canSeeEarnings ? `<span><strong>${fmtMoneyAPI(totalEarnings)}</strong> earned from posts</span>` : ''}
+                            ${canSeeWallet ? `<span><strong>${fmtMoneyAPI(totalEarnings)}</strong> earned from posts</span>` : ''}
                             ${user.isPremium ? '<span class="badge badge-gold">Premium</span>' : ''}
                             ${user.isApprovedInstructor ? '<span class="badge badge-violet">Instructor</span>' : ''}
                         </div>
@@ -9798,11 +10187,12 @@
                     </div>
                 </div>
                 <div class="profile-content">
-                    ${canSeeEarnings ? `
+                    ${canSeeWallet ? `
                     <h4>💰 Wallet</h4>
                     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:1.5rem;">
                         <span style="font-size:.8rem;color:var(--text3);">Balance</span>
                         <div style="font-family:var(--font-heading);font-size:1.5rem;color:var(--lime);">${fmtMoneyAPI(user.walletBalance || 0)}</div>
+                        ${isAdmin && !isOwnProfile ? `<span style="font-size:.65rem;color:var(--text3);">(Admin view)</span>` : ''}
                     </div>
                     ` : ''}
                     <h4>🏆 Challenges</h4>
@@ -9815,7 +10205,7 @@
                             const slug = p.slug || p._id;
                             const postUrl = `${FRONTEND_URL}/post/${slug}`;
                             const isAdmin = S.user?.roles?.includes('admin');
-                            const showEarnings = canSeeEarnings && p.earnings > 0;
+                            const showEarnings = canSeeWallet && p.earnings > 0;
                             return `<div class="collection-item" onclick="window.location.href='${postUrl}'" style="cursor:pointer"><span class="ci-type">${p.type || 'post'}</span><div class="ci-title">${escapeHtml(p.title)}</div><div class="ci-meta">${new Date(p.publishedAt || p.createdAt).toLocaleDateString()} · ❤️ ${p.likes || 0} · 💬 ${p.commentsCount || 0} · 👁️ ${p.views || 0}${showEarnings ? ` · <span style="color:var(--primary);font-weight:700;">${fmtMoneyAPI(p.earnings || 0)}</span>` : ''}</div>${(S.user?._id === user._id || isAdmin) ? `<div class="ci-actions"><button class="post-delete-btn" onclick="event.stopPropagation();deletePost('${p._id}')"><i class="fas fa-trash"></i> Delete</button></div>` : ''}</div>`;
                         }).join('') : '<p style="color:var(--text3);">No posts yet</p>'}
                     </div>
@@ -11102,6 +11492,13 @@
                 const breakdown = wallet.earningsBreakdown || {};
                 localStorage.setItem('cx_user', JSON.stringify(S.user));
 
+                // Fetch social earnings and add to breakdown
+                let socialEarnings = 0;
+                try {
+                    const socialRes = await apiCall('/posts/my/social-earnings');
+                    socialEarnings = socialRes.data?.totalEarnings || 0;
+                } catch (e) { /* ignore */ }
+
                 document.getElementById('walletBal').textContent = fmtMoneyAPI(S.walletBal);
                 document.getElementById('withdrawBal').textContent = fmtMoneyAPI(S.walletBal);
                 document.getElementById('tbWallet').textContent = fmtMoneyAPI(S.walletBal);
@@ -11119,17 +11516,9 @@
                     <div class="web-row"><span>Book Earnings</span><span style="color:var(--cyan);font-weight:700">${fmtMoneyAPI(breakdown.bookEarnings || 0)}</span></div>
                     <div class="web-row"><span>Ad Revenue</span><span style="color:var(--gold);font-weight:700">${fmtMoneyAPI(breakdown.adRevenue || 0)}</span></div>
                     <div class="web-row"><span>Campaign Revenue</span><span style="color:var(--orange);font-weight:700">${fmtMoneyAPI(breakdown.campaignRevenue || 0)}</span></div>
-                    <div class="web-row" style="border-top:2px solid var(--border);font-weight:800;font-size:.9rem"><span>Total Earnings</span><span style="color:var(--lime)">${fmtMoneyAPI(breakdown.totalEarnings || 0)}</span></div>
+                    <div class="web-row"><span>🌱 Social Earnings</span><span style="color:var(--cyan);font-weight:700">${fmtMoneyAPI(socialEarnings)}</span></div>
+                    <div class="web-row" style="border-top:2px solid var(--border);font-weight:800;font-size:.9rem"><span>Total Earnings</span><span style="color:var(--lime)">${fmtMoneyAPI((breakdown.totalEarnings || 0) + socialEarnings)}</span></div>
                 `;
-
-                try {
-                    const socialEarnings = await apiCall('/posts/my/social-earnings');
-                    const socialEarned = socialEarnings.data?.totalEarnings || 0;
-                    breakdownHtml += `
-                        <div class="web-row"><span>🌱 Social Earnings</span><span style="color:var(--cyan);font-weight:700">${fmtMoneyAPI(socialEarned)}</span></div>
-                    `;
-                    S.socialTotalEarnings = socialEarned;
-                } catch (e) {}
 
                 document.getElementById('walletBreakdown').innerHTML = breakdownHtml;
 
@@ -11477,7 +11866,7 @@
                                     <td>
                                         <button class="btn btn-ghost btn-sm" onclick="editExistingCourse('${c._id}')"><i class="fas fa-edit"></i></button>
                                         ${!c.isApproved && !c.pendingApproval ? `<button class="btn btn-primary btn-sm" onclick="submitExistingCourse('${c._id}')"><i class="fas fa-paper-plane"></i></button>` : ''}
-                                        <button class="btn btn-danger btn-sm" onclick="deleteCourse('${c._id}')"><i class="fas fa-trash"></i></button>
+                                        ${S.user?.roles?.includes('admin') || S.user?.role === 'admin' ? `<button class="btn btn-danger btn-sm" onclick="adminDeleteCourse('${c._id}')"><i class="fas fa-trash"></i></button>` : ''}
                                     </td>
                                 </tr>
                             `;
@@ -11545,6 +11934,21 @@
             try { await apiCall(`/instructor/courses/${courseId}`, { method: 'DELETE' });
                 toast('Course deleted', 'success');
                 loadInstructorData(); } catch (e) { toast(e.message, 'error'); }
+        }
+
+        // ─── ADMIN DELETE COURSE ──────────────────────────────────────
+        async function adminDeleteCourse(courseId) {
+            if (!confirm('Delete this course permanently? All lessons, enrollments, and data will be lost.')) return;
+            try {
+                const isAdmin = S.user?.roles?.includes('admin') || S.user?.role === 'admin';
+                if (!isAdmin) { toast('Admin access required', 'error'); return; }
+                await apiCall(`/admin/courses/${courseId}`, { method: 'DELETE' });
+                toast('✅ Course deleted successfully', 'success');
+                if (S.admSec === 'courses') {
+                    switchAdm('courses', document.querySelector('#dash-admin .fpill.active'));
+                }
+                if (S.dp === 'instructor') loadInstructorData();
+            } catch (err) { toast('Failed to delete course: ' + err.message, 'error'); }
         }
 
         async function editExistingCourse(courseId) {
@@ -13280,6 +13684,7 @@
                         loadPostBySlug(slug), 1000); }
             }, 800);
             handleDeepLink();
+            initRouter();
         }
 
         function handleDeepLink() {
@@ -13570,14 +13975,55 @@
                     await loadAdminDashboardStats();
                     break;
                 case 'users':
-                    content.innerHTML =
-                        '<div class="overflow-x-auto"><table class="dtable" id="admUsersTable"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Status</th><th>Actions</th></tr></thead><tbody><tr><td colspan="6" style="text-align:center">Loading...</td></tr></tbody></table></div>';
+                    content.innerHTML = `
+                        <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <h6 style="margin:0;">👥 User Management</h6>
+                            <div style="display:flex; gap:0.5rem;">
+                                <input type="text" class="finput" id="adminUserSearch" placeholder="Search users..." style="width:200px; height:36px; font-size:0.8rem;" oninput="filterAdminUsers(this.value)">
+                                <span class="badge badge-dark">${S.adminUsers.length} users</span>
+                            </div>
+                        </div>
+                        <div style="max-height: 500px; overflow-y: auto; overflow-x: auto; border-radius: var(--radius-sm);">
+                            <table class="dtable" id="admUsersTable" style="min-width: 800px;">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Bank Details</th>
+                                        <th>Status</th>
+                                        <th style="min-width: 200px;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admUsersBody">
+                                    <tr><td colspan="6" style="text-align:center">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text3);">
+                            Showing ${S.adminUsers.length} users. Scroll within the table to see more.
+                        </div>
+                    `;
                     try {
                         const res = await apiCall('/admin/users?limit=50');
                         S.adminUsers = Array.isArray(res.data?.users) ? res.data.users : (Array.isArray(res.data) ? res
                             .data : []);
-                        document.getElementById('admUsersTable').innerHTML =
-                            `<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Bank Details</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminUsers.map(u => { const bankInfo = u.bankAccount?.bankName ? `${u.bankAccount.bankName} - ${u.bankAccount.accountNumber || 'N/A'} (${u.bankAccount.accountName || 'N/A'})` : '<span style="color:var(--text3)">No bank details</span>'; return `<tr><td>${u.firstName || ''} ${u.lastName || ''}</td><td>${u.email}</td><td>${(u.roles || []).join(',') || 'user'}</td><td style="font-size:.75rem">${bankInfo}</td><td>${u.isBanned ? '<span style="color:var(--danger)">Banned</span>' : '<span style="color:var(--success)">Active</span>'}</td><td><button class="btn btn-ghost btn-sm" onclick="toggleUserBan('${u._id}',${!u.isBanned})">${u.isBanned ? 'Unban' : 'Ban'}</button>${!u.isApprovedInstructor ? `<button class="btn btn-primary btn-sm" onclick="approveInstructor('${u._id}')">Approve Instructor</button>` : ''}<button class="btn btn-ghost btn-sm" onclick="showUserPosts('${u._id}')">📝 Posts</button><button class="btn btn-ghost btn-sm" onclick="showUserDetails('${u._id}')"><i class="fas fa-eye"></i> Details</button></td></tr>`; }).join('') || '<tr><td colspan="6" style="text-align:center">No users</td></tr>'}</tbody>`;
+                        document.getElementById('admUsersBody').innerHTML = S.adminUsers.map(u => {
+                            const bankInfo = u.bankAccount?.bankName ? `${u.bankAccount.bankName} - ${u.bankAccount.accountNumber || 'N/A'} (${u.bankAccount.accountName || 'N/A'})` : '<span style="color:var(--text3)">No bank details</span>';
+                            return `<tr>
+                                <td>${u.firstName || ''} ${u.lastName || ''}</td>
+                                <td>${u.email}</td>
+                                <td>${(u.roles || []).join(',') || 'user'}</td>
+                                <td style="font-size:.75rem">${bankInfo}</td>
+                                <td>${u.isBanned ? '<span style="color:var(--danger)">Banned</span>' : '<span style="color:var(--success)">Active</span>'}</td>
+                                <td>
+                                    <button class="btn btn-ghost btn-sm" onclick="toggleUserBan('${u._id}',${!u.isBanned})">${u.isBanned ? 'Unban' : 'Ban'}</button>
+                                    ${!u.isApprovedInstructor ? `<button class="btn btn-primary btn-sm" onclick="approveInstructor('${u._id}')">Approve Instructor</button>` : ''}
+                                    <button class="btn btn-ghost btn-sm" onclick="showUserPosts('${u._id}')">📝 Posts</button>
+                                    <button class="btn btn-ghost btn-sm" onclick="showUserDetails('${u._id}')"><i class="fas fa-eye"></i> Details</button>
+                                </td>
+                            </tr>`;
+                        }).join('') || '<tr><td colspan="6" style="text-align:center">No users</td></tr>';
                     } catch (e) { content.innerHTML = '<p style="color:var(--danger)">Failed to load: ' + e.message +
                             '</p>'; }
                     break;
@@ -13588,7 +14034,7 @@
                         S.adminCourses = Array.isArray(res.data?.courses) ? res.data.courses : (Array.isArray(res
                             .data) ? res.data : []);
                         content.innerHTML =
-                            `<div class="overflow-x-auto"><table class="dtable"><thead><tr><th>Title</th><th>Instructor</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminCourses.map(c => `<tr><td>${c.title}</td><td>${c.instructor?.firstName || '—'}</td><td>${c.approvalStatus || c.isApproved ? 'Approved' : 'Pending'}</td><td>${c.approvalStatus === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="approveCourse('${c._id}')">Approve</button>` : ''}<button class="btn btn-ghost btn-sm" onclick="editExistingCourse('${c._id}')"><i class="fas fa-edit"></i> Edit</button></td></tr>`).join('') || '<tr><td colspan="4" style="text-align:center">No courses</td></tr>'}</tbody></table></div>`;
+                            `<div class="overflow-x-auto"><table class="dtable"><thead><tr><th>Title</th><th>Instructor</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminCourses.map(c => `<tr><td>${c.title}</td><td>${c.instructor?.firstName || '—'}</td><td>${c.approvalStatus || c.isApproved ? 'Approved' : 'Pending'}</td><td>${c.approvalStatus === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="approveCourse('${c._id}')">Approve</button>` : ''}<button class="btn btn-ghost btn-sm" onclick="editExistingCourse('${c._id}')"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger btn-sm" onclick="adminDeleteCourse('${c._id}')"><i class="fas fa-trash"></i></button></td></tr>`).join('') || '<tr><td colspan="4" style="text-align:center">No courses</td></tr>'}</tbody></table></div>`;
                     } catch (e) { content.innerHTML = '<p style="color:var(--danger)">Failed to load courses</p>'; }
                     break;
                 case 'approvals':
@@ -13858,6 +14304,16 @@
                 default:
                     content.innerHTML = '<p>Select a section</p>';
             }
+        }
+
+        // ─── FILTER ADMIN USERS ──────────────────────────────────────
+        function filterAdminUsers(searchTerm) {
+            const term = searchTerm.toLowerCase().trim();
+            const rows = document.querySelectorAll('#admUsersBody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
         }
 
         // ─── ADMIN SOCIAL EARNINGS ──────────────────────────────────────
@@ -16009,17 +16465,14 @@
         // BOOTSTRAP – CHECK SESSION & REDIRECT ON PAGE LOAD (like GitHub)
         // ================================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if user has a valid session and redirect to app
             const isAppPage = document.getElementById('page-app')?.classList.contains('active');
             const isLandingPage = document.getElementById('page-landing')?.classList.contains('active');
 
-            // If already on app page, init app
             if (isAppPage) {
                 if (S.loggedIn) {
                     initApp();
                     setDP(S.dp || 'feed');
                 } else {
-                    // Try to restore session
                     const restored = checkSessionAndRedirect();
                     if (!restored) {
                         goPage('landing');
@@ -16028,16 +16481,13 @@
                 return;
             }
 
-            // Try to restore session from localStorage
             const restored = checkSessionAndRedirect();
 
-            // If no session, stay on landing (or login if explicitly requested)
             if (!restored && !isLandingPage) {
                 const hash = window.location.hash;
                 if (hash === '#app' || hash === '#login' || hash === '#register') {
                     // Let the page load as normal
                 } else {
-                    // Ensure landing is visible
                     const pages = document.querySelectorAll('.page');
                     const target = document.getElementById('page-landing');
                     if (target) {
@@ -16048,32 +16498,26 @@
                 }
             }
 
-            // Init landing page if not logged in
             if (!S.loggedIn && document.getElementById('page-landing')?.classList.contains('active')) {
                 initLanding();
             }
 
-            // If we're on the app page but not logged in, redirect to landing
             if (isAppPage && !S.loggedIn) {
                 goPage('landing');
             }
 
-            // Theme
             const savedTheme = localStorage.getItem('cx_theme');
             if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeIcons();
 
-            // Currency
             currentCurrency = localStorage.getItem('cx_currency') || 'NGN';
             renderCurrencySelectorUI();
 
-            // Install banner
             const banner = document.getElementById('installBanner');
             if (banner && shouldShowInstallBanner()) {
                 banner.classList.remove('hidden');
             }
 
-            // Check session expiry on each page load
             const expiry = localStorage.getItem('cx_session_expiry');
             if (expiry) {
                 const expiryMs = parseInt(expiry, 10);
@@ -16087,6 +16531,13 @@
                     }
                 }
             }
+
+            if (document.getElementById('page-app')?.classList.contains('active') && S.loggedIn) {
+                initApp();
+                setDP(S.dp || 'feed');
+            }
+
+            initRouter();
 
             console.log('🚀 ChangeX Academy — Production Ready with All Features');
             console.log('📚 Learn, Earn, and Grow with ChangeX!');
@@ -16121,7 +16572,7 @@
             console.log('📢 Hybrid Ads: Custom Admin Ads + Adsterra fallback with 50% creator revenue share.');
             console.log('📢 Ads appear between posts (every 3 for free, 6 for premium) AND after every 4 courses in Explore.');
             console.log('📢 Ads also appear in: Video (pre/mid-roll), Sidebar, Books, Lesson inline, Challenges.');
-            console.log('🗑️ Admin can delete any post.');
+            console.log('🗑️ Admin can delete any post and any course.');
             console.log('📤 Book upload: Premium users can submit books for admin approval.');
             console.log('📤 Admin can directly add books with immediate publishing.');
             console.log('🔗 Affiliate links now use hash-based routing for SPA compatibility.');
@@ -16164,6 +16615,10 @@
         window.resetBookUploadForm = resetBookUploadForm;
         window.updateBookStatusBadge = updateBookStatusBadge;
         window.checkSessionAndRedirect = checkSessionAndRedirect;
+        window.adminDeleteCourse = adminDeleteCourse;
+        window.filterAdminUsers = filterAdminUsers;
+        window.navigate = navigate;
+        window.handleRoute = handleRoute;
     </script>
 </body>
 </html>
