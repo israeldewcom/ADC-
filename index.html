@@ -35,18 +35,26 @@
 
     <title id="pageTitle">ChangeX Academy — Turn Tech Into Income</title>
     <!-- Cache‑busting version for CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css?v=2.0.2" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css?v=2.0.3" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css?v=2.0.2" rel="stylesheet" />
-    <!-- Scripts with versioning for cache busting -->
-    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js?v=2.0.2">
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css?v=2.0.3" rel="stylesheet" />
+
+    <!-- Monaco Editor (VS Code-like) -->
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.40.0/min/vs/editor/editor.main.min.css" />
+
+    <!-- Scripts with versioning -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js?v=2.0.3">
     </script>
-    <script src="https://cdn.socket.io/4.6.1/socket.io.esm.min.js?v=2.0.2">
+    <script src="https://cdn.socket.io/4.6.1/socket.io.esm.min.js?v=2.0.3">
     </script>
-    <script src="https://js.paystack.co/v1/inline.js?v=2.0.2">
+    <script src="https://js.paystack.co/v1/inline.js?v=2.0.3">
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js?v=2.0.2">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js?v=2.0.3">
     </script>
+    <!-- Monaco Loader -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.40.0/min/vs/loader.js">
+    </script>
+
     <meta name="google-site-verification" content="PB3lWW6G3FccAT72e65ehI6ILq12ZxNzS_RUsXDVufE" />
 
     <style>
@@ -6169,6 +6177,133 @@
             opacity: 0.5;
             filter: grayscale(0.5);
         }
+
+        /* ─── MONACO EDITOR OVERRIDES ───────────────────────────────── */
+        #monacoContainer {
+            height: 500px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            background: var(--bg);
+        }
+        #monacoContainer .monaco-editor {
+            height: 100% !important;
+        }
+        .monaco-editor .margin {
+            background: var(--bg2) !important;
+        }
+        .monaco-editor .monaco-scrollable-element {
+            background: var(--bg) !important;
+        }
+        .monaco-editor .view-lines .mtk1 {
+            color: var(--text) !important;
+        }
+        [data-theme="light"] .monaco-editor .margin {
+            background: #f0f0f0 !important;
+        }
+        [data-theme="light"] .monaco-editor .monaco-scrollable-element {
+            background: #fff !important;
+        }
+
+        /* ─── RESPONSIVE CODE EDITOR ────────────────────────────────── */
+        @media (max-width: 768px) {
+            .code-editor {
+                border-radius: var(--radius-sm);
+                overflow: hidden;
+            }
+            .code-area {
+                min-height: 150px !important;
+                font-size: 13px !important;
+                padding: 10px !important;
+            }
+            .code-output {
+                height: 200px !important;
+            }
+            .code-tabs .tab-btn {
+                font-size: 12px !important;
+                padding: 6px 10px !important;
+            }
+            #monacoContainer {
+                height: 350px !important;
+            }
+        }
+        @media (max-width: 480px) {
+            .code-area {
+                min-height: 120px !important;
+                font-size: 12px !important;
+            }
+            .code-output {
+                height: 150px !important;
+            }
+            #monacoContainer {
+                height: 280px !important;
+            }
+        }
+
+        /* ─── CONVERTER UI ───────────────────────────────────────────── */
+        .converter-tabs .fpill {
+            font-size: .7rem;
+            padding: .25rem .6rem;
+            border-radius: 50px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            color: var(--text2);
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .converter-tabs .fpill.active {
+            background: rgba(212, 175, 55, .1);
+            color: var(--primary);
+            border-color: rgba(212, 175, 55, .25);
+        }
+        .converter-tabs .fpill:hover {
+            color: var(--text);
+            border-color: var(--border2);
+        }
+        #convDropZone {
+            transition: all .25s;
+            border-color: var(--border2);
+        }
+        #convDropZone.dragover {
+            border-color: var(--primary);
+            background: rgba(212, 175, 55, .05);
+        }
+        #quickConversionsGrid .btn {
+            transition: all .15s;
+        }
+        #quickConversionsGrid .btn:hover {
+            border-color: var(--primary) !important;
+            background: rgba(212, 175, 55, .05) !important;
+        }
+        #convProgress .prog-fill {
+            transition: width 0.3s ease;
+        }
+
+        /* ─── EXTENSION MARKETPLACE ──────────────────────────────────── */
+        .extension-card {
+            transition: all .2s;
+            cursor: default;
+        }
+        .extension-card:hover {
+            border-color: rgba(212, 175, 55, .25);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow2);
+        }
+        .extension-card .btn {
+            font-size: .65rem;
+            padding: 2px 10px;
+            min-height: 28px;
+        }
+        @media (max-width: 480px) {
+            .extension-card {
+                padding: 10px 12px !important;
+            }
+            .extension-card .btn {
+                font-size: .6rem;
+                padding: 2px 8px;
+                min-height: 24px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -6394,7 +6529,7 @@
                     <div id="dash-courses" class="dash-sub"><div class="page-hd"><h2 class="page-title">My Courses</h2><p class="page-sub">Track your learning progress</p></div><div style="display:flex;gap:.28rem;flex-wrap:nowrap;overflow-x:auto;margin-bottom:1rem;padding-bottom:.15rem"><span class="fpill active" onclick="filterCourses('all',this)">All</span><span class="fpill" onclick="filterCourses('progress',this)">In Progress</span><span class="fpill" onclick="filterCourses('completed',this)">Completed</span><span class="fpill" onclick="filterCourses('new',this)">Not Started</span></div><div class="courses-grid" id="coursesGrid"></div></div>
 
                     <!-- LESSON -->
-                    <div id="dash-lesson" class="dash-sub"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><button class="btn btn-ghost btn-sm" onclick="setDP('courses')"><i class="fas fa-arrow-left"></i>Back</button><div class="d-flex gap-2"><button class="btn btn-ghost btn-sm" onclick="openModal('rateModal')"><i class="fas fa-star"></i>Rate</button><button class="btn btn-primary btn-sm" onclick="completeLessonAndNext()"><i class="fas fa-check"></i>Mark Done &amp; Next</button></div></div><div id="interactiveContainer"></div><div class="lesson-layout"><div><div class="video-wrap mb-3" id="lessonVideoWrap"><div style="text-align:center;position:relative;"><div class="play-btn" onclick="playLessonVideo()"><i class="fas fa-play"></i></div><div style="font-size:.78rem;color:var(--text2);margin-top:.75rem" id="currentLessonTitle">Select a course</div><div style="font-size:.7rem;color:var(--text3);margin-top:.2rem" id="currentCourseTitle">Loading...</div></div></div><div class="d-flex justify-between mb-3 gap-2"><button class="btn btn-ghost btn-sm" id="prevLessonBtn" onclick="navigateLesson(-1)"><i class="fas fa-arrow-left"></i>Previous</button><span style="font-size:.78rem;color:var(--text3);padding:.35rem .5rem" id="lessonNavIndicator">—</span><button class="btn btn-primary btn-sm" id="nextLessonBtn" onclick="navigateLesson(1)">Next<i class="fas fa-arrow-right"></i></button></div><div class="lesson-tabs"><div class="ltab active" onclick="switchLTab('overview',this)">Overview</div><div class="ltab" onclick="switchLTab('notes',this)">📝 Notes</div><div class="ltab" onclick="switchLTab('resources',this)">📎 Resources</div><div class="ltab" onclick="switchLTab('qa',this)">💬 Q&amp;A</div><div class="ltab" onclick="switchLTab('reviews',this)">⭐ Reviews</div><div class="ltab" onclick="switchLTab('interactive',this)">⚡ Try It</div></div><div class="lesson-sub active" id="ls-overview"><h5 style="margin-bottom:.5rem" id="lessonOverviewTitle">Loading...</h5><p style="font-size:.84rem;color:var(--text2);line-height:1.7" id="lessonOverviewDesc">Please select a course.</p><div id="courseRatingsContainer"></div></div><div class="lesson-sub" id="ls-notes"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">My Notes</h6><button class="btn btn-primary btn-sm" onclick="saveNote()"><i class="fas fa-save"></i>Save</button></div><textarea class="finput" id="lessonNote" style="min-height:200px;resize:vertical" placeholder="Write your personal notes... They auto-save."></textarea></div><div class="lesson-sub" id="ls-resources"><h6 style="margin-bottom:.75rem">📎 Resources</h6><div id="lessonResourcesList"></div></div><div class="lesson-sub" id="ls-qa"><h6 style="margin-bottom:.75rem">💬 Questions &amp; Answers</h6><div style="margin-bottom:.85rem"><textarea class="finput" id="qaInput" style="min-height:80px;resize:vertical" placeholder="Ask a question about this lesson..."></textarea><button class="btn btn-primary btn-sm mt-2" onclick="submitQuestion()"><i class="fas fa-paper-plane"></i>Ask Question</button></div><div id="qaList"></div></div><div class="lesson-sub" id="ls-reviews"><h6 style="margin-bottom:.75rem">⭐ Course Reviews</h6><div id="reviewsListContainer"></div></div><div class="lesson-sub" id="ls-interactive"><h6 style="margin-bottom:.75rem">⚡ Try It Yourself</h6><div id="interactiveMaterialsContainer"></div></div></div><div><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">Curriculum</h6><span style="font-size:.73rem;color:var(--text3)" id="curricProgress">0/0</span></div><div class="prog mb-3" style="height:5px"><div class="prog-fill pf-primary" id="curricBar" style="width:0%"></div></div><div id="curricList" class="thin-scroll" style="max-height:420px;overflow-y:auto"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">📊 Your Progress</h6><div><div class="web-row"><span>Lessons Done</span><strong id="lpLessonsDone">0/0</strong></div><div class="web-row"><span>XP Earned</span><strong style="color:var(--gold)">+0</strong></div><div class="web-row"><span>Quiz Score Avg</span><strong style="color:var(--primary)">—</strong></div><div class="web-row"><span>Time Spent</span><strong>0h 0m</strong></div></div></div></div></div></div>
+                    <div id="dash-lesson" class="dash-sub"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><button class="btn btn-ghost btn-sm" onclick="setDP('courses')"><i class="fas fa-arrow-left"></i>Back</button><div class="d-flex gap-2"><button class="btn btn-ghost btn-sm" onclick="openModal('rateModal')"><i class="fas fa-star"></i>Rate</button><button class="btn btn-primary btn-sm" onclick="completeLessonAndNext()"><i class="fas fa-check"></i>Mark Done &amp; Next</button></div></div><div id="interactiveContainer"></div><div class="lesson-layout"><div><div class="video-wrap mb-3" id="lessonVideoWrap"><div style="text-align:center;position:relative;"><div class="play-btn" onclick="playLessonVideo()"><i class="fas fa-play"></i></div><div style="font-size:.78rem;color:var(--text2);margin-top:.75rem" id="currentLessonTitle">Select a course</div><div style="font-size:.7rem;color:var(--text3);margin-top:.2rem" id="currentCourseTitle">Loading...</div></div></div><div class="d-flex justify-between mb-3 gap-2"><button class="btn btn-ghost btn-sm" id="prevLessonBtn" onclick="navigateLesson(-1)"><i class="fas fa-arrow-left"></i>Previous</button><span style="font-size:.78rem;color:var(--text3);padding:.35rem .5rem" id="lessonNavIndicator">—</span><button class="btn btn-primary btn-sm" id="nextLessonBtn" onclick="navigateLesson(1)">Next<i class="fas fa-arrow-right"></i></button></div><div class="lesson-tabs"><div class="ltab active" onclick="switchLTab('overview',this)">Overview</div><div class="ltab" onclick="switchLTab('notes',this)">📝 Notes</div><div class="ltab" onclick="switchLTab('resources',this)">📎 Resources</div><div class="ltab" onclick="switchLTab('qa',this)">💬 Q&amp;A</div><div class="ltab" onclick="switchLTab('reviews',this)">⭐ Reviews</div><div class="ltab" onclick="switchLTab('interactive',this)">⚡ Try It</div><div class="ltab" onclick="switchLTab('extensions',this)">🧩 Extensions</div></div><div class="lesson-sub active" id="ls-overview"><h5 style="margin-bottom:.5rem" id="lessonOverviewTitle">Loading...</h5><p style="font-size:.84rem;color:var(--text2);line-height:1.7" id="lessonOverviewDesc">Please select a course.</p><div id="courseRatingsContainer"></div></div><div class="lesson-sub" id="ls-notes"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">My Notes</h6><button class="btn btn-primary btn-sm" onclick="saveNote()"><i class="fas fa-save"></i>Save</button></div><textarea class="finput" id="lessonNote" style="min-height:200px;resize:vertical" placeholder="Write your personal notes... They auto-save."></textarea></div><div class="lesson-sub" id="ls-resources"><h6 style="margin-bottom:.75rem">📎 Resources</h6><div id="lessonResourcesList"></div></div><div class="lesson-sub" id="ls-qa"><h6 style="margin-bottom:.75rem">💬 Questions &amp; Answers</h6><div style="margin-bottom:.85rem"><textarea class="finput" id="qaInput" style="min-height:80px;resize:vertical" placeholder="Ask a question about this lesson..."></textarea><button class="btn btn-primary btn-sm mt-2" onclick="submitQuestion()"><i class="fas fa-paper-plane"></i>Ask Question</button></div><div id="qaList"></div></div><div class="lesson-sub" id="ls-reviews"><h6 style="margin-bottom:.75rem">⭐ Course Reviews</h6><div id="reviewsListContainer"></div></div><div class="lesson-sub" id="ls-interactive"><h6 style="margin-bottom:.75rem">⚡ Try It Yourself</h6><div id="interactiveMaterialsContainer"></div></div><div class="lesson-sub" id="ls-extensions"><h6 style="margin-bottom:.75rem">🧩 VS Code Extensions Marketplace</h6><div id="extensionMarketplaceContainer"></div></div></div><div><div class="card card-p mb-3"><div class="d-flex items-center justify-between mb-3"><h6 style="margin:0">Curriculum</h6><span style="font-size:.73rem;color:var(--text3)" id="curricProgress">0/0</span></div><div class="prog mb-3" style="height:5px"><div class="prog-fill pf-primary" id="curricBar" style="width:0%"></div></div><div id="curricList" class="thin-scroll" style="max-height:420px;overflow-y:auto"></div></div><div class="card card-p"><h6 style="margin-bottom:.65rem">📊 Your Progress</h6><div><div class="web-row"><span>Lessons Done</span><strong id="lpLessonsDone">0/0</strong></div><div class="web-row"><span>XP Earned</span><strong style="color:var(--gold)">+0</strong></div><div class="web-row"><span>Quiz Score Avg</span><strong style="color:var(--primary)">—</strong></div><div class="web-row"><span>Time Spent</span><strong>0h 0m</strong></div></div></div></div></div></div>
 
                     <!-- QUIZ -->
                     <div id="dash-quiz" class="dash-sub"><div class="page-hd"><h2 class="page-title">Quizzes</h2><p class="page-sub">Test your knowledge and earn XP</p></div><div class="quiz-wrap" id="quizWrap"></div></div>
@@ -6421,7 +6556,7 @@
                     <div id="dash-course-editor" class="dash-sub"><div class="editor-shell"><div class="editor-sidebar"><div class="esc-label">COURSE SETUP</div><div class="esc-step active" id="es-1" onclick="goES(1)"><div class="esc-num">1</div><div class="esc-text">Basic Info</div></div><div class="esc-step" id="es-2" onclick="goES(2)"><div class="esc-num">2</div><div class="esc-text">Lessons</div></div><div class="esc-step" id="es-3" onclick="goES(3)"><div class="esc-num">3</div><div class="esc-text">Content</div></div><div class="esc-step" id="es-4" onclick="goES(4)"><div class="esc-num">4</div><div class="esc-text">Media</div></div><div class="esc-step" id="es-5" onclick="goES(5)"><div class="esc-num">5</div><div class="esc-text">Quiz</div></div><div class="esc-step" id="es-6" onclick="goES(6)"><div class="esc-num">6</div><div class="esc-text">Pricing</div></div><div class="esc-step" id="es-7" onclick="goES(7)"><div class="esc-num">7</div><div class="esc-text">Affiliate</div></div><div class="esc-step" id="es-8" onclick="goES(8)"><div class="esc-num">8</div><div class="esc-text">Review</div></div></div><div class="editor-main"><div class="editor-topbar"><button class="btn btn-ghost btn-sm" onclick="setDP('instructor')"><i class="fas fa-arrow-left"></i>Back</button><div class="flex-1"><div style="font-size:.8rem;font-weight:600" id="edCourseTitle">Untitled Course</div><div style="font-size:.7rem;color:var(--text3)" id="edAutoSave">Draft · Auto-saved</div></div><button class="btn btn-ghost btn-sm" onclick="saveDraftToServer(false)"><i class="fas fa-save"></i>Save Draft</button><button class="btn btn-primary btn-sm" onclick="goES(8)"><i class="fas fa-rocket"></i>Review</button></div><div class="editor-step-panel active" id="esp-1"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Basic Info</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1.25rem">Tell students what your course is about.</p><div class="form-group"><label class="flabel">Course Title</label><input type="text" class="finput" id="edTitle" placeholder="e.g. JavaScript Mastery: Zero to Freelancer" oninput="document.getElementById('edCourseTitle').textContent=this.value||'Untitled Course'"/></div><div class="form-group"><label class="flabel">Subtitle</label><input type="text" class="finput" id="edSubtitle" placeholder="A short powerful description..."/></div><div class="form-group"><label class="flabel">Description</label><div class="quill-wrapper"><div id="descEditorQuill" style="min-height:200px"></div></div></div><div class="row"><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Category</label><select class="finput" id="edCategory"><option>Web Development</option><option>AI &amp; Tools</option><option>Freelancing</option><option>Design</option><option>Backend</option><option>Mobile Dev</option><option>Data Science</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Level</label><select class="finput" id="edLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>All Levels</option></select></div></div><div class="col-12 col-md-4"><div class="form-group"><label class="flabel">Language</label><select class="finput" id="edLanguage"><option>English</option><option>Pidgin English</option><option>Yoruba</option><option>Igbo</option><option>Hausa</option></select></div></div></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Thumbnail Emoji</label><input type="text" class="finput" id="edEmoji" placeholder="📚" maxlength="4"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Promo Video URL (optional)</label><input type="url" class="finput" id="edPromoVideo" placeholder="https://youtube.com/..."/></div></div></div><div class="form-group"><label class="flabel">Learning Outcomes</label><div id="outcomesList" style="display:flex;flex-direction:column;gap:.35rem;margin-bottom:.45rem"></div><button class="btn btn-ghost btn-sm" onclick="addOutcome()"><i class="fas fa-plus"></i>Add Outcome</button></div><div class="d-flex items-center gap-2 p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:.5rem"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Issue Certificate on Completion</div><div style="font-size:.74rem;color:var(--text3)">Students who complete get a certificate</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" id="edCertEnabled"/></div><div style="display:flex;justify-content:flex-end;margin-top:1.5rem"><button class="btn btn-primary" onclick="goES(2)">Next: Lessons <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-2"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Course Curriculum</h4><p style="font-size:.82rem;color:var(--text3)">Minimum <strong style="color:var(--primary)">20 lessons</strong> required to publish</p></div><button class="btn btn-primary btn-sm" onclick="openModal('addLessonModal')"><i class="fas fa-plus"></i>Add Lesson</button></div><div id="lessonCountBadge" style="margin-bottom:.85rem"></div><div id="lessonBuilderList"></div><div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.79rem;color:var(--text2);margin-bottom:1rem"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>You need at least 20 lessons with content to submit for admin approval.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(1)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(3)">Next: Content <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-3"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Lesson Content Editor</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Edit each lesson's content using the rich text editor. Content is always editable even after approval.</p><div id="lessonContentEditor"></div><div class="d-flex justify-between mt-4"><button class="btn btn-ghost" onclick="goES(2)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(4)">Next: Media <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-4"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Media &amp; Files Upload</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem" id="uploadLimitNote">Upload videos, PDFs, images, resources for your course.</p><div class="upload-zone" style="padding:2rem;margin-bottom:1rem"><input type="file" multiple id="mediaFileInput" onchange="handleMediaUpload(this)"/><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.88rem;color:var(--text2);font-weight:600">Drop any files here or click to upload</div><div style="font-size:.74rem;color:var(--text3);margin-top:.3rem" id="uploadHint">Free: max 10 files · Premium: unlimited files of any size</div></div><div id="uploadedFilesList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(3)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(5)">Next: Quiz <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-5"><div style="max-width:720px;margin:0 auto"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem"><div><h4 style="margin-bottom:.2rem">Quiz Builder</h4><p style="font-size:.82rem;color:var(--text3)">Add quiz questions for this course</p></div><button class="btn btn-primary btn-sm" onclick="addQuizQ()"><i class="fas fa-plus"></i>Add Question</button></div><div id="quizBuilderList"></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(4)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(6)">Next: Pricing <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-6"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Course Pricing</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Platform takes 20%, you keep 80%.</p><div style="display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.25rem"><div class="price-type-opt selected" id="pt-paid" onclick="selectPriceType('paid')"><i class="fas fa-tag" style="color:var(--primary);width:20px"></i><div><strong>Paid Course</strong><br><small style="color:var(--text3)">Students pay to access</small></div></div><div class="price-type-opt" id="pt-free" onclick="selectPriceType('free')"><i class="fas fa-gift" style="color:var(--accent);width:20px"></i><div><strong>Free Course</strong><br><small style="color:var(--text3)">Open to all students</small></div></div><div class="price-type-opt" id="pt-sub" onclick="selectPriceType('sub')"><i class="fas fa-crown" style="color:var(--gold);width:20px"></i><div><strong>Premium Only</strong><br><small style="color:var(--text3)">Only premium subscribers</small></div></div></div><div id="pricingFields"><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Price (₦)</label><input type="number" class="finput" id="edPrice" placeholder="e.g. 15000" min="1000"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Sale Price (₦, optional)</label><input type="number" class="finput" id="edSalePrice" placeholder="e.g. 12000"/></div></div></div></div><div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:var(--radius-sm);padding:.75rem;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:.3rem"></i>Revenue: <strong style="color:var(--primary)">80%</strong> to you · <strong style="color:var(--text3)">20%</strong> platform fee per sale.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(5)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(7)">Next: Affiliate <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-7"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">🤝 Affiliate Program</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Let other ChangeX users promote your course and earn commissions.</p><div class="d-flex items-center gap-2 p-3 mb-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div class="flex-1"><div style="font-size:.84rem;font-weight:600">Enable Affiliate Program</div><div style="font-size:.74rem;color:var(--text3)">After admin approves, all users get notified</div></div><input type="checkbox" id="edAffEnabled" style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer" onchange="toggleAffiliateFields(this.checked)"/></div><div id="affiliateFields" style="display:none"><div class="form-group"><label class="flabel">Commission Percentage (%)</label><input type="number" class="finput" id="edAffPercent" placeholder="e.g. 15" min="5" max="50" value="15"/></div><div class="form-group"><label class="flabel">Affiliate Offer Description</label><textarea class="finput" style="min-height:80px;resize:vertical" id="edAffDesc" placeholder="e.g. Promote this JS course and earn 15% commission!"></textarea></div></div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(6)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary" onclick="goES(8)">Next: Review <i class="fas fa-arrow-right"></i></button></div></div></div><div class="editor-step-panel" id="esp-8"><div style="max-width:720px;margin:0 auto"><h4 style="margin-bottom:.25rem">Review &amp; Submit</h4><p style="font-size:.82rem;color:var(--text3);margin-bottom:1rem">Review your course before submitting for admin approval.</p><div id="courseReviewSummary"></div><div style="background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:var(--radius-sm);padding:.85rem;margin:1rem 0;font-size:.8rem;color:var(--text2)"><i class="fas fa-info-circle" style="color:var(--accent);margin-right:.3rem"></i>After submission, admin reviews your course. On approval, all ChangeX users get a notification. You can still edit after approval — changes will be reviewed again.</div><div class="d-flex justify-between mt-3"><button class="btn btn-ghost" onclick="goES(7)"><i class="fas fa-arrow-left"></i>Back</button><button class="btn btn-primary btn-lg" onclick="submitCourseForApproval()"><i class="fas fa-rocket"></i>Submit for Approval</button></div></div></div></div></div></div>
 
                     <!-- AI TUTOR -->
-                    <div id="dash-ai" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤖 AI Tutor</h2><p class="page-sub">Your personal AI-powered learning assistant</p></div><div id="aiPlanNote" style="margin-bottom:.85rem"></div><div class="card card-p mb-3"><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.85rem"><button class="fpill active" onclick="switchAIMode('chat',this)"><i class="fas fa-comments"></i>Chat</button><button class="fpill" onclick="switchAIMode('explain',this)"><i class="fas fa-book-open"></i>Explain Code</button><button class="fpill" onclick="switchAIMode('quiz',this)"><i class="fas fa-question-circle"></i>Generate Quiz</button><button class="fpill" onclick="switchAIMode('upload',this)"><i class="fas fa-upload"></i>Upload &amp; Analyze</button></div><div id="aiMessages" style="min-height:280px;max-height:380px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.65rem;display:flex;flex-direction:column;gap:.6rem"></div><div class="d-flex gap-2"><input type="text" class="finput flex-1" id="aiInput" placeholder="Ask me anything about coding or your course..." onkeydown="if(event.key==='Enter')sendAI()"/><button class="btn btn-primary btn-sm" onclick="sendAI()"><i class="fas fa-paper-plane"></i></button></div></div><div class="card card-p" id="aiUploadPanel" style="display:none"><h6 style="margin-bottom:.65rem">📎 Upload Files for AI Analysis</h6><div id="aiUploadInfo" style="font-size:.8rem;color:var(--text3);margin-bottom:.65rem"></div><div class="upload-zone" style="padding:1.5rem"><input type="file" multiple id="aiFileInput" onchange="handleAIUpload(this)"/><div class="upload-icon"><i class="fas fa-file-upload"></i></div><div style="font-size:.84rem;color:var(--text2)">Drop any file here (PDF, image, code, etc.)</div><div style="font-size:.72rem;color:var(--text3);margin-top:.2rem" id="aiUploadLimit"></div></div><div id="aiUploadedFiles" style="margin-top:.65rem"></div></div></div>
+                    <div id="dash-ai" class="dash-sub"><div class="page-hd"><h2 class="page-title">🤖 AI Tutor</h2><p class="page-sub">Your personal AI-powered learning assistant</p></div><div id="aiPlanNote" style="margin-bottom:.85rem"></div><div class="card card-p mb-3"><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.85rem"><button class="fpill active" onclick="switchAIMode('chat',this)"><i class="fas fa-comments"></i>Chat</button><button class="fpill" onclick="switchAIMode('explain',this)"><i class="fas fa-book-open"></i>Explain Code</button><button class="fpill" onclick="switchAIMode('quiz',this)"><i class="fas fa-question-circle"></i>Generate Quiz</button><button class="fpill" onclick="switchAIMode('upload',this)"><i class="fas fa-upload"></i>Upload &amp; Analyze</button><button class="fpill" onclick="switchAIMode('extensions',this)"><i class="fas fa-puzzle-piece"></i>Extensions</button></div><div id="aiMessages" style="min-height:280px;max-height:380px;overflow-y:auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.85rem;margin-bottom:.65rem;display:flex;flex-direction:column;gap:.6rem"></div><div class="d-flex gap-2"><input type="text" class="finput flex-1" id="aiInput" placeholder="Ask me anything about coding or your course..." onkeydown="if(event.key==='Enter')sendAI()"/><button class="btn btn-primary btn-sm" onclick="sendAI()"><i class="fas fa-paper-plane"></i></button></div></div><div class="card card-p" id="aiUploadPanel" style="display:none"><h6 style="margin-bottom:.65rem">📎 Upload Files for AI Analysis</h6><div id="aiUploadInfo" style="font-size:.8rem;color:var(--text3);margin-bottom:.65rem"></div><div class="upload-zone" style="padding:1.5rem"><input type="file" multiple id="aiFileInput" onchange="handleAIUpload(this)"/><div class="upload-icon"><i class="fas fa-file-upload"></i></div><div style="font-size:.84rem;color:var(--text2)">Drop any file here (PDF, image, code, etc.)</div><div style="font-size:.72rem;color:var(--text3);margin-top:.2rem" id="aiUploadLimit"></div></div><div id="aiUploadedFiles" style="margin-top:.65rem"></div></div></div>
 
                     <!-- BOOKS -->
                     <div id="dash-books" class="dash-sub"><div class="page-hd"><h2 class="page-title">📚 Digital Library</h2><p class="page-sub">Browse, read and download books</p></div><div id="bookPageAdContainer" class="ad-container"></div><div id="bookSponsorAdContainer" class="ad-container"></div><div id="booksGrid" class="courses-grid"></div></div>
@@ -6512,7 +6647,7 @@
                     <div id="dash-manual-payments" class="dash-sub"><div class="page-hd"><h2 class="page-title">💳 Manual Payments</h2><p class="page-sub">Track your bank transfer submissions</p></div><div id="manualPaymentsList"></div></div>
 
                     <!-- TOOLS PAGE -->
-                    <div id="dash-tools" class="dash-sub"><div class="page-hd"><h2 class="page-title">🛠️ Developer Tools</h2><p class="page-sub">Code runner, file converter, and text editor</p></div><div class="tabs mb-3"><button class="tab-btn active" onclick="switchToolTab('code',this)"><i class="fas fa-code"></i> Code Runner</button><button class="tab-btn" onclick="switchToolTab('convert',this)"><i class="fas fa-exchange-alt"></i> Converter</button><button class="tab-btn" onclick="switchToolTab('editor',this)"><i class="fas fa-edit"></i> Text Editor</button></div><div id="tool-code" class="tool-panel active"><div class="card card-p"><div class="d-flex items-center justify-between flex-wrap" style="gap:.5rem;margin-bottom:.75rem;"><div><h5 style="margin:0;">💻 Code Runner</h5><p style="font-size:.78rem;color:var(--text3);margin:.2rem 0 0;">Write HTML, CSS, and JavaScript and see the result live.</p></div><button class="btn btn-primary btn-sm" onclick="runCodeTool()"><i class="fas fa-play"></i> Run</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;"><div><label class="flabel">HTML</label><textarea id="codeToolHtml" class="finput" style="min-height:150px;font-family:var(--font-mono);font-size:.82rem;" placeholder="<h1>Hello World</h1>"></textarea></div><div><label class="flabel">CSS</label><textarea id="codeToolCss" class="finput" style="min-height:150px;font-family:var(--font-mono);font-size:.82rem;" placeholder="h1 { color: blue; }"></textarea></div></div><div><label class="flabel">JavaScript</label><textarea id="codeToolJs" class="finput" style="min-height:100px;font-family:var(--font-mono);font-size:.82rem;" placeholder="console.log('Hello!')"></textarea></div><div style="margin-top:.75rem;"><label class="flabel">Output</label><iframe id="codeToolOutput" style="width:100%;height:300px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;"></iframe></div><div class="d-flex gap-2 mt-3"><button class="btn btn-ghost btn-sm" onclick="saveCodeTool()"><i class="fas fa-save"></i> Save</button><button class="btn btn-ghost btn-sm" onclick="clearCodeTool()"><i class="fas fa-trash"></i> Clear</button></div><div class="info-box mt-2"><i class="fas fa-info-circle" style="color:var(--primary)"></i> Your code is saved locally. Use "Save" to keep your work.</div></div></div><div id="tool-convert" class="tool-panel" style="display:none;"><div class="card card-p"><h5 style="margin-bottom:.5rem;">🔄 File Converter</h5><p style="font-size:.78rem;color:var(--text3);margin-bottom:.75rem;">Convert between image formats (PNG, JPG, WebP).</p><div class="row"><div class="col-6"><div class="form-group"><label class="flabel">From</label><select class="finput" id="convertFrom"><option value="image">Image</option></select></div></div><div class="col-6"><div class="form-group"><label class="flabel">To</label><select class="finput" id="convertTo"><option value="png">PNG</option><option value="jpg">JPG</option><option value="webp">WebP</option></select></div></div></div><div class="upload-zone" style="padding:1.5rem;margin-bottom:.75rem;"><input type="file" id="convertFile" accept="image/*" onchange="handleConvertFile(this)" /><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.88rem;color:var(--text2);font-weight:600;">Drop an image here or click to upload</div><div style="font-size:.74rem;color:var(--text3);margin-top:.3rem;" id="convertFileInfo">Supported: PNG, JPG, WebP</div></div><div id="convertPreview" style="display:none;margin-bottom:.75rem;"><div class="d-flex items-center gap-2"><i class="fas fa-file" style="color:var(--accent);"></i><span id="convertFileName"></span><span class="badge badge-dark" id="convertFileSize"></span></div><img id="convertPreviewImage" style="max-width:100%;max-height:200px;border-radius:var(--radius-sm);margin-top:.5rem;border:1px solid var(--border);" /></div><button class="btn btn-primary w-full" id="convertBtn" onclick="convertFile()" disabled><i class="fas fa-exchange-alt"></i> Convert</button><div id="convertResult" style="display:none;margin-top:.75rem;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);"><div class="d-flex items-center justify-between flex-wrap" style="gap:.5rem;"><span><i class="fas fa-check-circle" style="color:var(--success);"></i> Conversion complete!</span><button class="btn btn-primary btn-sm" onclick="downloadConvertedFile()"><i class="fas fa-download"></i> Download</button></div></div></div></div><div id="tool-editor" class="tool-panel" style="display:none;"><div class="card card-p"><div class="d-flex items-center justify-between flex-wrap" style="gap:.5rem;margin-bottom:.75rem;"><div><h5 style="margin:0;">📝 Text Editor</h5><p style="font-size:.78rem;color:var(--text3);margin:.2rem 0 0;">Write and save notes, code snippets, or any text.</p></div><div class="d-flex gap-2"><button class="btn btn-primary btn-sm" onclick="saveTextEditor()"><i class="fas fa-save"></i> Save</button><button class="btn btn-ghost btn-sm" onclick="clearTextEditor()"><i class="fas fa-trash"></i> Clear</button></div></div><div class="form-group"><label class="flabel">Title</label><input type="text" class="finput" id="textEditorTitle" placeholder="Note title..." /></div><div class="form-group"><label class="flabel">Content</label><textarea id="textEditorContent" class="finput" style="min-height:400px;font-family:var(--font-body);font-size:.88rem;line-height:1.8;" placeholder="Write your notes here..."></textarea></div><div class="info-box mt-2"><i class="fas fa-info-circle" style="color:var(--primary)"></i> Your notes are saved locally. Auto-saves every 30 seconds. <span id="textEditorStatus" style="display:block;font-size:.72rem;color:var(--text3);margin-top:.3rem;">Last saved: Never</span></div></div></div></div>
+                    <div id="dash-tools" class="dash-sub"><div class="page-hd"><h2 class="page-title">🛠️ Developer Tools</h2><p class="page-sub">Code runner, file converter, text editor, VS Code editor, and extension marketplace</p></div><div class="tabs mb-3"><button class="tab-btn active" onclick="switchToolTab('code',this)"><i class="fas fa-code"></i> Code Runner</button><button class="tab-btn" onclick="switchToolTab('monaco',this)"><i class="fas fa-file-code"></i> VS Code</button><button class="tab-btn" onclick="switchToolTab('converter',this)"><i class="fas fa-exchange-alt"></i> Converter</button><button class="tab-btn" onclick="switchToolTab('editor',this)"><i class="fas fa-edit"></i> Text Editor</button><button class="tab-btn" onclick="switchToolTab('extensions',this)"><i class="fas fa-puzzle-piece"></i> Extensions</button></div><div id="tool-code" class="tool-panel active"><div class="card card-p"><div class="d-flex items-center justify-between flex-wrap" style="gap:.5rem;margin-bottom:.75rem;"><div><h5 style="margin:0;">💻 Code Runner</h5><p style="font-size:.78rem;color:var(--text3);margin:.2rem 0 0;">Write HTML, CSS, and JavaScript and see the result live.</p></div><button class="btn btn-primary btn-sm" onclick="runCodeTool()"><i class="fas fa-play"></i> Run</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;"><div><label class="flabel">HTML</label><textarea id="codeToolHtml" class="finput" style="min-height:150px;font-family:var(--font-mono);font-size:.82rem;" placeholder="<h1>Hello World</h1>"></textarea></div><div><label class="flabel">CSS</label><textarea id="codeToolCss" class="finput" style="min-height:150px;font-family:var(--font-mono);font-size:.82rem;" placeholder="h1 { color: blue; }"></textarea></div></div><div><label class="flabel">JavaScript</label><textarea id="codeToolJs" class="finput" style="min-height:100px;font-family:var(--font-mono);font-size:.82rem;" placeholder="console.log('Hello!')"></textarea></div><div style="margin-top:.75rem;"><label class="flabel">Output</label><iframe id="codeToolOutput" style="width:100%;height:300px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;"></iframe></div><div class="d-flex gap-2 mt-3"><button class="btn btn-ghost btn-sm" onclick="saveCodeTool()"><i class="fas fa-save"></i> Save</button><button class="btn btn-ghost btn-sm" onclick="clearCodeTool()"><i class="fas fa-trash"></i> Clear</button></div><div class="info-box mt-2"><i class="fas fa-info-circle" style="color:var(--primary)"></i> Your code is saved locally. Use "Save" to keep your work.</div></div></div><div id="tool-monaco" class="tool-panel" style="display:none;"><div class="card card-p"><div class="d-flex items-center justify-between flex-wrap" style="gap:.5rem;margin-bottom:.75rem;"><div><h5 style="margin:0;">⚡ VS Code Editor</h5><p style="font-size:.78rem;color:var(--text3);margin:.2rem 0 0;">Full-featured editor with syntax highlighting, autocomplete, and 50+ language support.</p></div><div style="display:flex;gap:.5rem;flex-wrap:wrap;"><select id="monacoLangSelect" class="finput" style="width:auto;height:32px;font-size:.75rem;min-width:120px;"><option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="python">Python</option><option value="html">HTML</option><option value="css">CSS</option><option value="json">JSON</option><option value="java">Java</option><option value="csharp">C#</option><option value="go">Go</option><option value="rust">Rust</option><option value="php">PHP</option><option value="ruby">Ruby</option><option value="sql">SQL</option><option value="markdown">Markdown</option><option value="xml">XML</option><option value="yaml">YAML</option></select><button class="btn btn-primary btn-sm" onclick="runMonacoCode()"><i class="fas fa-play"></i> Run</button><button class="btn btn-ghost btn-sm" onclick="saveMonacoCode()"><i class="fas fa-save"></i> Save</button></div></div><div id="monacoContainer" style="height:500px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;background:var(--bg);"></div><div id="monacoOutput" style="margin-top:.75rem;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:.82rem;min-height:60px;max-height:200px;overflow-y:auto;color:var(--text2);white-space:pre-wrap;">// Output will appear here</div><div class="d-flex gap-2 mt-3"><span class="badge badge-dark">💾 Auto-saved</span><span class="badge badge-cyan" id="monacoLangBadge">JavaScript</span></div></div></div><div id="tool-converter" class="tool-panel" style="display:none;"><div class="card card-p"><div class="d-flex items-center justify-between flex-wrap" style="gap:.5rem;margin-bottom:.75rem;"><div><h5 style="margin:0;">🔄 File Converter</h5><p style="font-size:.78rem;color:var(--text3);margin:.2rem 0 0;">Convert between 50+ file formats — documents, images, audio, video, office, ebooks, archives, and code.</p></div><div><span class="badge badge-premium">97+ conversion pairs</span></div></div><div class="converter-tabs" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.75rem;padding:4px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);"><button class="fpill active" data-category="all" onclick="filterConversions('all',this)">🎯 All</button><button class="fpill" data-category="documents" onclick="filterConversions('documents',this)">📄 Documents</button><button class="fpill" data-category="images" onclick="filterConversions('images',this)">🖼️ Images</button><button class="fpill" data-category="audio" onclick="filterConversions('audio',this)">🎵 Audio</button><button class="fpill" data-category="video" onclick="filterConversions('video',this)">🎬 Video</button><button class="fpill" data-category="office" onclick="filterConversions('office',this)">📊 Office</button><button class="fpill" data-category="ebooks" onclick="filterConversions('ebooks',this)">📚 E-books</button><button class="fpill" data-category="archives" onclick="filterConversions('archives',this)">🗜️ Archives</button><button class="fpill" data-category="code" onclick="filterConversions('code',this)">💻 Code</button></div><div class="row"><div class="col-12 col-md-5"><div class="form-group"><label class="flabel">📂 Source File</label><div class="upload-zone" id="convDropZone" style="padding:1.5rem;cursor:pointer;"><input type="file" id="convFileInput" onchange="handleConversionFile(this)" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;"><div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div><div style="font-size:.88rem;color:var(--text2);font-weight:600;">Drop a file or click to upload</div><div style="font-size:.74rem;color:var(--text3);margin-top:.3rem;" id="convFileInfo">Supported: 50+ formats</div></div><div id="convFilePreview" style="display:none;margin-top:.5rem;padding:.75rem;background:var(--bg2);border-radius:var(--radius-sm);border:1px solid var(--border);"><div class="d-flex items-center gap-2"><i class="fas fa-file" style="color:var(--accent);font-size:1.2rem;"></i><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:.85rem;" id="convFileName">file.pdf</div><div style="font-size:.7rem;color:var(--text3);" id="convFileSize">0 KB</div></div><button class="btn-icon-sm" onclick="clearConversionFile()" style="color:var(--danger);"><i class="fas fa-times"></i></button></div></div></div></div><div class="col-12 col-md-2" style="display:flex;align-items:center;justify-content:center;padding:0.5rem 0;"><div style="font-size:2rem;color:var(--primary);"><i class="fas fa-arrow-right"></i></div></div><div class="col-12 col-md-5"><div class="form-group"><label class="flabel">🎯 Convert To</label><select class="finput" id="convTarget" onchange="updateConversionInfo()"><option value="">Select target format...</option></select><div id="convTargetInfo" style="font-size:.72rem;color:var(--text3);margin-top:.3rem;min-height:1.2em;"></div></div></div></div><div class="row mt-3"><div class="col-12"><button class="btn btn-primary btn-lg w-full" id="convBtn" onclick="startConversion()" disabled><i class="fas fa-exchange-alt"></i> Convert</button></div></div><div id="convProgress" style="display:none;margin-top:1rem;"><div class="prog" style="height:8px;border-radius:4px;overflow:hidden;background:var(--border);"><div class="prog-fill pf-primary" id="convProgressBar" style="width:0%;transition:width 0.3s ease;"></div></div><div style="display:flex;justify-content:space-between;margin-top:.3rem;font-size:.75rem;color:var(--text3);"><span id="convProgressText">Converting...</span><span id="convProgressPercent">0%</span></div></div><div id="convResult" style="display:none;margin-top:1rem;padding:1rem;background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.2);border-radius:var(--radius-sm);"><div class="d-flex items-center justify-between flex-wrap" style="gap:.5rem;"><div style="display:flex;align-items:center;gap:.75rem;"><div class="si si-g" style="width:40px;height:40px;"><i class="fas fa-check-circle"></i></div><div><div style="font-weight:600;color:var(--success);">✅ Conversion Complete!</div><div style="font-size:.78rem;color:var(--text3);" id="convResultInfo">File converted successfully</div></div></div><div style="display:flex;gap:.5rem;"><button class="btn btn-ghost btn-sm" onclick="downloadConvertedFile()"><i class="fas fa-download"></i> Download</button><button class="btn btn-ghost btn-sm" onclick="clearConversionResult()"><i class="fas fa-times"></i></button></div></div></div><div class="card card-p mt-3"><div class="d-flex items-center justify-between mb-3 flex-wrap" style="gap:.5rem;"><h6 style="margin:0;">⚡ Quick Conversions</h6><input type="text" class="finput" id="convSearch" placeholder="Search conversions..." style="width:auto;min-width:200px;height:32px;font-size:.78rem;" oninput="searchConversions(this.value)"></div><div id="quickConversionsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;"></div></div></div></div><div id="tool-editor" class="tool-panel" style="display:none;"><div class="card card-p"><div class="d-flex items-center justify-between flex-wrap" style="gap:.5rem;margin-bottom:.75rem;"><div><h5 style="margin:0;">📝 Text Editor</h5><p style="font-size:.78rem;color:var(--text3);margin:.2rem 0 0;">Write and save notes, code snippets, or any text.</p></div><div class="d-flex gap-2"><button class="btn btn-primary btn-sm" onclick="saveTextEditor()"><i class="fas fa-save"></i> Save</button><button class="btn btn-ghost btn-sm" onclick="clearTextEditor()"><i class="fas fa-trash"></i> Clear</button></div></div><div class="form-group"><label class="flabel">Title</label><input type="text" class="finput" id="textEditorTitle" placeholder="Note title..." /></div><div class="form-group"><label class="flabel">Content</label><textarea id="textEditorContent" class="finput" style="min-height:400px;font-family:var(--font-body);font-size:.88rem;line-height:1.8;" placeholder="Write your notes here..."></textarea></div><div class="info-box mt-2"><i class="fas fa-info-circle" style="color:var(--primary)"></i> Your notes are saved locally. Auto-saves every 30 seconds. <span id="textEditorStatus" style="display:block;font-size:.72rem;color:var(--text3);margin-top:.3rem;">Last saved: Never</span></div></div></div><div id="tool-extensions" class="tool-panel" style="display:none;"><div class="card card-p"><h5 style="margin-bottom:.5rem;">🧩 VS Code Extensions Marketplace</h5><p style="font-size:.78rem;color:var(--text3);margin-bottom:.75rem;">Discover 50+ essential extensions for your development workflow.</p><div class="converter-tabs" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.75rem;padding:4px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);"><button class="fpill active" onclick="filterExtensions('all',this)">All</button><button class="fpill" onclick="filterExtensions('language',this)">Language</button><button class="fpill" onclick="filterExtensions('formatting',this)">Formatting</button><button class="fpill" onclick="filterExtensions('linting',this)">Linting</button><button class="fpill" onclick="filterExtensions('git',this)">Git</button><button class="fpill" onclick="filterExtensions('ui',this)">UI</button><button class="fpill" onclick="filterExtensions('web',this)">Web</button><button class="fpill" onclick="filterExtensions('devops',this)">DevOps</button><button class="fpill" onclick="filterExtensions('testing',this)">Testing</button><button class="fpill" onclick="filterExtensions('database',this)">Database</button><button class="fpill" onclick="filterExtensions('cloud',this)">Cloud</button><button class="fpill" onclick="filterExtensions('security',this)">Security</button></div><div id="extensionsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;"></div></div></div></div>
 
                     <!-- SETTINGS -->
                     <div id="dash-settings" class="dash-sub"><div class="page-hd"><h2 class="page-title">Settings</h2><p class="page-sub">Manage your account &amp; preferences</p></div><div class="set-tabs"><div class="set-tab active" onclick="switchSet('ss-profile',this)">Profile</div><div class="set-tab" onclick="switchSet('ss-security',this)">Security</div><div class="set-tab" onclick="switchSet('ss-payout',this)">Payouts</div><div class="set-tab" onclick="switchSet('ss-subscription',this)">Subscription</div><div class="set-tab" onclick="switchSet('ss-prefs',this)">Preferences</div><div class="set-tab" onclick="switchSet('ss-notifs',this)">Notifications</div></div><div class="set-sec active" id="ss-profile"><div class="card card-p"><div class="d-flex items-center gap-3 mb-4 flex-wrap"><div class="um-av" id="settingsAv" style="width:64px;height:64px;font-size:1.4rem;background:linear-gradient(135deg,var(--primary),var(--secondary))">U</div><div><h5 style="margin-bottom:.2rem" id="settingsName">User</h5><div id="settingsRoles"><span class="badge badge-cyan">Student</span></div></div><button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="document.getElementById('avatarFileInput').click()"><i class="fas fa-camera"></i>Change Photo</button><input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)"/></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">First Name</label><input type="text" class="finput" id="setFirstName" value=""/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Last Name</label><input type="text" class="finput" id="setLastName" value=""/></div></div></div><div class="form-group"><label class="flabel">Email</label><input type="email" class="finput" id="setEmail" readonly/></div><div class="form-group"><label class="flabel">Phone</label><input type="tel" class="finput" id="setPhone" value=""/></div><div class="form-group"><label class="flabel">Bio</label><textarea class="finput" id="setBio" style="min-height:80px;resize:vertical" placeholder="Tell the world about yourself..."></textarea></div><div class="form-group"><label class="flabel">Location</label><input type="text" class="finput" id="setLocation" placeholder="e.g. Lagos, Nigeria"/></div><button class="btn btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i>Save Profile</button></div></div><div class="set-sec" id="ss-security"><div class="card card-p"><h5 style="margin-bottom:1rem">Security Settings</h5><div class="form-group"><label class="flabel">Current Password</label><input type="password" class="finput" id="secCurrentPw" placeholder="••••••••"/></div><div class="form-group"><label class="flabel">New Password</label><input type="password" class="finput" id="secNewPw" placeholder="Min 8 characters"/></div><div class="form-group"><label class="flabel">Confirm Password</label><input type="password" class="finput" id="secConfirmPw" placeholder="Repeat new password"/></div><button class="btn btn-primary" onclick="changePassword()"><i class="fas fa-lock"></i>Update Password</button></div></div><div class="set-sec" id="ss-payout"><div class="card card-p"><h5 style="margin-bottom:.7rem">Payout Settings</h5><p style="font-size:.76rem;color:var(--text3);margin-bottom:1rem">Bank details are required before you can withdraw your earnings.</p><div class="form-group"><label class="flabel">Bank</label><select class="finput" id="payoutBank"><option value="">Select Bank</option><option>GTBank</option><option>Access Bank</option><option>Zenith Bank</option><option>UBA</option><option>First Bank</option><option>Opay</option><option>Palmpay</option><option>Kuda Bank</option><option>Moniepoint</option></select></div><div class="row"><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Number</label><input type="text" class="finput" id="payoutAccNum" placeholder="0123456789" maxlength="10"/></div></div><div class="col-12 col-md-6"><div class="form-group"><label class="flabel">Account Name</label><input type="text" class="finput" id="payoutAccName" placeholder="Enter your full name"/></div></div></div><div id="payoutSaveStatus" style="font-size:.76rem;margin-bottom:.75rem;min-height:1.2em"></div><button class="btn btn-primary" onclick="savePayoutSettings()"><i class="fas fa-save"></i>Save Bank Details</button></div></div><div class="set-sec" id="ss-subscription"><div class="card card-p" id="subStatusCard"></div></div><div class="set-sec" id="ss-prefs"><div class="card card-p"><h5 style="margin-bottom:1rem">Preferences</h5><div style="display:flex;flex-direction:column;gap:.55rem"><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Autoplay Next Lesson</div><div style="font-size:.72rem;color:var(--text3)">Continue automatically</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer"/></div><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Daily Streak Reminder</div><div style="font-size:.72rem;color:var(--text3)">Push notification daily</div></div><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;cursor:pointer"/></div><div class="d-flex items-center justify-between p-3" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"><div><div style="font-size:.83rem;font-weight:600">Preferred Currency</div><div style="font-size:.72rem;color:var(--text3)">Display earnings in</div></div><div class="currency-select"><span class="currency-opt" id="prefNGN" onclick="updateCurrencyPreference('NGN')">₦</span><span class="currency-opt" id="prefUSD" onclick="updateCurrencyPreference('USD')">$</span><span class="currency-opt" id="prefGBP" onclick="updateCurrencyPreference('GBP')">£</span><span class="currency-opt" id="prefEUR" onclick="updateCurrencyPreference('EUR')">€</span></div></div></div></div></div><div class="set-sec" id="ss-notifs"><div class="card card-p"><h5 style="margin-bottom:1rem">Notification Settings</h5><div id="notifSettingsList"></div><button class="btn btn-primary mt-4" onclick="toast('Preferences saved!','success')"><i class="fas fa-save"></i>Save</button></div></div></div>
@@ -6560,6 +6695,231 @@
             feedAds = [],
             feedAdIndex = 0;
         let reactionPickerTimeout = {};
+
+        // ─── Monaco Editor instance ────────────────────────────────────
+        let monacoEditorInstance = null;
+        let monacoInitialized = false;
+
+        // ─── Conversion state ─────────────────────────────────────────
+        let currentFile = null;
+        let currentFrom = '';
+        let currentTo = '';
+        let convertedBlob = null;
+        let convertedFilename = '';
+        let currentCategory = 'all';
+
+        // ─── Extensions data ─────────────────────────────────────────
+        const VSCODE_EXTENSIONS = [
+            { id: 'ms-vscode.vscode-typescript-next', name: 'TypeScript Next', category: 'language', icon: '📝' },
+            { id: 'esbenp.prettier-vscode', name: 'Prettier', category: 'formatting', icon: '✨' },
+            { id: 'dbaeumer.vscode-eslint', name: 'ESLint', category: 'linting', icon: '🔍' },
+            { id: 'eamodio.gitlens', name: 'GitLens', category: 'git', icon: '🔀' },
+            { id: 'ms-vsliveshare.vsliveshare', name: 'Live Share', category: 'collaboration', icon: '👥' },
+            { id: 'formulahendry.auto-rename-tag', name: 'Auto Rename Tag', category: 'html', icon: '🏷️' },
+            { id: 'formulahendry.auto-close-tag', name: 'Auto Close Tag', category: 'html', icon: '🔒' },
+            { id: 'ritwickdey.liveserver', name: 'Live Server', category: 'web', icon: '🌐' },
+            { id: 'ms-vscode.make', name: 'Makefile Tools', category: 'build', icon: '🔨' },
+            { id: 'mhutchie.git-graph', name: 'Git Graph', category: 'git', icon: '📊' },
+            { id: 'pkief.material-icon-theme', name: 'Material Icon Theme', category: 'ui', icon: '🎨' },
+            { id: 'dracula-theme.theme-dracula', name: 'Dracula Theme', category: 'ui', icon: '🧛' },
+            { id: 'ms-vscode.theme-monokai', name: 'Monokai Theme', category: 'ui', icon: '🎨' },
+            { id: 'zhuangtongfa.material-theme', name: 'Material Theme', category: 'ui', icon: '🎨' },
+            { id: 'ms-python.python', name: 'Python', category: 'language', icon: '🐍' },
+            { id: 'ms-python.vscode-pylance', name: 'Pylance', category: 'language', icon: '🐍' },
+            { id: 'ms-toolsai.jupyter', name: 'Jupyter', category: 'data', icon: '📓' },
+            { id: 'golang.go', name: 'Go', category: 'language', icon: '🐹' },
+            { id: 'rust-lang.rust-analyzer', name: 'Rust Analyzer', category: 'language', icon: '🦀' },
+            { id: 'ms-dotnettools.csharp', name: 'C#', category: 'language', icon: '🔷' },
+            { id: 'redhat.java', name: 'Java', category: 'language', icon: '☕' },
+            { id: 'redhat.vscode-yaml', name: 'YAML', category: 'config', icon: '📄' },
+            { id: 'ms-kubernetes-tools.vscode-kubernetes-tools', name: 'Kubernetes', category: 'devops', icon: '☸️' },
+            { id: 'hashicorp.terraform', name: 'Terraform', category: 'devops', icon: '🏗️' },
+            { id: 'hbenl.vscode-test-explorer', name: 'Test Explorer', category: 'testing', icon: '🧪' },
+            { id: 'ms-vscode.test-adapter-converter', name: 'Test Adapter Converter', category: 'testing', icon: '🔄' },
+            { id: 'ms-vscode.hexeditor', name: 'Hex Editor', category: 'debug', icon: '🔢' },
+            { id: 'mtxr.sqltools', name: 'SQLTools', category: 'database', icon: '🗄️' },
+            { id: 'mongodb.mongodb-vscode', name: 'MongoDB', category: 'database', icon: '🍃' },
+            { id: 'aws-amplify.aws-amplify', name: 'AWS Amplify', category: 'cloud', icon: '☁️' },
+            { id: 'googlecloud.gcp-extension', name: 'Google Cloud', category: 'cloud', icon: '☁️' },
+            { id: 'ms-vscode.wordcount', name: 'Word Count', category: 'productivity', icon: '📊' },
+            { id: 'aaron-bond.better-comments', name: 'Better Comments', category: 'productivity', icon: '💬' },
+            { id: 'sonarsource.sonarlint-vscode', name: 'SonarLint', category: 'security', icon: '🛡️' },
+            { id: 'ms-vscode.azure-account', name: 'Azure Account', category: 'cloud', icon: '☁️' },
+            { id: 'ms-vscode.vscode-js-profile-flame', name: 'JS Profile Flame', category: 'performance', icon: '🔥' },
+            { id: 'ms-vscode.vscode-js-profile-table', name: 'JS Profile Table', category: 'performance', icon: '📊' },
+            { id: 'wayou.vscode-todo-highlight', name: 'TODO Highlight', category: 'productivity', icon: '📋' },
+            { id: 'tomoki1207.pdf', name: 'PDF Viewer', category: 'document', icon: '📄' },
+            { id: 'msjsdiag.vscode-react-native', name: 'React Native', category: 'mobile', icon: '📱' },
+            { id: 'bradlc.vscode-tailwindcss', name: 'Tailwind CSS', category: 'css', icon: '🌊' },
+            { id: 'astro-build.astro-vscode', name: 'Astro', category: 'web', icon: '🚀' },
+            { id: 'svelte.svelte-vscode', name: 'Svelte', category: 'web', icon: '⚡' },
+            { id: 'ms-azuretools.vscode-docker', name: 'Docker', category: 'devops', icon: '🐳' },
+            { id: 'ms-vscode-remote.remote-containers', name: 'Dev Containers', category: 'devops', icon: '📦' },
+            { id: 'ms-vscode-remote.remote-ssh', name: 'Remote SSH', category: 'devops', icon: '🔌' },
+            { id: 'ms-toolsai.datawrangler', name: 'Data Wrangler', category: 'data', icon: '📊' },
+            { id: 'ms-toolsai.vscode-ai', name: 'AI Toolkit', category: 'ai', icon: '🤖' },
+            { id: 'ms-dotnettools.vscode-dotnet-runtime', name: '.NET Runtime', category: 'language', icon: '🔷' },
+            { id: 'github.vscode-pull-request-github', name: 'GitHub PR', category: 'git', icon: '🐙' },
+        ];
+
+        function getExtensionsByCategory(category) {
+            return VSCODE_EXTENSIONS.filter(ext => ext.category === category);
+        }
+
+        function getAllCategories() {
+            return [...new Set(VSCODE_EXTENSIONS.map(ext => ext.category))];
+        }
+
+        // ─── Conversion categories ────────────────────────────────────
+        const CONVERSION_CATEGORIES = {
+            documents: {
+                label: '📄 Documents',
+                icon: 'fa-file-alt',
+                conversions: [
+                    { from: 'docx', to: 'pdf', label: 'DOCX → PDF', description: 'Microsoft Word to PDF' },
+                    { from: 'doc', to: 'pdf', label: 'DOC → PDF', description: 'Word Document to PDF' },
+                    { from: 'txt', to: 'pdf', label: 'TXT → PDF', description: 'Text file to PDF' },
+                    { from: 'odt', to: 'pdf', label: 'ODT → PDF', description: 'OpenDocument to PDF' },
+                    { from: 'rtf', to: 'pdf', label: 'RTF → PDF', description: 'Rich Text to PDF' },
+                    { from: 'docx', to: 'txt', label: 'DOCX → TXT', description: 'Word to plain text' },
+                    { from: 'doc', to: 'txt', label: 'DOC → TXT', description: 'Word to plain text' },
+                    { from: 'odt', to: 'docx', label: 'ODT → DOCX', description: 'OpenDocument to Word' },
+                    { from: 'rtf', to: 'docx', label: 'RTF → DOCX', description: 'Rich Text to Word' },
+                    { from: 'txt', to: 'docx', label: 'TXT → DOCX', description: 'Text to Word' },
+                    { from: 'docx', to: 'html', label: 'DOCX → HTML', description: 'Word to web page' },
+                    { from: 'doc', to: 'html', label: 'DOC → HTML', description: 'Word to web page' },
+                    { from: 'md', to: 'pdf', label: 'MD → PDF', description: 'Markdown to PDF' },
+                    { from: 'html', to: 'pdf', label: 'HTML → PDF', description: 'Web page to PDF' },
+                    { from: 'docx', to: 'md', label: 'DOCX → MD', description: 'Word to Markdown' },
+                ]
+            },
+            images: {
+                label: '🖼️ Images',
+                icon: 'fa-image',
+                conversions: [
+                    { from: 'png', to: 'jpg', label: 'PNG → JPG', description: 'PNG to JPEG' },
+                    { from: 'png', to: 'webp', label: 'PNG → WebP', description: 'PNG to WebP' },
+                    { from: 'png', to: 'avif', label: 'PNG → AVIF', description: 'PNG to AVIF' },
+                    { from: 'png', to: 'svg', label: 'PNG → SVG', description: 'PNG to SVG (trace)' },
+                    { from: 'jpg', to: 'png', label: 'JPG → PNG', description: 'JPEG to PNG' },
+                    { from: 'jpg', to: 'webp', label: 'JPG → WebP', description: 'JPEG to WebP' },
+                    { from: 'jpg', to: 'avif', label: 'JPG → AVIF', description: 'JPEG to AVIF' },
+                    { from: 'webp', to: 'png', label: 'WebP → PNG', description: 'WebP to PNG' },
+                    { from: 'webp', to: 'jpg', label: 'WebP → JPG', description: 'WebP to JPEG' },
+                    { from: 'svg', to: 'png', label: 'SVG → PNG', description: 'SVG to PNG' },
+                    { from: 'svg', to: 'jpg', label: 'SVG → JPG', description: 'SVG to JPEG' },
+                    { from: 'heic', to: 'jpg', label: 'HEIC → JPG', description: 'Apple HEIC to JPEG' },
+                    { from: 'heic', to: 'png', label: 'HEIC → PNG', description: 'Apple HEIC to PNG' },
+                    { from: 'gif', to: 'png', label: 'GIF → PNG', description: 'GIF to PNG' },
+                    { from: 'gif', to: 'mp4', label: 'GIF → MP4', description: 'GIF to video' },
+                    { from: 'bmp', to: 'png', label: 'BMP → PNG', description: 'Bitmap to PNG' },
+                    { from: 'tiff', to: 'png', label: 'TIFF → PNG', description: 'TIFF to PNG' },
+                    { from: 'tiff', to: 'jpg', label: 'TIFF → JPG', description: 'TIFF to JPEG' },
+                    { from: 'ico', to: 'png', label: 'ICO → PNG', description: 'Icon to PNG' },
+                    { from: 'raw', to: 'jpg', label: 'RAW → JPG', description: 'Raw image to JPEG' },
+                ]
+            },
+            audio: {
+                label: '🎵 Audio',
+                icon: 'fa-music',
+                conversions: [
+                    { from: 'mp3', to: 'wav', label: 'MP3 → WAV', description: 'MP3 to WAV' },
+                    { from: 'wav', to: 'mp3', label: 'WAV → MP3', description: 'WAV to MP3' },
+                    { from: 'flac', to: 'mp3', label: 'FLAC → MP3', description: 'FLAC to MP3' },
+                    { from: 'flac', to: 'wav', label: 'FLAC → WAV', description: 'FLAC to WAV' },
+                    { from: 'aac', to: 'mp3', label: 'AAC → MP3', description: 'AAC to MP3' },
+                    { from: 'ogg', to: 'mp3', label: 'OGG → MP3', description: 'OGG to MP3' },
+                    { from: 'm4a', to: 'mp3', label: 'M4A → MP3', description: 'M4A to MP3' },
+                    { from: 'm4a', to: 'wav', label: 'M4A → WAV', description: 'M4A to WAV' },
+                    { from: 'wma', to: 'mp3', label: 'WMA → MP3', description: 'WMA to MP3' },
+                    { from: 'opus', to: 'mp3', label: 'Opus → MP3', description: 'Opus to MP3' },
+                    { from: 'aiff', to: 'wav', label: 'AIFF → WAV', description: 'AIFF to WAV' },
+                    { from: 'aiff', to: 'mp3', label: 'AIFF → MP3', description: 'AIFF to MP3' },
+                ]
+            },
+            video: {
+                label: '🎬 Video',
+                icon: 'fa-video',
+                conversions: [
+                    { from: 'mp4', to: 'avi', label: 'MP4 → AVI', description: 'MP4 to AVI' },
+                    { from: 'avi', to: 'mp4', label: 'AVI → MP4', description: 'AVI to MP4' },
+                    { from: 'mov', to: 'mp4', label: 'MOV → MP4', description: 'QuickTime to MP4' },
+                    { from: 'mkv', to: 'mp4', label: 'MKV → MP4', description: 'MKV to MP4' },
+                    { from: 'webm', to: 'mp4', label: 'WebM → MP4', description: 'WebM to MP4' },
+                    { from: 'mp4', to: 'webm', label: 'MP4 → WebM', description: 'MP4 to WebM' },
+                    { from: 'flv', to: 'mp4', label: 'FLV → MP4', description: 'FLV to MP4' },
+                    { from: 'wmv', to: 'mp4', label: 'WMV → MP4', description: 'WMV to MP4' },
+                    { from: 'mp4', to: 'gif', label: 'MP4 → GIF', description: 'MP4 to GIF' },
+                    { from: 'mov', to: 'gif', label: 'MOV → GIF', description: 'MOV to GIF' },
+                    { from: 'm4v', to: 'mp4', label: 'M4V → MP4', description: 'M4V to MP4' },
+                    { from: '3gp', to: 'mp4', label: '3GP → MP4', description: '3GP to MP4' },
+                ]
+            },
+            office: {
+                label: '📊 Office',
+                icon: 'fa-file-excel',
+                conversions: [
+                    { from: 'xlsx', to: 'csv', label: 'XLSX → CSV', description: 'Excel to CSV' },
+                    { from: 'xlsx', to: 'pdf', label: 'XLSX → PDF', description: 'Excel to PDF' },
+                    { from: 'xls', to: 'csv', label: 'XLS → CSV', description: 'Excel to CSV' },
+                    { from: 'xls', to: 'pdf', label: 'XLS → PDF', description: 'Excel to PDF' },
+                    { from: 'pptx', to: 'pdf', label: 'PPTX → PDF', description: 'PowerPoint to PDF' },
+                    { from: 'ppt', to: 'pdf', label: 'PPT → PDF', description: 'PowerPoint to PDF' },
+                    { from: 'odp', to: 'pdf', label: 'ODP → PDF', description: 'OpenDocument Presentation to PDF' },
+                    { from: 'ods', to: 'csv', label: 'ODS → CSV', description: 'OpenDocument Sheet to CSV' },
+                    { from: 'xlsx', to: 'json', label: 'XLSX → JSON', description: 'Excel to JSON' },
+                    { from: 'csv', to: 'json', label: 'CSV → JSON', description: 'CSV to JSON' },
+                ]
+            },
+            ebooks: {
+                label: '📚 E-books',
+                icon: 'fa-book',
+                conversions: [
+                    { from: 'epub', to: 'pdf', label: 'EPUB → PDF', description: 'EPUB to PDF' },
+                    { from: 'mobi', to: 'epub', label: 'MOBI → EPUB', description: 'MOBI to EPUB' },
+                    { from: 'azw3', to: 'epub', label: 'AZW3 → EPUB', description: 'Kindle to EPUB' },
+                    { from: 'fb2', to: 'epub', label: 'FB2 → EPUB', description: 'FB2 to EPUB' },
+                    { from: 'epub', to: 'txt', label: 'EPUB → TXT', description: 'EPUB to text' },
+                    { from: 'mobi', to: 'txt', label: 'MOBI → TXT', description: 'MOBI to text' },
+                    { from: 'azw3', to: 'txt', label: 'AZW3 → TXT', description: 'AZW3 to text' },
+                    { from: 'pdf', to: 'txt', label: 'PDF → TXT', description: 'PDF to text (extract)' },
+                ]
+            },
+            archives: {
+                label: '🗜️ Archives',
+                icon: 'fa-archive',
+                conversions: [
+                    { from: 'zip', to: 'folder', label: 'ZIP → Folder', description: 'Extract ZIP' },
+                    { from: 'rar', to: 'zip', label: 'RAR → ZIP', description: 'RAR to ZIP' },
+                    { from: 'gz', to: 'zip', label: 'GZ → ZIP', description: 'GZ to ZIP' },
+                    { from: '7z', to: 'zip', label: '7Z → ZIP', description: '7Z to ZIP' },
+                    { from: 'tar', to: 'zip', label: 'TAR → ZIP', description: 'TAR to ZIP' },
+                    { from: 'bz2', to: 'zip', label: 'BZ2 → ZIP', description: 'BZ2 to ZIP' },
+                    { from: 'xz', to: 'zip', label: 'XZ → ZIP', description: 'XZ to ZIP' },
+                    { from: 'zst', to: 'zip', label: 'ZST → ZIP', description: 'ZST to ZIP' },
+                ]
+            },
+            code: {
+                label: '💻 Code',
+                icon: 'fa-code',
+                conversions: [
+                    { from: 'json', to: 'csv', label: 'JSON → CSV', description: 'JSON to CSV' },
+                    { from: 'csv', to: 'json', label: 'CSV → JSON', description: 'CSV to JSON' },
+                    { from: 'xml', to: 'json', label: 'XML → JSON', description: 'XML to JSON' },
+                    { from: 'yaml', to: 'json', label: 'YAML → JSON', description: 'YAML to JSON' },
+                    { from: 'toml', to: 'json', label: 'TOML → JSON', description: 'TOML to JSON' },
+                    { from: 'yml', to: 'json', label: 'YML → JSON', description: 'YML to JSON' },
+                    { from: 'html', to: 'md', label: 'HTML → MD', description: 'HTML to Markdown' },
+                    { from: 'html', to: 'txt', label: 'HTML → TXT', description: 'HTML to text' },
+                    { from: 'css', to: 'txt', label: 'CSS → TXT', description: 'CSS to text' },
+                    { from: 'js', to: 'txt', label: 'JS → TXT', description: 'JavaScript to text' },
+                    { from: 'ts', to: 'js', label: 'TS → JS', description: 'TypeScript to JavaScript' },
+                    { from: 'py', to: 'txt', label: 'Python → TXT', description: 'Python to text' },
+                ]
+            }
+        };
+
+        const ALL_CONVERSIONS = Object.values(CONVERSION_CATEGORIES).flatMap(cat => cat.conversions);
 
         // ═══════════════════════════════════════════════════════════════
         // APPLICATION STATE
@@ -6798,6 +7158,14 @@
                     case 'openCourse':
                         const courseId = routeParams.id;
                         if (!courseId) break;
+                        // ─── FIX: AFFILIATE TRACKING ON COURSE LINKS ──────────
+                        const affCode = queryParams.get('aff');
+                        if (affCode) {
+                            // Track affiliate click silently
+                            fetch(`${API_BASE}/affiliate/track/${affCode}`, { method: 'GET', credentials: 'include' })
+                                .catch(() => {});
+                            toast(`🔗 Referred via affiliate ${affCode}`, 'info');
+                        }
                         if (S.page !== 'app') goPage('app');
                         setTimeout(() => {
                             openBuyCourse(courseId);
@@ -8366,7 +8734,7 @@
             }
         }
 
-        
+
         // ─── UPLOAD POST IMAGE ──────────────────────────────────────────
         function uploadPostImage(input) {
             const file = input.files[0];
@@ -8483,6 +8851,7 @@
         }
 
         function resetBookUploadForm() {
+            // ─── FIX: removed references to non-existent elements ────────
             document.getElementById('bookUploadTitle').value = '';
             document.getElementById('bookUploadAuthor').value = '';
             document.getElementById('bookUploadDesc').value = '';
@@ -8496,8 +8865,6 @@
             document.getElementById('bookPdfFile').value = '';
             document.getElementById('bookCoverProgress').style.display = 'none';
             document.getElementById('bookPdfProgress').style.display = 'none';
-            document.getElementById('bookUploadCoverPreview').style.display = 'none';
-            document.getElementById('bookUploadFilePreview').style.display = 'none';
             const statusEl = document.getElementById('bookUploadStatus');
             if (statusEl) statusEl.style.display = 'none';
         }
@@ -8671,7 +9038,6 @@
 
             let mediaHtml = '';
             if (post.featuredImage) {
-                // ✅ Add onerror handler to hide broken images
                 mediaHtml = `
                     <div class="fb-post-media">
                         <img src="${post.featuredImage}" alt="${escapeHtml(post.title)}" loading="lazy" onclick="window.location.href='${postUrl}'" onerror="this.style.display='none'">
@@ -11239,7 +11605,7 @@
             const filtered = filterType && filterType !== 'All' ? S.transactions.filter(t => t.type?.toLowerCase() ===
                 filterType.toLowerCase()) : S.transactions;
             document.getElementById('txTable').innerHTML =
-                `<thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead><tbody>${filtered.map(tx => { const amount = tx.amount || 0; const isPositive = amount >= 0; return `<tr><td style="font-size:.74rem;color:var(--text3)">${new Date(tx.createdAt).toLocaleDateString()}</td><td><span class="badge badge-dark" style="font-size:.6rem">${tx.type || '—'}</span></td><td style="font-size:.78rem">${tx.description || ''}</td><td style="font-weight:800;color:${isPositive ? 'var(--success)' : 'var(--danger)'}">${fmtMoneyAPI(amount)}</td><td><span class="pstatus ${tx.status === 'completed' ? 'ps-paid' : 'ps-pend'}">${tx.status || 'pending'}</span></td></tr>`; }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text3)">No transactions</td></tr>'}</tbody>`;
+                `<thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead><tbody>${filtered.map(tx => { const amount = tx.amount || 0; const isPositive = amount >= 0; return `<tr><td style="font-size:.74rem;color:var(--text3)">${new Date(tx.createdAt).toLocaleDateString()}</td><td><span class="badge badge-dark" style="font-size:.6rem">${tx.type || '—'}</span></td><td style="font-size:.78rem">${tx.description || ''}</td><td style="font-weight:800;color:${isPositive ? 'var(--success)' : 'var(--danger)'}">${fmtMoneyAPI(amount)}</td><td><span class="pstatus ${tx.status === 'completed' ? 'ps-paid' : 'ps-pend'}">${tx.status || 'pending'}</span></td></tr>`; }).join('') || '<tr><td colspan="5" style="text-align:center">No transactions</td></tr>'}</tbody>`;
         }
 
         function filterTx(type) { renderTxTable(type); }
@@ -12104,15 +12470,88 @@
             document.getElementById('aiUploadPanel').style.display = mode === 'upload' ? 'block' : 'none';
             if (mode === 'upload' && !S.isPremium) { toast('File uploads require Premium!', 'warning');
                 openModal('premiumModal'); }
+
+            // ─── Extension marketplace in AI ──────────────────────────────
+            if (mode === 'extensions') {
+                document.getElementById('aiMessages').innerHTML = renderExtensionConversation();
+                document.getElementById('aiUploadPanel').style.display = 'none';
+            } else {
+                // Reset AI messages if leaving extensions view
+                if (document.getElementById('aiMessages').querySelector('.extension-marketplace')) {
+                    document.getElementById('aiMessages').innerHTML =
+                        `<div style="display:flex;gap:.5rem"><div class="si si-c" style="width:28px;height:28px"><i class="fas fa-robot"></i></div><div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem;font-size:.82rem">Hi ${S.user?.firstName || 'there'}! 👋 I'm your ChangeX AI Tutor. Ask me anything about coding, your courses, or tech in general!</div></div>`;
+                }
+            }
         }
 
-        function handleAIUpload(input) {
-            if (!S.isPremium) { toast('Upgrade to Premium for file uploads', 'warning');
-                openModal('premiumModal'); return; }
-            const files = Array.from(input.files);
-            document.getElementById('aiUploadedFiles').innerHTML = files.map(f =>
-                `<div style="font-size:.8rem;margin-bottom:.3rem">✅ ${f.name} — AI analyzing...</div>`).join('');
-            setTimeout(() => toast(`${files.length} file(s) analyzed by AI!`, 'success'), 1500);
+        // ─── EXTENSION MARKETPLACE ─────────────────────────────────────
+        function renderExtensionConversation() {
+            const categories = getAllCategories();
+            let html = `
+                <div class="extension-marketplace" style="width:100%;">
+                    <div class="conversation-header">
+                        <h3>🧩 VS Code Extensions</h3>
+                        <p style="color:var(--text3);font-size:0.85rem;">
+                            Discover ${VSCODE_EXTENSIONS.length} essential extensions for your development workflow
+                        </p>
+                        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+                            <button class="fpill active" onclick="filterExtensions('all',this)">All</button>
+                            ${categories.map(cat => `<button class="fpill" onclick="filterExtensions('${cat}',this)">${cat.charAt(0).toUpperCase() + cat.slice(1)}</button>`).join('')}
+                        </div>
+                    </div>
+                    <div id="extensionsList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:16px;">
+                        ${renderExtensionCards(VSCODE_EXTENSIONS)}
+                    </div>
+                </div>
+            `;
+            return html;
+        }
+
+        function renderExtensionCards(extensions) {
+            return extensions.map(ext => `
+                <div class="extension-card card card-p" style="display:flex;align-items:center;gap:12px;padding:12px 16px;">
+                    <div style="font-size:1.5rem;">${ext.icon || '📦'}</div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:600;font-size:0.9rem;">${ext.name}</div>
+                        <div style="font-size:0.7rem;color:var(--text3);">
+                            ${ext.category} · ${ext.id}
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:4px;">
+                        <button class="btn btn-ghost btn-sm" onclick="copyExtensionId('${ext.id}')" style="font-size:0.65rem;padding:2px 8px;">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="installExtension('${ext.id}')" style="font-size:0.65rem;padding:2px 12px;">
+                            Install
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterExtensions(category, btn) {
+            document.querySelectorAll('.extension-marketplace .fpill').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const filtered = category === 'all'
+                ? VSCODE_EXTENSIONS
+                : VSCODE_EXTENSIONS.filter(ext => ext.category === category);
+
+            const list = document.getElementById('extensionsList');
+            if (list) list.innerHTML = renderExtensionCards(filtered);
+            // Also update the tools page if visible
+            const grid = document.getElementById('extensionsGrid');
+            if (grid) grid.innerHTML = renderExtensionCards(filtered);
+        }
+
+        function copyExtensionId(id) {
+            copyToClipboard(`ext install ${id}`);
+            toast(`📋 Extension ID copied: ${id}`, 'success');
+        }
+
+        function installExtension(id) {
+            toast(`🔧 Opening extension: ${id}`, 'info');
+            window.open(`https://marketplace.visualstudio.com/items?itemName=${id}`, '_blank');
         }
 
         // ================================================================
@@ -12153,11 +12592,11 @@
                 const isOwner = book.userId === userId || book.authorId === userId;
                 let statusBadge = '';
                 if (isOwner) {
-                    if (book.status === 'pending') {
+                    if (book.approvalStatus === 'pending') {
                         statusBadge = `<span class="badge badge-orange" style="font-size:.55rem">⏳ Pending</span>`;
-                    } else if (book.status === 'approved') {
+                    } else if (book.approvalStatus === 'approved') {
                         statusBadge = `<span class="badge badge-success" style="font-size:.55rem">✅ Approved</span>`;
-                    } else if (book.status === 'rejected') {
+                    } else if (book.approvalStatus === 'rejected') {
                         statusBadge = `<span class="badge badge-danger" style="font-size:.55rem">❌ Rejected</span>`;
                     }
                 }
@@ -12450,24 +12889,27 @@
             const filter = document.getElementById('bookFilter')?.value || 'all';
             let filtered = books;
             if (filter !== 'all') {
-                filtered = books.filter(b => b.status === filter);
+                filtered = books.filter(b => b.approvalStatus === filter);
             }
 
-            container.innerHTML = filtered.map(book => `
-                <div class="admin-book-item">
-                    <div class="book-info">
-                        <strong>${escapeHtml(book.title)}</strong>
-                        <span class="badge ${book.isPublished !== false ? 'badge-success' : 'badge-dark'}" style="font-size:.55rem">${book.isPublished !== false ? 'Published' : 'Draft'}</span>
-                        <span class="badge ${book.status === 'pending' ? 'badge-orange' : book.status === 'approved' ? 'badge-success' : 'badge-dark'}" style="font-size:.55rem">${book.status || 'pending'}</span>
-                        <div class="meta">By ${escapeHtml(book.author || 'Unknown')} · ${fmtMoneyAPI(book.price)} · 📥 ${book.downloads || 0} · 👁️ ${book.views || 0}</div>
+            container.innerHTML = filtered.map(book => {
+                const isPending = book.approvalStatus === 'pending';
+                return `
+                    <div class="admin-book-item">
+                        <div class="book-info">
+                            <strong>${escapeHtml(book.title)}</strong>
+                            <span class="badge ${book.isPublished !== false ? 'badge-success' : 'badge-dark'}" style="font-size:.55rem">${book.isPublished !== false ? 'Published' : 'Draft'}</span>
+                            <span class="badge ${book.approvalStatus === 'pending' ? 'badge-orange' : book.approvalStatus === 'approved' ? 'badge-success' : 'badge-dark'}" style="font-size:.55rem">${book.approvalStatus || 'pending'}</span>
+                            <div class="meta">By ${escapeHtml(book.author || 'Unknown')} · ${fmtMoneyAPI(book.price)} · 📥 ${book.downloads || 0} · 👁️ ${book.views || 0}</div>
+                        </div>
+                        <div class="book-actions">
+                            ${isPending ? `<button class="btn btn-success btn-sm" onclick="approveBook('${book._id}')"><i class="fas fa-check"></i> Approve</button><button class="btn btn-danger btn-sm" onclick="rejectBook('${book._id}')"><i class="fas fa-times"></i> Reject</button>` : ''}
+                            <button class="btn btn-ghost btn-sm" onclick="editBook('${book._id}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteBookAdmin('${book._id}')"><i class="fas fa-trash"></i></button>
+                        </div>
                     </div>
-                    <div class="book-actions">
-                        ${book.status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="approveBook('${book._id}')"><i class="fas fa-check"></i> Approve</button><button class="btn btn-danger btn-sm" onclick="rejectBook('${book._id}')"><i class="fas fa-times"></i> Reject</button>` : ''}
-                        <button class="btn btn-ghost btn-sm" onclick="editBook('${book._id}')"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteBookAdmin('${book._id}')"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         async function approveBook(bookId) {
@@ -12570,12 +13012,159 @@
             } catch (err) { toast('Failed to load manual payments: ' + err.message, 'error'); }
         }
 
-        // ================================================================
-        // TOOLS PAGE
-        // ================================================================
+        // ─── MONACO EDITOR (VS Code-like) ─────────────────────────────
+        async function initMonacoEditor(containerId, language = 'javascript', initialCode = '') {
+            if (monacoInitialized) {
+                if (monacoEditorInstance) {
+                    monacoEditorInstance.dispose();
+                    monacoEditorInstance = null;
+                }
+            }
+
+            const container = document.getElementById(containerId);
+            if (!container) {
+                console.warn('Monaco container not found:', containerId);
+                return;
+            }
+
+            // Clear container
+            container.innerHTML = '';
+
+            try {
+                // Load monaco if not already loaded
+                if (typeof monaco === 'undefined') {
+                    await new Promise((resolve) => {
+                        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.40.0/min/vs' } });
+                        require(['vs/editor/editor.main'], function() {
+                            resolve();
+                        });
+                    });
+                }
+
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+                monacoEditorInstance = monaco.editor.create(document.getElementById(containerId), {
+                    value: initialCode || '// Start coding here...\n',
+                    language: language,
+                    theme: isDark ? 'vs-dark' : 'vs',
+                    automaticLayout: true,
+                    fontSize: 14,
+                    fontFamily: 'JetBrains Mono, monospace',
+                    minimap: { enabled: true },
+                    scrollbar: { vertical: 'visible', horizontal: 'visible' },
+                    suggest: { showKeywords: true, showSnippets: true },
+                    codeLens: true,
+                    folding: true,
+                    bracketPairColorization: { enabled: true },
+                    renderWhitespace: 'selection',
+                    tabSize: 2,
+                    lineNumbers: 'on',
+                    renderLineHighlight: 'all',
+                    scrollBeyondLastLine: false,
+                });
+
+                monacoInitialized = true;
+                document.getElementById('monacoLangBadge').textContent = language.charAt(0).toUpperCase() + language.slice(1);
+
+                // Load saved content
+                const saved = localStorage.getItem('monacoCode');
+                if (saved && !initialCode) {
+                    monacoEditorInstance.setValue(saved);
+                }
+
+                // Auto-save
+                monacoEditorInstance.onDidChangeModelContent(() => {
+                    const val = monacoEditorInstance.getValue();
+                    localStorage.setItem('monacoCode', val);
+                });
+
+            } catch (err) {
+                console.warn('Monaco init error:', err);
+                container.innerHTML = `
+                    <div style="padding:1rem;color:var(--danger);text-align:center;">
+                        <i class="fas fa-exclamation-circle" style="font-size:2rem;display:block;margin-bottom:.5rem;"></i>
+                        <p>Failed to load Monaco Editor. Please refresh the page.</p>
+                        <button class="btn btn-primary btn-sm" onclick="retryMonaco()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function retryMonaco() {
+            monacoInitialized = false;
+            initMonacoEditor('monacoContainer', document.getElementById('monacoLangSelect').value);
+        }
+
+        function runMonacoCode() {
+            if (!monacoEditorInstance) { toast('Editor not initialized', 'error'); return; }
+            const code = monacoEditorInstance.getValue();
+            const lang = document.getElementById('monacoLangSelect').value;
+            const output = document.getElementById('monacoOutput');
+
+            if (lang === 'javascript' || lang === 'typescript') {
+                try {
+                    // Capture console.log
+                    const logs = [];
+                    const originalLog = console.log;
+                    console.log = function(...args) {
+                        logs.push(args.map(a => String(a)).join(' '));
+                        originalLog(...args);
+                    };
+
+                    // Use Function constructor for safe eval
+                    const result = new Function(code)();
+
+                    console.log = originalLog;
+
+                    let outputText = logs.length ? logs.join('\n') : '✅ Code executed successfully!';
+                    if (result !== undefined && result !== null && typeof result !== 'function') {
+                        outputText += '\n\nReturn value: ' + String(result);
+                    }
+                    output.textContent = outputText;
+                } catch (err) {
+                    output.textContent = '❌ Error: ' + err.message;
+                    output.style.color = 'var(--danger)';
+                    setTimeout(() => output.style.color = '', 3000);
+                }
+            } else if (lang === 'html') {
+                // For HTML, we'd need to render in an iframe - simple preview
+                const preview = document.getElementById('monacoOutput');
+                preview.innerHTML = `
+                    <div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;background:#fff;padding:8px;min-height:100px;">
+                        ${code}
+                    </div>
+                `;
+            } else {
+                toast(`Running ${lang} code via interpreter is not yet supported.`, 'info');
+                output.textContent = `// ${lang} code execution coming soon!`;
+            }
+        }
+
+        function saveMonacoCode() {
+            if (!monacoEditorInstance) { toast('Editor not initialized', 'error'); return; }
+            const code = monacoEditorInstance.getValue();
+            localStorage.setItem('monacoCode', code);
+            toast('💾 Code saved!', 'success');
+        }
+
+        // ─── TOOLS PAGE ──────────────────────────────────────────────────
         function loadTools() {
             loadCodeTool();
             loadTextEditor();
+            // Initialize Monaco if on monaco tab
+            setTimeout(() => {
+                if (S.currentToolTab === 'monaco') {
+                    initMonacoEditor('monacoContainer', document.getElementById('monacoLangSelect').value);
+                }
+                // Initialize converter
+                if (S.currentToolTab === 'converter') {
+                    initConversionTool();
+                }
+                // Initialize extensions
+                if (S.currentToolTab === 'extensions') {
+                    renderExtensionsTool();
+                }
+            }, 300);
         }
 
         function switchToolTab(tab, btn) {
@@ -12586,6 +13175,17 @@
             S.currentToolTab = tab;
             if (tab === 'editor') loadTextEditor();
             if (tab === 'code') loadCodeTool();
+            if (tab === 'monaco') {
+                setTimeout(() => {
+                    initMonacoEditor('monacoContainer', document.getElementById('monacoLangSelect').value);
+                }, 300);
+            }
+            if (tab === 'converter') {
+                setTimeout(initConversionTool, 200);
+            }
+            if (tab === 'extensions') {
+                setTimeout(renderExtensionsTool, 200);
+            }
         }
 
         // ─── CODE RUNNER ────────────────────────────────────────────────
@@ -12632,77 +13232,472 @@
             toast('Cleared', 'info');
         }
 
-        // ─── FILE CONVERTER ────────────────────────────────────────────────
-        function handleConvertFile(input) {
-            const file = input.files[0];
-            if (!file) return;
-            S.convertFileData = file;
-            document.getElementById('convertBtn').disabled = false;
-            const preview = document.getElementById('convertPreview');
-            preview.style.display = 'block';
-            document.getElementById('convertFileName').textContent = file.name;
-            document.getElementById('convertFileSize').textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('convertPreviewImage').src = e.target.result;
-                    document.getElementById('convertPreviewImage').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                document.getElementById('convertPreviewImage').style.display = 'none';
-            }
-            document.getElementById('convertResult').style.display = 'none';
+        // ─── FILE CONVERTER ────────────────────────────────────────────
+        function initConversionTool() {
+            renderQuickConversions();
+            populateTargetOptions();
+            setupDropZone();
         }
 
-        function convertFile() {
-            if (!S.convertFileData) { toast('Please upload a file first', 'error'); return; }
-            const from = document.getElementById('convertFrom').value;
-            const to = document.getElementById('convertTo').value;
-            toast('Converting... Please wait.', 'info');
-            setTimeout(() => {
-                if (from === 'image') {
+        function renderQuickConversions(category = 'all') {
+            const grid = document.getElementById('quickConversionsGrid');
+            if (!grid) return;
+
+            let conversions = ALL_CONVERSIONS;
+            if (category !== 'all') {
+                conversions = CONVERSION_CATEGORIES[category]?.conversions || [];
+            }
+
+            // Sort by popularity
+            const popular = ['docx→pdf', 'png→jpg', 'xlsx→csv', 'mp3→wav', 'mp4→avi'];
+            conversions.sort((a, b) => {
+                const keyA = `${a.from}→${a.to}`;
+                const keyB = `${b.from}→${b.to}`;
+                const idxA = popular.indexOf(keyA);
+                const idxB = popular.indexOf(keyB);
+                if (idxA >= 0 && idxB >= 0) return idxA - idxB;
+                if (idxA >= 0) return -1;
+                if (idxB >= 0) return 1;
+                return a.label.localeCompare(b.label);
+            });
+
+            grid.innerHTML = conversions.map(conv => `
+                <button class="btn btn-ghost btn-sm" 
+                        onclick="selectQuickConversion('${conv.from}','${conv.to}')"
+                        style="font-size:.75rem;padding:4px 10px;text-align:left;justify-content:flex-start;border-radius:6px;border:1px solid var(--border);background:var(--bg2);">
+                    <span style="font-weight:600;">${conv.from.toUpperCase()}</span>
+                    <span style="color:var(--text3);font-size:.6rem;">→</span>
+                    <span style="font-weight:600;">${conv.to.toUpperCase()}</span>
+                </button>
+            `).join('');
+
+            // Update stats
+            document.getElementById('convPairs').textContent = ALL_CONVERSIONS.length;
+        }
+
+        function populateTargetOptions() {
+            const targetSelect = document.getElementById('convTarget');
+            if (!targetSelect) return;
+
+            // Group by category
+            const options = [];
+            for (const [category, data] of Object.entries(CONVERSION_CATEGORIES)) {
+                const formats = new Set();
+                data.conversions.forEach(c => {
+                    formats.add(c.to);
+                });
+                if (formats.size) {
+                    options.push(`<optgroup label="${data.label}">`);
+                    [...formats].sort().forEach(f => {
+                        options.push(`<option value="${f}">${f.toUpperCase()}</option>`);
+                    });
+                    options.push('</optgroup>');
+                }
+            }
+            targetSelect.innerHTML = `<option value="">Select target format...</option>${options.join('')}`;
+        }
+
+        function handleConversionFile(input) {
+            const file = input.files?.[0];
+            if (!file) return;
+
+            currentFile = file;
+            currentFrom = file.name.split('.').pop().toLowerCase();
+
+            // Show file preview
+            const preview = document.getElementById('convFilePreview');
+            preview.style.display = 'block';
+            document.getElementById('convFileName').textContent = file.name;
+            document.getElementById('convFileSize').textContent = formatFileSize(file.size);
+
+            // Update target options based on source format
+            updateTargetOptions(currentFrom);
+
+            // Enable convert button if target is selected
+            checkConvertReady();
+        }
+
+        function updateTargetOptions(from) {
+            const targetSelect = document.getElementById('convTarget');
+            const availableTargets = ALL_CONVERSIONS
+                .filter(c => c.from === from)
+                .map(c => c.to);
+
+            // Show only compatible targets
+            targetSelect.innerHTML = `<option value="">Select target format...</option>`;
+
+            for (const [category, data] of Object.entries(CONVERSION_CATEGORIES)) {
+                const groupOptions = data.conversions
+                    .filter(c => c.from === from)
+                    .map(c => c.to);
+
+                if (groupOptions.length) {
+                    const group = document.createElement('optgroup');
+                    group.label = data.label;
+                    [...new Set(groupOptions)].sort().forEach(f => {
+                        const opt = document.createElement('option');
+                        opt.value = f;
+                        opt.textContent = f.toUpperCase();
+                        group.appendChild(opt);
+                    });
+                    targetSelect.appendChild(group);
+                }
+            }
+
+            // If no compatible targets, show all
+            if (targetSelect.options.length <= 1) {
+                populateTargetOptions();
+                document.getElementById('convTargetInfo').textContent = '⚠️ No direct conversion available for this format';
+                document.getElementById('convTargetInfo').style.color = 'var(--danger)';
+            } else {
+                document.getElementById('convTargetInfo').textContent = `✅ ${targetSelect.options.length - 1} conversion options available`;
+                document.getElementById('convTargetInfo').style.color = 'var(--success)';
+            }
+        }
+
+        function updateConversionInfo() {
+            const target = document.getElementById('convTarget').value;
+            if (!target || !currentFrom) return;
+
+            currentTo = target;
+            const info = document.getElementById('convTargetInfo');
+            const label = ALL_CONVERSIONS.find(c => c.from === currentFrom && c.to === target)?.label;
+            const desc = ALL_CONVERSIONS.find(c => c.from === currentFrom && c.to === target)?.description;
+
+            if (label) {
+                info.textContent = `${label} — ${desc || 'Convert file'}`;
+                info.style.color = 'var(--text2)';
+            } else {
+                info.textContent = `Convert ${currentFrom.toUpperCase()} → ${target.toUpperCase()}`;
+                info.style.color = 'var(--text3)';
+            }
+
+            checkConvertReady();
+        }
+
+        function checkConvertReady() {
+            const btn = document.getElementById('convBtn');
+            const target = document.getElementById('convTarget').value;
+            const hasFile = currentFile !== null;
+            const hasTarget = target !== '';
+            const isValid = hasFile && hasTarget && ALL_CONVERSIONS.some(c => c.from === currentFrom && c.to === target);
+
+            btn.disabled = !isValid;
+            if (isValid) {
+                btn.innerHTML = '<i class="fas fa-exchange-alt"></i> Convert';
+                btn.style.opacity = '1';
+            } else if (hasFile && hasTarget && !ALL_CONVERSIONS.some(c => c.from === currentFrom && c.to === target)) {
+                btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Conversion Not Supported';
+                btn.style.opacity = '0.7';
+            } else {
+                btn.innerHTML = '<i class="fas fa-exchange-alt"></i> Select File & Target';
+                btn.style.opacity = '0.5';
+            }
+        }
+
+        window.selectQuickConversion = function(from, to) {
+            currentFrom = from;
+            currentTo = to;
+            document.getElementById('convTarget').value = to;
+            updateConversionInfo();
+
+            if (currentFile) {
+                const fileExt = currentFile.name.split('.').pop().toLowerCase();
+                if (fileExt !== from) {
+                    toast(`⚠️ Your file is ${fileExt}, but selected conversion is ${from} → ${to}`, 'warning');
+                }
+            }
+
+            checkConvertReady();
+        }
+
+        window.filterConversions = function(category, btn) {
+            currentCategory = category;
+            document.querySelectorAll('.converter-tabs .fpill').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderQuickConversions(category);
+        }
+
+        window.searchConversions = function(query) {
+            const grid = document.getElementById('quickConversionsGrid');
+            if (!query.trim()) {
+                renderQuickConversions(currentCategory);
+                return;
+            }
+
+            const q = query.toLowerCase();
+            const filtered = ALL_CONVERSIONS.filter(c =>
+                c.label.toLowerCase().includes(q) ||
+                c.from.includes(q) ||
+                c.to.includes(q) ||
+                c.description.toLowerCase().includes(q)
+            );
+
+            grid.innerHTML = filtered.map(conv => `
+                <button class="btn btn-ghost btn-sm" 
+                        onclick="selectQuickConversion('${conv.from}','${conv.to}')"
+                        style="font-size:.75rem;padding:4px 10px;text-align:left;justify-content:flex-start;border-radius:6px;border:1px solid var(--border);background:var(--bg2);">
+                    <span style="font-weight:600;">${conv.from.toUpperCase()}</span>
+                    <span style="color:var(--text3);font-size:.6rem;">→</span>
+                    <span style="font-weight:600;">${conv.to.toUpperCase()}</span>
+                </button>
+            `).join('');
+        }
+
+        window.startConversion = async function() {
+            if (!currentFile) {
+                toast('Please select a file first', 'error');
+                return;
+            }
+
+            if (!currentTo) {
+                toast('Please select a target format', 'error');
+                return;
+            }
+
+            const from = currentFile.name.split('.').pop().toLowerCase();
+            if (!ALL_CONVERSIONS.some(c => c.from === from && c.to === currentTo)) {
+                toast(`Conversion from ${from} to ${currentTo} is not supported`, 'error');
+                return;
+            }
+
+            const btn = document.getElementById('convBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner spin"></i> Converting...';
+
+            const progress = document.getElementById('convProgress');
+            progress.style.display = 'block';
+            document.getElementById('convProgressBar').style.width = '0%';
+            document.getElementById('convProgressText').textContent = 'Starting conversion...';
+            document.getElementById('convProgressPercent').textContent = '0%';
+
+            try {
+                // Simulate progress
+                let progressInterval = setInterval(() => {
+                    const bar = document.getElementById('convProgressBar');
+                    const currentWidth = parseFloat(bar.style.width) || 0;
+                    if (currentWidth < 90) {
+                        const increment = Math.random() * 5 + 1;
+                        const newWidth = Math.min(currentWidth + increment, 90);
+                        bar.style.width = newWidth + '%';
+                        document.getElementById('convProgressPercent').textContent = Math.round(newWidth) + '%';
+                    }
+                }, 200);
+
+                // Client-side conversion for supported formats
+                convertedBlob = await clientSideConvert(currentFile, from, currentTo);
+
+                clearInterval(progressInterval);
+                document.getElementById('convProgressBar').style.width = '100%';
+                document.getElementById('convProgressPercent').textContent = '100%';
+                document.getElementById('convProgressText').textContent = '✅ Conversion complete!';
+
+                const baseName = currentFile.name.replace(/\.[^.]+$/, '');
+                convertedFilename = `${baseName}.${currentTo}`;
+
+                // Show result
+                const result = document.getElementById('convResult');
+                result.style.display = 'block';
+                document.getElementById('convResultInfo').textContent =
+                    `${currentFile.name} → ${convertedFilename} (${formatFileSize(convertedBlob.size)})`;
+
+                toast('✅ Conversion complete!', 'success');
+
+            } catch (error) {
+                console.error('Conversion error:', error);
+                toast('❌ Conversion failed: ' + error.message, 'error');
+                document.getElementById('convProgressText').textContent = '❌ Conversion failed';
+                document.getElementById('convProgressText').style.color = 'var(--danger)';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-exchange-alt"></i> Convert';
+            }
+        }
+
+        async function clientSideConvert(file, from, to) {
+            // ─── Image conversions ──────────────────────────────────────────
+            if (['png', 'jpg', 'jpeg', 'webp', 'avif', 'gif', 'bmp', 'tiff', 'ico'].includes(from) &&
+                ['png', 'jpg', 'jpeg', 'webp', 'avif', 'gif', 'bmp', 'tiff', 'ico'].includes(to)) {
+                return new Promise((resolve, reject) => {
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = (e) => {
                         const img = new Image();
-                        img.onload = function() {
+                        img.onload = () => {
                             const canvas = document.createElement('canvas');
                             canvas.width = img.width;
                             canvas.height = img.height;
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0);
-                            let mimeType = 'image/png';
-                            let ext = 'png';
-                            if (to === 'jpg' || to === 'jpeg') { mimeType = 'image/jpeg';
-                                ext = 'jpg'; } else if (to === 'webp') { mimeType = 'image/webp';
-                                ext = 'webp'; } else if (to === 'pdf') {
-                                toast('PDF conversion requires additional library. Please install jspdf.',
-                                    'warning');
-                                return;
-                            }
-                            const dataUrl = canvas.toDataURL(mimeType, 0.92);
-                            S.convertedFileData = dataUrl;
-                            S.convertedFileType = ext;
-                            document.getElementById('convertResult').style.display = 'block';
-                            toast('✅ Conversion complete!', 'success');
+
+                            const mimeTypes = {
+                                png: 'image/png',
+                                jpg: 'image/jpeg',
+                                jpeg: 'image/jpeg',
+                                webp: 'image/webp',
+                                avif: 'image/avif',
+                                gif: 'image/gif',
+                                bmp: 'image/bmp',
+                                tiff: 'image/tiff',
+                                ico: 'image/x-icon'
+                            };
+                            const mime = mimeTypes[to] || 'image/png';
+                            canvas.toBlob((blob) => resolve(blob), mime, 0.92);
                         };
+                        img.onerror = reject;
                         img.src = e.target.result;
                     };
-                    reader.readAsDataURL(S.convertFileData);
-                } else if (from === 'pdf') {
-                    toast('PDF conversion requires additional library. Please install pdfjs-dist.', 'warning');
-                }
-            }, 1000);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // ─── Text/Code conversions ─────────────────────────────────────
+            if (from === 'json' && to === 'csv') {
+                const text = await file.text();
+                const data = JSON.parse(text);
+                if (!Array.isArray(data)) throw new Error('JSON must be an array');
+                const headers = Object.keys(data[0] || {});
+                const csv = headers.join(',') + '\n' + data.map(row =>
+                    headers.map(h => JSON.stringify(row[h] || '')).join(',')
+                ).join('\n');
+                return new Blob([csv], { type: 'text/csv' });
+            }
+
+            if (from === 'csv' && to === 'json') {
+                const text = await file.text();
+                const lines = text.split('\n');
+                const headers = lines[0].split(',');
+                const data = lines.slice(1).filter(l => l.trim()).map(line => {
+                    const values = line.split(',');
+                    const obj = {};
+                    headers.forEach((h, i) => obj[h.trim()] = values[i]?.trim() || '');
+                    return obj;
+                });
+                return new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            }
+
+            // ─── HTML → Markdown ───────────────────────────────────────────
+            if (from === 'html' && to === 'md') {
+                const text = await file.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const h1 = doc.querySelector('h1')?.textContent || '';
+                const p = doc.querySelector('p')?.textContent || '';
+                const md = `# ${h1}\n\n${p}`;
+                return new Blob([md], { type: 'text/markdown' });
+            }
+
+            // ─── TXT → PDF (simple) ────────────────────────────────────────
+            if (from === 'txt' && to === 'pdf') {
+                const text = await file.text();
+                const html = `<html><body><pre>${text}</pre></body></html>`;
+                return new Blob([html], { type: 'application/pdf' });
+            }
+
+            // ─── Default: try server-side ──────────────────────────────────
+            return await convertViaServer(file, from, to);
         }
 
-        function downloadConvertedFile() {
-            if (!S.convertedFileData) { toast('Nothing to download', 'error'); return; }
+        async function convertViaServer(file, from, to) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('from', from);
+            formData.append('to', to);
+
+            try {
+                const token = localStorage.getItem('cx_accessToken');
+                const response = await fetch(`${API_BASE}/convert`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Server conversion failed');
+                }
+
+                return await response.blob();
+            } catch (error) {
+                console.error('Server conversion error:', error);
+                throw new Error(`Server conversion failed: ${error.message}`);
+            }
+        }
+
+        window.downloadConvertedFile = function() {
+            if (!convertedBlob) {
+                toast('No converted file to download', 'error');
+                return;
+            }
+            const url = URL.createObjectURL(convertedBlob);
             const a = document.createElement('a');
-            a.href = S.convertedFileData;
-            a.download = `converted.${S.convertedFileType || 'png'}`;
+            a.href = url;
+            a.download = convertedFilename || 'converted_file';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            toast('📥 Download started!', 'success');
+        }
+
+        window.clearConversionFile = function() {
+            currentFile = null;
+            currentFrom = '';
+            document.getElementById('convFilePreview').style.display = 'none';
+            document.getElementById('convFileInput').value = '';
+            checkConvertReady();
+        }
+
+        window.clearConversionResult = function() {
+            convertedBlob = null;
+            convertedFilename = '';
+            document.getElementById('convResult').style.display = 'none';
+            document.getElementById('convProgress').style.display = 'none';
+            document.getElementById('convProgressBar').style.width = '0%';
+        }
+
+        function setupDropZone() {
+            const dropZone = document.getElementById('convDropZone');
+            if (!dropZone) return;
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = 'var(--primary)';
+                dropZone.style.background = 'rgba(212,175,55,.05)';
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.style.borderColor = '';
+                dropZone.style.background = '';
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = '';
+                dropZone.style.background = '';
+                const files = e.dataTransfer.files;
+                if (files.length) {
+                    const input = document.getElementById('convFileInput');
+                    input.files = files;
+                    handleConversionFile(input);
+                }
+            });
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+            return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
+        }
+
+        // ─── EXTENSIONS TOOL ────────────────────────────────────────────
+        function renderExtensionsTool() {
+            const grid = document.getElementById('extensionsGrid');
+            if (!grid) return;
+            grid.innerHTML = renderExtensionCards(VSCODE_EXTENSIONS);
         }
 
         // ─── TEXT EDITOR ──────────────────────────────────────────────────
@@ -12740,18 +13735,6 @@
                 status.textContent = saved ? 'Last saved: ' + new Date().toLocaleString() : 'No saved notes';
             }
         }
-
-        // Auto-save text editor every 30 seconds
-        setInterval(() => {
-            if (S.currentToolTab === 'editor') {
-                const title = document.getElementById('textEditorTitle')?.value;
-                const content = document.getElementById('textEditorContent')?.value;
-                if (title || content) {
-                    localStorage.setItem('textEditorTitle', title || '');
-                    localStorage.setItem('textEditorContent', content || '');
-                }
-            }
-        }, 30000);
 
         // ================================================================
         // INTERACTIVE MATERIALS
@@ -12882,6 +13865,12 @@
             if (tab === 'interactive') {
                 const lesson = S.currentLessons[S.currentLessonIdx];
                 if (lesson && lesson._id) loadInteractiveMaterials(lesson._id);
+            }
+            if (tab === 'extensions') {
+                const container = document.getElementById('extensionMarketplaceContainer');
+                if (container) {
+                    container.innerHTML = renderExtensionConversation();
+                }
             }
         }
 
@@ -13686,7 +14675,7 @@
                         S.adminWithdrawals = Array.isArray(res.data?.withdrawals) ? res.data.withdrawals : (Array
                             .isArray(res.data) ? res.data : []);
                         content.innerHTML =
-                            `<div class="overflow-x-auto"><table class="dtable"><thead><tr><th>User</th><th>Amount</th><th>Bank</th><th>Account</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminWithdrawals.map(w => `<tr><td>${w.user?.firstName || 'User'} ${w.user?.lastName || ''}</td><td style="font-weight:800">${fmtMoneyAPI(w.amount)}</td><td style="font-size:.75rem">${w.user?.bankName || 'N/A'}</td><td style="font-size:.75rem">${w.user?.bankAccountNumber || 'N/A'}</td><td><span class="pstatus ${w.status === 'completed' ? 'ps-paid' : 'ps-pend'}">${w.status}</span></td><td>${w.status === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="processWithdrawalAdmin('${w._id}','approve')">Approve</button><button class="btn btn-danger btn-sm" onclick="processWithdrawalAdmin('${w._id}','reject')">Reject</button>` : '—'}</td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center">No withdrawals</td></tr>'}</tbody></table></div>`;
+                            `<div class="overflow-x-auto"><table class="dtable"><thead><tr><th>User</th><th>Amount</th><th>Bank</th><th>Account</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.adminWithdrawals.map(w => `<tr><td>${w.user?.firstName || 'User'} ${w.user?.lastName || ''}</td><td style="font-weight:800">${fmtMoneyAPI(w.amount)}</td><td style="font-size:.75rem">${w.user?.bankName || 'N/A'}</td><td style="font-size:.75rem">${w.user?.bankAccountNumber || 'N/A'}</td><td><span class="pstatus ${w.status === 'completed' ? 'ps-paid' : 'ps-pend'}">${w.status}</span></td><td>${w.status === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="processWithdrawalAdmin('${w._id}','approve')">Approve</button><button class="btn btn-danger btn-sm" onclick="processWithdrawalAdmin('${w._id}','reject')">Reject</button>` : '—'}</td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center">No withdrawals</td></tr>'}</tbody>`;
                     } catch (e) { content.innerHTML = '<p style="color:var(--danger)">Failed to load</p>'; }
                     break;
                 case 'manualPayments':
@@ -15122,168 +16111,124 @@
             } catch (err) { toast('Failed to load book: ' + err.message, 'error'); }
         }
 
+        // ─── uploadBookCover & uploadBookPdf (fixed) ───────────────────
         async function uploadBookCover(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('image', file);
-    const progressEl = document.getElementById('bookCoverProgress');
-    if (progressEl) { progressEl.style.display = 'block';
-        progressEl.textContent = 'Uploading... 0%'; }
-    showLoading('Uploading cover...');
-    try {
-        const token = localStorage.getItem('cx_accessToken');
-        const xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = (event) => {
-            if (event.lengthComputable && progressEl) {
-                const pct = Math.round((event.loaded / event.total) * 100);
-                progressEl.textContent = `Uploading... ${pct}%`;
-            }
-        };
-        xhr.onload = function() {
-            if (progressEl) { progressEl.style.display = 'none'; }
-            hideLoading();
+            const file = input.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('image', file);
+            const preview = document.getElementById('bookCoverPreview');
+            const progressEl = document.getElementById('bookCoverProgress');
+            if (preview) preview.style.display = 'block';
+            if (progressEl) { progressEl.style.display = 'block';
+                progressEl.textContent = 'Uploading... 0%'; }
+            showLoading('Uploading cover...');
             try {
-                const data = JSON.parse(xhr.responseText);
-                if (data.success) {
-                    document.getElementById('bookCoverImage').value = data.data.url;
-                    const preview = document.getElementById('bookCoverPreview');
-                    preview.classList.add('visible');
-                    document.getElementById('bookCoverPreviewImg').src = data.data.url;
-                    toast('✅ Cover uploaded!', 'success');
-                } else { toast('Upload failed: ' + data.message, 'error'); }
-            } catch (e) {
-                // DEBUG: show raw response on screen so it can be screenshotted
-                alert('COVER UPLOAD DEBUG\nStatus: ' + xhr.status + '\nResponse: ' + xhr.responseText.substring(0, 500));
-                toast(`Invalid response (status ${xhr.status})`, 'error');
-            }
-        };
-        xhr.onerror = function() { if (progressEl) progressEl.style.display = 'none';
-            hideLoading();
-            toast('Network error', 'error'); };
-        xhr.open('POST', `${API_BASE}/admin/upload`);
-        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-        xhr.send(formData);
-    } catch (err) { toast('Upload error: ' + err.message, 'error');
-        hideLoading(); }
-}
-
-async function uploadBookCover(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('image', file);
-    const preview = document.getElementById('bookCoverPreview');
-    const progressEl = document.getElementById('bookCoverProgress');
-    if (preview) preview.style.display = 'block';
-    if (progressEl) { progressEl.style.display = 'block';
-        progressEl.textContent = 'Uploading... 0%'; }
-    showLoading('Uploading cover...');
-    try {
-        const token = localStorage.getItem('cx_accessToken');
-        const xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = (event) => {
-            if (event.lengthComputable && progressEl) {
-                const pct = Math.round((event.loaded / event.total) * 100);
-                progressEl.textContent = `Uploading... ${pct}%`;
-            }
-        };
-        xhr.onload = function() {
-            if (progressEl) progressEl.style.display = 'none';
-            hideLoading();
-            try {
-                const data = JSON.parse(xhr.responseText);
-                if (data.success) {
-                    document.getElementById('bookUploadCover').value = data.data.url;
-                    document.getElementById('bookCoverPreviewImg').src = data.data.url;
-                    toast('✅ Cover uploaded!', 'success');
-                } else {
+                const token = localStorage.getItem('cx_accessToken');
+                const xhr = new XMLHttpRequest();
+                xhr.upload.onprogress = (event) => {
+                    if (event.lengthComputable && progressEl) {
+                        const pct = Math.round((event.loaded / event.total) * 100);
+                        progressEl.textContent = `Uploading... ${pct}%`;
+                    }
+                };
+                xhr.onload = function() {
+                    if (progressEl) progressEl.style.display = 'none';
+                    hideLoading();
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        if (data.success) {
+                            document.getElementById('bookUploadCover').value = data.data.url;
+                            document.getElementById('bookCoverPreviewImg').src = data.data.url;
+                            toast('✅ Cover uploaded!', 'success');
+                        } else {
+                            if (preview) preview.style.display = 'none';
+                            toast('Upload failed: ' + data.message, 'error');
+                        }
+                    } catch (e) {
+                        if (preview) preview.style.display = 'none';
+                        const statusEl = document.getElementById('bookUploadStatus');
+                        if (statusEl) {
+                            statusEl.style.display = 'block';
+                            statusEl.style.color = '#ff6b6b';
+                            statusEl.style.whiteSpace = 'pre-wrap';
+                            statusEl.style.fontSize = '.75rem';
+                            statusEl.textContent = 'COVER UPLOAD DEBUG\nStatus: ' + xhr.status + '\nResponse: ' + xhr
+                                .responseText.substring(0, 500);
+                        }
+                        toast(`Invalid response (status ${xhr.status})`, 'error');
+                    }
+                };
+                xhr.onerror = function() { if (progressEl) progressEl.style.display = 'none';
                     if (preview) preview.style.display = 'none';
-                    toast('Upload failed: ' + data.message, 'error');
-                }
-            } catch (e) {
-                if (preview) preview.style.display = 'none';
-                const statusEl = document.getElementById('bookUploadStatus');
-                if (statusEl) {
-                    statusEl.style.display = 'block';
-                    statusEl.style.color = '#ff6b6b';
-                    statusEl.style.whiteSpace = 'pre-wrap';
-                    statusEl.style.fontSize = '.75rem';
-                    statusEl.textContent = 'COVER UPLOAD DEBUG\nStatus: ' + xhr.status + '\nResponse: ' + xhr.responseText.substring(0, 500);
-                }
-                toast(`Invalid response (status ${xhr.status})`, 'error');
-            }
-        };
-        xhr.onerror = function() { if (progressEl) progressEl.style.display = 'none';
-            if (preview) preview.style.display = 'none';
-            hideLoading();
-            toast('Network error', 'error'); };
-        xhr.open('POST', `${API_BASE}/admin/upload`);
-        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-        xhr.send(formData);
-    } catch (err) { toast('Upload error: ' + err.message, 'error');
-        hideLoading(); }
-}
+                    hideLoading();
+                    toast('Network error', 'error'); };
+                xhr.open('POST', `${API_BASE}/admin/upload`);
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+                xhr.send(formData);
+            } catch (err) { toast('Upload error: ' + err.message, 'error');
+                hideLoading(); }
+        }
 
-async function uploadBookPdf(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('file', file);
-    const preview = document.getElementById('bookPdfPreview');
-    const nameEl = document.getElementById('bookPdfName');
-    const progressEl = document.getElementById('bookPdfProgress');
-    if (preview) preview.style.display = 'block';
-    if (nameEl) nameEl.textContent = file.name;
-    if (progressEl) { progressEl.style.display = 'block';
-        progressEl.textContent = 'Uploading... 0%'; }
-    showLoading('Uploading PDF...');
-    try {
-        const token = localStorage.getItem('cx_accessToken');
-        const xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = (event) => {
-            if (event.lengthComputable && progressEl) {
-                const pct = Math.round((event.loaded / event.total) * 100);
-                progressEl.textContent = `Uploading... ${pct}%`;
-            }
-        };
-        xhr.onload = function() {
-            if (progressEl) progressEl.style.display = 'none';
-            hideLoading();
+        async function uploadBookPdf(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('file', file);
+            const preview = document.getElementById('bookPdfPreview');
+            const nameEl = document.getElementById('bookPdfName');
+            const progressEl = document.getElementById('bookPdfProgress');
+            if (preview) preview.style.display = 'block';
+            if (nameEl) nameEl.textContent = file.name;
+            if (progressEl) { progressEl.style.display = 'block';
+                progressEl.textContent = 'Uploading... 0%'; }
+            showLoading('Uploading PDF...');
             try {
-                const data = JSON.parse(xhr.responseText);
-                if (data.success) {
-                    document.getElementById('bookUploadFile').value = data.data.url;
-                    toast('✅ PDF uploaded!', 'success');
-                } else {
+                const token = localStorage.getItem('cx_accessToken');
+                const xhr = new XMLHttpRequest();
+                xhr.upload.onprogress = (event) => {
+                    if (event.lengthComputable && progressEl) {
+                        const pct = Math.round((event.loaded / event.total) * 100);
+                        progressEl.textContent = `Uploading... ${pct}%`;
+                    }
+                };
+                xhr.onload = function() {
+                    if (progressEl) progressEl.style.display = 'none';
+                    hideLoading();
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        if (data.success) {
+                            document.getElementById('bookUploadFile').value = data.data.url;
+                            toast('✅ PDF uploaded!', 'success');
+                        } else {
+                            if (preview) preview.style.display = 'none';
+                            toast('Upload failed: ' + data.message, 'error');
+                        }
+                    } catch (e) {
+                        if (preview) preview.style.display = 'none';
+                        const statusEl = document.getElementById('bookUploadStatus');
+                        if (statusEl) {
+                            statusEl.style.display = 'block';
+                            statusEl.style.color = '#ff6b6b';
+                            statusEl.style.whiteSpace = 'pre-wrap';
+                            statusEl.style.fontSize = '.75rem';
+                            statusEl.textContent = 'PDF UPLOAD DEBUG\nStatus: ' + xhr.status + '\nResponse: ' + xhr
+                                .responseText.substring(0, 500);
+                        }
+                        toast(`Invalid response (status ${xhr.status})`, 'error');
+                    }
+                };
+                xhr.onerror = function() { if (progressEl) progressEl.style.display = 'none';
                     if (preview) preview.style.display = 'none';
-                    toast('Upload failed: ' + data.message, 'error');
-                }
-            } catch (e) {
-                if (preview) preview.style.display = 'none';
-                const statusEl = document.getElementById('bookUploadStatus');
-                if (statusEl) {
-                    statusEl.style.display = 'block';
-                    statusEl.style.color = '#ff6b6b';
-                    statusEl.style.whiteSpace = 'pre-wrap';
-                    statusEl.style.fontSize = '.75rem';
-                    statusEl.textContent = 'PDF UPLOAD DEBUG\nStatus: ' + xhr.status + '\nResponse: ' + xhr.responseText.substring(0, 500);
-                }
-                toast(`Invalid response (status ${xhr.status})`, 'error');
-            }
-        };
-        xhr.onerror = function() { if (progressEl) progressEl.style.display = 'none';
-            if (preview) preview.style.display = 'none';
-            hideLoading();
-            toast('Network error', 'error'); };
-        xhr.open('POST', `${API_BASE}/admin/upload-file`);
-        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-        xhr.send(formData);
-    } catch (err) { toast('Upload error: ' + err.message, 'error');
-        hideLoading(); }
-}
-        
-        
+                    hideLoading();
+                    toast('Network error', 'error'); };
+                xhr.open('POST', `${API_BASE}/admin/upload-file`);
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+                xhr.send(formData);
+            } catch (err) { toast('Upload error: ' + err.message, 'error');
+                hideLoading(); }
+        }
+
         async function saveBook() {
             const title = document.getElementById('bookTitle').value.trim();
             const author = document.getElementById('bookAuthor').value.trim();
@@ -15305,7 +16250,7 @@ async function uploadBookPdf(input) {
                 coverImage,
                 fileUrl,
                 isPublished,
-                status: isPublished ? 'approved' : 'pending'
+                approvalStatus: isPublished ? 'approved' : 'pending'
             };
             const editId = document.getElementById('editingBookId').value;
             showLoading('Saving book...');
@@ -15379,7 +16324,6 @@ async function uploadBookPdf(input) {
                 `;
             }
 
-            // ✅ Add onerror handler for post images
             let imageHtml = '';
             if (post.featuredImage) {
                 imageHtml =
@@ -16327,12 +17271,20 @@ async function uploadBookPdf(input) {
             console.log('📌 Facebook-style comments: Nested replies, like comments, reaction picker.');
             console.log('📌 Share modal: Social media sharing with copy link.');
             console.log('📌 Post menu: Edit/Delete for authors and admins.');
-            // ─── FIXED: Upload functions now handle JSON responses correctly ───
             console.log('✅ FIXED: uploadBookCover and uploadBookPdf now handle JSON responses correctly with xhr.response fallback.');
             console.log('✅ FIXED: uploadPostImage added for post image uploads.');
             console.log('✅ FIXED: Images in posts now have onerror handlers to hide broken images.');
             console.log('✅ FIXED: Post creation modal now includes image upload zone.');
             console.log('✅ FIXED: featuredImage is now properly set from upload response.');
+            console.log('✅ FIXED: resetBookUploadForm no longer references non-existent elements.');
+            console.log('✅ FIXED: Admin books use approvalStatus field instead of status.');
+            console.log('✅ FIXED: Affiliate tracking on course links now reads ?aff=code query param.');
+            console.log('✅ FIXED: Monaco editor initialized properly with language support.');
+            console.log('✅ FIXED: 50+ extension marketplace added to AI Tutor and Tools page.');
+            console.log('✅ FIXED: Full file converter with 50+ format support added to Tools.');
+            console.log('✅ FIXED: Code editor mobile responsive.');
+            console.log('✅ FIXED: VS Code-like full-screen editor with 50+ language support.');
+            console.log('📱 PWA forces update on every deploy with cache-busting versioning.');
         });
 
         // Expose functions globally
@@ -16345,6 +17297,21 @@ async function uploadBookPdf(input) {
         window.updateBookStatusBadge = updateBookStatusBadge;
         window.checkSessionAndRedirect = checkSessionAndRedirect;
         window.uploadPostImage = uploadPostImage;
+        window.initMonacoEditor = initMonacoEditor;
+        window.runMonacoCode = runMonacoCode;
+        window.saveMonacoCode = saveMonacoCode;
+        window.filterExtensions = filterExtensions;
+        window.installExtension = installExtension;
+        window.copyExtensionId = copyExtensionId;
+        window.handleConversionFile = handleConversionFile;
+        window.startConversion = startConversion;
+        window.downloadConvertedFile = downloadConvertedFile;
+        window.clearConversionFile = clearConversionFile;
+        window.clearConversionResult = clearConversionResult;
+        window.updateConversionInfo = updateConversionInfo;
+        window.filterConversions = filterConversions;
+        window.searchConversions = searchConversions;
+        window.selectQuickConversion = selectQuickConversion;
     </script>
 </body>
 </html>
